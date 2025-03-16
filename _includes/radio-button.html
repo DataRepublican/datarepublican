@@ -1,6 +1,0 @@
-<label>
-  <input type="radio" name="{{ include.name }}" value="{{ include.value }}"
-    onclick="methodType='{{ include.methodType }}';turnoutType='{{ include.turnoutType }}';{% if include.partyType %}partyType='{{ include.partyType }}';{% endif %}doUpdate();"
-    {% if include.checked %}checked{% endif %}>
-  <span>{{ include.label }}</span>
-</label>
