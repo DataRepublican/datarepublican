@@ -71,7 +71,7 @@ $(document).ready(function () {
       $btn.text("Hide details");
     } else {
       $list.height(0);
-      $btn.text("How it works");
+      $btn.text("How it works (& why you should use it)");
     }
   });
 
@@ -526,7 +526,35 @@ function bindEvents(g) {
   });
 }
 
-// [Previous imports and functions unchanged...]
+function zoomToFit() {
+  const g = svg.select("g.main"); // Select g.main dynamically
+  const bounds = g.node().getBBox();
+  if (
+    !isFinite(bounds.width) ||
+    bounds.width <= 0 ||
+    !isFinite(bounds.height) ||
+    bounds.height <= 0
+  ) {
+    console.warn("Invalid bounds for zoom:", bounds);
+    return;
+  }
+  const container = document.getElementById("graph-container");
+  const width = container.offsetWidth;
+  const height = container.offsetHeight || window.innerHeight * 0.7;
+  const dx = bounds.x;
+  const dy = bounds.y;
+  const scale = 0.8 / Math.max(bounds.width / width, bounds.height / height);
+  svg
+    .transition()
+    .duration(750)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(scale)
+        .translate(-dx - bounds.width / 2, -dy - bounds.height / 2)
+    );
+}
 
 function generateGraph() {
   if (!viewModel.dataReady) {
@@ -667,6 +695,7 @@ function generateGraph() {
       );
   }, 1000);*/
 
+  zoomToFit();
   renderActiveEINs();
   renderActiveKeywords();
   renderHideEINs();

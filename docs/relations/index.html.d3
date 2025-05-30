@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-  <link rel="stylesheet" href="/assets/css/styles.css?v=1747349890">
-<link rel="stylesheet" href="/assets/css/map-style.css?v=1747349890">
+  <link rel="stylesheet" href="/assets/css/styles.css?v=1748563700">
+<link rel="stylesheet" href="/assets/css/map-style.css?v=1748563700">
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/functions.js"></script>
 
@@ -43,16 +43,16 @@ $(document).ready(function() {
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Tracking where the money goes" />
 <meta property="og:description" content="Tracking where the money goes" />
-<link rel="canonical" href="http://localhost:4000/relations/index.html.d3" />
-<meta property="og:url" content="http://localhost:4000/relations/index.html.d3" />
+<link rel="canonical" href="https://datarepublican.com/relations/index.html.d3" />
+<meta property="og:url" content="https://datarepublican.com/relations/index.html.d3" />
 <meta property="og:site_name" content="DataRepublican" />
-<meta property="og:image" content="http://localhost:4000/assets/images/og.png" />
+<meta property="og:image" content="https://datarepublican.com/assets/images/og.png" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta property="twitter:image" content="http://localhost:4000/assets/images/og.png" />
+<meta property="twitter:image" content="https://datarepublican.com/assets/images/og.png" />
 <meta property="twitter:title" content="People Relations (BETA)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","description":"Tracking where the money goes","headline":"People Relations (BETA)","image":"http://localhost:4000/assets/images/og.png","url":"http://localhost:4000/relations/index.html.d3"}</script>
+{"@context":"https://schema.org","@type":"WebPage","description":"Tracking where the money goes","headline":"People Relations (BETA)","image":"https://datarepublican.com/assets/images/og.png","url":"https://datarepublican.com/relations/index.html.d3"}</script>
 <!-- End Jekyll SEO tag -->
 
 </head>

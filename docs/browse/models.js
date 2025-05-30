@@ -1010,7 +1010,7 @@ class Charity {
     this.loopbackgrants = loopbackgrants;
     this.loopforwardgrants = loopforwardgrants;
     this._desiredVisible = desiredVisible;
-    this._impliedVisible = false;
+    this._impliedVisible = 0;
     this.isOrganized = isOrganized;
     this.isGov = false;
     this.expanded = false;
@@ -1064,18 +1064,19 @@ class Charity {
   set impliedVisible(value) {
     if (this._impliedVisible != value) {
       this._impliedVisible = value;
+      this.isOrganized = false;
       if (!value) {
-        if (this.filer && typeof this.filer.impliedVisible === "number") {
+        if (this.filer) {
           this.filer.impliedVisible--;
         }
-        if (this.grantee && typeof this.grantee.impliedVisible === "number") {
+        if (this.grantee) {
           this.grantee.impliedVisible--;
         }
       } else {
-        if (this.filer && typeof this.filer.impliedVisible === "number") {
+        if (this.filer) {
           this.filer.impliedVisible++;
         }
-        if (this.grantee && typeof this.grantee.impliedVisible === "number") {
+        if (this.grantee) {
           this.grantee.impliedVisible++;
         }
       }
@@ -1435,7 +1436,7 @@ class Charity {
     if (!count || count == "0") return;
     const grantsToReveal = this.invisibleGrantsIn.slice(0, count); // count largest
     grantsToReveal.forEach((grant) => {
-      grant.impliedVisible++; // propogates both directions
+      grant.impliedVisible = true; // propogates both directions
     });
     viewModel.resetEIN(this.ein);
 
@@ -1743,17 +1744,17 @@ class Grant {
    */
   set isVisible(value) {
     if (value) {
-      if (this.filer && typeof this.filer.impliedVisible === "number") {
+      if (this.filer) {
         this.filer.impliedVisible++;
       }
-      if (this.grantee && typeof this.grantee.impliedVisible === "number") {
+      if (this.grantee) {
         this.grantee.impliedVisible++;
       }
     } else {
-      if (this.filer && typeof this.filer.impliedVisible === "number") {
+      if (this.filer) {
         this.filer.impliedVisible--;
       }
-      if (this.grantee && typeof this.grantee.impliedVisible === "number") {
+      if (this.grantee) {
         this.grantee.impliedVisible--;
       }
     }
@@ -1786,17 +1787,17 @@ class Grant {
     if (this._impliedVisible != value) {
       this._impliedVisible = value;
       if (!value) {
-        if (this.filer && typeof this.filer.impliedVisible === "number") {
+        if (this.filer) {
           this.filer.impliedVisible--;
         }
-        if (this.grantee && typeof this.grantee.impliedVisible === "number") {
+        if (this.grantee) {
           this.grantee.impliedVisible--;
         }
       } else {
-        if (this.filer && typeof this.filer.impliedVisible === "number") {
+        if (this.filer) {
           this.filer.impliedVisible++;
         }
-        if (this.grantee && typeof this.grantee.impliedVisible === "number") {
+        if (this.grantee) {
           this.grantee.impliedVisible++;
         }
       }
