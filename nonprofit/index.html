@@ -86,7 +86,7 @@ title: Nonprofits
   <table id="nonprofitTable" class="">
     <thead>
       <tr>
-        <th data-field="ein">EIN</th>
+        <th class="w-[110px]" data-field="ein">EIN</th>
         <th data-field="name">501(c)(3) Name</th>
         <th data-field="contribTotal">Contributions Total</th>
         <th data-field="govtGrants">Government Grants</th>
@@ -257,8 +257,10 @@ title: Nonprofits
         rowsToRender.forEach(item => {
           const tr = $('<tr></tr>');
 
+          // Show the EIN with the standard "XX-XXXXXXX" format
+          const maskedEin = item.ein.substring(0, 2) + '-' + item.ein.substring(2);
           const officerLink = `<a href="../officers?nonprofit_kw=${item.ein}"">Principal Officers</a>`;
-          const proPublicaLink = `<a href="https://projects.propublica.org/nonprofits/organizations/${item.ein}/${item.xmlFileName}/full">${item.ein}</a><br/><span style="font-size: small">${officerLink}</span>`
+          const proPublicaLink = `<a href="https://projects.propublica.org/nonprofits/organizations/${item.ein}/${item.xmlFileName}/full">${maskedEin}</a><br/><span style="font-size: small">${officerLink}</span>`
 
           tr.append($('<td></td>').html(proPublicaLink));
           tr.append($('<td></td>').text(item.name));
@@ -286,7 +288,7 @@ title: Nonprofits
 
   // Applies the current filter and the current sort, then renders
   function applyFilterAndSort() {
-    const filterQuery = $('#filterInput').val();
+    const filterQuery = $('#filterInput').val().trim().replace(/[-\s]/g, '');
     let filtered = filterData(nonprofitData, filterQuery);
 
     if (currentSortField) {
