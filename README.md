@@ -4,33 +4,83 @@ title: How to run the site locally
 
 ## Prerequisites
 
-1. Install Ruby (recommended version 3.1.x)
-   - On macOS with rbenv: `rbenv install 3.1.4`
-   - Set it as your local version: `rbenv local 3.1.4`
+1. Install Ruby 3.1.4
 
-2. Install Jekyll and Bundler
+   The version is pinned in `.ruby-version`. Newer Rubies will not work — the
+   `github-pages` gem chain expects 3.1.x.
+
    ```bash
-   gem install jekyll bundler
+   rbenv install 3.1.4
    ```
 
-3. Install Node.js and yarn
+2. Make sure rbenv is active in your shell
+
+   This is the most common setup problem. `rbenv init` writes to `~/.zprofile`,
+   which zsh only loads for **login** shells — so an integrated terminal in your
+   editor can silently fall back to system or Homebrew Ruby. Put the init line in
+   `~/.zshrc` instead, so it loads in every interactive shell:
+
+   ```bash
+   echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+   ```
+
+   If you append that line with `>>`, check that it landed on its own line —
+   if your `~/.zshrc` had no trailing newline it will be glued onto the previous
+   line and silently do nothing.
+
+   Open a new terminal and verify from inside the project directory:
+
+   ```bash
+   ruby -v      # must print 3.1.4 — not 3.4, not 4.x
+   which ruby   # must be a path under ~/.rbenv/shims
+   ```
+
+   If `which ruby` points at `/opt/homebrew/bin/ruby` or `/usr/bin/ruby`, stop
+   here and fix it. Every step below will fail in confusing ways otherwise.
+
+3. Install Bundler 2.x
+
+   ```bash
+   gem install bundler -v '~> 2.3'
+   ```
+
+   Do **not** run a bare `gem install bundler`. That installs Bundler 4.x, which
+   requires Ruby >= 3.2 and cannot run on this project's Ruby.
+
+   You do not need to install Jekyll separately — it comes from the
+   `github-pages` gem, which pins it to the version GitHub Pages actually runs.
+
+4. Install Node.js and yarn
+
+   Node 22 LTS is known good.
+
    ```bash
    npm install --global yarn
    ```
 
 ## Setup
 
-1. Install project dependencies:
-   ```bash
-   bundle add webrick     # Add webrick dependency (required for Ruby 3.x)
-   bundle install        # Install Ruby dependencies
-   yarn install         # Install Node.js dependencies
-   ```
+Install project dependencies:
+
+```bash
+bundle install    # Install Ruby dependencies
+yarn install      # Install Node.js dependencies
+```
 
 ## Run the site
 
 1. `yarn start`
 2. Open the site at `http://localhost:4000`
+
+This runs the CSS watcher and the Jekyll dev server together.
+
+> **Before you commit, run `git restore docs/`.**
+>
+> `docs/` is the committed build output that GitHub Pages serves, and the dev
+> server rewrites it in place. A `serve` run rewrites canonical links,
+> `og:url`, and `og:image` across ~20 pages to point at `http://localhost:4000`.
+> Committing those would break the live site's SEO and social cards. Only commit
+> `docs/` when you deliberately rebuilt it for production (see below).
 
 ## Advanced
 
@@ -44,26 +94,77 @@ The above command runs everything, but if you need to run things separately:
 
 ## Build the site
 
-1. `bundle exec jekyll clean`
-1. `bundle exec jekyll build JEKYLL_ENV=production`
+```bash
+bundle exec jekyll clean
+JEKYLL_ENV=production bundle exec jekyll build
+```
 
-You can serve the build site locally with `ruby -run -e httpd docs -p 4000`
+`JEKYLL_ENV=production` has to come *before* the command. Placed after it,
+Jekyll parses it as a positional argument and silently ignores it.
+
+The output goes to `docs/`, which is committed and served by GitHub Pages.
+
+You can serve the built site locally with `ruby -run -e httpd docs -p 4000`
+(stop the dev server first — it uses the same port).
 
 ## Troubleshooting
 
-If you see "jekyll: command not found", make sure you:
-1. Have Ruby installed and selected the correct version with rbenv
-2. Have run `gem install jekyll bundler`
-3. Have run `bundle install`
+**`jekyll: command not found`**
 
-If you're having dependency issues, try these steps:
-1. Install Ruby 3.1.4: `rbenv install 3.1.4`
-2. Switch to Ruby 3.1.4: `rbenv local 3.1.4`
-3. Install latest compatible bundler: `gem install bundler`
-4. Reinstall dependencies: `bundle install`
+1. Confirm `ruby -v` prints 3.1.4 — see Prerequisites step 2
+2. Confirm `gem list bundler` includes a 2.x version
+3. Run `bundle install`
+4. Run Jekyll through Bundler: `bundle exec jekyll ...`, never bare `jekyll`
 
-If you see an error about "cannot load such file -- webrick", run:
+**`cannot load such file -- rexml/parsers/baseparser`**
+
+You are on the wrong Ruby. Ruby 3.4 dropped `rexml` from the default gems, and
+the old kramdown in this dependency tree can't load it. The giveaway is the gem
+path in the traceback — if it reads `/opt/homebrew/lib/ruby/gems/4.0.0/`, that's
+Homebrew's Ruby, not rbenv's. Fix Prerequisites step 2, then delete and
+regenerate `Gemfile.lock` (see below) — the failed run will have rewritten it
+with incompatible pins.
+
+**`Could not find github-pages-87, jekyll-3.1.6, ... (Bundler::GemNotFound)`**
+**or `Unable to satisfy the following requirements: bundler (= 4.x)`**
+
+Your `Gemfile.lock` was generated by a different Ruby. It is gitignored, so it
+is safe to delete and regenerate:
+
 ```bash
-bundle add webrick
+rm Gemfile.lock
 bundle install
 ```
+
+**`undefined method 'request' for nil:NilClass` during `bundle install`**
+
+Bundler 4.x is installed in the Ruby 3.1.4 gemset. `bundle` always picks the
+newest installed Bundler, but 4.x requires Ruby >= 3.2, so it fails before it
+can do anything. Remove it from this gemset — it can't run here anyway:
+
+```bash
+gem uninstall bundler -v 4.0.20   # substitute whatever 4.x `gem list bundler` shows
+bundle -v                         # should now report 2.3.x
+```
+
+If any of the above still fails, you are probably not on Ruby 3.1.4 — recheck
+Prerequisites step 2.
+
+**Dependency issues generally**
+
+```bash
+rbenv local 3.1.4
+gem install bundler -v '~> 2.3'
+rm Gemfile.lock
+bundle install
+```
+
+**`cannot load such file -- webrick`**
+
+`webrick` is already declared in the `Gemfile`, so this normally means
+`bundle install` did not complete. Re-run it. Don't run `bundle add webrick` —
+that edits the `Gemfile` to add a dependency that is already there.
+
+**Build warning: `Layout 'nofooter' requested in browse/index.html does not exist`**
+
+Known, pre-existing, and harmless — the page renders with the default layout.
