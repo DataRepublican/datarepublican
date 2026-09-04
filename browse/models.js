@@ -207,6 +207,15 @@ async function clearStorage() {
   }
 }
 
+function idbCount(db, storeName) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(storeName, "readonly");
+    const request = tx.objectStore(storeName).count();
+    request.onsuccess = () => resolve(request.result || 0);
+    request.onerror = () => reject(request.error);
+  });
+}
+
 async function hasValidData(db) {
   try {
     const tx = db.transaction(METADATA_STORE, "readonly");
@@ -221,12 +230,24 @@ async function hasValidData(db) {
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
-    await tx.done;
+    if (
+      versionRequest?.value !== DATA_FILES.dbVersion ||
+      generatedRequest?.value !== true
+    ) {
+      return false;
+    }
+    // A interrupted first load (jekyll clean wiping tsv_chunks, 404s) can still
+    // stamp generated=true with a handful of rows. Uniparty then shows 2 orgs.
+    const nCharities = await idbCount(db, CHARITY_STORE);
+    const nGrants = await idbCount(db, GRANT_STORE);
+    if (nCharities < 400000 || nGrants < 400000) {
+      console.warn(
+        `IndexedDB incomplete (${nCharities} charities, ${nGrants} grants); reloading`
+      );
+      return false;
+    }
     loadingViaDB();
-    return (
-      versionRequest?.value === DATA_FILES.dbVersion &&
-      generatedRequest?.value === true
-    );
+    return true;
   } catch (error) {
     console.error("Error checking hasValidData:", error);
     return false;
@@ -1204,7 +1225,9 @@ export class BrowseViewModel {
 
   parseParamsWithOldNew(params, oldName, newName) {
     let parms = params.getAll(newName);
-    if (!parms) parms = params.getAll(oldName);
+    // getAll() returns [] (truthy) when the short key is absent, so fall back
+    // to the long name used by preset URLs (?ein=... not ?e=...).
+    if (!parms.length) parms = params.getAll(oldName);
     return parms;
   }
   /** given a URL, parse it into our relevant pieces */
@@ -1918,6 +1941,14 @@ export class BrowseViewModel {
           if (DEBUGLOG) console.time("buildGovCharity");
           await this.buildGovCharity(this.db);
           if (DEBUGLOG) console.timeEnd("buildGovCharity");
+
+          const nCharities = Object.keys(Charity.charityLookup).length;
+          const nGrants = Object.keys(Grant.grantLookup).length;
+          if (nCharities < 400000 || nGrants < 400000) {
+            throw new Error(
+              `Incomplete data load: ${nCharities} charities, ${nGrants} grants`
+            );
+          }
 
           if (DEBUGLOG) console.time("storeMetadata");
           const tx = this.db.transaction(METADATA_STORE, "readwrite");

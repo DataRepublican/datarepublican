@@ -33,6 +33,8 @@ exclude:
   - package-lock.json
   - postcss.config.js
   - tailwind.config.js
+  - 990tools
+  - vendor
 
 plugins:
   - jekyll-seo-tag

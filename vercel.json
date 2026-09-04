@@ -1,0 +1,11 @@
+{
+  "installCommand": "echo skip-install",
+  "buildCommand": "echo skip-jekyll-using-prebuilt-docs",
+  "outputDirectory": "docs",
+  "rewrites": [
+    {
+      "source": "/favicon.ico",
+      "destination": "/assets/images/favicon.png"
+    }
+  ]
+}
