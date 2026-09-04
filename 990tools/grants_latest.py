@@ -75,7 +75,8 @@ def parse_xml_file(file_path, ein_to_year):
         if cash_grant_amt_elem is None:
             continue
         try:
-            grant_amt = int(float(cash_grant_amt_elem.text.strip()))
+            from parse_utils import parse_float_field
+            grant_amt = int(parse_float_field(cash_grant_amt_elem.text.strip()))
         except (TypeError, ValueError):
             continue
         if grant_amt <= 0:

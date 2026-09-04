@@ -1,0 +1,1502 @@
+# Additional university/college priority canonicals from BMF family grouping
+# Append to university_non_state_patterns.txt or load directly in generate_name_rules.py
+Academy of Art University
+Acadia University
+Access College
+Achievement Rewards
+Adirondack Community College
+African University
+Alabama A&m University
+Alabama State University
+Alaska Pacific University
+Albany State University
+Alcorn State University
+Aligarh Muslim University
+Allan Hancock College
+Allen University
+Alliance College
+Alpena Community College
+America
+American Association of University Women
+American Osteopathic College
+American University
+Arizona State University
+Arkansas Baptist College
+Arkansas State University
+Arkansas Tech University
+Association of University
+Auburn University
+Augusta University
+Ball State University
+Baltimore City College
+Baroda Medical College
+Bay De Noc Community College
+Bellevue University
+Bethel University
+Big Bend Community College
+Birmingham-southern College
+Blinn College
+Blue Ridge Community College
+Boise State University
+Boston University
+Bowling Green State University
+Brigham Young University
+Brightpoint Community College
+Brooklyn College
+Buffalo State College
+Butler County Community College
+California Polytechnic State University
+California State University
+Campbell University
+Cape Cod Community College
+Carleton University
+Central Community College
+Central Michigan University
+Central Oregon Community College
+Central State University
+Central Washington University
+Central Wyoming College
+Chapman University
+Charter Oak State College
+Chemeketa Community College
+Chinese University
+Chittagong University
+Chonnam National University
+Christopher Newport University
+Chung Ang University
+Clackamas Community College
+Claremont Mckenna College
+Clarendon College
+Clatsop Community College
+Clemson University
+Cleveland State University
+Clinton Community College
+Coahoma Community College
+College Club
+College Foundation
+Colorado Mesa University
+Colorado State University
+Columbia College
+Columbia University
+Columbus State University
+Community College
+Community College of Rhode Island
+Community Colleges
+Communiversity
+Concordia University
+Cornell University
+Cornwall College
+Cortland College
+Council
+Covenant College
+Creighton University
+Dakota College
+Dalhousie University
+Dana College
+Dartmouth College
+Davenport University
+Davis College
+Daytona State College
+Delaware County Community College
+Delaware State University
+Delta College
+Denison University
+Depaul University
+Des Moines Area Community College
+Dhaka University
+Dillard University
+Dine College
+Duke University
+East Carolina University
+East Central University
+East China Normal University
+East Tennessee State University
+East Texas A&m University
+Eastern Illinois University
+Eastern Iowa Community College
+Eastern New Mexico University
+Eastern Washington University
+Edinboro University
+Edward Waters University
+Emporia State University
+Far Eastern University
+Faulkner University
+Fayetteville State University
+Fisk University
+Florida A&m University
+Florida Association
+Florida Atlantic University
+Florida International University
+Florida Memorial University
+Florida State University
+Florida a & M University
+Florida a and M University
+Fort Hays State University
+Foundation
+Framingham State University
+Francis Marion University
+Fresno Pacific University
+Friends
+Friends of the University
+Fu Jen University
+Fudan University
+Furman University
+Gadsden State Community College
+Gallaudet University
+Genesee Community College
+Geneva College
+George Mason University
+George Washington University
+Georgetown College
+Georgetown University
+Georgia Chapter
+Georgia College
+Georgia Military College
+Georgia Southern University
+Georgia State University
+Germanna Community College
+Gettysburg College
+Girard College
+Glendale College
+Gordon College
+Grambling State University
+Grambling University
+Grand Canyon University
+Grand Rapids Community College
+Grays Harbor College
+Great Northern University
+Greater Los Angeles
+Greater New York in
+Greater Washington
+Greensboro College
+Hampton University
+Hardin-simmons University
+Harrisburg Area Community College
+Hastings College
+Highland Community College
+Hillsborough Community College
+Hocking Technical College Education Association
+Hood College
+Houston
+Howard College
+Howard University
+Hudson Valley Community College
+Huron University
+Idaho State University
+Ilisagvik College
+Indiana University
+International Christian University
+International College
+Iowa Central Community College
+Iowa State University
+Iowa Western Community College
+Isothermal Community College
+Jackson State University
+Jadavpur University
+James Madison University
+Jesuit College Preparatory School
+John Brown University
+John Jay College
+Johnson C Smith University
+Johnston Community College
+Judson College
+Kansas City University
+Kansas State University
+Kansas Wesleyan University
+Kean University
+Kellogg Community College
+Kennesaw State University
+Kent State University
+Kentucky State University
+Kids College
+Kings College
+Kirkwood Community College
+Kiwanis Club of University
+Klamath Community College
+Korea University
+La Salle University
+Lakeland University
+Lamar University
+Lane Community College
+Langston University
+Lanier Technical College
+Lansing Community College
+Lehigh University
+Letourneau University
+Lewis-clark State College
+Liberty University
+Lincoln University
+Linn Benton Community College
+Livingstone College
+Livingstone College National Alumni Association
+Logan University
+Loma Linda University
+Longwood University
+Lorain County Community College
+Louisiana State University
+Louisiana Tech University
+Loyola University
+Lubbock Christian University
+Luzerne County Community College
+Manhattan Christian College
+Mansfield University
+Maricopa County Community College
+Marquette University
+Marshall University
+Martin University
+Maryland
+Massachusetts College
+Massasoit Community College
+Medical College
+Metropolitan Community College
+Metropolitan State University
+Miami University
+Michigan State University
+Mid-atlantic Christian University
+Midwestern University
+Millersville University
+Minnesota State University
+Minot State University
+Mississippi College
+Mississippi State University
+Mississippi Valley State University
+Monmouth College
+Montana State University
+Montcalm Community College
+Monticello College
+Montreat College
+Moraine Valley Community College
+Morgan State University
+Morris Brown College
+Mount Vernon Nazarene University
+Mountain Gateway Community College
+Mt Hood Community College
+Murray State College
+Murray State University
+Nanjing University
+Nasa College Scholarship Fund
+Nash Community College
+Nashville State Community College
+Nassau Community College
+Nasson College
+National Alumnae Association
+National Alumni Association Philander Smith University
+National American University
+National Black College
+National Capital Area Chapter West Virginia University
+National Central University
+National Cheng Chi University
+National Cheng Kung University
+National Chengchi University
+National College
+National College Players Foundation
+National College Resources Foundation
+National Defense University
+National Football Foundation & College Hall
+National Football Foundation & College Hall of Fame - Coastal Val
+National Football Foundation and College Hall
+National Intelligence University
+National Junior College Athletic Association Foundation
+National Mexican American College Education Fund
+National Park College
+National Sun Yat-sen University
+National Taiwan University
+National Tsing Hua University
+National University
+National War College
+National Yangming Chiaotung University
+Natl Historically Black Colleges & Universities Alumni Assoc Foundati
+Naugatuck Valley Community Technical College
+Naval War College
+Navarro College
+Nazareth College of Rochester
+Nebraska
+Nebraska College Baseball Hall
+Neosho County Community College
+Network of California Community College
+Nevada State University
+New College
+New England
+New Jersey City University
+New Mexico Highlands University
+New Mexico Junior College
+New Mexico State University
+New River Community College
+New River Community and Technical College
+New York
+New York City College
+New York Medical College
+New York University
+Newberry College
+Newman Foundation Inc at the University of Chattanooga
+Newman Foundation at the University of Arizona
+Newman Foundation at the University of Illinois
+Newman Foundation of the State University of New York at Binghamt
+Newspaper Guild
+Nicholls State University
+Nicolet Area Technical College Faculty Association
+Nicolet College
+Noorda College
+Norfolk State University
+Normandale Community College
+North Americ
+North America
+North American Foundation for the University of Durham
+North American Foundation for the University of Leeds
+North American Foundation for the University of Manchester
+North American Taipei Medical University
+North Arkansas College
+North Carolina Central University
+North Carolina Community College
+North Carolina State University
+North Central College
+North Central Michigan College
+North Central Missouri College
+North Central Technical College
+North Central Texas College
+North College Hill Alumni Association
+North College Hill Education Association
+North College Hill Scholarship Foundation
+North Country Community College
+North Dakota State University
+North Dakota University
+North Florida College
+North Georgia Technical College
+North Harris Montgomery Community College
+North Hennepin Community College
+North Idaho College
+North Iowa Area Community College
+North Platte Community College
+North Seattle Community College
+North Shore Community College
+North Texas Area
+Northampton County Area Community College
+Northcentral Technical College
+Northcentral Technical College Faculty Association
+Northeast Alabama Community College
+Northeast Community College
+Northeast Iowa Community College
+Northeast Mississippi Alumni Chapter Alcorn State University
+Northeast Mississippi Community College
+Northeast Ohio Medical University
+Northeast State Technical Community College
+Northeast Texas Community College
+Northeast Wisconsin Technical College Education Foundation
+Northeastern Illinois University
+Northeastern Junior College
+Northeastern Oklahoma A&m College Development Foundation
+Northeastern State University
+Northeastern Technical College
+Northern
+Northern Cal
+Northern Calif
+Northern California
+Northern California Chinese Culture University
+Northern Essex Community College
+Northern Illinois University
+Northern Kentucky University
+Northern Maine Community College
+Northern Michigan University
+Northern Michigan University Faculty Association
+Northern New Mexico College
+Northern Ohio
+Northern Oklahoma College
+Northern State University
+Northern Virginia Community College
+Northern Wyoming Community College
+Northland Community College
+Northshore College Enhancement Foundation
+Northwest Arkansas Community College
+Northwest College
+Northwest Florida State College
+Northwest Indian College
+Northwest Iowa Community College
+Northwest Louisiana Technical Community College
+Northwest Mississippi Community College
+Northwest Ms Community College
+Northwest Nazarene University
+Northwest State Community College
+Northwest Technical College - Bemidji Foundation
+Northwest University
+Northwest a & F University
+Northwest-shoals Community College
+Northwestern Community College
+Northwestern Michigan College
+Northwestern Oklahoma State University
+Northwestern Polytechnical University
+Northwood Technical College
+Norwalk Community College
+Oak Brook College
+Oakland City University
+Oakland Community College
+Oakland University
+Oakton Community College
+Ocean County College
+Odessa College
+Ogden Weber Applied Technology College
+Ogeechee Technical College
+Ohio College Personnel Association Ohio Foundation
+Ohio Foundation
+Ohio State University
+Ohio University
+Ohlone College
+Oklahoma City Community College
+Oklahoma State University
+Old Dominion University
+Old Westbury College
+Olivet Nazarene University
+Olney Central College
+Olympic College
+Onondaga Community College
+Orange Coast College
+Orangeburg Calhoun Technical College
+Oregon American College of Nurse- Midwives Foundation
+Oregon Chapter
+Oregon Chapter American College Ofcardiology Education Foundation
+Oregon Coast Community College
+Oregon Health and Science University
+Oregon State University
+Original University
+Osaka University
+Osiri University
+Osmania University
+Oswego College
+Otero Junior College
+Owens Community College
+Owensboro Community and Technical College
+Oxnard College
+Ozarka Technical College
+Ozarks Technical Community College
+Pacific Coast Chapter of Northern Caribbean University
+Pacific Nw College Planning Foundation
+Paine College National Alumni Association
+Palmer College
+Palo Verde College
+Palomar College
+Pamlico Community College
+Panola College
+Paris Junior College Memorial Fund Foundation
+Parkland College
+Pasadena City College
+Pasadena City College Faculty Association
+Pasco Hernando State College
+Passaic County Community College
+Path to College
+Pathways to College
+Patrick Henry College
+Patrick Henry Community College
+Paul D Camp Community College
+Paul Quinn College National Alumni Association
+Pearl River Community College
+Pearson College
+Peking Union Medical College Overseas Alumni Association Incorp
+Peking University
+Pellissippi State Community College
+Pembroke College
+Peninsula College
+Pennsylvania College
+Pennsylvania College Education Association
+Pennsylvania Highlands Community College
+Pennsylvania State University
+Pensacola State College
+Pentecost University
+Peralta Colleges Foundation
+Peru State College
+Pharmacy Foundation of the University of Missouri
+Philadelphia College
+Philadelphia Middle College
+Philippine Normal University
+Philippine Womens University
+Phillips University
+Pickens County College and Career Scholarship Foundation
+Piedmont Community College
+Piedmont Technical College
+Piedmont Virginia Community College
+Pierce College
+Pierce Mortuary Colleges Alumni Association
+Pikes Peak State College
+Pima Community College
+Pine Technical College
+Pitt Community College
+Pittsburg State University
+Pittsburg State University Kansas National Education Association
+Pittsburgh College Hockey Foundation
+Pittsburgh Technical College Education Foundation
+Plattsburgh College
+Point Loma Nazarene University
+Point Park University
+Police Executive Leadership College
+Polk State College
+Pontifical University
+Porterville College
+Porterville University Women Scholarship Fund
+Portland Community College
+Portland State University
+Portsmouth Alumni Chapter Norfolk State University
+Post College
+Potomac State College
+Potsdam College
+Prager University
+Prairie State College
+Prairie View a & M University
+Pratt Community College
+Presbyterian College
+Presbyterian College Real Estate Foundation
+Prince Georges Community College
+Providence College
+Pueblo Community College
+Puget Sound Chapter of the Southern University
+Punjab University
+Purchase College
+Purdue University
+Purdue University Latino Faculty and Staff Association
+Purple Army Chapter of Virginia State University
+Queen
+Queens College
+Quest University
+Quincy College
+Quinebaug Valley Community College
+Quinsigamond Community College
+Quisqueya University
+Radford University
+Rainy River Community College
+Rajshahi University
+Raleigh Durham Chapter of Norfolk State University
+Raleigh Wake Chapter Livingstone College National Alumni Associatio
+Ramapo College
+Rancho Santigo Community College District
+Randolph Technical College
+Ranger Junior College
+Rappahannock Community College
+Raritan Valley Community College
+Red Rocks Community College
+Redlands Community College
+Reedley College
+Regent College
+Regent University
+Reid State Technical College
+Rend Lake College
+Renton Technical College
+Research Foundation for the City University of New York
+Research Foundation for the State University of New York
+Research Foundation of Frostburg State University
+Research Foundation of the City University of New York
+Retail Floristry Foundation
+Rhode Island College
+Rich University
+Richard Bland College
+Richard G Lambert Md Foundation for the University of Chicago
+Richard Tam University
+Richland Community College
+Richmond Community College
+Richmond Metro Chapter of Virginia State University
+Ridgewater College
+Rio Hondo College
+River Parishes Community College
+Riverland Community College
+Riverside Community College
+Riverside University
+Roane County College Scholarship Foundation
+Roane State Community College
+Roanoke-chowan Technical College
+Robert College
+Robert Covington College Scholarship Fund
+Robert and Edna Gustin Scholarship Fund Trust Boston University
+Robeson Community College
+Rochester Christian University
+Rochester Community & Technical College
+Rock Valley College
+Rockingham Community College
+Rockland Community College
+Rocky Mountain University
+Rocky Vista University
+Roger Wiliams University Faculty Association
+Rogers State University
+Rogue Community College
+Rogue River Valley University
+Rome College
+Rose State College
+Ross College
+Rotary Club
+Rowan College
+Rowan University
+Rowan-cabarrus Community College
+Roxbury Community College
+Roy G Dalpra Scholarship Fund Ft Lewis College
+Roy G Dalpra Scholarship Fund San Juan College
+Royal Animal Health University
+Rutgers University
+Rutgers-the State University of
+Ruth Cheatham Foundation College Fund
+Rwj University
+S M a C N a College
+Saddleback College
+Saginaw Valley State College Faculty Association
+Saginaw Valley State University
+Saint Augustines College
+Saint Augustines University
+Saint Francis Medical Center College
+Saint Joseph College Alumnae Association
+Saint Joseph University
+Saint Josephs College
+Saint Louis Historically Black Colleges Universities Alumni Assoc
+Saints Foundation of Shawnee Community College
+Salem Community College
+Salem State University
+Salem University
+Salina Area Technical College
+Salisbury University
+Salt Lake Community College
+Sam Alfonsis College Bound Scholarship Fund
+Sam Houston University
+Samford University
+Sampson Community College
+San Beda College
+San Bernardino Valley College
+San Diego City College
+San Diego Mesa College
+San Diego Peking University
+San Diego State University
+San Diego and Imperial Counties Community College
+San Francisco Bay a
+San Francisco State University
+San Jacinto Community College
+San Joaquin College
+San Joaquin Delta College Nursing Alumni Association
+San Jose Evergreen Community College
+San Jose State University
+San Jose State University Emeritus Faculty Association
+San Juan College
+San Mateo County Community Colleges Foundation
+San Nicolas College-st Paul Univ Surigao Snc-spus Alumni Assoc
+Sandhills Community College
+Santa Ana College
+Santa Barbara City College Faculty Association
+Santa Fe College
+Santa Fe Community College
+Santa Monica College
+Santa Monica College Faculty Assoc
+Santa Rosa Junior College
+Santa Rosa Junior College All Faculty Association
+Santa Rosa Junior College Shone Farm Foundation
+Santiago Canyon College
+Santiago Canyon College Gemology Alumni Association
+Sauk Valley College
+Savannah State College
+Savannah State University
+Schenectady County Community College
+Scholarship & Loan Foundation of American Assoc of University Women
+Scholarship Fund
+Schoolcraft College
+Scott Community College
+Scottsdale College Fair Foundation
+Seattle
+Seattle Chapter West Virginia University
+Seattle Colleges Foundation
+Seattle University
+Security University
+Seminole State College Educational Foundation
+Seoul Christian University
+Seoul National University
+Seward County Community College
+Shanghai Jiao Tong University
+Shanghai Medical University
+Shanghai Second Medical University
+Shasta College
+Shaw University
+Shawnee State University
+Shelton State Community College
+Shenyang Pharmaceutical University
+Shenzhen University
+Shepherd University
+Sherman College
+Sherwood Boys College Fund Foundation
+Shidler College
+Shiloh College
+Shippensburg University
+Shoreline Community College
+Shorter College
+Sias University
+Sierra College
+Sigma Chi Foundation at Auburn University
+Silicon Valley
+Silliman University
+Sinclair Community College
+Sir Crr College
+Sisseton Wahpeton College
+Skagit Valley College
+Slippery Rock University
+Small College Basketball Foundation
+Snead State Junior College
+Snow College
+So Calif
+Society of University
+Solano Community College
+Somerset Community College
+Sonoma State University
+Soochow University
+Soong Sil University
+Sothern California
+Sout
+South Arkansas Community College
+South Carolina State University
+South Carolina Technical College System Foundation
+South Central College
+South Central College Faribault Campus Foundation
+South College
+South College System Foundation
+South Dakota Foundation
+South Dakota State University
+South Florida State College
+South Georgia State College
+South Piedmont Community College
+South Plains College
+South Puget Sound Community College
+South Seattle Community College
+South Suburban College
+South Texas College
+South Texas Community College
+South University
+Southcentral Kentucky Community & Technical College
+Southeast Arkansas Technical College
+Southeast University
+Southeastern Baptist College
+Southeastern Community College
+Southeastern Free Will Baptist College
+Southeastern Illinois College
+Southeastern Louisiana University
+Southeastern University
+Southern Arkansas University
+Southern Association
+Southern C
+Southern Californi
+Southern California
+Southern California Chung Yuang University
+Southern California Fu Jen University
+Southern Connecticut State University
+Southern Crescent Technical College
+Southern Illinois University
+Southern Illinois University at Edwardsvill
+Southern Maine
+Southern Maine Community College
+Southern Medical University
+Southern Methodist University
+Southern Nazarene University
+Southern Oregon University
+Southern Regional Technical College
+Southern State Community College
+Southern Union State Community College
+Southern University
+Southern Utah University
+Southern West Virginia Community College
+Southside Virginia Communtiy College
+Southwest Community College
+Southwest Minnesota State University
+Southwest Mississippi Community College
+Southwest Mississippi Junior College Development Foundation
+Southwest Tennessee Community College
+Southwest Texas Junior College
+Southwest Virginia Community College
+Southwest Wisconsin Technical College
+Southwestern Assemblies of God University
+Southwestern Christian College
+Southwestern Christian College Education Fund-doggan Foundation
+Southwestern College
+Southwestern Community College
+Southwestern Illinois College
+Southwestern Michigan College
+Southwestern Oklahoma State University
+Southwestern Oregon Community College
+Southwestern University
+Sovereign University
+Sowela Technical Community College
+Spartanburg Community College
+Spokane Colleges Foundation
+Spoon River College
+Spring Arbor University
+Spring Hill College
+Springfield Technical Community College
+Sri Venkateswara Medical College
+St Charles Community College
+St Cloud State College
+St Cloud State University
+St Cloud Technical and Community College
+St Elizabeth College
+St Johns College
+St Johns College Annalpolis Maryland
+St Johns River State College
+St Josephs College of Nursing
+St Josephs-st Patricks College
+St Louis Community College
+St Louis University
+St Margarets College & Schools Foundation
+St Marys College
+St Marys College of Maryland
+St Marys University
+St Michaels College Santa Fe Chapter
+St Norbert College
+St Patricks College Calabar Ikotansa Alumni Association
+St Paul University
+St Petersburg College
+St Stephens College
+Stanbridge University
+Stanley-university
+Stanly Community College
+Stark State College
+State Center Community College
+State College
+State College Area Education Association
+State College Area School District Education Foundation
+State College Lions Club Foundation
+State Univ of Ny College of Environmental Et Al
+State University
+State University College at Brockport in
+State University College at Buffalo
+State University College at Potsdam
+State University of New York at Stony Br
+State of Washington
+Staten Island University
+Stella and Charles Community College
+Stephen F Austin State University
+Stillman College
+Stockton University
+Storer College National Alumni Association
+Strathmore University
+Student Wisconsin Education Association-aurora University
+Student Wisconsin Education Association-carthage College
+Student Wisconsin Education Association-edgewood College
+Student Wisconsin Education Association-st Norbert College
+Suffolk Community College
+Suffolk Community College Benefit Fund
+Sul Ross State University
+Sullivan County Community College
+Sullivan University
+Summit Nj College Club Foundation
+Sun Yat-sen University
+Suny College
+Supportive Staff Association of Atlantic Community College
+Surry Community College
+Sussex County Community College
+Sylhet M C & Govt College
+Syracuse Pulp & Paper Foundation Inc-college
+Syracuse University
+T Harvey Foundation University
+Tacoma Community College
+Taft College
+Talladega College
+Talladega College National Alumni Associates
+Talladega College National Alumni Association
+Tallahassee State College
+Talledega College National Alumni Association
+Tamkang University
+Tarkio College
+Tarleton State University
+Tarrant County College
+Teamsters Local 577 College Scholarship Fund
+Technical College
+Technical College System
+Temple College
+Temple University
+Tennessee State University
+Tennessee Technological University
+Terra College
+Texarkana College
+Texas A&m International University
+Texas A&m University
+Texas Association of Community College
+Texas Chapter
+Texas Chiropractic College
+Texas Southern University
+Texas Southmost College
+Texas State University
+Texas Womans University
+Texas a & M University
+Thammasat University
+Theta Chi at Drake University
+Theta Educational Foundation of Texas Tech University
+Thomas Edison State University
+Three Rivers College
+Three Rivers Community College
+Tianjin University of Science and
+Tidewater Community College
+Tidewater Virginia Chapter West Virginia University
+Tillamook Bay Community College
+Tkm College
+Tokyo Christian University
+Tokyo International University
+Toledo Early College
+Tompkins Cortland Community College
+Tonga College
+Tongji Medical College Overseas Alumni Association
+Tougaloo College
+Tougaloo College Dfw Alumni Chapter
+Tougaloo College National Alumni Association
+Tower Foundation of San Jose State University
+Towson University
+Tr Uw Geo L Leech King St Ferdinand Iii College Scholarship Foundation
+Treasure Valley Community College
+Tri-county Community College
+Tri-county Technical College
+Trident Technical College
+Trinidad State College
+Trinity College Moka Alumni Association - United States
+Trinity Valley Community College
+Trinity Western University
+Triton College
+Troy University
+Truckee Meadows Community College
+Truman State University
+Tufts College
+Tulsa Community College
+Tunxis Community College
+Turner Foundation for Lindsey Wilson University
+Turtle Mountain Community College
+Tuscarawas County University
+Tuskegee University
+Tyler Junior College
+U S Foundation for Queens University at Kingston
+U S Foundation for the University of Victoria
+Uintah Basin Technical College
+Ukrainian Free University
+Ulster Community College
+Umpqua College
+Uniformed Services University
+Union County College
+United Church Foundation at the University of Illinois Urbana-cham
+United Methodist Foundation Atkansas State University
+United Methodist University
+United States
+United University Professions College Scholarship Fund
+University Academy
+University Academy Supporting
+University Area Rotary Club
+University Associates Philanthropic
+University Ballard Lions
+University Baptist Church of Houston
+University Baptist Foundation Illinois State University
+University Biochemistry and Molecular Biology
+University Center
+University Center at Ponca City
+University Chiropratic Education and Research
+University Christian Church Legacy
+University Christian Union
+University City
+University City Community
+University City Foundation for Public Schools
+University City Public Schools Education
+University Club
+University Club Historic Preservation
+University Club Scholarship Fund
+University Club of Grand Rapids Scholarship
+University Club of Palo Alto Scholarship Fund
+University Club of San Francisco
+University Club of Santa Barbara Preservation
+University College New Brunswick
+University Community Hospital
+University Congregational Church Endowment
+University Faculty Associates
+University Family Practice
+University Film and Video
+University Financing
+University Foundation California State University Chico
+University Foundation at Sacramento State
+University Foundation for Educationand Research
+University Health Care
+University Health Network Foundation Us
+University Health System
+University Health Systems of Eastern Carolina
+University Healthcare
+University Heights Baptist Church
+University High School
+University High School Foundation and
+University Hill
+University Hospital
+University Inter-faith
+University Laboratory School
+University Lutheran Church
+University Masonic Lodge
+University Medical
+University Medical Center Foundation of El Paso
+University Medical Research
+University Medical Services
+University Methodist Church
+University Mortuary Science Education Association
+University Park Civic
+University Piano
+University Place Education Association
+University Preparatory Charter School for Young Men Foundation in
+University Professional & Continuing Education Association
+University Radio
+University Research
+University Research and Development
+University Research and Education
+University School Alumni Assoc
+University School of Johnson City and Washington County
+University Series
+University South
+University Sunrise Rotary Service
+University System of Georgia
+University United Methodist
+University United Methodist Church of Fort Worth
+University Village
+University Womens Foundation of Jefferson County
+University at Albany
+University at Buffalo
+University at Buffalo Foundation Incubator
+University at Buffalo Rugby
+University of Aberdeen
+University of Agriculture Faisalabad Pakistan
+University of Akron
+University of Akron Research
+University of Akron School of Law
+University of Alabama
+University of Alabama Black
+University of Alabama Health Services
+University of Alabama Huntsville
+University of Alabama Law School
+University of Alabama Medical
+University of Alabama Ophthalmology Services
+University of Alabama Research
+University of Alabama School of Dentistry
+University of Alaska
+University of Alaska Southeast
+University of Alaska-fairbanks
+University of Alberta
+University of Antelope Valley Nonprofit
+University of Arizona
+University of Arkansas
+University of Arkansas Community College
+University of Arkansas Fayetteville Campus
+University of Arkansas Fort Smith
+University of Arkansas Technology Development
+University of Baltimore
+University of Basel N-tec Arthritis
+University of Bath
+University of Benin
+University of Bristol
+University of Calabar Theater Arts
+University of Calif Los Angeles
+University of California Berkeley
+University of California Irvine
+University of California Merced
+University of California Press
+University of California Riverside
+University of California San Francisco
+University of California San Francisco Faculty
+University of Canterbury
+University of Central Arkansas
+University of Central Florida
+University of Central Florida Research
+University of Central Missouri
+University of Chattanooga
+University of Chicago
+University of Chicago Cancer Research
+University of Chinese Academy of Sciences
+University of Cincinnati
+University of Colorado
+University of Colorado Hospital
+University of Connecticut
+University of Connecticut Law School
+University of Connecticut Rugby Football Club
+University of Dc
+University of Delaware
+University of Delaware Research
+University of Exeter Us
+University of Florida
+University of Florida Leadership and Education
+University of Florida National
+University of Florida Research
+University of Florida Rugby
+University of Georgia
+University of Georgia Baptistcollegiate Ministry
+University of Georgia Research
+University of Ghana Medical School
+University of Guadalajara
+University of Guam Endowment
+University of Hawaii
+University of Hawaii School of Architecture
+University of Houston
+University of Houston College of Business
+University of Houston Law
+University of Idaho
+University of Illinois
+University of Illinois Latina Latino
+University of Iowa Louis Shulman Hillel
+University of Iowa Research
+University of Judaism
+University of Kansas School of Medicine Chairs
+University of Kentucky
+University of Kentucky Equine Research
+University of Kentucky Humanities
+University of Kentucky Markey Cancer
+University of Kentucky Mining Engineering
+University of Kentucky Real Estate
+University of Kentucky Research
+University of Khartoum
+University of Kings College
+University of Lagos
+University of Limerick
+University of Livingstonia
+University of Louisiana System
+University of Louisiana at Lafayette
+University of Louisiana at Lafayette Property
+University of Louisiana at Monroe
+University of Louisville
+University of Louisville Real Estate
+University of Louisville Research
+University of Maine
+University of Maine Professional Staff
+University of Maine Pulp and Paper
+University of Maine School of Law
+University of Maine at Fort Kent
+University of Manitoba
+University of Mary Hardin-baylor
+University of Mary Washington
+University of Maryland
+University of Maryland Baltimore
+University of Maryland College Park
+University of Maryland Eastern Shore Mational
+University of Maryland Eastern Shore National
+University of Maryland Medical System
+University of Maryland St Joseph
+University of Massachusetts
+University of Massachusetts Amherst
+University of Massachusetts Dartmouth
+University of Massachusetts at Amherst
+University of Md
+University of Memphis
+University of Memphis Researchfoundation
+University of Michigan
+University of Michigan Band
+University of Michigan Club of Detroit Scholarship Fund
+University of Minnesota
+University of Minnesota Duluth Education
+University of Minnesota Womens Club Scholarship Fund
+University of Mississippi
+University of Mississippi Research
+University of Missouri College of Engineering
+University of Missouri Law School
+University of Missouri Medical School
+University of Missouri at St Louis
+University of Montana
+University of Montana Western
+University of Montevallo
+University of Nc Chapel Hill Public Health
+University of Nc at Chapel Hill
+University of Ne Philippines Intl
+University of Nebraska
+University of Nebraska Lincoln Band
+University of Nebraska at Omaha
+University of Nevada
+University of Nevada Las Vegas
+University of Nevada-reno
+University of New Hampshire
+University of New Mexico
+University of New Orleans
+University of New Orleans International
+University of New Orleans Research & Technology
+University of Nigeria Medical
+University of Nigeria Nsukka Pharmacist
+University of No Ala
+University of North Carolina
+University of North Carolina Chapel Hill Arts and Sciences
+University of North Carolina Orthodontic
+University of North Carolina School of the Arts
+University of North Carolina at Asheville
+University of North Carolina at Chapel Hill
+University of North Carolina at Pembroke
+University of North Dakota Chester Fritz Scholarship Fund Tr P1044900
+University of North Florida
+University of North Georgia
+University of North Georgia Real Estate
+University of North Georgia Research
+University of North Texas
+University of North Texas at Dallas
+University of Northern British Columbia
+University of Northern California
+University of Northern Colorado
+University of Northern Iowa
+University of Oklahoma
+University of Oregon
+University of Peradeniya
+University of Phoenix
+University of Pretoria
+University of Prince Edward Island
+University of Puerto Rico
+University of Rhode Island
+University of Rhode Island Professional Staff
+University of Rhode Island Research
+University of Richmond
+University of San Agustin International
+University of Santo Tomas
+University of Santo Tomas Medical
+University of Science & Arts of Oklahoma
+University of Science and Arts of Oklahoma Alumnae
+University of South Alabama
+University of South Alabama National
+University of South Carolina
+University of South Carolina Beaufort Education
+University of South Carolina Business Partnership
+University of South Carolina Development
+University of South Carolina Educational
+University of South Carolina Naval Rotc
+University of South Carolina Upstate
+University of South Dakota
+University of South Florida
+University of South Florida Research
+University of Southern Indiana
+University of Southern Maine
+University of Southern Mississippi
+University of Southern Mississippi Athletic
+University of Southern Mississippi Real Estate
+University of Southern Mississippi Research
+University of Southern Mississippi Wesley
+University of St Andrews American
+University of St Augustine for Health Sciences
+University of Strathclyde Usa
+University of Sydney Usa
+University of Tasmania
+University of Tennessee Athletics
+University of Tennessee Research
+University of Texas
+University of Texas Dental Branch
+University of Texas Law School
+University of Texas Rio Grande Valley
+University of Texas School of Civic Leadership
+University of Texas Sig Ep
+University of Texas Soccer
+University of Texas at Arlington
+University of Texas at El Paso
+University of Texas of the Permian
+University of Tn Orthodontic Educ Research
+University of Toledo
+University of Utah
+University of Utah Growth Capital Partners
+University of Utah Research
+University of Va Tax
+University of Vermont Medical Center
+University of Vermont and State Agricultural College
+University of Virginia
+University of Virginia Darden School
+University of Virginia Engineering
+University of Virginia Healt
+University of Virginia Law School
+University of Virginia Mcintire School of Commerce
+University of Virginia Medical School
+University of Virginias College at Wise
+University of Washington
+University of Washington School of
+University of Washington School of Law
+University of West Alabama
+University of West Florida
+University of West Florida Wesley
+University of West Georgia
+University of Western Ontario
+University of Winnipeg
+University of Wisconsin
+University of Wisconsin Green Bay
+University of Wisconsin House Staff
+University of Wisconsin La Crosse
+University of Wisconsin Marinette County
+University of Wisconsin Medical
+University of Wisconsin Oshkosh
+University of Wisconsin Parkside
+University of Wisconsin River Falls
+University of Wisconsin Stevens Point
+University of Wisconsin Stevens Point Paper Science
+University of Wisconsin-eau Claire
+University of Wisconsin-oshkosh
+University of Wisconsin-stout Real Estate
+University of Wisconsin-superior Alumni and Friends
+University of Wyoming
+University of the Aftermarket
+University of the Andes
+University of the Arctic
+University of the Arts
+University of the Bahamas Us
+University of the Commonwealth Caribbean
+University of the Eastern Shore of Virginia
+University of the Ozarks
+University of the Philippines
+University of the Philippines Nursing
+University of the Philippines Silak-silab
+University of the Southern Caribbean
+University of the Southwest
+Universty College London Friends and Alumni Association
+Upper Canada College
+Utah State University
+Utah Tech University
+Utah Valley University
+Valdosta State University
+Valencia College
+Valley City State University
+Valley College
+Valley View University
+Vanguard University
+Vellore Christian Medical College
+Vennard College
+Ventura College
+Verbiest College Education Foundation
+Veridian Christian University
+Veritas University
+Vermilion Community College
+Vernon Regional Junior College
+Via-bradely College
+Victor Valley College District Foundation
+Victoria College
+Victoria N Price Penn State University Scholarship Fund
+Vincennes University
+Virginia Commonwealth University
+Virginia Foundation
+Virginia Foundation for Community College
+Virginia Highlands Community College
+Virginia Miller Dekle Foundation College
+Virginia Miller Dekle Foundation Mary College
+Virginia Peninsula Community College
+Virginia State University
+Virginia Union University
+Virginia University
+Volunteer State College
+Voorhees University
+Vsuaa
+Wabash Valley College
+Wake Forest University
+Wake Technical Community College
+Waldorf Lutheran College
+Walker College
+Walla Walla Community College
+Walla Walla University
+Wallace Community College
+Wallace J Hagedorn Kent State University Scholarship Fund
+Wallace State Community College
+Walsh College
+Walter F George School of Law Foundation Inc Mercer University
+Walters State Community College
+Warren County College
+Waseda University
+Wash Dc Metro Area
+Washburn University
+Washington
+Washington County Alcorn State University
+Washington County Community College
+Washington D
+Washington Dc
+Washington Dc Maryland Virginia P
+Washington Fisk Club of the Fisk University
+Washington Pulp & Paper Foundation Inc College
+Washington State
+Washington State College
+Washington State Gallaudet University
+Washington State University
+Washington University
+Washtenaw Community College
+Watts-western New Mexico University
+Waubonsee Community College
+Wayne State University
+Weatherford College
+Webber College Alumnae Association
+Weber State University
+Wenatchee Valley College
+Wesley Foundation
+Wesley Foundation a Illinois State University
+Wesley Foundation at Mississippi State University
+Wesley Foundation at Stephen F Austin State University
+Wesley Foundation at Western Kentucky University
+Wesley Foundation at the University of California Berkeley
+Wesley Foundation at the University of New Mexico
+Wesley Foundation at the University of Tulsa
+Wesley Foundation at the University of Washington
+Wesley Foundation at the University of Wyoming
+Wesley Foundation of the University of Georgia
+Wesley Student Foundation at Arizona State University
+West Chester University
+West China University
+West Coast University
+West Georgia Technical College
+West Hills Community College
+West Liberty University
+West Los Angeles College
+West Shore Community College
+West Texas A&m University
+West Texas a & M University
+West University
+West Valley Mission Community College
+West Virginia Northern Community College
+West Virginia State College
+West Virginia State University
+West Virginia University
+Westchester Community College
+Western Carolina University
+Western Colorado University
+Western Connecticut State University
+Western Illinois University
+Western Iowa Tech Community College
+Western Kentucky University
+Western Michigan University
+Western Nebraska Community College
+Western Nevada College
+Western New Mexico University
+Western Oklahoma State College
+Western Oregon University
+Western States Chiropractic College Faculty Assoc Local 3809 Aft Afl-c
+Western Technical College
+Western Texas College
+Western Washington University
+Western Wyoming College
+Westfield State University
+Westmont College
+Westmoreland County Community College
+Wharton County Junior College
+Whatcom Community College
+Wheaton College
+White Earth Tribal and Community College
+Wichita Falls University
+Wichita State University
+Wilberforce University
+Wiley College National Alumni Association
+Wilkes Community College
+William Allen Richards Foundation Fbo Lehigh University Trust No 162
+William Paterson University
+William Peace University
+William Putney Trust Uw Fbo University
+William Rainey Harper College Educational Foundation
+William Vs Tubman University
+Williamsburg Technical College
+Williston State College
+Williston State College Supporting Foundation
+Wilson Community College
+Wilson University
+Winona State University
+Winston-salem State University
+Winthrop University
+Wiregrass Georgia Technical College
+Wisconsin Lt
+Wisconsin Technical College System Foundation
+Wooley Scholarship Fund Fbo Wichita State University
+Wor-wic Community College
+World Mission University
+World Peace University
+Wright State University
+Wuhan University
+Wuhan University in Washington State
+Wv Scottish Rite and West Virginia University
+Wytheville Community College
+Xavier Achsner College
+Xiamen University
+Xidian University
+Yanshan University
+Yavapai College
+Yonsei University Scholarship Fund
+York College
+York County Community College
+York Technical College
+Young Womens College Prep Foundation
+Youngstown State University
+Youngstown State University Chapter of the Ohio Education Association
+Yuba College Faculty Association
+Yuba Community College
+Yunnan University
+Zamorano University
+Zane State College
+Zeta Zeta College Endowment Foundation
+Zhengzhou University

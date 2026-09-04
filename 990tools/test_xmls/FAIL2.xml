@@ -1,0 +1,3146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Return xmlns="http://www.irs.gov/efile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.irs.gov/efile" returnVersion="2023v5.1">
+  <ReturnHeader binaryAttachmentCnt="0">
+    <ReturnTs>2024-11-15T09:43:11-06:00</ReturnTs>
+    <TaxPeriodEndDt>2023-12-31</TaxPeriodEndDt>
+    <PreparerFirmGrp>
+      <PreparerFirmEIN>263753134</PreparerFirmEIN>
+      <PreparerFirmName>
+        <BusinessNameLine1Txt>CBIZ ADVISORS LLC</BusinessNameLine1Txt>
+      </PreparerFirmName>
+      <PreparerUSAddress>
+        <AddressLine1Txt>500 BOYLSTON STREET</AddressLine1Txt>
+        <CityNm>BOSTON</CityNm>
+        <StateAbbreviationCd>MA</StateAbbreviationCd>
+        <ZIPCd>02116</ZIPCd>
+      </PreparerUSAddress>
+    </PreparerFirmGrp>
+    <ReturnTypeCd>990</ReturnTypeCd>
+    <TaxPeriodBeginDt>2023-01-01</TaxPeriodBeginDt>
+    <Filer>
+      <EIN>666</EIN>
+      <BusinessName>
+        <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE INC</BusinessNameLine1Txt>
+      </BusinessName>
+      <BusinessNameControlTxt>CLIN</BusinessNameControlTxt>
+      <PhoneNum>6177740110</PhoneNum>
+      <USAddress>
+        <AddressLine1Txt>383 DORCHESTER AVENUE 400</AddressLine1Txt>
+        <CityNm>BOSTON</CityNm>
+        <StateAbbreviationCd>MA</StateAbbreviationCd>
+        <ZIPCd>02127</ZIPCd>
+      </USAddress>
+    </Filer>
+    <BusinessOfficerGrp>
+      <PersonNm>DR NEIL SHAH</PersonNm>
+      <PersonTitleTxt>CHIEF EXECUTIVE OFFICER</PersonTitleTxt>
+      <PhoneNum>6177740110</PhoneNum>
+      <SignatureDt>2024-11-14</SignatureDt>
+      <DiscussWithPaidPreparerInd>1</DiscussWithPaidPreparerInd>
+    </BusinessOfficerGrp>
+    <IRSResponsiblePrtyInfoCurrInd>1</IRSResponsiblePrtyInfoCurrInd>
+    <PreparerPersonGrp>
+      <PreparerPersonNm>CRAIG KLEIN</PreparerPersonNm>
+      <PTIN>P00734640</PTIN>
+      <PhoneNum>6177610600</PhoneNum>
+      <PreparationDt>2024-11-14</PreparationDt>
+    </PreparerPersonGrp>
+    <TaxYr>2023</TaxYr>
+    <BuildTS>2024-10-15 13:58:12Z</BuildTS>
+  </ReturnHeader>
+  <ReturnData documentCnt="10">
+    <IRS990 documentId="RetDoc1038000001" referenceDocumentId="RetDoc1044400001">
+      <PrincipalOfficerNm>DR NEIL SHAH</PrincipalOfficerNm>
+      <USAddress>
+        <AddressLine1Txt>383 DORCHESTER AVENUE 400</AddressLine1Txt>
+        <CityNm>BOSTON</CityNm>
+        <StateAbbreviationCd>MA</StateAbbreviationCd>
+        <ZIPCd>02127</ZIPCd>
+      </USAddress>
+      <GrossReceiptsAmt>228254116</GrossReceiptsAmt>
+      <GroupReturnForAffiliatesInd>0</GroupReturnForAffiliatesInd>
+      <Organization501c3Ind>X</Organization501c3Ind>
+      <WebsiteAddressTxt>WWW.CLINTONHEALTHACCESS.ORG</WebsiteAddressTxt>
+      <TypeOfOrganizationCorpInd>X</TypeOfOrganizationCorpInd>
+      <FormationYr>2009</FormationYr>
+      <LegalDomicileStateCd>AR</LegalDomicileStateCd>
+      <ActivityOrMissionDesc>THE CLINTON HEALTH ACCESS INITIATIVE, INC. (CHAI) IS A GLOBAL HEALTH ORGANIZATION THAT ENVISIONS A WORLD IN WHICH EVERYONE IS ABLE TO LIVE A HEALTHY AND FULFILLING LIFE. WE ARE COMMITTED TO SAVING LIVES AND IMPROVING HEALTH OUTCOMES BY ENABLING THE GOVERNMENT AND PRIVATE SECTOR TO STRENGTHEN AND SUSTAIN QUALITY HEALTH SYSTEMS.</ActivityOrMissionDesc>
+      <VotingMembersGoverningBodyCnt>13</VotingMembersGoverningBodyCnt>
+      <VotingMembersIndependentCnt>13</VotingMembersIndependentCnt>
+      <TotalEmployeeCnt>274</TotalEmployeeCnt>
+      <TotalVolunteersCnt>43</TotalVolunteersCnt>
+      <TotalGrossUBIAmt>0</TotalGrossUBIAmt>
+      <NetUnrelatedBusTxblIncmAmt>0</NetUnrelatedBusTxblIncmAmt>
+      <PYContributionsGrantsAmt>224637713</PYContributionsGrantsAmt>
+      <CYContributionsGrantsAmt>221270590</CYContributionsGrantsAmt>
+      <PYProgramServiceRevenueAmt>0</PYProgramServiceRevenueAmt>
+      <CYProgramServiceRevenueAmt>0</CYProgramServiceRevenueAmt>
+      <PYInvestmentIncomeAmt>401915</PYInvestmentIncomeAmt>
+      <CYInvestmentIncomeAmt>3190449</CYInvestmentIncomeAmt>
+      <PYOtherRevenueAmt>48813</PYOtherRevenueAmt>
+      <CYOtherRevenueAmt>192261</CYOtherRevenueAmt>
+      <PYTotalRevenueAmt>225088441</PYTotalRevenueAmt>
+      <CYTotalRevenueAmt>224653300</CYTotalRevenueAmt>
+      <PYGrantsAndSimilarPaidAmt>29668766</PYGrantsAndSimilarPaidAmt>
+      <CYGrantsAndSimilarPaidAmt>30237599</CYGrantsAndSimilarPaidAmt>
+      <PYBenefitsPaidToMembersAmt>0</PYBenefitsPaidToMembersAmt>
+      <CYBenefitsPaidToMembersAmt>0</CYBenefitsPaidToMembersAmt>
+      <PYSalariesCompEmpBnftPaidAmt>112812015</PYSalariesCompEmpBnftPaidAmt>
+      <CYSalariesCompEmpBnftPaidAmt>113270012</CYSalariesCompEmpBnftPaidAmt>
+      <PYTotalProfFndrsngExpnsAmt>30490</PYTotalProfFndrsngExpnsAmt>
+      <CYTotalProfFndrsngExpnsAmt>11140</CYTotalProfFndrsngExpnsAmt>
+      <CYTotalFundraisingExpenseAmt>628618</CYTotalFundraisingExpenseAmt>
+      <PYOtherExpensesAmt>83418078</PYOtherExpensesAmt>
+      <CYOtherExpensesAmt>82084535</CYOtherExpensesAmt>
+      <PYTotalExpensesAmt>225929349</PYTotalExpensesAmt>
+      <CYTotalExpensesAmt>225603286</CYTotalExpensesAmt>
+      <PYRevenuesLessExpensesAmt>-840908</PYRevenuesLessExpensesAmt>
+      <CYRevenuesLessExpensesAmt>-949986</CYRevenuesLessExpensesAmt>
+      <TotalAssetsBOYAmt>140374789</TotalAssetsBOYAmt>
+      <TotalAssetsEOYAmt>160736489</TotalAssetsEOYAmt>
+      <TotalLiabilitiesBOYAmt>128397964</TotalLiabilitiesBOYAmt>
+      <TotalLiabilitiesEOYAmt>149709650</TotalLiabilitiesEOYAmt>
+      <NetAssetsOrFundBalancesBOYAmt>11976825</NetAssetsOrFundBalancesBOYAmt>
+      <NetAssetsOrFundBalancesEOYAmt>11026839</NetAssetsOrFundBalancesEOYAmt>
+      <InfoInScheduleOPartIIIInd>X</InfoInScheduleOPartIIIInd>
+      <MissionDesc>FOR 20 YEARS, CHAI'S MISSION HAS BEEN TO SAVE LIVES AND IMPROVE HEALTH OUTCOMES IN LOW-AND MIDDLE-INCOME COUNTRIES AROUND THE WORLD. WE DO THIS BY ENABLING THE GOVERNMENT AND PRIVATE SECTOR TO STRENGTHEN AND SUSTAIN QUALITY HEALTH SYSTEMS.</MissionDesc>
+      <SignificantNewProgramSrvcInd>0</SignificantNewProgramSrvcInd>
+      <SignificantChangeInd>0</SignificantChangeInd>
+      <ExpenseAmt>112926895</ExpenseAmt>
+      <GrantAmt>15231978</GrantAmt>
+      <Desc>OUR PROGRAMS AIM TO SAVE LIVES AND REDUCE THE BURDEN OF DISEASE, WHILE HELPING GOVERNMENTS CREATE SUSTAINABLE HEALTH SYSTEMS. WE OPERATE IN OVER 35 COUNTRIES AND SUPPORT MORE THAN 20 DIFFERENT HEALTH PROGRAMS. THE VAST MAJORITY OF OUR STAFF ARE LOCATED IN THE COUNTRIES WHERE WE WORK, OVERSEEING IMPLEMENTATION AND MANAGING RELATIONSHIPS WITH PARTNER GOVERNMENTS. THE TEAMS ON THE GROUND ARE COMPLEMENTED BY A GLOBAL TEAM OF SCIENCE, BUSINESS, AND TECHNICAL EXPERTS SUPPORTING THE ENTIRE ORGANIZATION AND BY MANAGEMENT, FINANCE, AND HUMAN RESOURCE TEAMS. INFECTIOUS DISEASES: SEE SCHEDULE O FOR CONTINUATIONINFECTIOUS DISEASES: FOR YEARS, FOUR INFECTIOUS DISEASES DROVE MOST ILLNESS AND DEATH WORLDWIDE: HIV, HEPATITIS, TUBERCUOSIS (TB), AND MALARIA. IN 2020, A NEW ILLNESS, COVID-19, WAS ADDED TO THIS LIST.EARLY ON, THE PANDEMIC BROUGHT MANY HEALTH SYSTEMS TO THEIR KNEES, AND IT CONTINUES TO EXPOSE AND EXACERBATE INEQUITIES THAT ALREADY EXISTED BETWEEN COUNTRIES, PEOPLE, AND ACCESS TO BASIC HEALTH SERVICES. IN 2023, CHAI CONTINUED TO SUPPORT COUNTRIES' LONGTERM RESPONSE TO COVID-19 AND STRENGTHEN HEALTH SYSTEM RESLIENCE TO PREPARE FOR FUTURE PANDEMICS.A CORE COMPONENT OF THIS WORK HAS BEEN STRENGTHENING ACCESS TO MEDICAL OXYGEN IN HEALTHCARE FACILITIES AND HOSPITALS IN LOW- AND MIDDLE-INCOME COUNTRIES THROUGH UPDATING INFRASTRUCTURE (I.E. BUILDING PRESSURE SWING ADSORPTION (PSA) PLANTS; SUPPORTING BEDSIDE DELIVERY OF LIQUID OXYGEN), KEEP OXYGEN EQUIPMENT UP AND RUNNING FOR ITS FULL LIFESPAN AND PROVIDING HEALTH WORKERS WITH THE RIGHT TOOLS, PROCESSES, AND PRACTICES TO SAVE LIVES.AT THE SAME TIME WE CONTINUE TO WORK ON THE DISEASE AREAS THAT WE HAVE FOCUSED ON FOR DECADES, INCLUDING HIV AND ADVANCED HIV DISEASE.FOR EXAMPLE, OUR WORK TO INTRODUCE AFFORDABLE, MORE PALATABLE HIV TREATMENTS FOR CHILDREN. THERE HAVE BEEN VAST IMPROVEMENTS IN PEDIATRIC HIV TREATMENT IN RECENT YEARS, INCLUDING THE RAPID DEVELOPMENT AND INTRODUCTION OF GENERIC PEDIATRIC DOLUTEGRAVIR TABLETS, WHICH DISSOLVE IN WATER AND TASTE LIKE STRAWBERRIES, DRAMATICALLY INCREASING CHILDREN'S ADHERENCE TO THEIR TREATMENT REGIMEN. CHAI IS WORKING WITH PARTNERS TO DRIVE THE DEVELOPMENT AND INTRODUCTION OF MORE GENERIC VERSIONS OF BEST-IN-CLASS CHILDREN'S MEDICATIONS.</Desc>
+      <ProgSrvcAccomActy2Grp>
+        <ExpenseAmt>30233497</ExpenseAmt>
+        <GrantAmt>7313068</GrantAmt>
+        <Desc>WOMEN &amp; CHILDREN'S HEALTH: SEE SCHEDULE O FOR CONTINUATIONWOMEN &amp; CHILDREN'S HEALTH: WOMEN AND CHILDREN SUFFER THE GREATEST BURDEN FROM DISEASE GLOBALLY. CHAI HAS SIGNIFICANTLY INCREASED ACCESS TO RECOMMENDED TREATMENTS FOR DIARRHEA AND PNEUMONIA, THE LARGEST KILLERS OF CHILDREN UNDER FIVE; MADE CRITICAL VACCINES THAT PROTECT AGAINST CHILDHOOD ILLNESSES MORE AFFORDABLE; IS COMBATTING CHRONIC MALNUTRITION; AND IS DRAMATIALLY AND SUSTAINABLY REDUCING MATERNAL AND NEWBORN DEATHS AND ENSURING WOMEN HAVE ACCESS TO THE TOOLS THEY NEED TO SAFELY PLAN THER FAMILIES TO IMPROVE HEALTH OUTCOMES AND ECONOMIC WELLBEING.FOR EXAMPLE, WHEN CHAI BEGAN OUR DIARRHEA PROGRAM IN 2012, ONLY ONE-THIRD OF CHILDREN THAT NEEDED LIFESAVING ORAL REHYDRATION SOLUTIONS (ORS) RECEIVED IT. ZINC USAGE RATES WERE EVEN WORSE. THROUGH CHAI'S MARKET SHAPING WORK, WE HELPED REDUCE THE AVERAGE COST OF ZINC/ORS TREATMENT BY 42 PERCENT. WORKING WITH PARTNERS IN INDIA, KENYA, NIGERIA, AND UGANDA, WE ALSO INCREASED THE PERCENTAGE OF CHILDREN WITH DIARRHEA RECEIVING ZINC/ORS FROM LESS THAN ONE PERCENT TO 24 PERCENT.ANOTHER STRONG EXAMPLE IS CHAI'S WORK TO SAVE THE LIVES OF WOMEN AND NEWBORNS. CHAI HAS DEVELOPED AN INTEGRATED MATERNAL, NEWBORN, AND REPRODUCTIVE HEALTH STRATEGY THAT HAS CONTRIBUTED TO SUSTAINED AND SIGNFICANT REDUCTIONS IN DEATH IN COUNTRIES WHERE WE WORK. THIS APPROACH WAS FIRST PILOTED IN ETHIOPIA, BEFORE BEING TESTED AT SCALE IN NIGERIA, WHERE WE SAW A NEARLY 40 PERCENT REDUCTION IN MATERNAL MORTALITY AND A 43 PERCENT REDUCTION IN NEWBORN DEATHS IN A 12- MONTH PERIOD IN TARGET STATES OF NORTHERN NIGERIA. THE PROGRAM HAS BEEN ROLLED OUT MORE RECENTLY IN ZAMBIA AND UGANDA WITH SIMILAR RESULTS.</Desc>
+      </ProgSrvcAccomActy2Grp>
+      <ProgSrvcAccomActy3Grp>
+        <ExpenseAmt>31790496</ExpenseAmt>
+        <GrantAmt>3027802</GrantAmt>
+        <Desc>NON-COMMUNICABLE DISEASES: SEE SCHEDULE O FOR CONTINUATIONNON-COMMUNICABLE DISEASES (NCDS) SUCH AS HEART DISEASE, CANCER, CHRONIC RESPIRATORY DISEASE, AND DIABETES ARE THE LEADING CAUSE OF DEATH GLOBALLY, EXCEEDING ALL COMMUNICABLE DISEASE DEATHS COMBINED.IN ADDITION TO OUR NCD PROGRAM, WHICH SUPPORTS GOVERNMENTS TO STRENGTHEN AND IMPLEMENT THEIR NCD PREVENTION AND CONTROL STRATEGIES, CHAI IS PARTNERING WITH GOVERNMENTS TO STRENGTHEN CANCER CARE SYSTEMS BY SOLVING CRITICAL SYSTEMIC GAPS. WE BELIEVE BY WORKING IN CLOSE COLLABORATION WITH PARTNER GOVERNMENTS AND BY ANCHORING A SUITE OF TRANSFORMATIONAL INTERVENTIONS, WE CAN DRAMATICALLY IMPROVE SURVIVAL RATES OF CANCER PATIENTS IN LOW- AND MIDDLE-INCOME COUNTRIES. FOR EXAMPLE, OVER THE LAST FOUR YEARS, WE HAVE HELPED SHAPE GLOBAL MARKETS TO RAPIDLY EXPAND ACCESS TO HIGH-QUALITY TOOLS TO SCREEN AND TREAT CERVICAL PRE-CANCER, INCLUDING HUMAN PAPILLOMAVIRUS (HPV) TESTS AND THERMAL ABLATION DEVICES.</Desc>
+      </ProgSrvcAccomActy3Grp>
+      <ProgSrvcAccomActyOtherGrp>
+        <ExpenseAmt>27138104</ExpenseAmt>
+        <GrantAmt>1798909</GrantAmt>
+        <Desc>CHAI'S FOUNDING MISSION AND ULTIMATE GOAL IS TO HELP COUNTRIES CREATE HIGH-QUALITY, SUSTAINABLE HEALTHCARE SYSTEMS THAT PROVIDE UNIVERSAL HEALTH COVERAGE FOR ALL PEOPLE. TO ACHIEVE THIS, WE WORK WITH GOVERNMENTS TO STRENGTHEN NATIONAL FINANCING SYSTEMS, INCLUDING ESTABLISHING NATIONAL HEALTH INSURANCE PLANS, THAT CAN BE SUSTAINED FOR YEARS TO COME. WE ALSO HELP DEVELOP SYSTEMS TO EDUCATE HEALTHCARE PROFESSIONALS AT ALL LEVELS AND TO BUILD SUFFICIENT PHYSICAL INFRASTRUCTURE TO DELIVER HEALTH SERVICES. THROUGH THIS WORK CHAI HAS SUPPORTED GOVERNMENTS TO SECURE OVER US$4 BILLION FOR HEALTH SYSTEMS STRENGTHENING, IMPROVED DATA BASED DECISION MAKING, INCREASED SYSTEM EFFICIENCIES, AND REDUCED COSTS. CHAI HAS HELPED GOVERNMENTS SUSTAINABLY TRAIN AND DEPLOY THOUSANDS OF HEALTH WORKERS IN THE COUNTRIES WHERE WE WORK TO IMPROVE LIFESAVING CARE AND REDUCE GAPS IN THE HEALTH SYSTEM.</Desc>
+      </ProgSrvcAccomActyOtherGrp>
+      <ProgSrvcAccomActyOtherGrp>
+        <ExpenseAmt>4282854</ExpenseAmt>
+        <GrantAmt>2650057</GrantAmt>
+        <Desc>CROSS-CUTTING EXPERTS: CHAI WORKS WITH GOVERNMENTS AND COMPANIES AROUND THE WORLD TO FUNDAMENTALLY CHANGE THE ECONOMICS OF GLOBAL HEALTH. USING A HOLISTIC, BUSINESS-MINDED APPROACH TO SECURE LOWER PRICES FOR KEY COMMODITIES SUCH AS MEDICATION AND DIAGNOSTICS, IMPROVE LABORATORIES, AND CONNECT DECISION-MAKERS WITH THE HIGH-QUALITY EVIDENCE THEY NEED TO INFORM HEALTH POLICY IN LOW- AND MIDDLE-INCOME COUNTRIES, CHAI HELPS PATIENTS ACCESS THE CARE AND TREATMENT THEY NEED. OUR SCIENCE AND BUSINESS EXPERTS WORK ACROSS THE ORGANIZATION TO SUPPORT OUR PROGRAM AND COUNTRY TEAMS.CHAI WORKS ON BOTH THE SUPPLY AND DEMAND SIDES OF THE MARKET TO LOWER COSTS AND INCREASE AVAILABILITY OF THE BEST HEALTH PRODUCTS FOR LOW-AND MIDDLE-INCOME COUNTRIES. WORKING WITH THE PUBLIC AND PRIVATE SECTORS, WE HELP SHAPE MARKETS AND REALIZE SAVINGS FOR DRUGS, DEVICES, AND DIAGNOSTICS IN ALL AREAS OF OUR WORK. CHAI HAS NEGOTIATED OVER 140 GLOBAL AGREEMENTS TO LOWER THE PRICES OF CRITICAL MEDICATIONS AND OTHER HEALTH TOOLS BY 50-90 PERCENT. TWENTY-SEVEN MILLION PEOPLE LIVING WITH HIV HAVE BEEN REACHED BY ONE SUCH AGREEMENT LOWERING THE COST OF THE OPTIMAL HIV TREATMENT TENOFOVIR DISOPROXIL, LAMIVUDINE AND DOLUTEGRAVIR, A SAVINGS OF OVER $500 MILLION. THROUGH THE GLOBAL HEALTH SCIENCES TEAM, CHAI AIMS TO REDUCE COSTS, IMPROVE QUALITY, AND INCREASE ACCESS TO TREATMENT BY HELPING TO DEVELOP LESS EXPENSIVE AND MORE EFFECTIVE VERSIONS OF CRITICAL MEDICATIONS FOR ADULTS AND CHILDREN; DEVELOPING TECHNIQUES AND TECHNOLOGIES THAT ADVANCE OUR UNDERSTANDING AND MANAGEMENT OF DISEASES; AND IMPROVE PATIENT CARE. THIS WORK HAS HELPED ACCELERATE BY OVER TWO YEARS DEVELOPMENT, MANUFACTURE, REGULATORY APPROVAL AND COMMERCIALIZATION OF KEY PEDIATRIC HIV PRODUCTS, AND SAVED BILLIONS IN COSTS TO GOVERNMENTS FOR CRITICAL TREATMENTS. SEVERAL NEW PROGRAMS HAVE ALSO BEEN ADDED TO CHAI'S PORTFOLIO IN RECENT YEARS, SIGNIFICANTLY, CLIMATE CHANGE AND ASSISTIVE TECHNOLOGY.</Desc>
+      </ProgSrvcAccomActyOtherGrp>
+      <ProgSrvcAccomActyOtherGrp>
+        <ExpenseAmt>3141009</ExpenseAmt>
+        <GrantAmt>215785</GrantAmt>
+        <Desc>INNOVATION</Desc>
+      </ProgSrvcAccomActyOtherGrp>
+      <TotalOtherProgSrvcExpenseAmt>34561967</TotalOtherProgSrvcExpenseAmt>
+      <TotalOtherProgSrvcGrantAmt>4664751</TotalOtherProgSrvcGrantAmt>
+      <TotalProgramServiceExpensesAmt>209512855</TotalProgramServiceExpensesAmt>
+      <DescribedInSection501c3Ind referenceDocumentId="RetDoc1039100001">1</DescribedInSection501c3Ind>
+      <ScheduleBRequiredInd referenceDocumentId="RetDoc1234500001">1</ScheduleBRequiredInd>
+      <PoliticalCampaignActyInd>0</PoliticalCampaignActyInd>
+      <LobbyingActivitiesInd>0</LobbyingActivitiesInd>
+      <SubjectToProxyTaxInd>0</SubjectToProxyTaxInd>
+      <DonorAdvisedFundInd referenceDocumentId="RetDoc1040000001">0</DonorAdvisedFundInd>
+      <ConservationEasementsInd referenceDocumentId="RetDoc1040000001">0</ConservationEasementsInd>
+      <CollectionsOfArtInd referenceDocumentId="RetDoc1040000001">0</CollectionsOfArtInd>
+      <CreditCounselingInd referenceDocumentId="RetDoc1040000001">0</CreditCounselingInd>
+      <DonorRstrOrQuasiEndowmentsInd>0</DonorRstrOrQuasiEndowmentsInd>
+      <ReportLandBuildingEquipmentInd referenceDocumentId="RetDoc1040000001">1</ReportLandBuildingEquipmentInd>
+      <ReportInvestmentsOtherSecInd referenceDocumentId="RetDoc1040000001">0</ReportInvestmentsOtherSecInd>
+      <ReportProgramRelatedInvstInd referenceDocumentId="RetDoc1040000001">0</ReportProgramRelatedInvstInd>
+      <ReportOtherAssetsInd referenceDocumentId="RetDoc1040000001">1</ReportOtherAssetsInd>
+      <ReportOtherLiabilitiesInd referenceDocumentId="RetDoc1040000001">1</ReportOtherLiabilitiesInd>
+      <IncludeFIN48FootnoteInd referenceDocumentId="RetDoc1040000001">1</IncludeFIN48FootnoteInd>
+      <IndependentAuditFinclStmtInd referenceDocumentId="RetDoc1040000001">0</IndependentAuditFinclStmtInd>
+      <ConsolidatedAuditFinclStmtInd referenceDocumentId="RetDoc1040000001">1</ConsolidatedAuditFinclStmtInd>
+      <SchoolOperatingInd>0</SchoolOperatingInd>
+      <ForeignOfficeInd>1</ForeignOfficeInd>
+      <ForeignActivitiesInd referenceDocumentId="RetDoc1040500001">1</ForeignActivitiesInd>
+      <MoreThan5000KToOrgInd referenceDocumentId="RetDoc1040500001">1</MoreThan5000KToOrgInd>
+      <MoreThan5000KToIndividualsInd referenceDocumentId="RetDoc1040500001">0</MoreThan5000KToIndividualsInd>
+      <ProfessionalFundraisingInd>0</ProfessionalFundraisingInd>
+      <FundraisingActivitiesInd>0</FundraisingActivitiesInd>
+      <GamingActivitiesInd>0</GamingActivitiesInd>
+      <OperateHospitalInd>0</OperateHospitalInd>
+      <GrantsToOrganizationsInd referenceDocumentId="RetDoc1041900001">1</GrantsToOrganizationsInd>
+      <GrantsToIndividualsInd referenceDocumentId="RetDoc1041900001">0</GrantsToIndividualsInd>
+      <ScheduleJRequiredInd referenceDocumentId="RetDoc1042400001">1</ScheduleJRequiredInd>
+      <TaxExemptBondsInd>0</TaxExemptBondsInd>
+      <EngagedInExcessBenefitTransInd>0</EngagedInExcessBenefitTransInd>
+      <PYExcessBenefitTransInd>0</PYExcessBenefitTransInd>
+      <LoanOutstandingInd>0</LoanOutstandingInd>
+      <GrantToRelatedPersonInd>0</GrantToRelatedPersonInd>
+      <BusinessRlnWithOrgMemInd>0</BusinessRlnWithOrgMemInd>
+      <BusinessRlnWithFamMemInd>0</BusinessRlnWithFamMemInd>
+      <BusinessRlnWith35CtrlEntInd>0</BusinessRlnWith35CtrlEntInd>
+      <DeductibleNonCashContriInd referenceDocumentId="RetDoc1042900001">1</DeductibleNonCashContriInd>
+      <DeductibleArtContributionInd referenceDocumentId="RetDoc1042900001">0</DeductibleArtContributionInd>
+      <TerminateOperationsInd>0</TerminateOperationsInd>
+      <PartialLiquidationInd>0</PartialLiquidationInd>
+      <DisregardedEntityInd referenceDocumentId="RetDoc1043400001">1</DisregardedEntityInd>
+      <RelatedEntityInd referenceDocumentId="RetDoc1043400001">1</RelatedEntityInd>
+      <RelatedOrganizationCtrlEntInd>1</RelatedOrganizationCtrlEntInd>
+      <TransactionWithControlEntInd referenceDocumentId="RetDoc1043400001">0</TransactionWithControlEntInd>
+      <TrnsfrExmptNonChrtblRltdOrgInd referenceDocumentId="RetDoc1043400001">0</TrnsfrExmptNonChrtblRltdOrgInd>
+      <ActivitiesConductedPrtshpInd referenceDocumentId="RetDoc1043400001">0</ActivitiesConductedPrtshpInd>
+      <ScheduleORequiredInd>1</ScheduleORequiredInd>
+      <InfoInScheduleOPartVInd>X</InfoInScheduleOPartVInd>
+      <IRPDocumentCnt>27</IRPDocumentCnt>
+      <IRPDocumentW2GCnt>0</IRPDocumentW2GCnt>
+      <BackupWthldComplianceInd>1</BackupWthldComplianceInd>
+      <EmployeeCnt>274</EmployeeCnt>
+      <EmploymentTaxReturnsFiledInd>1</EmploymentTaxReturnsFiledInd>
+      <UnrelatedBusIncmOverLimitInd>0</UnrelatedBusIncmOverLimitInd>
+      <ForeignFinancialAccountInd>1</ForeignFinancialAccountInd>
+      <ForeignCountryCd>BM</ForeignCountryCd>
+      <ForeignCountryCd>UV</ForeignCountryCd>
+      <ForeignCountryCd>CB</ForeignCountryCd>
+      <ForeignCountryCd>CM</ForeignCountryCd>
+      <ForeignCountryCd>CA</ForeignCountryCd>
+      <ForeignCountryCd>CG</ForeignCountryCd>
+      <ForeignCountryCd>ET</ForeignCountryCd>
+      <ForeignCountryCd>FR</ForeignCountryCd>
+      <ForeignCountryCd>GH</ForeignCountryCd>
+      <ForeignCountryCd>HA</ForeignCountryCd>
+      <ForeignCountryCd>IN</ForeignCountryCd>
+      <ForeignCountryCd>ID</ForeignCountryCd>
+      <ForeignCountryCd>KE</ForeignCountryCd>
+      <ForeignCountryCd>LA</ForeignCountryCd>
+      <ForeignCountryCd>LT</ForeignCountryCd>
+      <ForeignCountryCd>LI</ForeignCountryCd>
+      <ForeignCountryCd>MI</ForeignCountryCd>
+      <ForeignCountryCd>ML</ForeignCountryCd>
+      <ForeignCountryCd>MZ</ForeignCountryCd>
+      <ForeignCountryCd>NI</ForeignCountryCd>
+      <ForeignCountryCd>PP</ForeignCountryCd>
+      <ForeignCountryCd>RW</ForeignCountryCd>
+      <ForeignCountryCd>SG</ForeignCountryCd>
+      <ForeignCountryCd>SF</ForeignCountryCd>
+      <ForeignCountryCd>SL</ForeignCountryCd>
+      <ForeignCountryCd>WZ</ForeignCountryCd>
+      <ForeignCountryCd>TZ</ForeignCountryCd>
+      <ForeignCountryCd>UG</ForeignCountryCd>
+      <ForeignCountryCd>UK</ForeignCountryCd>
+      <ForeignCountryCd>VM</ForeignCountryCd>
+      <ForeignCountryCd>ZA</ForeignCountryCd>
+      <ForeignCountryCd>ZI</ForeignCountryCd>
+      <ProhibitedTaxShelterTransInd>0</ProhibitedTaxShelterTransInd>
+      <TaxablePartyNotificationInd>0</TaxablePartyNotificationInd>
+      <NondeductibleContributionsInd>0</NondeductibleContributionsInd>
+      <QuidProQuoContributionsInd>0</QuidProQuoContributionsInd>
+      <Form8282PropertyDisposedOfInd>0</Form8282PropertyDisposedOfInd>
+      <RcvFndsToPayPrsnlBnftCntrctInd>0</RcvFndsToPayPrsnlBnftCntrctInd>
+      <PayPremiumsPrsnlBnftCntrctInd>0</PayPremiumsPrsnlBnftCntrctInd>
+      <IndoorTanningServicesInd>0</IndoorTanningServicesInd>
+      <SubjToTaxRmnrtnExPrchtPymtInd>0</SubjToTaxRmnrtnExPrchtPymtInd>
+      <SubjectToExcsTaxNetInvstIncInd>0</SubjectToExcsTaxNetInvstIncInd>
+      <InfoInScheduleOPartVIInd>X</InfoInScheduleOPartVIInd>
+      <GoverningBodyVotingMembersCnt>13</GoverningBodyVotingMembersCnt>
+      <IndependentVotingMemberCnt>13</IndependentVotingMemberCnt>
+      <FamilyOrBusinessRlnInd>1</FamilyOrBusinessRlnInd>
+      <DelegationOfMgmtDutiesInd>0</DelegationOfMgmtDutiesInd>
+      <ChangeToOrgDocumentsInd>0</ChangeToOrgDocumentsInd>
+      <MaterialDiversionOrMisuseInd>0</MaterialDiversionOrMisuseInd>
+      <MembersOrStockholdersInd>0</MembersOrStockholdersInd>
+      <ElectionOfBoardMembersInd>0</ElectionOfBoardMembersInd>
+      <DecisionsSubjectToApprovaInd>0</DecisionsSubjectToApprovaInd>
+      <MinutesOfGoverningBodyInd>1</MinutesOfGoverningBodyInd>
+      <MinutesOfCommitteesInd>1</MinutesOfCommitteesInd>
+      <OfficerMailingAddressInd>0</OfficerMailingAddressInd>
+      <LocalChaptersInd>1</LocalChaptersInd>
+      <PoliciesReferenceChaptersInd>1</PoliciesReferenceChaptersInd>
+      <Form990ProvidedToGvrnBodyInd>1</Form990ProvidedToGvrnBodyInd>
+      <ConflictOfInterestPolicyInd>1</ConflictOfInterestPolicyInd>
+      <AnnualDisclosureCoveredPrsnInd>1</AnnualDisclosureCoveredPrsnInd>
+      <RegularMonitoringEnfrcInd>1</RegularMonitoringEnfrcInd>
+      <WhistleblowerPolicyInd>1</WhistleblowerPolicyInd>
+      <DocumentRetentionPolicyInd>1</DocumentRetentionPolicyInd>
+      <CompensationProcessCEOInd>1</CompensationProcessCEOInd>
+      <CompensationProcessOtherInd>1</CompensationProcessOtherInd>
+      <InvestmentInJointVentureInd>0</InvestmentInJointVentureInd>
+      <StatesWhereCopyOfReturnIsFldCd>CA</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>CT</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>FL</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>IL</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>MA</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>NJ</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>NY</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>PA</StatesWhereCopyOfReturnIsFldCd>
+      <StatesWhereCopyOfReturnIsFldCd>WA</StatesWhereCopyOfReturnIsFldCd>
+      <OwnWebsiteInd>X</OwnWebsiteInd>
+      <UponRequestInd>X</UponRequestInd>
+      <BooksInCareOfDetail>
+        <PersonNm>RASHA HIBRI</PersonNm>
+        <PhoneNum>6177740110</PhoneNum>
+        <USAddress>
+          <AddressLine1Txt>383 DORCHESTER AVENUE 400</AddressLine1Txt>
+          <CityNm>BOSTON</CityNm>
+          <StateAbbreviationCd>MA</StateAbbreviationCd>
+          <ZIPCd>02127</ZIPCd>
+        </USAddress>
+      </BooksInCareOfDetail>
+      <InfoInScheduleOPartVIIInd>X</InfoInScheduleOPartVIIInd>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>JOY PHUMAPHI</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>ALAN SCHWARTZ</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>RAYMOND CHAMBERS</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>CHELSEA CLINTON</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>10.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>WILLIAM J CLINTON</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>5.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>ALIKO DANGOTE</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>OPHELIA DAHL</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DAME SALLY DAVIES</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DR MARK DYBUL</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>BRUCE LINDSEY</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>LUIS ALBERTO MORENO</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>ROBERT W SELANDER</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>ANN VENEMAN</PersonNm>
+        <TitleTxt>BOARD MEMBER</TitleTxt>
+        <AverageHoursPerWeekRt>1.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <IndividualTrusteeOrDirectorInd>X</IndividualTrusteeOrDirectorInd>
+        <ReportableCompFromOrgAmt>0</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>0</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DR NEIL BUDDY SHAH</PersonNm>
+        <TitleTxt>CHIEF EXECUTIVE OFFICER</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <OfficerInd>X</OfficerInd>
+        <ReportableCompFromOrgAmt>535500</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>53797</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>RASHA HIBRI</PersonNm>
+        <TitleTxt>CHIEF FINANCIAL OFFICER</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <OfficerInd>X</OfficerInd>
+        <ReportableCompFromOrgAmt>395352</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>61516</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>ALICE KANG'ETHE</PersonNm>
+        <TitleTxt>CHIEF OPERATING OFFICER(UNTIL 12/23)</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <OfficerInd>X</OfficerInd>
+        <ReportableCompFromOrgAmt>355246</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>30027</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DR DAVID RIPIN</PersonNm>
+        <TitleTxt>EVP, INFECTIOUS DISEASES/CSO</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <KeyEmployeeInd>X</KeyEmployeeInd>
+        <ReportableCompFromOrgAmt>333354</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>54823</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DR OWENS WIWA</PersonNm>
+        <TitleTxt>EVP, GLOBAL RESOURCES</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <KeyEmployeeInd>X</KeyEmployeeInd>
+        <ReportableCompFromOrgAmt>281134</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>29959</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>YOUNG JOSHUA CHU</PersonNm>
+        <TitleTxt>EVP, GLOBAL VACCINES &amp; CANCER</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <KeyEmployeeInd>X</KeyEmployeeInd>
+        <ReportableCompFromOrgAmt>284049</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>26310</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>GERALD MACHARIA</PersonNm>
+        <TitleTxt>VP, EAST &amp; SOUTHERN AFRICA/COUNTRY</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <KeyEmployeeInd>X</KeyEmployeeInd>
+        <ReportableCompFromOrgAmt>220379</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>20806</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DR MPHU RAMATLAPENG</PersonNm>
+        <TitleTxt>EVP, IMPLEMENTATION</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <KeyEmployeeInd>X</KeyEmployeeInd>
+        <ReportableCompFromOrgAmt>177232</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>16529</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>ZACHARY KATZ</PersonNm>
+        <TitleTxt>VP, ESSENTIAL MEDICINES</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <HighestCompensatedEmployeeInd>X</HighestCompensatedEmployeeInd>
+        <ReportableCompFromOrgAmt>226452</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>50099</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>CAROLYN AMOLE</PersonNm>
+        <TitleTxt>HIV/HEPATITIS/TB</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <HighestCompensatedEmployeeInd>X</HighestCompensatedEmployeeInd>
+        <ReportableCompFromOrgAmt>217653</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>46710</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>JUSTIN COHEN</PersonNm>
+        <TitleTxt>GLOBAL MALARIA, NTDS/VECTOR BORN</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <HighestCompensatedEmployeeInd>X</HighestCompensatedEmployeeInd>
+        <ReportableCompFromOrgAmt>221664</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>42795</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>SAMANTHA DIAMOND</PersonNm>
+        <TitleTxt>HEALTH SYSTEMS</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <HighestCompensatedEmployeeInd>X</HighestCompensatedEmployeeInd>
+        <ReportableCompFromOrgAmt>190250</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>47290</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <Form990PartVIISectionAGrp>
+        <PersonNm>DANG NGO</PersonNm>
+        <TitleTxt>VP, SOUTHEAST ASIA/PACIFIC</TitleTxt>
+        <AverageHoursPerWeekRt>40.00</AverageHoursPerWeekRt>
+        <AverageHoursPerWeekRltdOrgRt>0.00</AverageHoursPerWeekRltdOrgRt>
+        <HighestCompensatedEmployeeInd>X</HighestCompensatedEmployeeInd>
+        <ReportableCompFromOrgAmt>194448</ReportableCompFromOrgAmt>
+        <ReportableCompFromRltdOrgAmt>0</ReportableCompFromRltdOrgAmt>
+        <OtherCompensationAmt>22850</OtherCompensationAmt>
+      </Form990PartVIISectionAGrp>
+      <TotalReportableCompFromOrgAmt>3632713</TotalReportableCompFromOrgAmt>
+      <TotReportableCompRltdOrgAmt>0</TotReportableCompRltdOrgAmt>
+      <TotalOtherCompensationAmt>503511</TotalOtherCompensationAmt>
+      <IndivRcvdGreaterThan100KCnt>307</IndivRcvdGreaterThan100KCnt>
+      <FormerOfcrEmployeesListedInd>0</FormerOfcrEmployeesListedInd>
+      <TotalCompGreaterThan150KInd>1</TotalCompGreaterThan150KInd>
+      <CompensationFromOtherSrcsInd>0</CompensationFromOtherSrcsInd>
+      <ContractorCompensationGrp>
+        <ContractorName>
+          <BusinessName>
+            <BusinessNameLine1Txt>GLOBAL HUMAN ACCESS RESOURCES LIMITED</BusinessNameLine1Txt>
+          </BusinessName>
+        </ContractorName>
+        <ContractorAddress>
+          <ForeignAddress>
+            <AddressLine1Txt>STE 118 ADAMAWA PLAZA</AddressLine1Txt>
+            <CityNm>ABUJA</CityNm>
+            <CountryCd>NI</CountryCd>
+          </ForeignAddress>
+        </ContractorAddress>
+        <ServicesDesc>INFORMATION SYSTEMS</ServicesDesc>
+        <CompensationAmt>3401298</CompensationAmt>
+      </ContractorCompensationGrp>
+      <ContractorCompensationGrp>
+        <ContractorName>
+          <BusinessName>
+            <BusinessNameLine1Txt>WHITE CORAL CONSULTING DMMC</BusinessNameLine1Txt>
+          </BusinessName>
+        </ContractorName>
+        <ContractorAddress>
+          <ForeignAddress>
+            <AddressLine1Txt>UNIT NO F29 DMMC BUSINESS CENTRE</AddressLine1Txt>
+            <CityNm>DUBAI</CityNm>
+            <CountryCd>AE</CountryCd>
+          </ForeignAddress>
+        </ContractorAddress>
+        <ServicesDesc>EMPLOYMENT MANAGEMENT</ServicesDesc>
+        <CompensationAmt>567228</CompensationAmt>
+      </ContractorCompensationGrp>
+      <ContractorCompensationGrp>
+        <ContractorName>
+          <BusinessName>
+            <BusinessNameLine1Txt>HEALTH STRAT LTD</BusinessNameLine1Txt>
+          </BusinessName>
+        </ContractorName>
+        <ContractorAddress>
+          <ForeignAddress>
+            <AddressLine1Txt>SAACHI PLAZA STE C8 ARGWINGS KODH</AddressLine1Txt>
+            <CityNm>PO BOX</CityNm>
+            <ProvinceOrStateNm>NAIROBI</ProvinceOrStateNm>
+            <CountryCd>KE</CountryCd>
+          </ForeignAddress>
+        </ContractorAddress>
+        <ServicesDesc>HEALTH SYSTEM SOLUTIONS</ServicesDesc>
+        <CompensationAmt>541088</CompensationAmt>
+      </ContractorCompensationGrp>
+      <ContractorCompensationGrp>
+        <ContractorName>
+          <BusinessName>
+            <BusinessNameLine1Txt>AFRIDA</BusinessNameLine1Txt>
+          </BusinessName>
+        </ContractorName>
+        <ContractorAddress>
+          <ForeignAddress>
+            <AddressLine1Txt>PLOT 1675 B05</AddressLine1Txt>
+            <CityNm>CADASTRAL ZONE</CityNm>
+            <ProvinceOrStateNm>UTAKO, F.C.T ABUJ</ProvinceOrStateNm>
+            <CountryCd>NI</CountryCd>
+          </ForeignAddress>
+        </ContractorAddress>
+        <ServicesDesc>MANAGEMENT SYSTEMS</ServicesDesc>
+        <CompensationAmt>352152</CompensationAmt>
+      </ContractorCompensationGrp>
+      <ContractorCompensationGrp>
+        <ContractorName>
+          <BusinessName>
+            <BusinessNameLine1Txt>MUHAS</BusinessNameLine1Txt>
+          </BusinessName>
+        </ContractorName>
+        <ContractorAddress>
+          <ForeignAddress>
+            <AddressLine1Txt>PO BOX 65001</AddressLine1Txt>
+            <CityNm>DAR ES SALAAM</CityNm>
+            <CountryCd>TZ</CountryCd>
+          </ForeignAddress>
+        </ContractorAddress>
+        <ServicesDesc>RESEARCH STUDY</ServicesDesc>
+        <CompensationAmt>259906</CompensationAmt>
+      </ContractorCompensationGrp>
+      <CntrctRcvdGreaterThan100KCnt>22</CntrctRcvdGreaterThan100KCnt>
+      <GovernmentGrantsAmt>93990771</GovernmentGrantsAmt>
+      <AllOtherContributionsAmt>127279819</AllOtherContributionsAmt>
+      <NoncashContributionsAmt>3976801</NoncashContributionsAmt>
+      <TotalContributionsAmt>221270590</TotalContributionsAmt>
+      <InvestmentIncomeGrp>
+        <TotalRevenueColumnAmt>3182094</TotalRevenueColumnAmt>
+        <ExclusionAmt>3182094</ExclusionAmt>
+      </InvestmentIncomeGrp>
+      <GrossAmountSalesAssetsGrp>
+        <SecuritiesAmt>3609171</SecuritiesAmt>
+      </GrossAmountSalesAssetsGrp>
+      <LessCostOthBasisSalesExpnssGrp>
+        <SecuritiesAmt>3600816</SecuritiesAmt>
+      </LessCostOthBasisSalesExpnssGrp>
+      <GainOrLossGrp>
+        <SecuritiesAmt>8355</SecuritiesAmt>
+      </GainOrLossGrp>
+      <NetGainOrLossInvestmentsGrp>
+        <TotalRevenueColumnAmt>8355</TotalRevenueColumnAmt>
+        <ExclusionAmt>8355</ExclusionAmt>
+      </NetGainOrLossInvestmentsGrp>
+      <OtherRevenueMiscGrp>
+        <Desc>MISC. REVENUE</Desc>
+        <BusinessCd>900099</BusinessCd>
+        <TotalRevenueColumnAmt>192261</TotalRevenueColumnAmt>
+        <ExclusionAmt>192261</ExclusionAmt>
+      </OtherRevenueMiscGrp>
+      <OtherRevenueTotalAmt>192261</OtherRevenueTotalAmt>
+      <TotalRevenueGrp>
+        <TotalRevenueColumnAmt>224653300</TotalRevenueColumnAmt>
+        <RelatedOrExemptFuncIncomeAmt>0</RelatedOrExemptFuncIncomeAmt>
+        <UnrelatedBusinessRevenueAmt>0</UnrelatedBusinessRevenueAmt>
+        <ExclusionAmt>3382710</ExclusionAmt>
+      </TotalRevenueGrp>
+      <GrantsToDomesticOrgsGrp>
+        <TotalAmt>5089916</TotalAmt>
+        <ProgramServicesAmt>5089916</ProgramServicesAmt>
+      </GrantsToDomesticOrgsGrp>
+      <ForeignGrantsGrp>
+        <TotalAmt>25147683</TotalAmt>
+        <ProgramServicesAmt>25147683</ProgramServicesAmt>
+      </ForeignGrantsGrp>
+      <CompCurrentOfcrDirectorsGrp>
+        <TotalAmt>4112155</TotalAmt>
+        <ProgramServicesAmt>3078495</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>975433</ManagementAndGeneralAmt>
+        <FundraisingAmt>58227</FundraisingAmt>
+      </CompCurrentOfcrDirectorsGrp>
+      <OtherSalariesAndWagesGrp>
+        <TotalAmt>77164201</TotalAmt>
+        <ProgramServicesAmt>68550764</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>8269422</ManagementAndGeneralAmt>
+        <FundraisingAmt>344015</FundraisingAmt>
+      </OtherSalariesAndWagesGrp>
+      <PensionPlanContributionsGrp>
+        <TotalAmt>4786908</TotalAmt>
+        <ProgramServicesAmt>4278631</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>484086</ManagementAndGeneralAmt>
+        <FundraisingAmt>24191</FundraisingAmt>
+      </PensionPlanContributionsGrp>
+      <OtherEmployeeBenefitsGrp>
+        <TotalAmt>22380849</TotalAmt>
+        <ProgramServicesAmt>20077905</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>2222302</ManagementAndGeneralAmt>
+        <FundraisingAmt>80642</FundraisingAmt>
+      </OtherEmployeeBenefitsGrp>
+      <PayrollTaxesGrp>
+        <TotalAmt>4825899</TotalAmt>
+        <ProgramServicesAmt>4216685</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>576222</ManagementAndGeneralAmt>
+        <FundraisingAmt>32992</FundraisingAmt>
+      </PayrollTaxesGrp>
+      <FeesForServicesLegalGrp>
+        <TotalAmt>560560</TotalAmt>
+        <ProgramServicesAmt>279015</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>281545</ManagementAndGeneralAmt>
+      </FeesForServicesLegalGrp>
+      <FeesForServicesAccountingGrp>
+        <TotalAmt>988232</TotalAmt>
+        <ProgramServicesAmt>778627</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>209605</ManagementAndGeneralAmt>
+      </FeesForServicesAccountingGrp>
+      <FeesForServicesProfFundraising>
+        <TotalAmt>11140</TotalAmt>
+        <FundraisingAmt>11140</FundraisingAmt>
+      </FeesForServicesProfFundraising>
+      <FeesForServicesOtherGrp>
+        <TotalAmt>14216035</TotalAmt>
+        <ProgramServicesAmt>13619815</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>585231</ManagementAndGeneralAmt>
+        <FundraisingAmt>10989</FundraisingAmt>
+      </FeesForServicesOtherGrp>
+      <OfficeExpensesGrp>
+        <TotalAmt>4862071</TotalAmt>
+        <ProgramServicesAmt>4639336</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>218709</ManagementAndGeneralAmt>
+        <FundraisingAmt>4026</FundraisingAmt>
+      </OfficeExpensesGrp>
+      <OccupancyGrp>
+        <TotalAmt>2695362</TotalAmt>
+        <ProgramServicesAmt>2120721</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>574641</ManagementAndGeneralAmt>
+      </OccupancyGrp>
+      <TravelGrp>
+        <TotalAmt>20708460</TotalAmt>
+        <ProgramServicesAmt>20193138</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>471227</ManagementAndGeneralAmt>
+        <FundraisingAmt>44095</FundraisingAmt>
+      </TravelGrp>
+      <ConferencesMeetingsGrp>
+        <TotalAmt>7092181</TotalAmt>
+        <ProgramServicesAmt>7004351</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>84430</ManagementAndGeneralAmt>
+        <FundraisingAmt>3400</FundraisingAmt>
+      </ConferencesMeetingsGrp>
+      <DepreciationDepletionGrp>
+        <TotalAmt>106816</TotalAmt>
+        <ProgramServicesAmt>52783</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>54033</ManagementAndGeneralAmt>
+      </DepreciationDepletionGrp>
+      <InsuranceGrp>
+        <TotalAmt>461629</TotalAmt>
+        <ProgramServicesAmt>416108</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>44787</ManagementAndGeneralAmt>
+        <FundraisingAmt>734</FundraisingAmt>
+      </InsuranceGrp>
+      <OtherExpensesGrp>
+        <Desc>SUPPLIES</Desc>
+        <TotalAmt>20958016</TotalAmt>
+        <ProgramServicesAmt>20906695</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>51321</ManagementAndGeneralAmt>
+        <FundraisingAmt>0</FundraisingAmt>
+      </OtherExpensesGrp>
+      <OtherExpensesGrp>
+        <Desc>EQUIP RENTAL &amp; MAINT.</Desc>
+        <TotalAmt>5213352</TotalAmt>
+        <ProgramServicesAmt>5212161</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>1191</ManagementAndGeneralAmt>
+        <FundraisingAmt>0</FundraisingAmt>
+      </OtherExpensesGrp>
+      <OtherExpensesGrp>
+        <Desc>PRINTING &amp; PUBLICATIONS</Desc>
+        <TotalAmt>2272227</TotalAmt>
+        <ProgramServicesAmt>2106948</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>156703</ManagementAndGeneralAmt>
+        <FundraisingAmt>8576</FundraisingAmt>
+      </OtherExpensesGrp>
+      <OtherExpensesGrp>
+        <Desc>POSTAGE &amp; SHIPPING</Desc>
+        <TotalAmt>1499930</TotalAmt>
+        <ProgramServicesAmt>1401881</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>92458</ManagementAndGeneralAmt>
+        <FundraisingAmt>5591</FundraisingAmt>
+      </OtherExpensesGrp>
+      <AllOtherExpensesGrp>
+        <TotalAmt>449664</TotalAmt>
+        <ProgramServicesAmt>341197</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>108467</ManagementAndGeneralAmt>
+      </AllOtherExpensesGrp>
+      <TotalFunctionalExpensesGrp>
+        <TotalAmt>225603286</TotalAmt>
+        <ProgramServicesAmt>209512855</ProgramServicesAmt>
+        <ManagementAndGeneralAmt>15461813</ManagementAndGeneralAmt>
+        <FundraisingAmt>628618</FundraisingAmt>
+      </TotalFunctionalExpensesGrp>
+      <SavingsAndTempCashInvstGrp>
+        <BOYAmt>971127</BOYAmt>
+        <EOYAmt>14272378</EOYAmt>
+      </SavingsAndTempCashInvstGrp>
+      <PledgesAndGrantsReceivableGrp>
+        <BOYAmt>14268881</BOYAmt>
+        <EOYAmt>19691121</EOYAmt>
+      </PledgesAndGrantsReceivableGrp>
+      <AccountsReceivableGrp>
+        <BOYAmt>5669405</BOYAmt>
+        <EOYAmt>5437254</EOYAmt>
+      </AccountsReceivableGrp>
+      <PrepaidExpensesDefrdChargesGrp>
+        <BOYAmt>3003062</BOYAmt>
+        <EOYAmt>2100893</EOYAmt>
+      </PrepaidExpensesDefrdChargesGrp>
+      <LandBldgEquipCostOrOtherBssAmt>3185519</LandBldgEquipCostOrOtherBssAmt>
+      <LandBldgEquipAccumDeprecAmt>2835377</LandBldgEquipAccumDeprecAmt>
+      <LandBldgEquipBasisNetGrp>
+        <BOYAmt>284832</BOYAmt>
+        <EOYAmt>350142</EOYAmt>
+      </LandBldgEquipBasisNetGrp>
+      <OtherAssetsTotalGrp>
+        <BOYAmt>116177482</BOYAmt>
+        <EOYAmt>118884701</EOYAmt>
+      </OtherAssetsTotalGrp>
+      <TotalAssetsGrp>
+        <BOYAmt>140374789</BOYAmt>
+        <EOYAmt>160736489</EOYAmt>
+      </TotalAssetsGrp>
+      <AccountsPayableAccrExpnssGrp>
+        <BOYAmt>14529212</BOYAmt>
+        <EOYAmt>16161223</EOYAmt>
+      </AccountsPayableAccrExpnssGrp>
+      <DeferredRevenueGrp>
+        <BOYAmt>112593086</BOYAmt>
+        <EOYAmt>132526959</EOYAmt>
+      </DeferredRevenueGrp>
+      <OtherLiabilitiesGrp>
+        <BOYAmt>1275666</BOYAmt>
+        <EOYAmt>1021468</EOYAmt>
+      </OtherLiabilitiesGrp>
+      <TotalLiabilitiesGrp>
+        <BOYAmt>128397964</BOYAmt>
+        <EOYAmt>149709650</EOYAmt>
+      </TotalLiabilitiesGrp>
+      <OrganizationFollowsFASB117Ind>X</OrganizationFollowsFASB117Ind>
+      <NoDonorRestrictionNetAssetsGrp>
+        <BOYAmt>9712264</BOYAmt>
+        <EOYAmt>9868754</EOYAmt>
+      </NoDonorRestrictionNetAssetsGrp>
+      <DonorRestrictionNetAssetsGrp>
+        <BOYAmt>2264561</BOYAmt>
+        <EOYAmt>1158085</EOYAmt>
+      </DonorRestrictionNetAssetsGrp>
+      <TotalNetAssetsFundBalanceGrp>
+        <BOYAmt>11976825</BOYAmt>
+        <EOYAmt>11026839</EOYAmt>
+      </TotalNetAssetsFundBalanceGrp>
+      <TotLiabNetAssetsFundBalanceGrp>
+        <BOYAmt>140374789</BOYAmt>
+        <EOYAmt>160736489</EOYAmt>
+      </TotLiabNetAssetsFundBalanceGrp>
+      <ReconcilationRevenueExpnssAmt>-949986</ReconcilationRevenueExpnssAmt>
+      <OtherChangesInNetAssetsAmt>0</OtherChangesInNetAssetsAmt>
+      <MethodOfAccountingAccrualInd>X</MethodOfAccountingAccrualInd>
+      <AccountantCompileOrReviewInd>0</AccountantCompileOrReviewInd>
+      <FSAuditedInd>1</FSAuditedInd>
+      <FSAuditedBasisGrp>
+        <ConsolidatedBasisFinclStmtInd>X</ConsolidatedBasisFinclStmtInd>
+      </FSAuditedBasisGrp>
+      <AuditCommitteeInd>1</AuditCommitteeInd>
+      <FederalGrantAuditRequiredInd>1</FederalGrantAuditRequiredInd>
+      <FederalGrantAuditPerformedInd>1</FederalGrantAuditPerformedInd>
+    </IRS990>
+    <IRS990ScheduleA documentId="RetDoc1039100001">
+      <PublicOrganization170Ind>X</PublicOrganization170Ind>
+      <GiftsGrantsContriRcvd170Grp>
+        <CurrentTaxYearMinus4YearsAmt>189199931</CurrentTaxYearMinus4YearsAmt>
+        <CurrentTaxYearMinus3YearsAmt>197783983</CurrentTaxYearMinus3YearsAmt>
+        <CurrentTaxYearMinus2YearsAmt>220310106</CurrentTaxYearMinus2YearsAmt>
+        <CurrentTaxYearMinus1YearAmt>224637713</CurrentTaxYearMinus1YearAmt>
+        <CurrentTaxYearAmt>221270590</CurrentTaxYearAmt>
+        <TotalAmt>1053202323</TotalAmt>
+      </GiftsGrantsContriRcvd170Grp>
+      <TotalCalendarYear170Grp>
+        <CurrentTaxYearMinus4YearsAmt>189199931</CurrentTaxYearMinus4YearsAmt>
+        <CurrentTaxYearMinus3YearsAmt>197783983</CurrentTaxYearMinus3YearsAmt>
+        <CurrentTaxYearMinus2YearsAmt>220310106</CurrentTaxYearMinus2YearsAmt>
+        <CurrentTaxYearMinus1YearAmt>224637713</CurrentTaxYearMinus1YearAmt>
+        <CurrentTaxYearAmt>221270590</CurrentTaxYearAmt>
+        <TotalAmt>1053202323</TotalAmt>
+      </TotalCalendarYear170Grp>
+      <SubstantialContributorsTotAmt>625922573</SubstantialContributorsTotAmt>
+      <PublicSupportTotal170Amt>427279750</PublicSupportTotal170Amt>
+      <GrossInvestmentIncome170Grp>
+        <CurrentTaxYearMinus4YearsAmt>1217068</CurrentTaxYearMinus4YearsAmt>
+        <CurrentTaxYearMinus3YearsAmt>321178</CurrentTaxYearMinus3YearsAmt>
+        <CurrentTaxYearMinus2YearsAmt>149437</CurrentTaxYearMinus2YearsAmt>
+        <CurrentTaxYearMinus1YearAmt>215528</CurrentTaxYearMinus1YearAmt>
+        <CurrentTaxYearAmt>3182094</CurrentTaxYearAmt>
+        <TotalAmt>5085305</TotalAmt>
+      </GrossInvestmentIncome170Grp>
+      <OtherIncome170Grp>
+        <CurrentTaxYearMinus4YearsAmt>82382</CurrentTaxYearMinus4YearsAmt>
+        <CurrentTaxYearMinus3YearsAmt>39034</CurrentTaxYearMinus3YearsAmt>
+        <CurrentTaxYearMinus2YearsAmt>63329</CurrentTaxYearMinus2YearsAmt>
+        <CurrentTaxYearMinus1YearAmt>48813</CurrentTaxYearMinus1YearAmt>
+        <CurrentTaxYearAmt>192261</CurrentTaxYearAmt>
+        <TotalAmt>425819</TotalAmt>
+      </OtherIncome170Grp>
+      <TotalSupportAmt>1058713447</TotalSupportAmt>
+      <PublicSupportCY170Pct>0.40360</PublicSupportCY170Pct>
+      <PublicSupportPY170Pct>0.37600</PublicSupportPY170Pct>
+      <ThirtyThrPctSuprtTestsCY170Ind>X</ThirtyThrPctSuprtTestsCY170Ind>
+    </IRS990ScheduleA>
+    <IRS990ScheduleB documentId="RetDoc1234500001">
+      <ContributorInformationGrp>
+        <ContributorNum>RESTRICTED</ContributorNum>
+        <ContributorBusinessName>
+          <BusinessNameLine1>RESTRICTED</BusinessNameLine1>
+        </ContributorBusinessName>
+        <ContributorUSAddress>
+          <AddressLine1>RESTRICTED</AddressLine1>
+          <AddressLine2>RESTRICTED</AddressLine2>
+          <City>RESTRICTED</City>
+          <State>RESTRICTED</State>
+          <ZIPCode>RESTRICTED</ZIPCode>
+        </ContributorUSAddress>
+        <TotalContributionsAmt>RESTRICTED</TotalContributionsAmt>
+      </ContributorInformationGrp>
+    </IRS990ScheduleB>
+    <IRS990ScheduleD documentId="RetDoc1040000001">
+      <LeaseholdImprovementsGrp>
+        <OtherCostOrOtherBasisAmt>466638</OtherCostOrOtherBasisAmt>
+        <DepreciationAmt>466638</DepreciationAmt>
+        <BookValueAmt>0</BookValueAmt>
+      </LeaseholdImprovementsGrp>
+      <EquipmentGrp>
+        <OtherCostOrOtherBasisAmt>2718881</OtherCostOrOtherBasisAmt>
+        <DepreciationAmt>2368739</DepreciationAmt>
+        <BookValueAmt>350142</BookValueAmt>
+      </EquipmentGrp>
+      <TotalBookValueLandBuildingsAmt>350142</TotalBookValueLandBuildingsAmt>
+      <OtherAssetsOrgGrp>
+        <Desc>ASSETS LIMITED AS TO USE FOR PROGRAMMATIC PURPOSES</Desc>
+        <BookValueAmt>117782421</BookValueAmt>
+      </OtherAssetsOrgGrp>
+      <OtherAssetsOrgGrp>
+        <Desc>RIGHT OF USE ASSET</Desc>
+        <BookValueAmt>1102280</BookValueAmt>
+      </OtherAssetsOrgGrp>
+      <TotalBookValueOtherAssetsAmt>118884701</TotalBookValueOtherAssetsAmt>
+      <OtherLiabilitiesOrgGrp>
+        <Desc>LEASE LIABILITY</Desc>
+        <Amt>1021468</Amt>
+      </OtherLiabilitiesOrgGrp>
+      <TotalLiabilityAmt>1021468</TotalLiabilityAmt>
+      <FootnoteTextInd>X</FootnoteTextInd>
+      <TotalRevEtcAuditedFinclStmtAmt>225107467</TotalRevEtcAuditedFinclStmtAmt>
+      <DonatedServicesAndUseFcltsAmt>454167</DonatedServicesAndUseFcltsAmt>
+      <RevenueNotReportedAmt>454167</RevenueNotReportedAmt>
+      <RevenueSubtotalAmt>224653300</RevenueSubtotalAmt>
+      <RevenueNotReportedFinclStmtAmt>0</RevenueNotReportedFinclStmtAmt>
+      <TotalRevenuePerForm990Amt>224653300</TotalRevenuePerForm990Amt>
+      <TotExpnsEtcAuditedFinclStmtAmt>226057453</TotExpnsEtcAuditedFinclStmtAmt>
+      <DonatedServicesUseFcltsAmt>454167</DonatedServicesUseFcltsAmt>
+      <ExpensesNotReportedAmt>454167</ExpensesNotReportedAmt>
+      <ExpensesSubtotalAmt>225603286</ExpensesSubtotalAmt>
+      <ExpensesNotRptFinclStmtAmt>0</ExpensesNotRptFinclStmtAmt>
+      <TotalExpensesPerForm990Amt>225603286</TotalExpensesPerForm990Amt>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>PART X, LINE 2:</FormAndLineReferenceDesc>
+        <ExplanationTxt>CHAI ACCOUNTS FOR THE EFFECT OF ANY UNCERTAIN TAX POSITIONS BASED ON A "MORE LIKELY THAN NOT" THRESHOLD TO THE RECOGNITION OF THE TAX POSITIONS BEING SUSTAINED BASED ON THE TECHNICAL MERITS OF THE POSITION UNDER SCRUTINY BY THE APPLICABLE TAXING AUTHORITY. IF A TAX POSITION OR POSITIONS ARE DEEMED TO RESULT IN UNCERTAINTIES OF THOSE POSITIONS, THE UNRECOGNIZED TAX BENEFIT IS ESTIMATED BASED ON A "CUMULATIVE PROBABILITY ASSESSMENT" THAT AGGREGATES THE ESTIMATED TAX LIABILITY FOR ALL UNCERTAIN TAX POSITIONS. CHAI HAS IDENTIFIED ITS TAX STATUS AS A TAX EXEMPT ENTITY AND ITS DETERMINATION OF ITS REVENUES BEING RELATED OR UNRELATED AS ITS ONLY SIGNIFICANT TAX POSITIONS AND HAS DETERMINED THAT SUCH TAX POSITIONS DO NOT RESULT IN AN UNCERTAINTY REQUIRING RECOGNITION. CHAI'S U.S. FEDERAL AND STATE INCOME TAX RETURNS ARE GENERALLY OPEN FOR EXAMINATION FOR THREE YEARS FOLLOWING THE FILING OF THE RELATED RETURN. CHAI'S FOREIGN TAX RETURNS ARE SUBJECT TO EXAMINATION BY LOCAL GOVERNMENT AUTHORITIES UNDER APPLICABLE LOCAL LAW. CHAI IS NOT AWARE OF ANY MATERIAL PENDING TAX ISSUES WITH U.S. OR OTHER AUTHORITIES THAT WOULD IMPACT RECORDED AMOUNTS IN THESE CONSOLIDATED FINANCIAL STATEMENTS.</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleD>
+    <IRS990ScheduleF documentId="RetDoc1040500001">
+      <GrantRecordsMaintainedInd>1</GrantRecordsMaintainedInd>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>971092</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>2791343</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>2300461</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>NORTH AMERICA</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>176046</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>8999414</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>8938004</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>MIDDLE EAST AND NORTH AFRICA</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>0</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>GRANTS</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>971323</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <OfficesCnt>4</OfficesCnt>
+        <EmployeeCnt>38</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>3875997</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <OfficesCnt>7</OfficesCnt>
+        <EmployeeCnt>223</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>14269855</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <OfficesCnt>1</OfficesCnt>
+        <EmployeeCnt>39</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>3333966</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>NORTH AMERICA</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>12</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <OfficesCnt>1</OfficesCnt>
+        <EmployeeCnt>173</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>8840843</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <OfficesCnt>24</OfficesCnt>
+        <EmployeeCnt>991</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+        <RegionTotalExpendituresAmt>148975381</RegionTotalExpendituresAmt>
+      </AccountActivitiesOutsideUSGrp>
+      <AccountActivitiesOutsideUSGrp>
+        <RegionTxt>MIDDLE EAST AND NORTH AFRICA</RegionTxt>
+        <OfficesCnt>0</OfficesCnt>
+        <EmployeeCnt>1</EmployeeCnt>
+        <TypeOfActivitiesConductedTxt>PROGRAM SERVICES</TypeOfActivitiesConductedTxt>
+        <SpecificServicesProvidedTxt>HEALTH</SpecificServicesProvidedTxt>
+      </AccountActivitiesOutsideUSGrp>
+      <SubtotalOfficesCnt>4</SubtotalOfficesCnt>
+      <SubtotalEmployeesCnt>38</SubtotalEmployeesCnt>
+      <ContinuationTotalOfficeCnt>33</ContinuationTotalOfficeCnt>
+      <ContinuationTotalEmployeeCnt>1439</ContinuationTotalEmployeeCnt>
+      <TotalOfficeCnt>37</TotalOfficeCnt>
+      <TotalEmployeeCnt>1477</TotalEmployeeCnt>
+      <SubtotalSpentAmt>29023680</SubtotalSpentAmt>
+      <ContinuationSpentAmt>175420045</ContinuationSpentAmt>
+      <TotalSpentAmt>204443725</TotalSpentAmt>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>29120</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>37932</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>446034</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>316649</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>108992</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5478</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>CENTRAL AMERICA AND THE CARIBBEAN</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>23832</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>12400</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>18397</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>21886</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>57204</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>14459</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>284781</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>49392</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>53470</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>96231</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5127</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>36439</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>247572</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>116173</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>66015</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5129</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>213208</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9650</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5027</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>729331</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>186085</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>187609</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>8693</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>22922</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>26987</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>119899</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>49541</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>41665</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>56307</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>7325</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9807</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EAST ASIA AND THE PACIFIC</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>64634</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>239575</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>11500</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>6000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>102644</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9781</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>38059</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>10161</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>12000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>267132</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>135098</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>139968</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9736</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>52844</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>581420</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>81600</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>38498</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>20000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>165300</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>EUROPE (INCLUDING ICELAND &amp; GREENLAND)</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>373826</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>MIDDLE EAST AND NORTH AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>402415</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>MIDDLE EAST AND NORTH AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>566608</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>NORTH AMERICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>174086</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>871558</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>2715017</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>2150000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>123750</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>500000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>73491</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>621939</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>14200</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SOUTH ASIA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>1933993</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>12565</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>35288</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>33986</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>140710</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>77206</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>300826</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>17349</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>12847</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>57815</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9591</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>120240</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9718</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>95420</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>13286</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5726</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>16606</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>75000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>199803</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>13764</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>17641</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>25833</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>23417</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>71669</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>20693</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>15894</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>409004</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>11841</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9057</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>111943</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>18400</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>32490</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>18817</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>274516</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>75000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9485</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>7700</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>6210</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>38585</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>1793690</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>535870</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>6436</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>8877</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9500</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>61776</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>15000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>14468</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>17040</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9282</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>901687</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>10627</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>8057</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>13000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>906449</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>11033</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5481</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>7642</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>128755</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>22467</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>66405</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>106230</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>13715</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>37500</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>11577</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>75622</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>90746</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>116026</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>22016</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9803</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>33528</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>50866</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>124819</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>124200</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>21618</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>9408</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>10242</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>274202</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>44450</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>5355</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>94164</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>49000</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>47897</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>10729</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>211958</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <GrantsToOrgOutsideUSGrp>
+        <RegionTxt>SUB-SAHARAN AFRICA</RegionTxt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+        <CashGrantAmt>92040</CashGrantAmt>
+        <MannerOfCashDisbursementTxt>WIRE</MannerOfCashDisbursementTxt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+      </GrantsToOrgOutsideUSGrp>
+      <Total501c3OrgCnt>0</Total501c3OrgCnt>
+      <TotalOtherOrgCnt>156</TotalOtherOrgCnt>
+      <TransferToForeignCorpInd>0</TransferToForeignCorpInd>
+      <InterestInForeignTrustInd>0</InterestInForeignTrustInd>
+      <ForeignCorpOwnershipInd>1</ForeignCorpOwnershipInd>
+      <PassiveForeignInvestmestCoInd>0</PassiveForeignInvestmestCoInd>
+      <ForeignPartnershipInd>0</ForeignPartnershipInd>
+      <BoycottCountriesInd>1</BoycottCountriesInd>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>PART I, LINE 2:</FormAndLineReferenceDesc>
+        <ExplanationTxt>FOR GRANTS OUTSIDE THE U.S., EVERY MONTH EACH COUNTRY OR PROGRAM TEAM REQUESTS ITS CASH NEEDS FROM THE GLOBAL CHAI OFFICE IN BOSTON. AFTER THE AMOUNTS ARE VERIFIED, THE FUNDS ARE DISBURSED TO THE COUNTRY OR PROGRAM TEAMS. AT THE END OF EACH MONTH, THE EXPENSES FOR EACH TEAM ARE REVIEWED TO EVALUATE HOW FUNDING WAS USED AND ACCOUNTED.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>SCHEDULE F, PART II, LINE 3:</FormAndLineReferenceDesc>
+        <ExplanationTxt>THE GRANTEES COUNTED ON LINE THREE CONSIST OF GOVERNMENT MINISTRIES OF HEALTH, HOSPITALS, AND OTHER ORGANIZATIONS IN FURTHERANCE OF CHAI'S MISSION TO SAVE LIVES. MANY OF THE GRANTEES MAY BE RECOGNIZED AS CHARITABLE ORGANIZATIONS WITHIN THEIR LOCAL COUNTRY.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>SCHEDULE F, PART IV, LINE 6:</FormAndLineReferenceDesc>
+        <ExplanationTxt>FORM 5713 IS REQUIRED TO BE FILED WHEN AN ORGANIZATION HAS OPERATIONS WITH A NATIONAL OF A BOYCOTTING COUNTRY. FOR THIS PURPOSE, LEBANON IS CONSIDERED A BOYCOTTING COUNTRY. BEGINNING IN 2020, CHAI EMPLOYS ONE INDIVIDUAL WHO IS A NATIONAL OF LEBANON.</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleF>
+    <IRS990ScheduleI documentId="RetDoc1041900001">
+      <GrantRecordsMaintainedInd>1</GrantRecordsMaintainedInd>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>BLUE EQ</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>7 S PFEIFFERHORN DRIVE</AddressLine1Txt>
+          <CityNm>ALPINE</CityNm>
+          <StateAbbreviationCd>UT</StateAbbreviationCd>
+          <ZIPCd>84004</ZIPCd>
+        </USAddress>
+        <RecipientEIN>464450621</RecipientEIN>
+        <CashGrantAmt>6980</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>SABOT IMPACT ADVISORS</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>455 MAGELLAN AVE</AddressLine1Txt>
+          <CityNm>SAN FRANCISCO</CityNm>
+          <StateAbbreviationCd>CA</StateAbbreviationCd>
+          <ZIPCd>94116</ZIPCd>
+        </USAddress>
+        <RecipientEIN>882875184</RecipientEIN>
+        <CashGrantAmt>12000</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>TERRAFRAME INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>PO BOX 7597</AddressLine1Txt>
+          <CityNm>BROOMFIELD</CityNm>
+          <StateAbbreviationCd>CO</StateAbbreviationCd>
+          <ZIPCd>80021</ZIPCd>
+        </USAddress>
+        <RecipientEIN>020509254</RecipientEIN>
+        <CashGrantAmt>17280</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>GEORGETOWN UNIVERSITY</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>600 NEW JERSEY AVE</AddressLine1Txt>
+          <CityNm>NW WASHINGTON</CityNm>
+          <StateAbbreviationCd>DC</StateAbbreviationCd>
+          <ZIPCd>20001</ZIPCd>
+        </USAddress>
+        <RecipientEIN>530196603</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>24980</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>VITALLIANCE CORPORATION</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>4055 VALLEY VIEW LN STE 1000</AddressLine1Txt>
+          <CityNm>DALLAS</CityNm>
+          <StateAbbreviationCd>TX</StateAbbreviationCd>
+          <ZIPCd>75244</ZIPCd>
+        </USAddress>
+        <RecipientEIN>841817390</RecipientEIN>
+        <CashGrantAmt>25000</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>AKROS INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>3350 LAZERA RANCH ROAD</AddressLine1Txt>
+          <CityNm>CHEYENNE</CityNm>
+          <StateAbbreviationCd>WY</StateAbbreviationCd>
+          <ZIPCd>82007</ZIPCd>
+        </USAddress>
+        <RecipientEIN>263668995</RecipientEIN>
+        <CashGrantAmt>25298</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>ACCENTURE LLP</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>500 W MADISON STREET</AddressLine1Txt>
+          <CityNm>CHICAGO</CityNm>
+          <StateAbbreviationCd>IL</StateAbbreviationCd>
+          <ZIPCd>60661</ZIPCd>
+        </USAddress>
+        <RecipientEIN>720542904</RecipientEIN>
+        <CashGrantAmt>35000</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>ONA SYSTEMS INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>126 E 12TH ST SUITE 4A</AddressLine1Txt>
+          <CityNm>NEW YORK</CityNm>
+          <StateAbbreviationCd>NY</StateAbbreviationCd>
+          <ZIPCd>100035320</ZIPCd>
+        </USAddress>
+        <RecipientEIN>383940780</RecipientEIN>
+        <CashGrantAmt>50435</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>UNIVERSITY OF CINCINNATI</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>51 GOODMAN DRIVE SUITE 530</AddressLine1Txt>
+          <CityNm>CINCINNATI</CityNm>
+          <StateAbbreviationCd>OH</StateAbbreviationCd>
+          <ZIPCd>45221</ZIPCd>
+        </USAddress>
+        <RecipientEIN>316000989</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>70938</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>NOVARE CORPORATION INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>200 WASHINGTON ST</AddressLine1Txt>
+          <CityNm>LIBERTYVILLE</CityNm>
+          <StateAbbreviationCd>IA</StateAbbreviationCd>
+          <ZIPCd>52567</ZIPCd>
+        </USAddress>
+        <RecipientEIN>862164483</RecipientEIN>
+        <CashGrantAmt>75320</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>IPAS INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>300 MARKET STREET SUITE 134</AddressLine1Txt>
+          <CityNm>CHAPEL HILL</CityNm>
+          <StateAbbreviationCd>NC</StateAbbreviationCd>
+          <ZIPCd>27516</ZIPCd>
+        </USAddress>
+        <RecipientEIN>561071085</RecipientEIN>
+        <CashGrantAmt>92944</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>ADVARRA INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>6940 COLUMBIA GATEWAY DRIVE SUITE</AddressLine1Txt>
+          <AddressLine2Txt>110</AddressLine2Txt>
+          <CityNm>COLUMBIA</CityNm>
+          <StateAbbreviationCd>MD</StateAbbreviationCd>
+          <ZIPCd>21046</ZIPCd>
+        </USAddress>
+        <RecipientEIN>311358981</RecipientEIN>
+        <CashGrantAmt>105240</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>LIFE TECHNOLOGIES CORPORATION</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>5791 VN ALLEN WAY</AddressLine1Txt>
+          <CityNm>CARLSBAD</CityNm>
+          <StateAbbreviationCd>CA</StateAbbreviationCd>
+          <ZIPCd>92008</ZIPCd>
+        </USAddress>
+        <RecipientEIN>330373077</RecipientEIN>
+        <CashGrantAmt>156700</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>JOHNS HOPKINS UNIVERSITY</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>1615 THANMES STREET</AddressLine1Txt>
+          <CityNm>BALTIMORE</CityNm>
+          <StateAbbreviationCd>MD</StateAbbreviationCd>
+          <ZIPCd>21231</ZIPCd>
+        </USAddress>
+        <RecipientEIN>237424444</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>230599</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>ADMINISTRATORS OF THE TULANE EDUCATIONAL FUND DBA TULANE UNIVERSITY</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>6823 ST CHARLES AVENUE</AddressLine1Txt>
+          <CityNm>NEW ORLEANS</CityNm>
+          <StateAbbreviationCd>LA</StateAbbreviationCd>
+          <ZIPCd>70123</ZIPCd>
+        </USAddress>
+        <RecipientEIN>720423889</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>346050</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>COUPA SOFTWARE INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>1855 SOUTH GRANT STREET</AddressLine1Txt>
+          <CityNm>SAN MATEO</CityNm>
+          <StateAbbreviationCd>CA</StateAbbreviationCd>
+          <ZIPCd>94402</ZIPCd>
+        </USAddress>
+        <RecipientEIN>204429448</RecipientEIN>
+        <CashGrantAmt>375200</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>ENGENDERHEALTH INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>505 9TH STREET NW</AddressLine1Txt>
+          <CityNm>WASHINGTON</CityNm>
+          <StateAbbreviationCd>DC</StateAbbreviationCd>
+          <ZIPCd>20004</ZIPCd>
+        </USAddress>
+        <RecipientEIN>131623838</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>399630</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>POPULATION SERVICES INTERNATIONAL</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>1120 19TH STREET NM SUITE 600</AddressLine1Txt>
+          <CityNm>WASHINGTON</CityNm>
+          <StateAbbreviationCd>DC</StateAbbreviationCd>
+          <ZIPCd>20036</ZIPCd>
+        </USAddress>
+        <RecipientEIN>560942853</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>449220</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>ASSIST INTERNATIONAL INC</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>800 S STOCKTON AVE</AddressLine1Txt>
+          <CityNm>RIPON</CityNm>
+          <StateAbbreviationCd>CA</StateAbbreviationCd>
+          <ZIPCd>95366</ZIPCd>
+        </USAddress>
+        <RecipientEIN>770243475</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>510000</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>PATHFINDER INTERNATIONAL</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>9 GALEN STREET SUITE 217</AddressLine1Txt>
+          <CityNm>WATERTOWN</CityNm>
+          <StateAbbreviationCd>MA</StateAbbreviationCd>
+          <ZIPCd>02472</ZIPCd>
+        </USAddress>
+        <RecipientEIN>530235320</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>563520</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>UNIVERSITY OF NORTH CAROLINA AT CHAPEL HILL</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>104 AIRPORT DR SUITE 2200 CB 1350</AddressLine1Txt>
+          <CityNm>CHAPEL HILL</CityNm>
+          <StateAbbreviationCd>NC</StateAbbreviationCd>
+          <ZIPCd>275991350</ZIPCd>
+        </USAddress>
+        <RecipientEIN>566001393</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>741335</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <RecipientTable>
+        <RecipientBusinessName>
+          <BusinessNameLine1Txt>CATHOLIC RELIEF SERVICES - UNITED STATES CONFERENCE OF CATHOLIC BISHOPS</BusinessNameLine1Txt>
+        </RecipientBusinessName>
+        <USAddress>
+          <AddressLine1Txt>228 W LEXINGTON ST</AddressLine1Txt>
+          <CityNm>BALTIMORE</CityNm>
+          <StateAbbreviationCd>MD</StateAbbreviationCd>
+          <ZIPCd>212013443</ZIPCd>
+        </USAddress>
+        <RecipientEIN>135563422</RecipientEIN>
+        <IRCSectionDesc>501(C)(3)</IRCSectionDesc>
+        <CashGrantAmt>1114706</CashGrantAmt>
+        <NonCashAssistanceAmt>0</NonCashAssistanceAmt>
+        <PurposeOfGrantTxt>HEALTH</PurposeOfGrantTxt>
+      </RecipientTable>
+      <Total501c3OrgCnt>11</Total501c3OrgCnt>
+      <TotalOtherOrgCnt>11</TotalOtherOrgCnt>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>PART I, LINE 2:</FormAndLineReferenceDesc>
+        <ExplanationTxt>FOR GRANTS INSIDE THE U.S., EVERY MONTH EACH PROGRAM TEAM REQUESTS ITS CASH NEEDS THROUGH TREASURY TEAM FOR REVIEW BEFORE ACCOUNTS PAYABLE PROCESSING. AFTER AMOUNTS ARE VERIFIED, THEY ARE DISBURSED TO PROGRAM TEAMS. AT THE END OF EACH MONTH, THE EXPENSES FOR EACH TEAM ARE REVIEWED TO EVALUATE HOW FUNDS WERE USED AND ACCOUNTED.</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleI>
+    <IRS990ScheduleJ documentId="RetDoc1042400001">
+      <IdemnificationGrossUpPmtsInd>X</IdemnificationGrossUpPmtsInd>
+      <HousingAllowanceOrResidenceInd>X</HousingAllowanceOrResidenceInd>
+      <ClubDuesOrFeesInd>X</ClubDuesOrFeesInd>
+      <WrittenPolicyRefTAndEExpnssInd>1</WrittenPolicyRefTAndEExpnssInd>
+      <SubstantiationRequiredInd>1</SubstantiationRequiredInd>
+      <CompensationCommitteeInd>X</CompensationCommitteeInd>
+      <Form990OfOtherOrganizationsInd>X</Form990OfOtherOrganizationsInd>
+      <WrittenEmploymentContractInd>X</WrittenEmploymentContractInd>
+      <CompensationSurveyInd>X</CompensationSurveyInd>
+      <BoardOrCommitteeApprovalInd>X</BoardOrCommitteeApprovalInd>
+      <SeverancePaymentInd>1</SeverancePaymentInd>
+      <SupplementalNonqualRtrPlanInd>0</SupplementalNonqualRtrPlanInd>
+      <EquityBasedCompArrngmInd>0</EquityBasedCompArrngmInd>
+      <CompBasedOnRevenueOfFlngOrgInd>0</CompBasedOnRevenueOfFlngOrgInd>
+      <CompBsdOnRevRelatedOrgsInd>0</CompBsdOnRevRelatedOrgsInd>
+      <CompBsdNetEarnsFlngOrgInd>0</CompBsdNetEarnsFlngOrgInd>
+      <CompBsdNetEarnsRltdOrgsInd>0</CompBsdNetEarnsRltdOrgsInd>
+      <AnyNonFixedPaymentsInd>0</AnyNonFixedPaymentsInd>
+      <InitialContractExceptionInd>0</InitialContractExceptionInd>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>DR NEIL BUDDY SHAH</PersonNm>
+        <TitleTxt>CHIEF EXECUTIVE OFFICER</TitleTxt>
+        <BaseCompensationFilingOrgAmt>535500</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>29217</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>24580</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>589297</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>RASHA HIBRI</PersonNm>
+        <TitleTxt>CHIEF FINANCIAL OFFICER</TitleTxt>
+        <BaseCompensationFilingOrgAmt>395352</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>23849</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>37667</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>456868</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>DR DAVID RIPIN</PersonNm>
+        <TitleTxt>EVP, INFECTIOUS DISEASES/CSO</TitleTxt>
+        <BaseCompensationFilingOrgAmt>333354</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>18197</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>36626</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>388177</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>ALICE KANG'ETHE</PersonNm>
+        <TitleTxt>CHIEF OPERATING OFFICER(UNTIL 12/23)</TitleTxt>
+        <BaseCompensationFilingOrgAmt>318351</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>36895</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>22798</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>7229</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>385273</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>DR OWENS WIWA</PersonNm>
+        <TitleTxt>EVP, GLOBAL RESOURCES</TitleTxt>
+        <BaseCompensationFilingOrgAmt>151390</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>129744</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>15570</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>14389</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>311093</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>YOUNG JOSHUA CHU</PersonNm>
+        <TitleTxt>EVP, GLOBAL VACCINES &amp; CANCER</TitleTxt>
+        <BaseCompensationFilingOrgAmt>283969</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>80</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>17170</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>9140</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>310359</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>ZACHARY KATZ</PersonNm>
+        <TitleTxt>VP, ESSENTIAL MEDICINES</TitleTxt>
+        <BaseCompensationFilingOrgAmt>185264</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>41188</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>21122</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>28977</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>276551</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>JUSTIN COHEN</PersonNm>
+        <TitleTxt>GLOBAL MALARIA, NTDS/VECTOR BORN</TitleTxt>
+        <BaseCompensationFilingOrgAmt>221664</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>14282</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>28513</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>264459</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>CAROLYN AMOLE</PersonNm>
+        <TitleTxt>HIV/HEPATITIS/TB</TitleTxt>
+        <BaseCompensationFilingOrgAmt>217653</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>10382</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>36328</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>264363</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>GERALD MACHARIA</PersonNm>
+        <TitleTxt>VP, EAST &amp; SOUTHERN AFRICA/COUNTRY</TitleTxt>
+        <BaseCompensationFilingOrgAmt>220379</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>13223</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>7583</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>241185</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>SAMANTHA DIAMOND</PersonNm>
+        <TitleTxt>HEALTH SYSTEMS</TitleTxt>
+        <BaseCompensationFilingOrgAmt>190250</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>10962</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>36328</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>237540</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>DANG NGO</PersonNm>
+        <TitleTxt>VP, SOUTHEAST ASIA/PACIFIC</TitleTxt>
+        <BaseCompensationFilingOrgAmt>187786</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>6662</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>10383</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>12467</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>217298</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <RltdOrgOfficerTrstKeyEmplGrp>
+        <PersonNm>DR MPHU RAMATLAPENG</PersonNm>
+        <TitleTxt>EVP, IMPLEMENTATION</TitleTxt>
+        <BaseCompensationFilingOrgAmt>177232</BaseCompensationFilingOrgAmt>
+        <CompensationBasedOnRltdOrgsAmt>0</CompensationBasedOnRltdOrgsAmt>
+        <BonusFilingOrganizationAmount>0</BonusFilingOrganizationAmount>
+        <BonusRelatedOrganizationsAmt>0</BonusRelatedOrganizationsAmt>
+        <OtherCompensationFilingOrgAmt>0</OtherCompensationFilingOrgAmt>
+        <OtherCompensationRltdOrgsAmt>0</OtherCompensationRltdOrgsAmt>
+        <DeferredCompensationFlngOrgAmt>10634</DeferredCompensationFlngOrgAmt>
+        <DeferredCompRltdOrgsAmt>0</DeferredCompRltdOrgsAmt>
+        <NontaxableBenefitsFilingOrgAmt>5895</NontaxableBenefitsFilingOrgAmt>
+        <NontaxableBenefitsRltdOrgsAmt>0</NontaxableBenefitsRltdOrgsAmt>
+        <TotalCompensationFilingOrgAmt>193761</TotalCompensationFilingOrgAmt>
+        <TotalCompensationRltdOrgsAmt>0</TotalCompensationRltdOrgsAmt>
+        <CompReportPrior990FilingOrgAmt>0</CompReportPrior990FilingOrgAmt>
+        <CompReportPrior990RltdOrgsAmt>0</CompReportPrior990RltdOrgsAmt>
+      </RltdOrgOfficerTrstKeyEmplGrp>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>PART I, LINE 1A</FormAndLineReferenceDesc>
+        <ExplanationTxt>STAFF MEMBERS WHO ARE ENROLLED IN THE CHAI DOMESTIC MEDICAL PLAN ARE ELIGIBLE FOR REIMBURSEMENT OF THEIR GYM MEMBERSHIP UP TO $250 PER CALENDAR YEAR. THE REIMBURSEMENT IS CONSIDERED TAXABLE INCOME. CHAI APPLIES A TAX 'GROSS UP' ON RELOCATION ALLOWANCE PAYMENTS IN ORDER TO ENSURE THAT THE EMPLOYEE RECEIVES THE FULL BENEFIT OF THE ALLOWANCE, WITHOUT THE IMPACT OF TAXATION. CHAI PROVIDES A HOUSING ALLOWANCE TO ONE KEY EMPLOYEE, WHICH IS TREATED AS TAXABLE WAGES.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>PART I, LINE 4A</FormAndLineReferenceDesc>
+        <ExplanationTxt>ALICE KANG'ETHE, CHIEF OPERATING OFFICER UNTIL DECEMBER 2023, RECEIVED SEVERANCE IN THE AMOUNT OF $36,895 IN 2023.</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleJ>
+    <IRS990ScheduleM documentId="RetDoc1042900001">
+      <SecuritiesPubliclyTradedGrp>
+        <NonCashCheckboxInd>X</NonCashCheckboxInd>
+        <ContributionCnt>3</ContributionCnt>
+        <NoncashContributionsRptF990Amt>3976801</NoncashContributionsRptF990Amt>
+        <MethodOfDeterminingRevenuesTxt>FMV</MethodOfDeterminingRevenuesTxt>
+      </SecuritiesPubliclyTradedGrp>
+      <Form8283ReceivedCnt>0</Form8283ReceivedCnt>
+      <AnyPropertyThatMustBeHeldInd>0</AnyPropertyThatMustBeHeldInd>
+      <ReviewProcessUnusualNCGiftsInd>0</ReviewProcessUnusualNCGiftsInd>
+      <ThirdPartiesUsedInd>0</ThirdPartiesUsedInd>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>PART I, COLUMN (B):</FormAndLineReferenceDesc>
+        <ExplanationTxt>THE NUMBER SHOWN IN COLUMN B REPRESENTS THE NUMBER OF CONTRIBUTIONS.</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleM>
+    <IRS990ScheduleO documentId="RetDoc1044400001">
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART I, LINE 1, DESCRIPTION OF ORGANIZATION MISSION:</FormAndLineReferenceDesc>
+        <ExplanationTxt>CHAI IS A GLOBAL HEALTH ORGANIZATION COMMITTED TO SAVING LIVES AND IMPROVING HEALTH OUTCOMES IN LOW- AND MIDDLE-INCOME COUNTRIES BY ENABLING THE GOVERNMENT AND PRIVATE SECTOR TO STRENGTHEN AND SUSTAIN QUALITY HEALTH SYSTEMS. CHAI WAS FOUNDED IN 2002 WITH A TRANSFORMATIONAL GOAL: HELP SAVE THE LIVES OF MILLIONS OF PEOPLE LIVING WITH HIV/AIDS. TODAY, ALONG WITH HIV, WE WORK WITH PARTNERS TO PREVENT AND TREAT INFECTIOUS DISEASES SUCH AS COVID-19, MALARIA, TUBERCULOSIS, AND HEPATITIS; ADDRESS NON-COMMUNICABLE DISEASES SUCH AS CANCER, DIABETES, AND HYPERTENSION; IMPACT WOMEN'S AND CHILDREN'S HEALTH BY ACCELERATING THE ROLLOUT OF LIFESAVING VACCINES, REDUCING MATERNAL, INFANT, AND CHILD MORTALITY, COMBATING CHRONIC MALNUTRITION, AND INCREASING ACCESS TO SEXUAL AND REPRODUCTIVE HEALTH SERVICES. CHAI IS ALSO WORKING TO INCREASE ACCESS TO ASSISTIVE TECHNOLOGY, ADDRESS CLIMATE CHANGE IN OUR WORK, AND STRENGTHEN HEALTH SYSTEMS. WE OPERATE IN OVER 35 COUNTRIES AROUND THE WORLD AND MORE THAN 140 COUNTRIES HAVE ACCESS TO CHAI-NEGOTIATED DEALS ON MEDICATIONS, DIAGNOSTICS, VACCINES, AND OTHER HEALTH TOOLS.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART I, LINE 5:</FormAndLineReferenceDesc>
+        <ExplanationTxt>THE NUMBER REPORTED ON PART I, LINE 5 REFLECTS THE NUMBER OF PEOPLE REPORTED ON FORM W-3. CHAI EMPLOYS 1,657 PEOPLE AROUND THE GLOBE.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART VI, SECTION A, LINE 2</FormAndLineReferenceDesc>
+        <ExplanationTxt>WILLIAM J. CLINTON AND CHELSEA V. CLINTON HAVE A FAMILY RELATIONSHIP. BUSINESS RELATIONSHIP: BRUCE LINDSEY, A BOARD MEMBER OF CHAI IS EMPLOYED BY THE BILL, HILLARY AND CHELSEA CLINTON FOUNDATION ("THE FOUNDATION"), WHERE BOTH WILLIAM J. CLINTON AND CHELSEA CLINTON SERVE AS DIRECTORS. CHAI BYLAWS STATE THAT THE BOARD OF DIRECTORS GOVERNANCE STRUCTURE SHALL CONSIST OF BETWEEN 9 AND 15 MEMBERS, ALL OF WHOM ARE ELECTED BY THE BOARD AS A WHOLE. THREE OF CHAI'S CURRENT 13 BOARD MEMBERS ALSO SERVE ON THE FOUNDATION'S BOARD.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART VI, SECTION B, LINE 11B</FormAndLineReferenceDesc>
+        <ExplanationTxt>CHAI'S SENIOR FINANCE MANAGER COLLECTED AND CONSOLIDATED INFORMATION AFTER THE ANNUAL STATUTORY AUDIT WAS COMPLETED. THE RETURN IS PREPARED BY AN EXTERNAL TAX ADVISOR. CHAI'S INTERNATIONAL CONTROLLER, COMMUNICATIONS DIRECTOR &amp; THE THREE OFFICERS REVIEW FORM 990, WHICH IS SUBSEQUENTLY REVIEWED BY THE AUDIT COMMITTEE, WHICH THEN MAKES A RECOMMENDATION FOR APPROVAL TO THE BOARD TO EITHER APPROVE OR REJECT THE FORM. THE BOARD OF DIRECTORS RECEIVES A FINAL COPY VIA EMAIL BEFORE FILING.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART VI, SECTION B, LINE 12C</FormAndLineReferenceDesc>
+        <ExplanationTxt>INTERESTED PERSONS MUST DISCLOSE ANY TRANSACTION OR ARRANGEMENT WHICH RESULTS IN A CONFLICT OF INTEREST TO THE BOARD OR COMMITTEE OF WHICH THEY ARE A MEMBER. THE BOARD MEETS, REVIEWS, AND DISCUSSES ANY DISCLOSED CONFLICT OF INTEREST. CHAI SHALL TAKE APPROPRIATE DISCIPLINARY ACTIONS, AS DETERMINED BY THE BOARD, WITH RESPECT TO AN INTERESTED PERSON WHO HAS VIOLATED THE CONFLICT-OF-INTEREST POLICY. THIS APPLIES TO DIRECTORS, OFFICERS, KEY EMPLOYEES, OR COMMITTEE MEMBERS, AND ALL OTHERS WHO ARE PERMITTED TO VOTE AT BOARD OF DIRECTORS MEETINGS.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART VI, SECTION B, LINE 15</FormAndLineReferenceDesc>
+        <ExplanationTxt>THE COMPENSATION OF THE CEO, OTHER OFFICERS AND SENIOR MANAGEMENT IS DETERMINED BY REVIEWING INFORMATION CONCERNING COMPARABLE SALARY LEVELS FOR COMPARABLE POSITIONS AT SIMILAR ORGANIZATIONS. THEIR CURRENT COMPENSATION LEVELS WERE DETERMINED IN CONJUNCTION WITH THE SEARCH FIRM'S RECOMMENDATIONS OF MARKET COMPENSATION WHICH IS COMPARABLE TO THEIR POSITIONS. THE BOARD OF DIRECTORS REVIEWED THE PROPOSED COMPENSATION LEVELS AND APPROVED THEM. IN 2023, THE OFFICERS RECEIVED COLA ADJUSTMENTS WHICH WERE APPLICABLE TO ALL EMPLOYEES BASED ON THEIR BASE LOCATION.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART VI, SECTION C, LINE 19</FormAndLineReferenceDesc>
+        <ExplanationTxt>THE GOVERNING DOCUMENTS AND FINANCIAL STATEMENTS ARE MADE AVAILABLE TO THE PUBLIC UPON REQUEST.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART VII, SECTION A, COLUMN (B)</FormAndLineReferenceDesc>
+        <ExplanationTxt>IN THIS SECTION WE REPORT AN AVERAGE OF CONTRACTED HOURS. HOWEVER, ACROSS THE ORGANIZATION, MANY PEOPLE IN CHAI WORK AN AVERAGE OF 50 HOURS PER WEEK.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART IX, STATEMENT OF FUNCTIONAL EXPENSES, LINE 7:</FormAndLineReferenceDesc>
+        <ExplanationTxt>CHAI IS AN OPERATING CHARITY. CHAI'S STAFF DIRECTLY IMPLEMENTS PROGRAMS AND THEIR SALARIES ARE DEDICATED TO THAT WORK. OUT OF THE TOTAL FUNCTIONAL EXPENSES OF $77.22 MILLION (OTHER SALARIES AND WAGES), $68.60 MILLION (88.83 PERCENT) ARE DIRECTLY RELATED TO CARRYING OUT PROGRAMS TO SAVE LIVES; $8.27 MILLION (10.72 PERCENT) ARE FOR GENERAL MANAGEMENT AND $344 THOUSAND (0.45 PERCENT) ARE DIRECTED TO FUNDRAISING.</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>FORM 990, PART IX, STATEMENT OF FUNCTIONAL EXPENSES, LINE 17:</FormAndLineReferenceDesc>
+        <ExplanationTxt>CHAI'S MISSION IS TO SAVE LIVES AND REDUCE THE BURDEN OF DISEASE. TO DO SO WITH MAXIMUM IMPACT, WE CHOOSE TO WORK IN THE REGIONS OF COUNTRIES WHERE THE BURDEN OF DISEASE IS THE GREATEST AND THE MOST LIVES ARE BEING LOST. THESE AREAS ARE OFTEN VERY RURAL AND REMOTE AREAS OF COUNTRIES, FAR FROM CAPITAL CITIES. OUR WORK TO SUPPORT MINISTRIES OF HEALTH TO STRENGTHEN THEIR HEALTH SYSTEMS ENTAILS SIGNIFICANT FIELD WORK, TO WORK ALONGSIDE STATE, DISTRICT AND LOCAL HEALTH OFFICIALS AND HEALTH CARE WORKERS AND TO TRAIN AND MENTOR LOCAL HEALTH PROFESSIONALS SUCH AS DOCTORS, NURSES AND COMMUNITY HEALTH WORKERS. FOR MAXIMUM IMPACT, THESE EDUCATIONAL ACTIVITIES ARE OFTEN CARRIED OUT ONSITE AT DISTRICT HOSPITALS OR PRIMARY HEALTH CARE CENTERS. COSTS ASSOCIATED WITH THESE TRAININGS AND MEETINGS ARE INCLUDED IN THIS CATEGORY AS WELL AS TRAVEL COSTS OF MENTORS AND PROGRAM MANAGERS, AND COSTS TO COLLECT DATA IN THE FIELD TO MONITOR AND EVALUATE PROGRAM EFFECTIVENESS. AROUND 90 PERCENT OF CHAI'S FUNDING IS DEDICATED DIRECTLY TO PROGRAMS TO SAVE LIVES. IN ADDITION, CHAI HAS NEGOTIATED OVER 125+ AGREEMENTS THAT HAVE DRAMATICALLY LOWERED THE PRICE AND INCREASED THE AVAILABILITY OF DRUGS, DIAGNOSTICS, VACCINES AND OTHER HEALTH PRODUCTS IN LOW- AND MIDDLE-INCOME COUNTRIES. THE TRAVEL ASSOCIATED WITH NEGOTIATIONS WITH COMPANIES AROUND THE WORLD TO NEGOTIATE THESE AGREEMENTS IS ALSO INCLUDED IN THIS CATEGORY.</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleO>
+    <IRS990ScheduleR documentId="RetDoc1043400001">
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE AUSTRALIA</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>UNIT 7 61 WALTERS DRIVE</AddressLine1Txt>
+          <CityNm>OSBORNE PARK</CityNm>
+          <CountryCd>AS</CountryCd>
+          <ForeignPostalCd>WA 6017</ForeignPostalCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>AS</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>0</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>0</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE-BOTSWANA</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>GRANT THORNTON BUSINESS SERVICE PTY</AddressLine1Txt>
+          <CityNm>FAIRGROUNDS GABORONE</CityNm>
+          <CountryCd>BC</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>BC</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>0</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>335</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE RDC</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>DE LA PAIX GAL PRES APP 22 NO 1</AddressLine1Txt>
+          <CityNm>DEMOCRATIC REP OF CONGO</CityNm>
+          <CountryCd>CG</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>CG</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>6233968</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>1168129</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE FRANCE</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>6 AVENUE FRANKLIN D ROOSEVELT</AddressLine1Txt>
+          <CityNm>PARIS</CityNm>
+          <CountryCd>FR</CountryCd>
+          <ForeignPostalCd>75008</ForeignPostalCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>FR</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>459868</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>47225</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE - GHANA</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>NO 5 FINCHLEY COURT</AddressLine1Txt>
+          <CityNm>AJIRIGANOR</CityNm>
+          <ProvinceOrStateNm>ACCRA</ProvinceOrStateNm>
+          <CountryCd>GH</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>GH</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>3067441</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>192128</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>WILLIAM J CLINTON FOUNDATION INDIA</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>26 OKHLA INDUSTRIAL ESTATE PHASE II</AddressLine1Txt>
+          <CityNm>NEW DELHI</CityNm>
+          <CountryCd>IN</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>IN</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>14467741</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>8598821</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE INDIA PRIVATE LIMITED COMPANY</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>261 BASEMENT OKHLA PHASE III</AddressLine1Txt>
+          <CityNm>NEW DELHI</CityNm>
+          <CountryCd>IN</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>IN</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>0</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>0</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>3RD FLOOR TIMAU PLAZA ARGWINGS KO</AddressLine1Txt>
+          <CityNm>NAIROBI</CityNm>
+          <CountryCd>KE</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>KE</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>8098626</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>368961</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>MAQALIKA DR PHOROROS RESIDENCE</AddressLine1Txt>
+          <CityNm>MASERU</CityNm>
+          <CountryCd>LT</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>LT</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>2781894</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>167263</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>7 GANGES STREET</AddressLine1Txt>
+          <CityNm>MAITAMA DISTRICT ABUJA</CityNm>
+          <CountryCd>NI</CountryCd>
+        </ForeignAddress>
+        <EIN>981316363</EIN>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>NI</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>21000711</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>1278049</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE-SOUTH AFRICA</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>1166 FRANCIS BAARD STREET BLOCK B</AddressLine1Txt>
+          <CityNm>PRETORIA GAUTENG</CityNm>
+          <CountryCd>SF</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>SF</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>5077756</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>189734</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE UGANDA LIMITED</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>PLOT 8 MAYO CLOSE KOLOLO PO BOX</AddressLine1Txt>
+          <CityNm>KAMPALA</CityNm>
+          <CountryCd>UG</CountryCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>UG</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>4046964</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>98980</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE - UK</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>3RD FLOOR 1 ASHLEY ROAD</AddressLine1Txt>
+          <CityNm>ALTRINCHAM</CityNm>
+          <CountryCd>UK</CountryCd>
+          <ForeignPostalCd>WA14 2DT</ForeignPostalCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>UK</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>0</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>0</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdDisregardedEntitiesGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>PO BOX 6080</AddressLine1Txt>
+          <CityNm>MBABANE</CityNm>
+          <ProvinceOrStateNm>KINGDOM OF ESWATI</ProvinceOrStateNm>
+          <CountryCd>WZ</CountryCd>
+          <ForeignPostalCd>H100</ForeignPostalCd>
+        </ForeignAddress>
+        <EIN>981316357</EIN>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>WZ</LegalDomicileForeignCountryCd>
+        <TotalIncomeAmt>1353117</TotalIncomeAmt>
+        <EndOfYearAssetsAmt>8008</EndOfYearAssetsAmt>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+      </IdDisregardedEntitiesGrp>
+      <IdRelatedTaxExemptOrgGrp>
+        <DisregardedEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE CANADA</BusinessNameLine1Txt>
+        </DisregardedEntityName>
+        <ForeignAddress>
+          <AddressLine1Txt>C/O ILER CAMPBELL 150 STREET 7TH</AddressLine1Txt>
+          <CityNm>TORONTO</CityNm>
+          <ProvinceOrStateNm>ONTARIO</ProvinceOrStateNm>
+          <CountryCd>CA</CountryCd>
+          <ForeignPostalCd>M5V 3E3</ForeignPostalCd>
+        </ForeignAddress>
+        <PrimaryActivitiesTxt>HEALTH</PrimaryActivitiesTxt>
+        <LegalDomicileForeignCountryCd>CA</LegalDomicileForeignCountryCd>
+        <DirectControllingEntityName>
+          <BusinessNameLine1Txt>CLINTON HEALTH ACCESS INITIATIVE INC</BusinessNameLine1Txt>
+        </DirectControllingEntityName>
+        <ControlledOrganizationInd>1</ControlledOrganizationInd>
+      </IdRelatedTaxExemptOrgGrp>
+      <ReceiptOfIntAnntsRntsRyltsInd>0</ReceiptOfIntAnntsRntsRyltsInd>
+      <GiftGrntOrCapContriToOthOrgInd>0</GiftGrntOrCapContriToOthOrgInd>
+      <GiftGrntCapContriFromOthOrgInd>0</GiftGrntCapContriFromOthOrgInd>
+      <LoansOrGuaranteesToOtherOrgInd>0</LoansOrGuaranteesToOtherOrgInd>
+      <LoansOrGuaranteesFromOthOrgInd>0</LoansOrGuaranteesFromOthOrgInd>
+      <DivRelatedOrganizationInd>0</DivRelatedOrganizationInd>
+      <AssetSaleToOtherOrgInd>0</AssetSaleToOtherOrgInd>
+      <AssetPurchaseFromOtherOrgInd>0</AssetPurchaseFromOtherOrgInd>
+      <AssetExchangeInd>0</AssetExchangeInd>
+      <RentalOfFacilitiesToOthOrgInd>0</RentalOfFacilitiesToOthOrgInd>
+      <RentalOfFcltsFromOthOrgInd>0</RentalOfFcltsFromOthOrgInd>
+      <PerformOfServicesForOthOrgInd>0</PerformOfServicesForOthOrgInd>
+      <PerformOfServicesByOtherOrgInd>0</PerformOfServicesByOtherOrgInd>
+      <SharingOfFacilitiesInd>0</SharingOfFacilitiesInd>
+      <PaidEmployeesSharingInd>0</PaidEmployeesSharingInd>
+      <ReimbursementPaidToOtherOrgInd>0</ReimbursementPaidToOtherOrgInd>
+      <ReimbursementPaidByOtherOrgInd>0</ReimbursementPaidByOtherOrgInd>
+      <TransferToOtherOrgInd>0</TransferToOtherOrgInd>
+      <TransferFromOtherOrgInd>0</TransferFromOtherOrgInd>
+    </IRS990ScheduleR>
+  </ReturnData>
+</Return>

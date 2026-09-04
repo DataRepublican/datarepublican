@@ -13,7 +13,7 @@ Total organizations: ${'$'}{total_orgs}
 | **${row.grift_ratio}** | ${row.grift} | ${row.denominator} | ${row.filer_ein} | ${row.filer_name} | ${row.tax_year} | ${row.total_exp} | ${row.officer_comp} | ${row.comp_pct} | ${row.comp_ptile} | ${row.travel_amt} | ${row.travel_pct} | ${row.travel_ptile} | ${row.conferences_amt} | ${row.conferences_pct} | ${row.conferences_ptile} | ${row.grants_to_others} | ${row.grants_pct} | ${row.grants_ptile} | ${row.foreign_expenses} | ${row.foreign_expenses_pct} | ${row.foreign_expenses_ptile} | ${row.total_assets} |
 % endfor
 
-## Calculation Explanations
+${'##'} Calculation Explanations
 - **Grift Ratio (%)**: Percentage of total expenses spent on officer compensation, travel, and conferences, indicating potential self-dealing. Calculated as: `(officer_comp + travel_amt + conferences_amt) / total_exp * 100`. Clamped to 0–100.
 - **Grift Ratio Percentile**: Percentile of grift ratio within the organization’s 501(c) type, where higher percentiles indicate higher domestic spending relative to peers. Ratings: A (80–100), B (60–79), C (40–59), D (20–39), F (0–19).
 - **Grants to Others (%) (Informational)**: Percentage of total expenses allocated to grants to others, calculated as: `grants_to_others / total_exp * 100`. Provided for context, not a direct grift indicator.

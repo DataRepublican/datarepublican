@@ -1,4 +1,7 @@
-from lxml import etree
+from lxml import etree  # type: ignore
+from xpaths import tostring
+from logging_utils import get_logger, log_info, log_error as proper_log_error, log_debug as proper_log_debug, log_error, log_debug, log_warning
+quiet = False
 
 def precompile_xpaths(xpaths, namespaces):
     """
@@ -16,7 +19,7 @@ def precompile_xpaths(xpaths, namespaces):
 def find_element(root, xpaths, namespaces, xpath_cache=None, field=None, form_type=None, log_error=None, xpath_match_stats=None):
     """
     Find an element using a list of XPaths, with caching to avoid redundant evaluations.
-    
+
     Args:
         root: The root element to evaluate XPaths against.
         xpaths: List of XPaths (either strings or precompiled etree.XPath objects).
@@ -26,7 +29,27 @@ def find_element(root, xpaths, namespaces, xpath_cache=None, field=None, form_ty
         form_type: Form type (e.g., "990", "990EZ", "990PF") for stats tracking (optional).
         log_error: Logging function to use for error messages (optional).
         xpath_match_stats: Dictionary to track XPath match statistics (optional).
-    
+
+    Returns:
+        The first matching element, or None if no match is found.
+    """
+    # Only collect xpath stats in thread 0 (XPathStatsProducer) to avoid race conditions
+    import threading
+    current_thread = threading.current_thread()
+    collect_stats = xpath_match_stats is not None and current_thread.name == "XPathStatsProducer"
+    """
+    Find an element using a list of XPaths, with caching to avoid redundant evaluations.
+
+    Args:
+        root: The root element to evaluate XPaths against.
+        xpaths: List of XPaths (either strings or precompiled etree.XPath objects).
+        namespaces: Dictionary of namespace mappings.
+        xpath_cache: Dictionary to cache XPath results (optional).
+        field: Field name for tracking match statistics (optional).
+        form_type: Form type (e.g., "990", "990EZ", "990PF") for stats tracking (optional).
+        log_error: Logging function to use for error messages (optional).
+        xpath_match_stats: Dictionary to track XPath match statistics (optional).
+
     Returns:
         The first matching element, or None if no match is found.
     """
@@ -37,13 +60,19 @@ def find_element(root, xpaths, namespaces, xpath_cache=None, field=None, form_ty
     # Use a dummy log_error if not provided
     if log_error is None:
         def log_error(msg, *args, **kwargs):
-            print(msg.format(*args))
+            if not quiet:
+                pass  # Silent dummy logger
 
     # Create a unique key for the cache based on root, xpath, and namespaces
     root_id = id(root)
     namespaces_key = tuple(sorted(namespaces.items())) if namespaces else None
 
-    compiled_xpaths = precompile_xpaths(xpaths, namespaces)
+    # XPaths are already pre-compiled in xpaths_*.py files, so use them directly
+    # Only compile if we get strings (which shouldn't happen in normal operation)
+    if xpaths and isinstance(xpaths[0], etree.XPath):
+        compiled_xpaths = xpaths  # Already compiled
+    else:
+        compiled_xpaths = precompile_xpaths(xpaths, namespaces)
 
     for xpath in compiled_xpaths:
         # Check the cache first
@@ -51,37 +80,40 @@ def find_element(root, xpaths, namespaces, xpath_cache=None, field=None, form_ty
         if cache_key in xpath_cache:
             elem = xpath_cache[cache_key]
             if elem is not None:
-                log_error("Cache hit for field {} with XPath {}", field, str(xpath))
                 return elem
             continue
 
         # Evaluate the XPath if not in cache
         try:
+            # Skip debug logging for xpath stats testing
             elem = xpath(root)
             if elem:
                 xpath_cache[cache_key] = elem[0]
-                log_error("XPath match for field {} with XPath {}", field, str(xpath))
-                if field and form_type and xpath_match_stats is not None:
+                # Only update stats, don't log individual matches
+                if collect_stats and field and form_type:
                     stats_key = f"{form_type}:{field}:{xpath}"
+                    if stats_key not in xpath_match_stats:
+                        xpath_match_stats[stats_key] = 0
                     xpath_match_stats[stats_key] += 1
-                    log_error("Incremented xpath_match_stats for {}: {}", stats_key, xpath_match_stats[stats_key])
                 return elem[0]
         except etree.XPathEvalError as e:
             xml_snippet = etree.tostring(root, encoding='unicode', method='xml')[:2000]
-            log_error("XPath error for {}: {}. XML snippet: {}", xpath, e, xml_snippet)
+            if log_error and not quiet:
+                log_error(f"XPath error for {xpath}: {e}. XML snippet: {xml_snippet}")
             non_ns_xpath = xpath.replace('irs:', '').replace('{http://www.irs.gov/efile}', '')
             try:
                 elem = root.xpath(non_ns_xpath, namespaces=None)
                 if elem:
                     xpath_cache[cache_key] = elem[0]
-                    log_error("XPath match (non-namespaced) for field {} with XPath {}", field, non_ns_xpath)
-                    if field and form_type and xpath_match_stats is not None:
+                    if collect_stats and field and form_type:
                         stats_key = f"{form_type}:{field}:{xpath}"
+                        if stats_key not in xpath_match_stats:
+                            xpath_match_stats[stats_key] = 0
                         xpath_match_stats[stats_key] += 1
-                        log_error("Incremented xpath_match_stats for {}: {}", stats_key, xpath_match_stats[stats_key])
                     return elem[0]
             except etree.XPathEvalError as e:
-                log_error("Non-namespaced XPath error for {}: {}. XML snippet: {}", non_ns_xpath, e, xml_snippet)
+                if log_error and not quiet:
+                    log_error(f"Non-namespaced XPath error for {non_ns_xpath}: {e}. XML snippet: {xml_snippet}")
 
         # Cache the None result to avoid re-evaluating
         xpath_cache[cache_key] = None

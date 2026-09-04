@@ -1,0 +1,62 @@
+# Runtime / ops (geolocate and long pipeline steps)
+*.log
+geolocate.pid
+geolocate_monitor.log
+geolocate_monitor.lastpid
+geolocate_monitor.metrics
+geolocate_monitor.progress
+geolocate_monitor.state
+geolocate_monitor.state.pending
+geolocate_step_*.log
+geolocate_grok_state.json
+geolocate_grok_overnight.lock
+geolocate_grok_overnight.log
+geolocate_grok_status_*.log
+preprocess_geocode_tail.log
+failures_iter*_mined.tsv
+archive/geolocate_grok_run_*/
+
+# Local DB copies (production lives on /Volumes/Data2/final)
+irs990.duckdb
+irs990.duckdb.*
+*.duckdb
+*.duckdb.wal*
+
+# Python / tooling
+__pycache__/
+.pytest_cache/
+.venv/
+.tmp/
+
+# Large generated TSV/JSONL (keep in archive/ or final_dir)
+*.tsv
+*.tsv.gz
+*.jsonl
+gin_phonebook_100m_review/
+!approved_*.json
+!category_buckets/*.json
+
+# Cache / output scratch
+_cache/
+_output/
+
+# Dot reporting: generated HTML (large; rebuild via overnight_full_rebuild.sh)
+dot_reporting/reports/
+dot_reporting/*.log
+dot_reporting/*_HANDOFF.md
+dot_reporting/CHURCH_QUEUE_STATUS.md
+
+# OFAC co-location package: generated HTML (regenerate via generate_ofac_reports.py)
+ofac_reporting/reports/
+ofac_reporting/*.log
+
+# Process / supervisor pid files
+*.pid
+backfill_colocators.pid
+geolocate_archive.pid
+grant_match.pid
+overnight_supervisor.pid
+
+# Local zip source backups
+US_zips.txt.gz.bak_*
+US_zips.header.txt

@@ -1,0 +1,10 @@
+raw_name	cleaned_name	best_canonical	similarity	ein	reason	grant_count	dollars
+Eligible Patients (See Schedule #2)	ELIGIBLE PATIENTS	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+HIPPA REGULATIONS PREVENT THE LISTING OF NAMES	HIPPA REGULATIONS PREVENT LISTING NAMES	HIPPA	0.2		No good match (best score 0.200). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+INDIVIDUAL PATIENT PROGRAMS	INDIVIDUAL PATIENT PROGRAMS	PATIENT	0.333		Weak/partial match to 'PATIENT' (score 0.333) - likely suffix/geo issue	N/A	N/A
+Scott & White Clinic	SCOTT & WHITE	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+NEW VENTURE FUND	NEW VENTURE	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+NEW VENTURE FUND	NEW VENTURE	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+SEE ATTACHMENT	ATTACHMENT	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+Drugs & Medicines	DRUGS & MEDICINES	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A
+SEE ATTACHMENT	ATTACHMENT	NONE	0.0		No good match (best score 0.000). Consider adding to SIMPLES or improving clean_name for universities.	N/A	N/A

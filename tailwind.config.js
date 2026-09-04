@@ -5,8 +5,8 @@ module.exports = {
     './_layouts/**/*.{html,js}',
     './_posts/**/*.{html,md}',
     './_pages/**/*.{html,md}',
-    './docs/**/*.{html,js,md}',
-    './[^_]**/*.{html,js,md}',  // Match all non-underscore dirs
+    './browse/**/*.{html,js}',
+    './!(990tools|node_modules|docs|vendor|_site|test-results)/**/*.{html,js,md}',
     './*.{html,js}',
   ],
   safelist: [

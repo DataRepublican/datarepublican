@@ -1,0 +1,612 @@
+{
+  "version": "1.3",
+  "description": "Geocoding patterns for automatic resolution of common IRS 990 address issues. v1.3: grok residual free-wins (foreign cities bootstrap, state/zip mismatch, narrative/lockbox/military).",
+  "patterns": [
+    {
+      "name": "privacy_addresses",
+      "description": "Addresses that charities choose not to disclose",
+      "regex": "(?i)(Individual Contrbutions|Trustee Maintains List Of Addresses|available upon request|upon request|on file|address available on request|see.*attached|attached|Detailed Address Information)",
+      "colocator": "PRIV:{zip}",
+      "status": "owner",
+      "priority": 1
+    },
+    {
+      "name": "exempt_addresses",
+      "description": "Addresses that charities claim are exempt from disclosure",
+      "regex": "(?i)(exempt)",
+      "colocator": "EXEMPT:{zip}",
+      "status": "owner",
+      "priority": 1
+    },
+    {
+      "name": "mail_drop_addresses",
+      "description": "All variants of PO Box / Box / Ppbox / Podrawer / Post Office (covers the new batch + legacy)",
+      "regex": "(?i)(p[0o]\\.?\\s*o\\.?\\s*(?:box|drawer)|po\\s*box|po\\s*bpx|ppbox|podrawer|post\\s*office|box\\s*\\d+|rr\\s*\\d+\\s*box|\\bdrawer\\s+[a-z0-9#]+)",
+      "colocator": "PO:{box}:{zip}",
+      "status": "owner",
+      "priority": 2
+    },
+    {
+      "name": "co_addresses",
+      "description": "Care-of addresses (expanded for the heavy C/O batch)",
+      "regex": "(?i)^c/?o\\s+(.+?)(?:,|$)",
+      "action": "strip",
+      "colocator": "CO:{entity}:{zip}",
+      "status": "owner",
+      "priority": 3
+    },
+    {
+      "name": "department_lockbox",
+      "description": "Department / Lockbox / Credit Card Processing / Remittance codes (huge slice in new batch)",
+      "regex": "(?i)(dept|department|lockbox|credit card processing|upper midwest lockbox|us bank lockbox|file|contributions gifts grants paid)",
+      "colocator": "DEPT:{code}:{zip}",
+      "status": "owner",
+      "priority": 4
+    },
+    {
+      "name": "rural_route",
+      "description": "Rural Route (Rr) boxes",
+      "regex": "(?i)^rr\\s*\\d+\\s*box",
+      "colocator": "RR:{box}:{zip}",
+      "status": "owner",
+      "priority": 5
+    },
+    {
+      "name": "person_as_address",
+      "description": "Person name used as entire address (Treasurer, Controller, etc.)",
+      "regex": "(?i)^(treas|treasurer|sec|secretary|controller|dir|director|pres|president|rick|rick niemeier|tina ferrigno|beverly euculano|diane ruth|cris banton|stevie hedrick|theodore w meyers)",
+      "colocator": "PERSON:{name}:{zip}",
+      "status": "owner",
+      "priority": 6
+    },
+    {
+      "name": "university_internal",
+      "description": "University / org internal mail codes (Ch10189, Cm12, etc.)",
+      "regex": "(?i)(univ development|colyer hall|development office|research and sponsored programs|cm12|cb 3235|mail code|dept ch)",
+      "colocator": "UNIV:{code}:{zip}",
+      "status": "owner",
+      "priority": 7
+    },
+    {
+      "name": "registered_agents_2025",
+      "description": "Top registered agent firms + military/gov (unchanged from your file)",
+      "priority": 8,
+      "patterns": [
+        {"regex": "(?i)c/?o\\s+ct\\s+corporation\\s+system", "colocator": "RA:CT_CORP", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+corporation\\s+service\\s+company", "colocator": "RA:CSC", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+national\\s+registered\\s+agents", "colocator": "RA:NRAI", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+northwest\\s+registered\\s+agent", "colocator": "RA:NORTHWEST", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+incorp\\s+services", "colocator": "RA:INCORP", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+registered\\s+agent\\s+solutions", "colocator": "RA:RAS", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+paracorp", "colocator": "RA:PARACORP", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+cogency\\s+global", "colocator": "RA:COGENCY", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+united\\s+states\\s+corporation\\s+agents", "colocator": "RA:USCA", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+capitol\\s+corporate\\s+services", "colocator": "RA:CAPITOL", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+the\\s+corporation\\s+trust\\s+company", "colocator": "RA:CTC", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+harvard\\s+business\\s+services", "colocator": "RA:HARVARD", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+delaware\\s+registered\\s+agent", "colocator": "RA:DELAWARE", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+legalzoom", "colocator": "RA:LEGALZOOM", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+blumbergexcelsior", "colocator": "RA:BLUMBERG", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+agents\\s+and\\s+corporations", "colocator": "RA:AGENTS_CORP", "status": "owner"},
+        {"regex": "(?i)(apo|dpo|fpo)\\s+[a-z]+\\s+\\d+", "colocator": "MILITARY:APO", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+department\\s+of\\s+state", "colocator": "GOV:STATE_DEPT", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+embassy", "colocator": "GOV:EMBASSY", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+consulate", "colocator": "GOV:CONSULATE", "status": "owner"},
+        {"regex": "(?i)c/?o\\s+united\\s+nations", "colocator": "GOV:UN", "status": "owner"}
+      ]
+    },
+    {
+      "name": "major_institutions",
+      "description": "Well-known institutions, repeated foundations, banks, and university mail drops (expanded for latest 200 batch)",
+      "priority": 9,
+      "patterns": [
+        {
+          "regex": "(?i)c/?o\\s+crestlea\\s+foundation\\s+100\\s+w\\s+10th",
+          "colocator": "MAJOR:Crestlea Foundation:19809",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)c/?o\\s+bny\\s+mellon\\s+na",
+          "colocator": "MAJOR:BNY Mellon:19809",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)rensselaer\\s+polytechnic\\s+institute",
+          "colocator": "MAJOR:Rensselaer Polytechnic Institute:02241",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)university\\s+of\\s+california\\s+berkeley",
+          "colocator": "MAJOR:UC Berkeley Development:90074",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)univ\\s+development\\s+ch\\d+",
+          "colocator": "MAJOR:University Development Lockbox:60055",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)colyer hall|development office.*cm12|research and sponsored programs",
+          "colocator": "MAJOR:University Internal Mail:62903",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)contributions gifts grants paid",
+          "colocator": "MAJOR:Contributions Processing:68101",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)credit card processing center file",
+          "colocator": "MAJOR:Credit Card Processing:91199",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)public radio wshu",
+          "colocator": "MAJOR:Wshu Public Radio:06900",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)262 danny thomas (place|pl)",
+          "colocator": "MAJOR:St. Jude Children's Research Hospital:38105",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1000 fifth avenue",
+          "colocator": "MAJOR:Metropolitan Museum of Art:10028",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)200 first (street|st) sw",
+          "colocator": "MAJOR:Mayo Clinic:55905",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)6066 development office",
+          "colocator": "MAJOR:Dartmouth College Development:03755",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)122 east 42nd street",
+          "colocator": "MAJOR:United Nations:10168",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)100 raoul wallenberg place sw",
+          "colocator": "MAJOR:United States Holocaust Memorial Museum:20024",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)2900 rocky point drive",
+          "colocator": "MAJOR:Moffitt Cancer Center:33607",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)foundation source 501 silverside road",
+          "colocator": "MAJOR:Foundation Source:19809",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)100 n main st.*winston",
+          "colocator": "MAJOR:Wake Forest Baptist Medical Center:27101",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)7272 greenville.*dallas",
+          "colocator": "MAJOR:Texas Health Presbyterian Hospital Dallas:75231",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)4100.*lurie.*chicago",
+          "colocator": "MAJOR:Lurie Children's Hospital:60632",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i).*grace hall.*notre dame",
+          "colocator": "MAJOR:University of Notre Dame:46556",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)100 raoul wallenberg.*washington",
+          "colocator": "MAJOR:United States Holocaust Memorial Museum:20024",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)200 vesey street.*new york",
+          "colocator": "MAJOR:World Financial Center:10281",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)4245 north fairfax.*arlington",
+          "colocator": "MAJOR:INOVA Fairfax Hospital:22203",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)100 westminster.*providence",
+          "colocator": "MAJOR:Brown University:02903",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)2000 marcus.*new hyde park",
+          "colocator": "MAJOR:Northwell Health:11042",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1000 5th ave.*new york",
+          "colocator": "MAJOR:Metropolitan Museum of Art:10028",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1828 l street.*washington",
+          "colocator": "MAJOR:American Psychological Association:20036",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1030 15th st.*washington",
+          "colocator": "MAJOR:National Geographic Society:20005",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)2900 rocky point.*tampa",
+          "colocator": "MAJOR:Moffitt Cancer Center:33607",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)4900 puerto rico.*washington",
+          "colocator": "MAJOR:Catholic University:20017",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1000 lake cook.*glencoe",
+          "colocator": "MAJOR:Lake Forest College:60022",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)available.*charity",
+          "colocator": "PRIV:Charity Website:{zip}",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)10 s dearborn.*chicago",
+          "colocator": "MAJOR:Chase Tower:60603",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)500 first ave.*pittsburgh",
+          "colocator": "MAJOR:Pittsburgh Building:15219",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)4900 tiedeman.*brooklyn.*oh",
+          "colocator": "MAJOR:Tiedeman Facility:44144",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)5001 angel canyon.*kanab",
+          "colocator": "MAJOR:Angel Canyon:84741",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)31 evans terminal.*hillside",
+          "colocator": "MAJOR:Community FoodBank of New Jersey:07205",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)3677 mapleshade.*plano",
+          "colocator": "MAJOR:North Texas Food Bank:75075",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1 billy graham.*charlotte",
+          "colocator": "MAJOR:Billy Graham Parkway:28201",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)36 battery place.*new york",
+          "colocator": "MAJOR:Battery Place Building:10280",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)1619 d street.*virginia beach",
+          "colocator": "MAJOR:D Street Facility:23459",
+          "status": "owner"
+        },
+        {
+          "regex": "(?i)500 fifth (avenue|ave).*seattle.*wa.*98109",
+          "colocator": "PO:23350:98102",
+          "status": "owner"
+        }
+      ]
+    },
+    {
+      "name": "various_addresses",
+      "description": "Multi-location organizations",
+      "regex": "(?i)(various|multiple|several)",
+      "colocator": "MULTI:{city}:{state}:{zip}",
+      "status": "owner",
+      "priority": 10
+    },
+    {
+      "name": "incomplete_addresses",
+      "description": "Mark incomplete addresses",
+      "regex": "(?i)^(n/a|na|street|road|avenue|drive|way|lane|place|court|circle|boulevard|parkway|available|unavailable|unknown address|unknown)$",
+      "colocator": "BOGUS:{zip}",
+      "status": "owner",
+      "priority": 11
+    },
+    {
+      "name": "no_street_number",
+      "description": "Mark addresses without street numbers as partial",
+      "regex": "(?i)^(?!.*\\d).*(street|road|avenue|drive|way|lane|place|court|circle|boulevard|parkway|blvd|ave|rd|st|dr|ln|pl|ct|cir|pkwy)",
+      "colocator": "PARTIAL:{zip}",
+      "status": "owner",
+      "priority": 12
+    },
+    {
+  "name": "mail_collections_centers",
+  "priority": 10,
+  "patterns": [
+    { "regex": "(?i)collections?\\s*ctr", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)mail\\s*svc\\s*center", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)paysphere\\s*circle", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)solutions\\s*(?:center|ctr)", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)remit(?:tance)?\\s*(?:dr|drive)", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)reliable\\s*pkwy", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)treasury\\s*ctr", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)mail\\s*service\\s*(?:center|ctr)", "colocator": "PO:MAIL", "status": "owners", "action": "match" },
+    { "regex": "(?i)mail\\s+location\\s+\\d+", "colocator": "PO:MAIL", "status": "owners", "action": "match" }
+  ]
+},
+{
+  "name": "suite_pmb_box_junk",
+  "priority": 20,
+  "patterns": [
+    { "regex": "(?i)\\b(suite|ste|pmb|apt|box)\\s*\\d+.*?(collections?|mail|svc|center|paysphere)", "colocator": "PO:MAIL", "status": "owners", "action": "match" }
+  ]
+},
+{
+  "name": "address_unknown_placeholders",
+  "priority": 30,
+  "patterns": [
+    { "regex": "(?i)address\\s*unknown|no\\s*street\\s*address|000\\s*address", "colocator": "PO:UNKNOWN", "status": "owners", "action": "match" },
+    { "regex": "(?i)\\d+-?xxx-?\\d+", "colocator": "PO:UNKNOWN", "status": "owners", "action": "match" },
+    { "regex": "(?i)\\bxxxx+\\b|\\bx{3,}\\b", "colocator": "BOGUS:{zip}", "status": "owners", "action": "match" },
+    { "regex": "(?i)^(not releasable|not to be published|confidential location|please email instead|home address)\\b", "colocator": "BOGUS:{zip}", "status": "owners", "action": "match" },
+    { "regex": "(?i)^(same as(?:\\s+(?:above|below|c\\s+above))?|see statement|see schedule|no address|unable to locate)\\b", "colocator": "BOGUS:{zip}", "status": "owners", "action": "match" },
+    { "regex": "(?i)^(oth|telehealth|general telehealth|remote telehealth)\\b", "colocator": "BOGUS:{zip}", "status": "owners", "action": "match" }
+  ]
+},
+{
+  "name": "foreign_with_us_fallback",
+  "priority": 40,
+  "patterns": [
+    { "regex": "(?i)(beer\\s*sheva|budapest|jerusalem|san\\s*juan).*?(ny|nj|fl|ca|tx)", "colocator": "FA:XX", "status": "owners", "action": "match" }
+  ]
+},
+{
+  "name": "census_strip_suites",
+  "description": "Suite/unit/# stripped in census_strip stage before Census retry (colocator round 4dp)",
+  "priority": 5,
+  "patterns": [
+    {
+      "regex": "(?i)[,\\s]+(?:suite|ste\\.?|apt\\.?|apartment|unit|rm\\.?|room|fl\\.?|floor|bldg\\.?|building)\\s*#?\\s*(?:\\d+[a-z0-9-]*|[a-z](?:\\d+|(?=\\s*,|\\s*$)))",
+      "action": "strip"
+    },
+    {
+      "regex": "(?i)[,\\s]+#\\s*\\d+[a-z0-9-]*",
+      "action": "strip"
+    },
+    {
+      "regex": "(?i)[,\\s]+\\d{1,4}(?=,\\s*[A-Za-z])",
+      "action": "strip"
+    }
+  ]
+},
+{
+  "name": "normalized_preprocess",
+  "description": "Predicates on normalized_address JSON (street/city/state/zip) — preferred over canonical regex",
+  "match_on": "normalized",
+  "priority": 14,
+  "patterns": [
+    {
+      "predicate": "city_zip_only",
+      "colocator": "VENDOR:{city}:{state}:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "city_state_only",
+      "colocator": "VENDOR:{city}:{state}:",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "city_zip_no_state",
+      "colocator": "VENDOR:{city}:{state}:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "city_only_intl",
+      "colocator": "FA:INTL",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "zip_only",
+      "colocator": "VENDOR::{state}:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "us_territory",
+      "colocator": "VENDOR:{city}:{state}:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "state_zip_mismatch",
+      "colocator": "AMBIG:{state}:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "predicate": "foreign_name_only",
+      "colocator": "FA:INTL",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "fields": {"street": "^dept\\s+.+"},
+      "colocator": "DEPT:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "fields": {"street": "^(not present|no actual location|local|fellowship)$"},
+      "colocator": "BOGUS:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "fields": {"street": "^\\d+$"},
+      "colocator": "PARTIAL:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "fields": {"zip": "^(00000|99999)$"},
+      "colocator": "FA:INTL",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "fields": {"street": "^(attn|dba)\\s+.+"},
+      "colocator": "PERSON:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "fields": {"street": "^university at\\s+.+"},
+      "colocator": "UNIV:{zip}",
+      "status": "owners",
+      "action": "match"
+    }
+  ]
+},
+{
+  "name": "fraud_source_addresses",
+  "description": "NPPES/DOT/FEC + grok residual free-wins (Aug 2026). Safe preprocess group.",
+  "priority": 15,
+  "patterns": [
+    {
+      "regex": "(?i)^(unknown|none|n/a|na|tbd|not available|gen(?:eral)? delivery)\\s*,",
+      "colocator": "BOGUS:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\b(ajeltake|majuro|trust company complex)\\b",
+      "colocator": "FA:INTL",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)^(not releasable|not to be published|confidential location|please email instead|privacy reasons|x{3,}(?:\\s+x{3,})*)",
+      "colocator": "BOGUS:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)^[^,\\d]+,\\s*[A-Za-z]{2},\\s*\\d{5}(?:-\\d{4})?$",
+      "colocator": "VENDOR:{city}:{state}:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i),\\s*(?:Ab|Bc|Mb|Nb|Nl|Ns|Nt|Nu|On|Pe|Qc|Sk|Yt)\\s*,\\s*\\d{3}\\s*$",
+      "colocator": "FA:CA",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i),\\s*(?:Tijuana|Mexicali|Nogales|Ciudad Juarez|Baja California)\\b",
+      "colocator": "FA:MX",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)^(?!.*\\b\\d{3,}\\b).*(?:\\b&\\b|\\band\\b).*(?:hwy|highway|interstate|i-\\d+)",
+      "colocator": "PARTIAL:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)all\\s+over\\s+the\\s+state",
+      "colocator": "BOGUS:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\bpsc\\s+\\d+",
+      "colocator": "MILITARY:PSC:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\bcmr\\s+\\d+",
+      "colocator": "MILITARY:CMR:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\b(usnh|us\\s+army\\s+hospital|us\\s+army\\s+health)\\b.*\\b(italy|germany|japan|korea|okinawa|yokosuka|wiesbaden|landstuhl)\\b",
+      "colocator": "MILITARY:OVERSEAS:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\b(wiesbaden|yokosuka|okinawa|ramstein|stuttgart|kaiserslautern|chinhae|landstuhl)\\b",
+      "colocator": "FA:INTL",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\bmomentum\\s+pl(?:ace)?\\b",
+      "colocator": "PO:MAIL:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\b(?:gift|donation|credit\\s+card)\\s+processing(?:\\s+center)?\\b",
+      "colocator": "PO:MAIL:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)^file\\s+\\d{3,}\\b",
+      "colocator": "PO:MAIL:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)c/?o\\s+bny\\s+mellon(?:\\s+na)?\\b|\\bbny\\s+mellon\\s+na\\b|paid\\s+by\\s+bny\\s+mellon\\b",
+      "colocator": "MAJOR:BNY Mellon:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\b(apo|fpo|dpo)\\s+(ae|ap|aa)\\b",
+      "colocator": "MILITARY:APO:{zip}",
+      "status": "owners",
+      "action": "match"
+    },
+    {
+      "regex": "(?i)\\bcorner\\s+of\\b",
+      "colocator": "PARTIAL:{zip}",
+      "status": "owners",
+      "action": "match"
+    }
+  ]
+}
+  ]
+}

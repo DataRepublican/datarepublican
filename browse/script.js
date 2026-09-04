@@ -7,6 +7,21 @@ import {
   getColorForEIN,
   getTextColorForEIN,
   interpolateBandIndex,
+  compareCharities,
+  compareLinks,
+  fitScaleWithReadableLabels,
+  browseBands,
+  bandById,
+  bandHasFiles,
+  bandCutLabel,
+  canUpgradeBand,
+  nextHostedBandId,
+  defaultBandId,
+  estimateBandLoadMs,
+  formatDuration,
+  lastBandLoadMs,
+  tenMLoadMs,
+  PATIENT_SUBSIDY_ID,
 } from "./models.js";
 
 import {
@@ -54,28 +69,268 @@ function updateStatus(message, color = "black") {
 
 function dataLoaded(state = true) {
   if (state) {
+    if (viewModel.bandPrompt) return;
     $("#statusSpinner").addClass("hidden");
     $("#loading").addClass("hidden");
-    $("#downloadPanel").removeClass("hidden");
+    $("#downloadPanel").removeClass("hidden").css("display", "flex");
     document.documentElement.style.setProperty("--web-load", "none");
     document.documentElement.style.setProperty("--db-load", "none");
+    renderBandControl();
   } else {
     $("#statusSpinner").removeClass("hidden");
     $("#loading").removeClass("hidden");
-    $("#downloadPanel").addClass("hidden");
+    $("#downloadPanel").addClass("hidden").css("display", "none");
   }
 }
 
 window.exportDB = function () {
-  viewModel.exportDB();
+  window.open("https://www.grumpytechbro.com/irs990.html", "_blank", "noopener");
+};
+
+function bandCopy(bandId, { missing = false, fromStore = false } = {}) {
+  const band = bandById(bandId) || bandById(defaultBandId());
+  const nodes = formatNumber(band?.nodes);
+  const grants = formatNumber(band?.grants || band?.edges);
+  const label = band?.label || "$10M";
+  const current = bandCutLabel(viewModel.loadedBand || defaultBandId());
+  if (missing) {
+    const zipMb = band?.zipBytes ? (band.zipBytes / 1e6).toFixed(0) : null;
+    const size = zipMb ? ` (${zipMb} MB zip; ${nodes} organizations)` : "";
+    return {
+      title: `<b>${label}</b> is coming soon.`,
+      body: `This band is too large to ship with the site${size}. Stay on ${current}. Full filings are on <a href="https://www.grumpytechbro.com/irs990.html" target="_blank" rel="noopener">Export Database</a>.`,
+      local: "",
+    };
+  }
+  const extra =
+    nodes && grants
+      ? ` About ${nodes} organizations and ${grants} grants.`
+      : "";
+  const zipMb = band?.zipBytes ? (band.zipBytes / 1e6).toFixed(1) : null;
+  const measured = lastBandLoadMs(bandId, fromStore ? "idb" : "web");
+  const t10 = tenMLoadMs();
+  const est = !fromStore && bandId !== "10M" ? estimateBandLoadMs(bandId) : null;
+  let wait = "";
+  if (fromStore && measured) {
+    wait = ` Last local load of this band: ${formatDuration(measured)}.`;
+  } else if (measured) {
+    wait = ` Last download of this band: ${formatDuration(measured)}.`;
+  } else if (est && t10) {
+    const tenM = bandById("10M");
+    const x =
+      tenM?.zipBytes && band?.zipBytes
+        ? (band.zipBytes / tenM.zipBytes).toFixed(1)
+        : "?";
+    wait = ` $10M took ${formatDuration(t10)} on this machine; this band is ${x}× that zip — about ${formatDuration(est)}.`;
+  } else if (zipMb) {
+    wait = ` Zip ${zipMb} MB. After $10M finishes we will estimate from that wait.`;
+  }
+  return {
+    title: `This is the <b>${label} band</b>.${extra} Each deeper notch is a full new load (not an add-on). Dashed octagons are <b>name-only</b> — no EIN on the 990, or grants below this cut.`,
+    body: fromStore
+      ? `Welcome back — loading ${label} from your local store.${wait}`
+      : `This downloads into this browser.${wait} Reloads of the same band should be faster. Click a node to focus it. Shift-drag box-zooms; shift-click hides a node.`,
+    local: `Welcome back — loading the ${label} band from your local store.${wait}`,
+  };
+}
+
+window.applyLoadingCopy = function (bandId, opts = {}) {
+  const copy = bandCopy(bandId, opts);
+  $("#loadingBandTitle").html(copy.title);
+  $("#loadingBandBody").html(copy.body);
+  $("#loadingBandLocal").html(copy.local);
+};
+
+function showBandLoader(bandId, { missing = false } = {}) {
+  if (typeof hidePresets === "function") hidePresets();
+  window.applyLoadingCopy(bandId, { missing });
+  $("#loading").removeClass("hidden");
+  $("#nonodes").addClass("hidden");
+  $("#control-panel").addClass("hidden").hide();
+  $("#downloadPanel").addClass("hidden").css("display", "none");
+  if (missing) {
+    viewModel.bandPrompt = true;
+    $("#statusSpinner").addClass("hidden");
+    document.documentElement.style.setProperty("--web-load", "none");
+    document.documentElement.style.setProperty("--db-load", "none");
+    $("#loadingBandMissing").removeClass("hidden");
+    $("#loadingBandDismiss").removeClass("hidden");
+    updateStatus(`${bandCutLabel(bandId)} coming soon`, "black", false);
+  } else {
+    viewModel.bandPrompt = false;
+    $("#loadingBandMissing").addClass("hidden");
+    $("#loadingBandDismiss").addClass("hidden");
+  }
+}
+
+function renderBandControl() {
+  const el = document.getElementById("bandControl");
+  if (!el) return;
+  const loaded = viewModel.loadedBand || defaultBandId();
+  const nextId = nextHostedBandId(loaded);
+  el.innerHTML = browseBands()
+    .map((band) => {
+      const isCurrent = band.id === loaded;
+      const hosted = bandHasFiles(band);
+      const isNext = hosted && band.id === nextId;
+      const classes = [
+        "band-notch",
+        isCurrent ? "is-current" : "",
+        isNext ? "is-next" : "",
+        !hosted && !isCurrent ? "is-locked" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+      const nodes = band.nodes != null ? formatNumber(band.nodes) : "—";
+      const grants =
+        band.grants != null
+          ? formatNumber(band.grants)
+          : band.edges != null
+            ? formatNumber(band.edges)
+            : "—";
+      const dollars =
+        band.dollars != null ? `$${formatNumber(band.dollars)}` : "—";
+      const zipMb = band.zipBytes ? `${(band.zipBytes / 1e6).toFixed(1)} MB` : "";
+      const t10 = tenMLoadMs();
+      const est = estimateBandLoadMs(band.id);
+      const waitHint =
+        band.id === loaded
+          ? lastBandLoadMs(band.id, "idb")
+            ? ` last local ${formatDuration(lastBandLoadMs(band.id, "idb"))}`
+            : lastBandLoadMs(band.id, "web")
+              ? ` last download ${formatDuration(lastBandLoadMs(band.id, "web"))}`
+              : ""
+          : est && t10
+            ? ` est. ${formatDuration(est)} from your $10M load`
+            : zipMb
+              ? ` ${zipMb}`
+              : "";
+      const waitLabel =
+        band.id !== loaded && est && t10 ? `est. ${formatDuration(est)}` : "";
+      const title = isCurrent
+        ? `${band.label} loaded — ${nodes} nodes, ${grants} grants, ${dollars}${waitHint}`
+        : hosted
+          ? `Download ${band.label} (${nodes} nodes, ${grants} grants, ${dollars}${waitHint ? "," + waitHint : ""}) — another wait`
+          : `${band.label} coming soon — too large to ship with this site (${nodes} orgs${zipMb ? ", " + zipMb : ""}). Warehouse: Export Database`;
+      return `<button type="button" class="${classes}" data-band="${band.id}" title="${title}" role="radio" aria-checked="${isCurrent}">
+        <span class="dot"></span>
+        <span class="label">${band.label}</span>
+        ${!hosted && !isCurrent ? `<span class="soon">Coming soon</span>` : ""}
+        <span class="stats">
+          <span class="stat-nodes">${nodes}</span>
+          <span class="stat-grants">${grants}</span>
+          ${waitLabel ? `<span class="stat-wait">${waitLabel}</span>` : ""}
+        </span>
+      </button>`;
+    })
+    .join("");
+}
+
+window.requestBand = async function (id) {
+  if (!canUpgradeBand(viewModel.loadedBand, id)) return;
+  const band = bandById(id);
+  const missing = !bandHasFiles(band);
+  dataLoaded(false);
+  showBandLoader(id, { missing });
+  if (missing) {
+    renderBandControl();
+    return;
+  }
+  try {
+    const result = await viewModel.requestBand(id);
+    if (result.status === "loaded") {
+      dataLoaded(true);
+      generateGraph();
+      if (typeof zoomToFit === "function") zoomToFit();
+    } else if (result.status === "unavailable") {
+      showBandLoader(id, { missing: true });
+    }
+  } catch (err) {
+    console.error(err);
+    updateStatus("Failed to load band.", "red");
+  }
+  renderBandControl();
 };
 
 window.loadPreset = function (value, mode) {
   viewModel.loadPreset(value, mode);
   hidePresets(); // our work here is done.
+  renderBreadCrumbs();
   refresh();
   viewModel.defaultSize();
   zoomToFit();
+};
+
+window.__clickNodeByName = function (src, event) {
+  const re = new RegExp(src, "i");
+  const c = Object.values(Charity.charityLookup || {}).find(
+    (x) => re.test(x.name || "") && x.isVisible,
+  );
+  if (!c) return { ok: false, reason: "not-visible" };
+  const action = viewModel.clickNode(event || {}, c, () => {
+    if (typeof refresh === "function") refresh();
+  });
+  if (
+    (action === "inspect" || action === "leftover") &&
+    typeof showControlPanel === "function"
+  ) {
+    const el = document.querySelector(`#graph .node[data-id="${c.ein}"]`);
+    showControlPanel("node", c, el);
+  }
+  return { ok: true, action, ein: c.ein, name: c.name };
+};
+
+window.__browseStats = function () {
+  return {
+    ready: !!(viewModel && viewModel.dataReady),
+    charities: Object.keys(Charity.charityLookup || {}).length,
+    grants: Object.keys(Grant.grantLookup || {}).length,
+    search: String(window.location.search || ""),
+    show: viewModel ? viewModel.getShowList() : [],
+    ned: Charity.getCharity("521344831")
+      ? Charity.getCharity("521344831").name
+      : null,
+  };
+};
+
+function escapeCrumb(s) {
+  return String(s || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderBreadCrumbs() {
+  const el = document.getElementById("focusCrumbs");
+  if (!el) return;
+  const crumbs = viewModel.getBreadCrumbs() || [];
+  const tip = viewModel.focusTip;
+  if (!crumbs.length && !tip) {
+    el.innerHTML = "";
+    el.classList.add("hidden");
+    return;
+  }
+  el.classList.remove("hidden");
+  const parts = crumbs.map(
+    (c, i) =>
+      `<a href="#" data-crumb="${i}" class="text-blue-700 hover:underline">${escapeCrumb(
+        c.title
+      )}</a><span class="text-gray-400 px-1">→</span>`
+  );
+  if (tip) {
+    parts.push(
+      `<span class="font-semibold">${escapeCrumb(tip.title)}</span>`
+    );
+  }
+  el.innerHTML = parts.join("");
+}
+
+window.restoreCrumb = function (index) {
+  if (viewModel.restoreCrumb(index)) {
+    renderBreadCrumbs();
+    refresh();
+    requestAnimationFrame(() => zoomToFit());
+  }
 };
 
 function renderPopup() {
@@ -87,7 +342,7 @@ function renderPopup() {
         <div class="toggle-row">
           <div class="button-group-column">
             <div class="ngopreset-mode-switch">
-              <span class="toggle-label toggle-label-add">Preset will add</span>
+              <span class="toggle-label toggle-label-add" title="Keep current nodes and seed these too">Preset will add</span>
               <div class="toggle-switch">
                 <input type="checkbox" id="preset-mode" value="add">
                 <label for="preset-mode"></label>
@@ -112,7 +367,7 @@ function renderPopup() {
                           title="${item.description || ""}">
                     ${item.title}
                   </button>
-                `
+                `,
                 )
                 .join("")}
             </div>
@@ -132,7 +387,7 @@ function renderPopup() {
                           title="${group.description || ""}">
                     ${group.title}
                   </button>
-                `
+                `,
                   )
                   .join("") || ""
               }
@@ -153,7 +408,7 @@ function renderPopup() {
                           title="${group.description || ""}">
                     ${group.title}
                   </button>
-                `
+                `,
                   )
                   .join("") || ""
               }
@@ -167,7 +422,7 @@ function renderPopup() {
                 presets
                   .find(
                     (item) =>
-                      item.title === "Friendly Neighborhood Billionaires"
+                      item.title === "Friendly Neighborhood Billionaires",
                   )
                   ?.subcategories?.map(
                     (group) => `
@@ -177,7 +432,7 @@ function renderPopup() {
                           title="${group.description || ""}">
                     ${group.title}
                   </button>
-                `
+                `,
                   )
                   .join("") || ""
               }
@@ -197,10 +452,18 @@ function renderPopup() {
       const mode = document.getElementById("preset-mode").checked
         ? "replace"
         : "add";
+      const listed = [];
+      for (const p of viewModel.presets()) {
+        if (p.eins) listed.push(p);
+        if (p.subcategories) {
+          for (const s of p.subcategories) if (s.eins) listed.push(s);
+        }
+      }
+      const preset = listed.find((p) => p.title === title) || { eins, title };
       console.log(
-        `${mode === "add" ? "Adding" : "Replacing"} ${title}: ${eins}`
+        `${mode === "add" ? "Adding" : "Replacing"} ${title}: ${eins}`,
       );
-      loadPreset({ eins, title }, mode);
+      loadPreset(preset, mode);
     });
   });
 
@@ -213,14 +476,17 @@ function renderPopup() {
   if (hideCtlBtn) {
     hideCtlBtn.addEventListener("click", hideControls);
   }
-  const showCircularBtn = document.getElementById("showCircularBtn");
-  const hideCircularBtn = document.getElementById("hideCircularBtn");
-  if (showCircularBtn) {
-    showCircularBtn.addEventListener("click", showCircular);
+  const circularToggle = document.getElementById("circularToggle");
+  if (circularToggle) {
+    circularToggle.addEventListener("change", () => {
+      if (circularToggle.checked) hideCircular();
+      else showCircular();
+    });
   }
-  if (hideCircularBtn) {
-    hideCircularBtn.addEventListener("click", hideCircular);
-  }
+  $("#clickMode").on("click", "button[data-mode]", function () {
+    applyClickMode(this.getAttribute("data-mode"));
+  });
+  applyClickMode(viewModel.clickMode || "focus");
 
   // Wire up the toggle buttons
   const showBtn = document.getElementById("showPresetsBtn");
@@ -266,8 +532,8 @@ window.hideControls = function () {
 
 // Show Presets and Hide Presets implementations
 window.showCircular = function () {
-  $("#showCircularBtn").addClass("hidden");
-  $("#hideCircularBtn").removeClass("hidden");
+  const el = document.getElementById("circularToggle");
+  if (el) el.checked = false;
   $("#circular-links").removeClass("hidden");
   viewModel.setHideCircularLinks(false);
   viewModel.computeAndSaveURLParams();
@@ -275,8 +541,8 @@ window.showCircular = function () {
 };
 
 window.hideCircular = function () {
-  $("#showCircularBtn").removeClass("hidden");
-  $("#hideCircularBtn").addClass("hidden");
+  const el = document.getElementById("circularToggle");
+  if (el) el.checked = true;
   $("#circular-links").addClass("hidden");
   viewModel.setHideCircularLinks(true);
   viewModel.computeAndSaveURLParams();
@@ -316,7 +582,7 @@ $(document).ready(function () {
     viewModel.setZoom(
       parseFloat(params.get("zx")),
       parseFloat(params.get("zy")),
-      parseFloat(params.get("zk"))
+      parseFloat(params.get("zk")),
     );
   }
   if (params.has("hc")) {
@@ -366,6 +632,20 @@ $(document).ready(function () {
   });
 
   $("#downloadBtn").on("click", downloadSVG);
+  $("#bandControl").on("click", "button[data-band]", function () {
+    window.requestBand(this.getAttribute("data-band"));
+  });
+  $("#focusCrumbs").on("click", "a[data-crumb]", function (e) {
+    e.preventDefault();
+    window.restoreCrumb(parseInt(this.getAttribute("data-crumb"), 10));
+  });
+  $("#loadingBandDismiss").on("click", function () {
+    viewModel.bandPrompt = false;
+    $("#loadingBandMissing").addClass("hidden");
+    $("#loadingBandDismiss").addClass("hidden");
+    updateStatus("", "black", false);
+    dataLoaded(true);
+  });
 
   $("#howItWorksBtn").on("click", function () {
     const $list = $("#howItWorksList");
@@ -392,7 +672,7 @@ function addEINFromInput() {
   if (!/^\d{3,9}$|86|99/) {
     // allow hack codes too.
     alert(
-      "EIN must be 9 digits after removing dashes/spaces or 3 for countries."
+      "EIN must be 9 digits after removing dashes/spaces or 3 for countries.",
     );
     return;
   }
@@ -416,8 +696,8 @@ function renderColorPicker() {
   for (let t = 0; t < 1; t += 0.02) {
     boxes.push(
       `<span class="color-box" style="width:12px; height:12px; background-color: ${interpolateRainbow(
-        t
-      )}" title=${t}></span>`
+        t,
+      )}" title=${t}></span>`,
     );
   }
   $("#colorPicker1").html(boxes.join(""));
@@ -425,8 +705,8 @@ function renderColorPicker() {
   for (let t = 0; t < 1; t += 0.02) {
     boxes.push(
       `<span class="color-box" style="width:12px; height:12px; background-color: ${interpolateDarkRainbow(
-        t
-      )}" title=${t}></span>`
+        t,
+      )}" title=${t}></span>`,
     );
   }
   $("#colorPicker2").html(boxes.join(""));
@@ -442,7 +722,7 @@ function renderActiveEINs() {
     const c = Charity.getCharity(ein);
     const name = c?.name || "???";
     const $tag = $(
-      `<div class="filter-tag flex items-center gap-0.5 rounded border border-green bg-green/10 text-green px-2 py-1 text-xs"></div>`
+      `<div class="filter-tag flex items-center gap-0.5 rounded border border-green bg-green/10 text-green px-2 py-1 text-xs"></div>`,
     );
     $tag.on("click", function (event) {
       flashNodeAndShow(c.ein);
@@ -451,16 +731,16 @@ function renderActiveEINs() {
     // Add color box
     const $colorBox = $(
       `<div class="color-box" style="width:12px; height:12px; background-color: ${getColorForEIN(
-        c.ein
-      ).toString()}"></div>`
+        c.ein,
+      ).toString()}"></div>`,
     );
     const $text = $(
       `<span title="EIN: ${ein.split(/[:~]/)[0].slice(0, 2)}-${ein
         .split(/[:~]/)[0]
-        .slice(2)}"></span>`
+        .slice(2)}"></span>`,
     ).text(name);
     const $rm = $(
-      '<span class="remove-filter opacity-50 hover:opacity-100 size-5 -my-0.5 -mr-1" style=" cursor:pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.53-3.53a.75.75 0 0 0-1.06 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 1 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94 9.53 8.47Z" clip-rule="evenodd"/></svg></span>'
+      '<span class="remove-filter opacity-50 hover:opacity-100 size-5 -my-0.5 -mr-1" style=" cursor:pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.53-3.53a.75.75 0 0 0-1.06 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 1 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94 9.53 8.47Z" clip-rule="evenodd"/></svg></span>',
     ).attr("data-ein", ein);
     $rm.on("click", function () {
       viewModel.removeFromShowList(ein);
@@ -481,15 +761,15 @@ function renderHideEINs() {
   viewModel.getHideList().forEach((ein) => {
     const name = Charity.getCharity(ein)?.name || "???";
     const $tag = $(
-      '<div class="filter-tag flex items-center gap-0.5 rounded border border-red bg-red/10 text-red rounded-md px-2 py-1 text-xs"></div>'
+      '<div class="filter-tag flex items-center gap-0.5 rounded border border-red bg-red/10 text-red rounded-md px-2 py-1 text-xs"></div>',
     );
     const $text = $(
       `<span title="EIN: ${ein.split(/[:~]/)[0].slice(0, 2)}-${ein
         .split(/[:~]/)[0]
-        .slice(2)}"></span>`
+        .slice(2)}"></span>`,
     ).text(name);
     const $rm = $(
-      '<span class="remove-filter opacity-50 hover:opacity-100 size-5 -my-0.5 -mr-1 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.53-3.53a.75.75 0 0 0-1.06 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 1 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94 9.53 8.47Z" clip-rule="evenodd"/></svg></span>'
+      '<span class="remove-filter opacity-50 hover:opacity-100 size-5 -my-0.5 -mr-1 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.53-3.53a.75.75 0 0 0-1.06 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 1 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94 9.53 8.47Z" clip-rule="evenodd"/></svg></span>',
     ).attr("data-nein", ein);
     $rm.on("click", function () {
       viewModel.removeFromHideList(ein);
@@ -520,11 +800,11 @@ function renderActiveKeywords() {
 
   viewModel.getKeywordList().forEach((kw) => {
     const $tag = $(
-      '<div class="filter-tag flex items-center gap-0.5 rounded border border-blue bg-blue/10 text-blue rounded-md px-2 py-1 text-xs"></div>'
+      '<div class="filter-tag flex items-center gap-0.5 rounded border border-blue bg-blue/10 text-blue rounded-md px-2 py-1 text-xs"></div>',
     );
     const $text = $("<span></span>").text(kw);
     const $rm = $(
-      '<span class="remove-filter opacity-50 hover:opacity-100 size-5 -my-0.5 -mr-1 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.53-3.53a.75.75 0 0 0-1.06 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 1 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94 9.53 8.47Z" clip-rule="evenodd"/></svg></span>'
+      '<span class="remove-filter opacity-50 hover:opacity-100 size-5 -my-0.5 -mr-1 cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path fill="#000" fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.53-3.53a.75.75 0 0 0-1.06 1.06L10.94 12l-2.47 2.47a.75.75 0 1 0 1.06 1.06L12 13.06l2.47 2.47a.75.75 0 1 0 1.06-1.06L13.06 12l2.47-2.47a.75.75 0 0 0-1.06-1.06L12 10.94 9.53 8.47Z" clip-rule="evenodd"/></svg></span>',
     ).attr("data-kw", kw);
     $rm.on("click", function () {
       viewModel.removeFromKeywords(kw);
@@ -556,20 +836,7 @@ function downloadSVG() {
 }
 
 function updateQueryParams() {
-  const params = viewModel.computeURLParams();
-  const newUrl = window.location.pathname + "?" + params.toString();
-  window.history.replaceState({}, "", newUrl);
-}
-
-function compareCharities(a, b) {
-  return (
-    b.grantsInTotal + b.grantsTotal - (a.grantsInTotal + a.grantsTotal) ||
-    a.name.localeCompare(b.name)
-  );
-}
-
-function compareLinks(a, b) {
-  return b.value - a.value;
+  viewModel.computeAndSaveURLParams();
 }
 
 function generateUniqueId(prefix = "gradient", link) {
@@ -601,7 +868,7 @@ function computeLinkY(node, linkIndex, links, heightKey, isSourceSide) {
   const sortedLinks = [...links].sort(compareLinks);
   const cumulativeHeight = d3.sum(
     sortedLinks.slice(0, linkIndex),
-    (l) => l.width
+    (l) => l.width,
   );
   const centerY = (node.y0 + node.y1) / 2;
   const height = node[heightKey] || 0;
@@ -623,7 +890,7 @@ function sankeyLinkHorizontalTrapezoid(curvature = 0.5) {
       outflowIndex,
       source.sourceLinks,
       "outflowHeight",
-      true
+      true,
     );
     const sourceX = source.x1;
 
@@ -635,7 +902,7 @@ function sankeyLinkHorizontalTrapezoid(curvature = 0.5) {
       inflowIndex,
       target.targetLinks,
       "inflowHeight",
-      false
+      false,
     );
     const targetX = target.x0;
 
@@ -663,11 +930,11 @@ function calculateRegularPosition(node, scale, height, maxRowsInColumn) {
 
   node.outflowHeight = Math.max(
     dynamicMin,
-    Math.min(sankeyHeight, node.grantsLogTotal * scaleFactor)
+    Math.min(sankeyHeight, node.grantsLogTotal * scaleFactor),
   );
   node.inflowHeight = Math.max(
     dynamicMin,
-    Math.min(sankeyHeight, node.grantsInLogTotal * scaleFactor)
+    Math.min(sankeyHeight, node.grantsInLogTotal * scaleFactor),
   );
 
   if (node.grantsLogTotal === 0) {
@@ -680,7 +947,7 @@ function calculateRegularPosition(node, scale, height, maxRowsInColumn) {
   }
   if (!isFinite(node.outflowHeight) || !isFinite(node.inflowHeight)) {
     console.error(
-      `Invalid heights for ${node.filer_ein}: outflow=${node.outflowHeight}, inflow=${node.inflowHeight}`
+      `Invalid heights for ${node.filer_ein}: outflow=${node.outflowHeight}, inflow=${node.inflowHeight}`,
     );
     node.outflowHeight = dynamicMin * 10; // Fallback larger
     node.inflowHeight = dynamicMin * 10;
@@ -702,7 +969,7 @@ function normalizeStrokeWidths(sankey) {
     if (totalOutflowWidth > 0 && outflowHeight > 0) {
       const scaleFactor = outflowHeight / totalOutflowWidth;
       node.sourceLinks.forEach(
-        (link) => (link.normalizedWidth = link.width * scaleFactor)
+        (link) => (link.normalizedWidth = link.width * scaleFactor),
       );
     }
     const totalInflowWidth = d3.sum(node.targetLinks, (l) => l.width);
@@ -710,7 +977,7 @@ function normalizeStrokeWidths(sankey) {
     if (totalInflowWidth > 0 && inflowHeight > 0) {
       const scaleFactor = inflowHeight / totalInflowWidth;
       node.targetLinks.forEach(
-        (link) => (link.normalizedWidth = link.width * scaleFactor)
+        (link) => (link.normalizedWidth = link.width * scaleFactor),
       );
     }
   });
@@ -749,40 +1016,158 @@ function savePreviousState(data) {
   });
 }
 
-function bindEvents(g) {
-  g.selectAll(".nodeLabel").on("click", (event, d) => {
-    console.log("Text clicked:", d.id);
-    event.stopPropagation();
-    if (event.shiftKey) {
-      d.hide();
-      Charity.addToHideList(d.ein);
-      refresh();
-    } else if (event.metaKey) {
-      showControlPanel("node", d, this);
-    } else {
-      viewModel.clickNode(event, d, refresh);
-    }
+function nodeCursor() {
+  switch (viewModel.clickMode) {
+    case "add":
+      return "cell";
+    case "inspect":
+      return "zoom-in";
+    case "zoom":
+      return "crosshair";
+    case "subtract":
+      return "not-allowed";
+    default:
+      return "pointer";
+  }
+}
+
+function isMacPlatform() {
+  return (
+    typeof navigator !== "undefined" &&
+    /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || "")
+  );
+}
+
+function applyModeTooltips() {
+  const addMod = isMacPlatform() ? "⌘" : "Ctrl";
+  const inspectMod = isMacPlatform() ? "⌥" : "Alt";
+  const tips = {
+    focus:
+      "Focus: click isolates this org; click it again to expand both sides",
+    zoom: "Zoom: frame this org and one hop up/down (camera, graph stays)",
+    add: `Add: keep the graph and seed this org (${addMod})`,
+    inspect: `Inspect: open the card (${inspectMod})`,
+    subtract: "Remove this org from the graph (Shift)",
+  };
+  Object.entries(tips).forEach(([mode, title]) => {
+    $(`#clickMode button[data-mode="${mode}"]`).attr("title", title);
   });
-  g.selectAll(".node")
-    .on("click", (event, d) => {
-      console.log("Node clicked:", d.id);
-      event.stopPropagation();
-      if (event.shiftKey) {
-        d.hide();
-        Charity.addToHideList(d.ein);
-        refresh();
-      } else if (event.metaKey) {
-        showControlPanel("node", d, this);
-      } else {
-        viewModel.clickNode(event, d, refresh);
-      }
+}
+
+function applyClickMode(mode) {
+  viewModel.setClickMode(mode);
+  applyModeTooltips();
+  $("#clickMode button").removeClass("is-on");
+  $(`#clickMode button[data-mode="${viewModel.clickMode}"]`).addClass("is-on");
+  const host = document.getElementById("graph-container");
+  if (host) {
+    host.classList.remove(
+      "click-focus",
+      "click-add",
+      "click-inspect",
+      "click-subtract",
+      "click-zoom",
+    );
+    host.classList.add(`click-${viewModel.clickMode}`);
+  }
+  const cur = nodeCursor();
+  d3.selectAll(
+    "#graph .node path, #graph text.nodeLabel, #graph .link, #graph .circular-link",
+  ).style("cursor", cur);
+  d3.selectAll("#graph .link title, #graph .circular-link title").remove();
+  if (viewModel.clickMode !== "inspect") hideGraphTip();
+}
+
+function positionGraphTip(event) {
+  const el = document.getElementById("graphTip");
+  if (!el) return;
+  el.style.left = `${event.clientX + 12}px`;
+  el.style.top = `${event.clientY + 12}px`;
+}
+
+function partyName(end, fallback) {
+  if (end && typeof end === "object" && end.name) return end.name;
+  const id =
+    (end && typeof end === "object" && (end.ein || end.id)) ||
+    (typeof end === "string" ? end : null) ||
+    fallback;
+  if (!id) return "?";
+  const c = Charity.getCharity(id);
+  return (c && c.name) || id;
+}
+
+function grantTipText(d) {
+  if (!d) return "";
+  const from = (d.filer && d.filer.name) || partyName(d.source, d.filer_ein);
+  const to = (d.grantee && d.grantee.name) || partyName(d.target, d.grant_ein);
+  const amt = d.amt != null ? d.amt : 0;
+  return `${from} → ${to}\n$${formatNumber(amt)}${
+    d.circular ? " (circular)" : ""
+  }`;
+}
+
+function showGraphTip(event, d) {
+  const el = document.getElementById("graphTip");
+  if (!el || !d) return;
+  const text =
+    typeof d.toolTipText === "function" ? d.toolTipText() : grantTipText(d);
+  if (!text) return;
+  el.textContent = text;
+  el.classList.remove("hidden");
+  positionGraphTip(event);
+}
+
+function hideGraphTip() {
+  document.getElementById("graphTip")?.classList.add("hidden");
+}
+
+function handleGraphNodeHover(event, d) {
+  if (viewModel.clickMode !== "inspect") {
+    hideGraphTip();
+    return;
+  }
+  showGraphTip(event, d);
+}
+
+function handleGraphNodeClick(event, d, el) {
+  event.stopPropagation();
+  const action = viewModel.clickNode(event, d, refresh);
+  if (action === "leftover" || action === "inspect") {
+    showControlPanel("node", d, el);
+  }
+  if (action === "zoom") requestAnimationFrame(() => zoomToNeighborhood(d));
+  if (action === "focus") requestAnimationFrame(() => zoomToFit());
+}
+
+function bindEvents(g) {
+  applyClickMode(viewModel.clickMode || "focus");
+  g.selectAll(".nodeLabel")
+    .on("click", function (event, d) {
+      handleGraphNodeClick(event, d, this);
     })
+    .on("mouseenter", function (event, d) {
+      handleGraphNodeHover(event, d);
+    })
+    .on("mousemove", function (event, d) {
+      if (viewModel.clickMode === "inspect") positionGraphTip(event);
+    })
+    .on("mouseleave", hideGraphTip);
+  g.selectAll(".node")
+    .on("click", function (event, d) {
+      handleGraphNodeClick(event, d, this);
+    })
+    .on("mouseenter", function (event, d) {
+      handleGraphNodeHover(event, d);
+    })
+    .on("mousemove", function (event, d) {
+      if (viewModel.clickMode === "inspect") positionGraphTip(event);
+    })
+    .on("mouseleave", hideGraphTip)
     .on("dblclick", (event, d) => {
       console.log("Node double-clicked:", d.id);
       event.stopPropagation();
       if (d.isTerminal && !event.shiftKey) {
         d.hideUp();
-        Charity.addToHideList(d.ein);
         refresh();
       } else {
         viewModel.doubleClickNode(event, d, refresh);
@@ -797,29 +1182,22 @@ function bindEvents(g) {
       d3.select(this).on("touchend", () => clearTimeout(timer)); // Cancel on touch end
     })*/
 
-  g.selectAll(".link")
-    .on("click", (event, d) => {
-      console.log("Link clicked:", d.id);
+  g.selectAll(".link, .circular-link")
+    .on("click", function (event, d) {
       event.stopPropagation();
       showControlPanel("link", d, this);
     })
     .on("dblclick", (event, d) => {
-      console.log("Link double-clicked:", d.id);
       event.stopPropagation();
       viewModel.doubleClickGrant(event, d, refresh);
-    });
-
-  g.selectAll(".circular-link")
-    .on("click", (event, d) => {
-      console.log("Circular Link clicked:", d.id);
-      event.stopPropagation();
-      showControlPanel("link", d, this);
     })
-    .on("dblclick", (event, d) => {
-      console.log("Link double-clicked:", d.id);
-      event.stopPropagation();
-      viewModel.doubleClickGrant(event, d, refresh);
-    });
+    .on("mouseenter", function (event, d) {
+      handleGraphNodeHover(event, d);
+    })
+    .on("mousemove", function (event) {
+      if (viewModel.clickMode === "inspect") positionGraphTip(event);
+    })
+    .on("mouseleave", hideGraphTip);
   /*.on("touchstart", function (event) {
       event.preventDefault(); // Prevent default right-click behavior
       const timer = setTimeout(() => {
@@ -842,6 +1220,60 @@ function bindEvents(g) {
   });
 }
 
+function graphViewSize() {
+  const container = document.getElementById("graph-container");
+  const panel = document.getElementById("control-panel");
+  const drawer =
+    panel && panel.classList.contains("is-open") ? panel.offsetWidth : 0;
+  return {
+    width: Math.max(120, (container?.offsetWidth || 800) - drawer),
+    height: container?.offsetHeight || window.innerHeight * 0.9,
+  };
+}
+
+function zoomToBounds(x, y, w, h, { keepLabelsReadable = true } = {}) {
+  if (!svg || !zoom) return;
+  let g = svg.select("g.main");
+  if (g.empty()) return;
+  if (!isFinite(w) || w <= 0 || !isFinite(h) || h <= 0) return;
+  const pad = 0.14;
+  x -= w * pad;
+  y -= h * pad;
+  w *= 1 + 2 * pad;
+  h *= 1 + 2 * pad;
+  const min = 64;
+  if (w < min) {
+    x -= (min - w) / 2;
+    w = min;
+  }
+  if (h < min) {
+    y -= (min - h) / 2;
+    h = min;
+  }
+  const { width, height } = graphViewSize();
+  let scale = 0.95 / Math.max(w / width, h / height);
+  if (keepLabelsReadable) {
+    const label = g.select("text.nodeLabel").node();
+    const svgFontPx = label
+      ? parseFloat(label.style.fontSize || getComputedStyle(label).fontSize) ||
+        16
+      : 16;
+    scale = fitScaleWithReadableLabels(scale, svgFontPx, 13);
+  }
+  const maxScale = 10;
+  scale = Math.min(maxScale, scale);
+  svg
+    .transition()
+    .duration(500)
+    .call(
+      zoom.transform,
+      d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(scale)
+        .translate(-x - w / 2, -y - h / 2),
+    );
+}
+
 function zoomToFit() {
   let g = svg.select("g.main");
   if (g.empty()) {
@@ -850,7 +1282,7 @@ function zoomToFit() {
       .append("g")
       .attr("class", "main")
       .attr("transform", "translate(50, 50)");
-    return; // Skip zooming until graph is rendered
+    return;
   }
   const bounds = g.node().getBBox();
   if (
@@ -862,25 +1294,71 @@ function zoomToFit() {
     console.warn("Invalid bounds for zoom:", bounds);
     return;
   }
-  const container = document.getElementById("graph-container");
-  const width = container.offsetWidth;
-  const height = container.offsetHeight || window.innerHeight * 0.9;
-  const dx = bounds.x;
-  const dy = bounds.y;
-  const scale = 0.95 / Math.max(bounds.width / width, bounds.height / height);
-  svg
-    .transition()
-    .duration(750)
-    .call(
-      zoom.transform,
-      d3.zoomIdentity
-        .translate(width / 2, height / 2)
-        .scale(scale)
-        .translate(-dx - bounds.width / 2, -dy - bounds.height / 2)
-    );
+  zoomToBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 }
 
+/** Horizontal distance to the nearest 1-hop neighbor column. */
+function columnPitch(node) {
+  const cx = ((node.x0 || 0) + (node.x1 || 0)) / 2;
+  let best = null;
+  const consider = (other) => {
+    if (!other || other.x0 == null) return;
+    const oc = (other.x0 + (other.x1 != null ? other.x1 : other.x0)) / 2;
+    const d = Math.abs(oc - cx);
+    if (d > 4 && (best == null || d < best)) best = d;
+  };
+  for (const grant of node.visibleGrantsIn || []) consider(grant.filer);
+  for (const grant of node.visibleGrants || []) consider(grant.grantee);
+  const nw = Math.max(24, (node.x1 || 0) - (node.x0 || 0));
+  return best || nw * 5;
+}
+
+/**
+ * Camera only. Same transform as shift-drag box zoom:
+ *   k = min(viewW / boxW, viewH / boxH), then
+ *   translate(view/2 - center * k).
+ *
+ * Box is this node's layout rect (x0,y0)–(x1,y1) plus a modest margin —
+ * not the union of every 1-hop neighbor (that is the whole column / the
+ * whole 3-column graph, so k never changes).
+ *
+ * Vertical: node fills ~55% of the view.
+ * Horizontal: node plus at most one column pitch, capped so a 500× layout
+ * scale cannot force k back to fit-to-graph.
+ */
+function zoomToNeighborhood(node) {
+  if (!svg || !zoom || !node || node.x0 == null || node.y0 == null) {
+    zoomToFit();
+    return;
+  }
+  const { width, height } = graphViewSize();
+  const nw = Math.max(1, node.x1 - node.x0);
+  const nh = Math.max(1, node.y1 - node.y0);
+  const cx = (node.x0 + node.x1) / 2;
+  const cy = (node.y0 + node.y1) / 2;
+  const pitch = columnPitch(node);
+  const side = Math.min(pitch, nh * 3, nw * 8);
+  const boxW = nw + 2 * side;
+  const boxH = nh / 0.55;
+  const k = Math.min(
+    10,
+    Math.max(0.01, Math.min(width / boxW, height / boxH)),
+  );
+  const tx = width / 2 - cx * k;
+  const ty = height / 2 - cy * k;
+  svg
+    .transition()
+    .duration(500)
+    .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(k));
+}
+
+window.zoomNeighborhood = function (ein) {
+  const c = Charity.getCharity(ein);
+  if (c) zoomToNeighborhood(c);
+};
+
 function generateGraph() {
+  if (viewModel.bandPrompt) return;
   if (!viewModel.dataReady) {
     updateStatus("No Data Loaded");
     dataLoaded(false);
@@ -916,7 +1394,8 @@ function generateGraph() {
     .style("display", "block")
     .style("background", "#fff")
     .attr("class", "flex-1")
-    .style("user-select", "none"); // Prevent text selection during drag
+    .style("user-select", "none")
+    .on("click", (event) => event.stopPropagation());
 
   let g = svg
     .append("g")
@@ -933,7 +1412,7 @@ function generateGraph() {
     .filter(
       (event) =>
         event.type === "wheel" ||
-        (event.type === "mousedown" && event.button === 0 && !event.shiftKey)
+        (event.type === "mousedown" && event.button === 0 && !event.shiftKey),
     )
     .on("zoom", (event) => {
       svg.select("g.main").attr("transform", event.transform);
@@ -954,7 +1433,7 @@ function generateGraph() {
       viewModel.setZoom(
         transform.x.toFixed(4),
         transform.y.toFixed(4),
-        transform.k.toFixed(4)
+        transform.k.toFixed(4),
       );
       history.replaceState(null, "", `?${params.toString()}`);
     });
@@ -1102,8 +1581,7 @@ function generateGraph() {
   if (viewModel.matchURL() === 0) {
     showPresets();
     $("#nonodes").removeClass("hidden");
-    $("#loading").addClass("hidden");
-
+    dataLoaded(true);
     return;
   } else {
     $("#nonodes").addClass("hidden");
@@ -1119,7 +1597,7 @@ function generateGraph() {
       viewModel.getShowList().length
         ? viewModel.getShowList()
         : [viewModel.GOV_EIN],
-      viewModel.previousData
+      viewModel.previousData,
     );
     $("#statusSpinner").hide();
   } catch (err) {
@@ -1154,7 +1632,7 @@ function generateGraph() {
         d3.zoomIdentity
           .translate(width / 2, height / 2)
           .scale(scale)
-          .translate(-dx - bounds.width / 2, -dy - bounds.height / 2)
+          .translate(-dx - bounds.width / 2, -dy - bounds.height / 2),
       );
   };
   document.getElementById("scaleUp").onclick = () => {
@@ -1285,13 +1763,20 @@ function generateGraph() {
       return;
     const dx = bounds.x;
     const dy = bounds.y;
-    const scale = 0.8 / Math.max(bounds.width / width, bounds.height / height);
+    const fitScale =
+      0.8 / Math.max(bounds.width / width, bounds.height / height);
+    const label = g.select("text.nodeLabel").node();
+    const svgFontPx = label
+      ? parseFloat(label.style.fontSize || getComputedStyle(label).fontSize) ||
+        16
+      : 16;
+    const scale = fitScaleWithReadableLabels(fitScale, svgFontPx, 13);
     svg.call(
       zoom.transform,
       d3.zoomIdentity
         .translate(width / 2, height / 2)
         .scale(scale)
-        .translate(-dx - bounds.width / 2, -dy - bounds.height / 2)
+        .translate(-dx - bounds.width / 2, -dy - bounds.height / 2),
     );
   }
 }
@@ -1305,14 +1790,14 @@ function adjustCircularLinks(graph) {
       l.source.sourceLinks.indexOf(l),
       l.source.sourceLinks,
       "outflowHeight",
-      true
+      true,
     );
     l.y1 = computeLinkY(
       l.target,
       l.target.targetLinks.indexOf(l),
       l.target.targetLinks,
       "inflowHeight",
-      false
+      false,
     );
     adjustCircularLink(l);
   }
@@ -1338,10 +1823,10 @@ function updateLayoutButtons() {
 }
 
 function fontSizeFromHeight(height) {
-  return (
+  const raw =
     ((boundaryScaleFactorY * 2) / FONT_CONSTANT) *
-    Math.min(48, Math.max(FONT_SIZE, 10, height / FONT_CONSTANT))
-  );
+    Math.min(48, Math.max(FONT_SIZE, 10, height / FONT_CONSTANT));
+  return Math.max(14, raw);
 }
 
 function defaultSize() {
@@ -1364,7 +1849,7 @@ function scrollToNode(dataId) {
     {
       scrollTop: $element.offset().top,
     },
-    500
+    500,
   ); // 500ms for smooth scrolling
 }
 
@@ -1440,7 +1925,7 @@ function renderFocusedSankey(
   width,
   height,
   nodeIds,
-  previousData
+  previousData,
 ) {
   const ANIM_NODE = 500;
   const ANIM_LINK = 1200;
@@ -1452,10 +1937,10 @@ function renderFocusedSankey(
   const nodeCount = currentData.nodes.length;
   const edgeCount = currentData.links.length;
   const edgeTotal = formatNumber(
-    currentData.links.reduce((sum, g) => sum + g.amt, 0)
+    currentData.links.reduce((sum, g) => sum + g.amt, 0),
   );
   const nodeGov = formatNumber(
-    currentData.nodes.reduce((sum, n) => sum + n.govt_amt, 0)
+    currentData.nodes.reduce((sum, n) => sum + n.govt_amt, 0),
   );
   dataLoaded(true);
 
@@ -1517,11 +2002,7 @@ function renderFocusedSankey(
     .attr("stroke", (d) => getColorForEIN(d.source.id))
     .attr("stroke-width", (d) => d.width || 1);
 
-  linkEnter
-    .append("title")
-    .text(
-      (d) => `${d.source.name} → ${d.target.name}\n$${formatNumber(d.amt)}`
-    );
+  linkEnter.style("cursor", nodeCursor());
 
   // Function to extract points from path (unchanged)
   function extractPointsFromPath(pathString) {
@@ -1593,14 +2074,7 @@ function renderFocusedSankey(
     .attr("stroke-opacity", "0.6")
     .attr("stroke-width", (d) => 0.1 * d.width);
 
-  circularLinkEnter
-    .append("title")
-    .text(
-      (d) =>
-        `${d.source.name} → ${d.target.name}\n$${formatNumber(
-          d.amt
-        )} (Circular)`
-    );
+  circularLinkEnter.style("cursor", nodeCursor());
 
   // Node rendering
   const nodeGroup = masterGroup
@@ -1624,7 +2098,12 @@ function renderFocusedSankey(
   const nodeEnter = nodeElements
     .enter()
     .append("g")
-    .attr("class", (d) => (d.isTerminal ? "node no-grants" : "node expand"))
+    .attr(
+      "class",
+      (d) =>
+        (d.isTerminal ? "node no-grants" : "node expand") +
+        (d.kind ? ` node-${d.kind}` : ""),
+    )
     .attr("data-id", (d) => d.id)
     .style("opacity", 0);
 
@@ -1635,7 +2114,7 @@ function renderFocusedSankey(
       .attr("stroke", "#000")
       .attr(
         "d",
-        d.isTerminal
+        d.isTerminal || d.kind === "ghost" || d.kind === "leftover"
           ? generateOctagonPath({
               ...d,
               x0: d.previousX0 || d.x0,
@@ -1649,12 +2128,15 @@ function renderFocusedSankey(
               y0: d.previousY0 || d.y0,
               x1: d.previousX1 || d.x1,
               y1: d.previousY1 || d.y1,
-            })
+            }),
       )
       .attr("fill", getColorForEIN(d.id))
-      .style("cursor", d.isTerminal ? "zoom-in" : "grab")
-      .append("title")
-      .text((d) => d.toolTipText());
+      .attr(
+        "stroke-dasharray",
+        d.kind === "ghost" || d.kind === "leftover" ? "4 3" : null,
+      )
+      .attr("stroke-width", d.kind === "bmf" ? 2.5 : 1)
+      .style("cursor", nodeCursor());
   });
 
   // Fallback if transition fails
@@ -1672,7 +2154,9 @@ function renderFocusedSankey(
     .transition()
     .duration(ANIM_NODE)
     .attr("d", (d) =>
-      d.isTerminal ? generateOctagonPath(d) : generateTrapezoidPath(d)
+      d.isTerminal || d.kind === "ghost" || d.kind === "leftover"
+        ? generateOctagonPath(d)
+        : generateTrapezoidPath(d),
     );
 
   // Hat and text rendering (unchanged for brevity, but ensure transitions are safe)
@@ -1684,9 +2168,9 @@ function renderFocusedSankey(
 
   const leftHats = hatGroup.selectAll("g.hat-left").data(
     graph.nodes.filter(
-      (d) => d.canExpandInflows && d.invisibleGrantsIn.length > 0
+      (d) => d.canExpandInflows && d.invisibleGrantsIn.length > 0,
     ),
-    (d) => `${d.id}-left`
+    (d) => `${d.id}-left`,
   );
 
   leftHats
@@ -1706,7 +2190,7 @@ function renderFocusedSankey(
   leftHatEnter
     .append("path")
     .attr("d", (d) =>
-      generatePlusPath({ ...d, isRight: false, isTerminal: d.isTerminal })
+      generatePlusPath({ ...d, isRight: false, isTerminal: d.isTerminal }),
     )
     .attr("fill", (d) => getColorForEIN(d.id))
     .attr("stroke", "#000")
@@ -1724,13 +2208,13 @@ function renderFocusedSankey(
         d.canExpandInflows && d.invisibleGrantsIn.length > 0 && !d.hasLeftHat
           ? 1
           : d.hasLeftHat &&
-            !(d.canExpandInflows && d.invisibleGrantsIn.length > 0)
-          ? 0
-          : 1
+              !(d.canExpandInflows && d.invisibleGrantsIn.length > 0)
+            ? 0
+            : 1,
       )
       .select("path")
       .attr("d", (d) =>
-        generatePlusPath({ ...d, isRight: false, isTerminal: d.isTerminal })
+        generatePlusPath({ ...d, isRight: false, isTerminal: d.isTerminal }),
       );
   } catch (e) {
     console.error("Left hats transition failed:", e);
@@ -1740,22 +2224,22 @@ function renderFocusedSankey(
         d.canExpandInflows && d.invisibleGrantsIn.length > 0 && !d.hasLeftHat
           ? 1
           : d.hasLeftHat &&
-            !(d.canExpandInflows && d.invisibleGrantsIn.length > 0)
-          ? 0
-          : 1
+              !(d.canExpandInflows && d.invisibleGrantsIn.length > 0)
+            ? 0
+            : 1,
       )
       .select("path")
       .attr("d", (d) =>
-        generatePlusPath({ ...d, isRight: false, isTerminal: d.isTerminal })
+        generatePlusPath({ ...d, isRight: false, isTerminal: d.isTerminal }),
       );
   }
 
   const rightHats = hatGroup.selectAll("g.hat-right").data(
     graph.nodes.filter(
       (d) =>
-        !d.isTerminal && d.canExpandOutflows && d.invisibleGrants.length > 0
+        !d.isTerminal && d.canExpandOutflows && d.invisibleGrants.length > 0,
     ),
-    (d) => `${d.id}-right`
+    (d) => `${d.id}-right`,
   );
 
   rightHats
@@ -1794,13 +2278,13 @@ function renderFocusedSankey(
         !d.hasRightHat
           ? 1
           : d.hasRightHat &&
-            !(
-              !d.isTerminal &&
-              d.canExpandOutflows &&
-              d.invisibleGrants.length > 0
-            )
-          ? 0
-          : 1
+              !(
+                !d.isTerminal &&
+                d.canExpandOutflows &&
+                d.invisibleGrants.length > 0
+              )
+            ? 0
+            : 1,
       )
       .select("path")
       .attr("d", (d) => generatePlusPath({ ...d, isRight: true }));
@@ -1815,13 +2299,13 @@ function renderFocusedSankey(
         !d.hasRightHat
           ? 1
           : d.hasRightHat &&
-            !(
-              !d.isTerminal &&
-              d.canExpandOutflows &&
-              d.invisibleGrants.length > 0
-            )
-          ? 0
-          : 1
+              !(
+                !d.isTerminal &&
+                d.canExpandOutflows &&
+                d.invisibleGrants.length > 0
+              )
+            ? 0
+            : 1,
       )
       .select("path")
       .attr("d", (d) => generatePlusPath({ ...d, isRight: true }));
@@ -1844,11 +2328,14 @@ function renderFocusedSankey(
     .attr("x", (d) => (d.x0 < sankey.nodeWidth() / 2 ? d.x1 + 6 : d.x0 - 6))
     .attr("y", (d) => ((d.previousY0 || d.y0) + (d.previousY1 || d.y1)) / 2)
     .attr("text-anchor", (d) =>
-      d.x0 < sankey.nodeWidth() / 2 ? "start" : "end"
+      d.x0 < sankey.nodeWidth() / 2 ? "start" : "end",
     )
-    .style("cursor", "crosshair")
-    .attr("class", "nodeLabel")
+    .style("cursor", nodeCursor())
+    .attr("class", (d) => "nodeLabel" + (d.kind ? ` nodeLabel-${d.kind}` : ""))
     .attr("fill", (d) => getTextColorForEIN(d.ein))
+    .style("font-style", (d) =>
+      d.kind === "ghost" || d.kind === "leftover" ? "italic" : "normal",
+    )
     .style("font-size", (d) => `${fontSizeFromHeight(d.y1 - d.y0)}px`);
 
   try {
@@ -1859,11 +2346,14 @@ function renderFocusedSankey(
       .attr("x", (d) => (d.x0 < sankey.nodeWidth() / 2 ? d.x1 + 6 : d.x0 - 6))
       .attr("y", (d) => (d.y0 + d.y1) / 2)
       .attr("text-anchor", (d) =>
-        d.x0 < sankey.nodeWidth() / 2 ? "start" : "end"
+        d.x0 < sankey.nodeWidth() / 2 ? "start" : "end",
       )
-      .style("cursor", "crosshair")
-      .attr("class", "nodeLabel")
+      .style("cursor", nodeCursor())
+      .attr("class", (d) => "nodeLabel" + (d.kind ? ` nodeLabel-${d.kind}` : ""))
       .attr("fill", (d) => getTextColorForEIN(d.ein))
+      .style("font-style", (d) =>
+        d.kind === "ghost" || d.kind === "leftover" ? "italic" : "normal",
+      )
       .style("font-size", (d) => `${fontSizeFromHeight(d.y1 - d.y0)}px`)
       .text((d) => d.name);
   } catch (e) {
@@ -1873,11 +2363,14 @@ function renderFocusedSankey(
       .attr("x", (d) => (d.x0 < sankey.nodeWidth() / 2 ? d.x1 + 6 : d.x0 - 6))
       .attr("y", (d) => (d.y0 + d.y1) / 2)
       .attr("text-anchor", (d) =>
-        d.x0 < sankey.nodeWidth() / 2 ? "start" : "end"
+        d.x0 < sankey.nodeWidth() / 2 ? "start" : "end",
       )
-      .style("cursor", "crosshair")
-      .attr("class", "nodeLabel")
+      .style("cursor", nodeCursor())
+      .attr("class", (d) => "nodeLabel" + (d.kind ? ` nodeLabel-${d.kind}` : ""))
       .attr("fill", (d) => getTextColorForEIN(d.ein))
+      .style("font-style", (d) =>
+        d.kind === "ghost" || d.kind === "leftover" ? "italic" : "normal",
+      )
       .style("font-size", (d) => `${fontSizeFromHeight(d.y1 - d.y0)}px`)
       .text((d) => d.name);
   }
@@ -1887,19 +2380,19 @@ function renderFocusedSankey(
   viewModel.cleanAfterRender();
   dataLoaded(true);
   updateStatus(
-    `Orgs: ${nodeCount} USG$: ${nodeGov} Flows:${edgeCount} $:${edgeTotal}`
+    `Orgs: ${nodeCount} USG$: ${nodeGov} Flows:${edgeCount} $:${edgeTotal}`,
   );
 
   const post = encodeURIComponent(
-    `Hey, @twinforces @datarepublican, Check this out because:`
+    `Hey, @GrumpyTechBro @datarepublican, Check this out because:`,
   );
   const url = encodeURIComponent(window.location.href);
   const hashtags = encodeURIComponent("DRBadNGOs");
   $("#PostBox").html(
-    `<a href="https://x.com/intent/tweet?url=${url}&text=${post}&hashtags=${hashtags}&via=twinforces" 
+    `<a href="https://x.com/intent/tweet?url=${url}&text=${post}&hashtags=${hashtags}&via=grumpytechbro" 
     target="_blank"  
     title="Share on X" 
-    class="x-share-button">&#x1D54F;</a>`
+    class="x-share-button">&#x1D54F;</a>`,
   );
   return currentData;
 }
@@ -1920,7 +2413,7 @@ function handleSearch(e) {
 
   const matches = Object.values(Charity.charityLookup)
     .filter(
-      (d) => d.name.toLowerCase().includes(value) || d.ein.includes(value)
+      (d) => d.name.toLowerCase().includes(value) || d.ein.includes(value),
     )
     .slice(0, 5);
 
@@ -1935,7 +2428,7 @@ function handleSearch(e) {
                onmouseenter="handleSearchResultHover(${index})">
             ${d.name}
           </div>
-        `
+        `,
       )
       .join("");
     searchResults.classList.remove("hidden");
@@ -2025,6 +2518,7 @@ function refresh() {
   updateQueryParams();
   renderActiveEINs();
   renderHideEINs();
+  renderBreadCrumbs();
   updateScaledConstants();
   generateGraph();
 }
@@ -2050,171 +2544,187 @@ window.billClick = function (ein) {
   viewModel.billClick(ein);
 };
 
+function bandWaitPhrase(bandId) {
+  const est = estimateBandLoadMs(bandId);
+  const t10 = tenMLoadMs();
+  if (est && t10) return `about ${formatDuration(est)} on this machine`;
+  const band = bandById(bandId);
+  if (band?.zipBytes) return `${(band.zipBytes / 1e6).toFixed(0)} MB zip`;
+  return "another wait";
+}
+
+function inspectorLinkRow(node) {
+  const bits = [];
+  if (node.has990Card) {
+    bits.push(`<a href="${node.financialsLink()}">990</a>`);
+    bits.push(`<a href="${node.officersLink()}">Officers</a>`);
+    bits.push(`<a href="${node.nonprofitsLink()}">Money</a>`);
+    bits.push(node.grantSearchLink("Grants"));
+    bits.push(node.propublicaLink("ProPublica"));
+  }
+  bits.push(node.googleLink("Search"));
+  bits.push(node.mapsLink("Maps"));
+  bits.push(node.grokLink("Grok"));
+  return `<div class="insp-links">${bits.join(" · ")}</div>
+    <p class="insp-note">Maps is the IRS mailing address of record (often a PO Box).</p>`;
+}
+
+function inspectorNeighbors(node) {
+  const top = (grants, pick, n = 5) =>
+    [...grants]
+      .sort((a, b) => (b.amt || 0) - (a.amt || 0))
+      .slice(0, n)
+      .map((g) => {
+        const other = pick(g);
+        if (!other) return "";
+        return `<li><button type="button" class="insp-neighbor" onclick="inspectOrg('${other.ein}')">${other.name || other.ein}</button> <span>$${formatNumber(g.amt)}</span></li>`;
+      })
+      .join("");
+  const ins = top(node.visibleGrantsIn || [], (g) => g.filer);
+  const outs = top(node.visibleGrants || [], (g) => g.grantee);
+  if (!ins && !outs) return "";
+  return `<div class="insp-neighbors">
+    ${ins ? `<p class="insp-k">In</p><ul>${ins}</ul>` : ""}
+    ${outs ? `<p class="insp-k">Out</p><ul>${outs}</ul>` : ""}
+  </div>`;
+}
+
+function inspectorPrimary(node) {
+  if (node.isLeftover) {
+    const cut = bandCutLabel(viewModel.loadedBand);
+    const nextId = nextHostedBandId(viewModel.loadedBand);
+    if (!nextId) {
+      return `<p>Smaller grants sit below the <b>${cut}</b> cut. Warehouse: <a href="https://www.grumpytechbro.com/irs990.html" target="_blank" rel="noopener">Export Database</a>.</p>`;
+    }
+    const label = bandCutLabel(nextId);
+    return `<p>Counterparties below the <b>${cut}</b> cut.</p>
+      <button type="button" class="insp-primary" onclick="requestBand('${nextId}')">Load ${label} (${bandWaitPhrase(nextId)})</button>`;
+  }
+  if (node.isGhost && node.suggestedEin) {
+    const sug = `${node.suggestedEin.slice(0, 2)}-${node.suggestedEin.slice(2)}`;
+    const hit = Charity.getCharity(node.suggestedEin);
+    if (hit) {
+      return `<p>Phone book suggests ${sug} (not from the 990).</p>
+        <button type="button" class="insp-primary" onclick="focusSuggested('${node.suggestedEin}')">Focus ${sug}</button>`;
+    }
+    return `<p>Phone book suggests ${sug}, not in this band.</p>`;
+  }
+  if (node.isGhost) return `<p>Name-only: no EIN on the 990.</p>`;
+  if (node.ein === PATIENT_SUBSIDY_ID) {
+    return `<p>Rolled-up copay / drug subsidies (HIPAA / “see statement”). Hats on a manufacturer’s foundation still expand named grants.</p>`;
+  }
+  if (node.isGov) return "";
+  return `<button type="button" class="insp-primary" onclick="zoomNeighborhood('${node.ein}')">Zoom ±1 hop</button>`;
+}
+
+function inspectorPork(node) {
+  if (!node.has990Card || node.isGov) return "";
+  const bacon = "<span>&#x1F953;</span>";
+  const stop = "<span>&#x1F6D1;</span>";
+  let pork = '<span class="emoji">&#x1F437;</span>';
+  if (node.govDepth > 0) pork = `${bacon} ${node.govDepth}`;
+  if (node.govDepth == Infinity) pork = stop;
+  const { grift } = node.usgIndirectGrift();
+  return `<p>USG direct <b>$${formatNumber(node.govt_amt)}</b></p>
+    <p>Indirect <i>$${formatNumber(grift)}</i>
+      <a onclick="porkClick('${node.ein}')" title="Show USG path" style="cursor:pointer">${pork}<span id="porkDepth"></span></a>
+    </p>`;
+}
+
+function inspectorMoney(node) {
+  if (node.isGov) {
+    return `<p>US Taxpayers: <b>$4.6T</b></p>
+      <p>Out $${formatNumber(node.visibleGrantsTotal)} visible (${node.visibleGrants.length})</p>`;
+  }
+  const hiddenIn = node.invisibleGrantsIn?.length
+    ? ` · $${formatNumber(node.invisibleGrantsIn.reduce((s, g) => s + g.amt, 0))} hidden`
+    : "";
+  const hiddenOut = node.invisibleGrants?.length
+    ? ` · $${formatNumber(node.invisibleGrants.reduce((s, g) => s + g.amt, 0))} hidden`
+    : "";
+  return `<p>In $${formatNumber(node.visibleGrantsInTotal || 0)} visible (${(node.visibleGrantsIn || []).length})${hiddenIn}</p>
+    <p>Out $${formatNumber(node.visibleGrantsTotal || 0)} visible (${(node.visibleGrants || []).length})${hiddenOut}</p>`;
+}
+
+function renderInspectorNode(node) {
+  const idLine =
+    node.has990Card || node.isBmfOnly
+      ? `EIN ${node.longEIN}`
+      : node.orgShort;
+  return `<header class="insp-head">
+      <p class="insp-kind">${node.kindCaption || "Organization"}</p>
+      <h3>${node.name} <a onclick="flashNode('${node.ein}')" title="Flash" style="cursor:pointer">🔦</a></h3>
+      <p class="insp-id">${idLine}</p>
+    </header>
+    <div class="insp-body">
+      ${inspectorPrimary(node)}
+      ${inspectorPork(node)}
+      ${inspectorMoney(node)}
+      ${inspectorNeighbors(node)}
+      ${inspectorLinkRow(node)}
+    </div>`;
+}
+
 function showControlPanel(type, data, element) {
   const panel = document.getElementById("control-panel");
-  let content = "";
-
-  function renderButtons(node, withButtons) {
-    if (!withButtons) return "";
-    return `
-      <div class="flex-1 bg-gray-200 p-4">
-        <button onclick="focusNode('${node.ein}')">Only This</button>
-        <button ${
-          !node.canExpandInflows ? 'disabled class="bg-gray-100 disabled"' : ""
-        } onclick="expandInflows('${node.ein}')">Show 3 Inflows</button>
-        <button ${
-          !node.canExpandOutflows ? 'disabled class="bg-gray-100 disabled"' : ""
-        } onclick="expandOutflows('${node.ein}')">Expand 3 Outflows</button>
-      </div>
-      <div class="flex-1 bg-gray-200 p-4">
-        <button onclick="removeNode('${node.ein}')">Remove This</button>
-        <button ${
-          !node.canCompressInflows ? "disabled class='disabled'" : ""
-        } onclick="compressInflows('${node.ein}')">Hide 3 Inflows</button>
-        <button ${
-          !node.canCompressOutflows ? "disabled class='disabled'" : ""
-        } onclick="compressOutflows('${node.ein}')">Hide 3 Outflows</button>
-      </div>
-    `;
-  }
-
-  function renderNode(node, withButtons = false) {
-    let buttons = renderButtons(node, withButtons);
-    let links = "";
-    let inflows = "<p>Inflows: N/A</p>";
-    let outflows = "<p>Outflows: N/A</p>";
-    let hiddenInflows = node.invisibleGrantsIn.length
-      ? `<p><i>$${formatNumber(
-          node.invisibleGrantsIn.reduce((sum, g) => sum + g.amt, 0)
-        )} hidden (${node.invisibleGrantsIn.length} grants)</i></p>`
-      : "";
-    let hiddenOutflows = node.invisibleGrants.length
-      ? `<p><i>$${formatNumber(
-          node.invisibleGrants.reduce((sum, g) => sum + g.amt, 0)
-        )} hidden (${node.invisibleGrants.length} grants)</i></p>`
-      : "";
-
-    if (node.isGov) {
-      return `
-        <div class="bg-blue-500 text-white flex-col p-4 text-center">
-          <h3>${node.name}</h3>
-        </div>
-        <div class="flex flex-row gap-4">
-          <div class="flex-1 bg-gray-200 p-4">
-            <p>US Taxpayers: <b>$4.6T</b></p>
-            <p>Outflows: $${formatNumber(node.visibleGrantsTotal)} visible (${
-        node.visibleGrants.length
-      } grants)</p>
-            ${hiddenOutflows}
-          </div>
-          ${buttons}
-        </div>
-      `;
-    } else {
-      if (!node.isRoot)
-        inflows = `<p>Inflows: $${formatNumber(
-          node.visibleGrantsInTotal - node.govt_amt
-        )} visible (${
-          node.visibleGrantsIn.length
-        } grants)</p> ${hiddenInflows}`;
-      if (!node.isTerminal)
-        outflows = `<p>Outflows: $${formatNumber(
-          node.visibleGrantsTotal
-        )} visible (${node.visibleGrants.length} grants)</p> ${hiddenOutflows}`;
-      const bacon = "<span>&#x1F953;</span>";
-      const stop = "<span>&#x1F6D1;</span>";
-      let pork = '<span class="emoji">&#x1F437;</span>';
-      if (node.govDepth > 0) {
-        pork = `${bacon} ${node.govDepth}`;
-      }
-      if (node.govDepth == Infinity) pork = stop; // no path to USG
-      const { grift, griftMap } = node.usgIndirectGrift();
-
-      links = `
-        <p>Direct From US Gov: <b>$${formatNumber(node.govt_amt)}</b></p>
-        <p>Find indirect USG sources:  <i>$${formatNumber(grift)}</i>
-           <a onClick="porkClick('${
-             node.ein
-           }')" title="Show USG Indirect" style="cursor:pointer">${pork}<span id="porkDepth"></span></a>
-           </p>
-        <p><a href="${node.financialsLink()}">Show me the Financials</a></p>
-        <p><a href="${node.officersLink()}">Show me the Officers</a></p>
-        <p><a href="${node.nonprofitsLink()}">Show me the Money!</a></p>
-        <p>${node.grantSearchLink("Show me the Grants")}</p>
-        <p>${node.propublicaLink("Take me to Propublica")}</p>
-        <p>${node.googleLink("Google")}</p>
-        <p>${node.grokLink("Grok")}</p>
-        <p>${node.guideStarLink("Guide Star")}</p>
-        <p>${node.charityNavigatorLink("Charity Navigator")}</p>
-      `;
-    }
-
-    return `
-      <div class="bg-blue-500 text-white flex-col p-4 text-center">
-        <h3>${node.name} <a onClick="flashNode('${node.ein}')" title="Flash" style="cursor:pointer"><span>&#128294;</span></a></h3>
-        <p>EIN: ${node.longEIN}</p>
-      </div>
-      <div class="flex flex-row gap-4">
-        <div class="flex-1 bg-gray-200 p-4">
-          ${links}
-          ${inflows}
-          ${outflows}
-        </div>
-        ${buttons}
-      </div>
-    `;
-  }
-
+  let content = `<button type="button" class="insp-close" onclick="closePanel()" aria-label="Close">×</button>`;
   if (type === "node") {
-    content = renderNode(data, true);
+    content += renderInspectorNode(data);
   } else if (type === "link") {
-    content = `
-      <div class="flex flex-col gap-4">
-        <div class="bg-blue-500 text-white p-4 text-center">
-          <h3>Grant Details</h3>
-          <p>Amount: $${formatNumber(data.amt)}</p>
-        </div>
-        <div class="flex flex-row gap-4">
-          <div class="flex-1 bg-gray-200 p-4">
-            <h4>From:</h4>
-            ${renderNode(data.filer)}
-            <button onclick="expandOutflows('${
-              data.filer.ein
-            }')">Expand Source</button>
-            <button onclick="compressOutflows('${
-              data.filer.ein
-            }')">Compress Source</button>
-          </div>
-          <div class="flex-1 bg-gray-300 p-4">
-            <h4>To:</h4>
-            ${renderNode(data.grantee)}
-            <button onclick="expandInflows('${
-              data.grantee.ein
-            }')">Expand Target</button>
-            <button onclick="compressInflows('${
-              data.grantee.ein
-            }')">Compress Target</button>
-          </div>
-        </div>
-      </div>
-    `;
+    const from = data.filer;
+    const to = data.grantee;
+    content += `<header class="insp-head">
+        <p class="insp-kind">Grant</p>
+        <h3>$${formatNumber(data.amt)}</h3>
+      </header>
+      <div class="insp-body">
+        <p class="insp-grant">
+          <button type="button" class="insp-neighbor" onclick="inspectOrg('${from?.ein}')">${from?.name || "?"}</button>
+          <span>→</span>
+          <button type="button" class="insp-neighbor" onclick="inspectOrg('${to?.ein}')">${to?.name || "?"}</button>
+        </p>
+      </div>`;
   }
-
   panel.innerHTML = content;
-  panel.style.display = "block";
-
+  panel.classList.remove("hidden");
+  panel.classList.add("is-open");
+  panel.style.display = "flex";
+  panel.dataset.mapEin = type === "node" ? data.ein : "";
   d3.selectAll(".node").classed("selected", false);
   d3.selectAll(".link").classed("selected", false);
-  d3.select(element).classed("selected", true);
+  if (element) d3.select(element).classed("selected", true);
 }
 
 function closePanel() {
-  document.getElementById("control-panel").style.display = "none";
+  const panel = document.getElementById("control-panel");
+  if (panel) {
+    panel.classList.remove("is-open");
+    panel.style.display = "none";
+  }
   d3.selectAll(".node").classed("selected", false);
   d3.selectAll(".link").classed("selected", false);
 }
+window.closePanel = closePanel;
 
-document.addEventListener("click", closePanel);
+window.inspectOrg = function (ein) {
+  const c = Charity.getCharity(ein);
+  if (c) showControlPanel("node", c, null);
+};
+
+window.focusSuggested = function (ein) {
+  const c = Charity.getCharity(ein);
+  if (!c) {
+    updateStatus("That EIN is not in this band");
+    return;
+  }
+  c.tunnelNode();
+  refresh();
+  requestAnimationFrame(() => zoomToFit());
+};
+
+/** Stretch: Leaflet map popup from this drawer. */
+window.openInspectorMap = function () {};
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") closePanel();
 });
@@ -2271,16 +2781,19 @@ window.compressOutflows = function (ein) {
 window.focusNode = function (ein) {
   const charity = Charity.getCharity(ein);
   if (charity) {
+    if (charity.isLeftover) {
+      showControlPanel("node", charity, null);
+      return;
+    }
     charity.tunnelNode();
     refresh();
+    requestAnimationFrame(() => zoomToFit());
     closePanel();
   }
 };
 
 const extraStyle = `
   .node { fill: #999; }
-  .node.expand { cursor: grab; }
-  .node.no-grants { cursor: zoom-in; }
   .link { stroke-opacity: 0.5; }
   .hat-up, .hat-down { cursor: crosshair; }
   .selected { stroke: #ff0; stroke-width: 2px; }

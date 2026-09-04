@@ -1,0 +1,2162 @@
+{
+  "iter": 121,
+  "batch_size": 1000,
+  "history": [
+    {
+      "iter": 11,
+      "preprocess": 793,
+      "survivors": 3207,
+      "batch": 4000,
+      "matched": 2825,
+      "classified": 382,
+      "applied": 4000,
+      "ok": true,
+      "completed": true,
+      "batch_size": 4000,
+      "note": "completed before overnight loop"
+    },
+    {
+      "iter": 12,
+      "preprocess": 914,
+      "survivors": 3086,
+      "batch": 4000,
+      "matched": 2929,
+      "classified": 157,
+      "applied": 4000,
+      "ok": true,
+      "completed": true,
+      "batch_size": 4000,
+      "started": "2026-07-08 23:35:40",
+      "finished": "2026-07-08T23:42:06"
+    },
+    {
+      "ok": true,
+      "preprocess": 1013,
+      "survivors": 2987,
+      "batch": 4000,
+      "matched": 2806,
+      "classified": 181,
+      "applied": 4000,
+      "completed": true,
+      "iter": 13,
+      "batch_size": 4000,
+      "started": "2026-07-08 23:44:25",
+      "finished": "2026-07-08T23:50:56.830492"
+    },
+    {
+      "ok": true,
+      "preprocess": 957,
+      "survivors": 3043,
+      "batch": 4000,
+      "matched": 2719,
+      "classified": 324,
+      "applied": 4000,
+      "completed": true,
+      "iter": 14,
+      "batch_size": 4000,
+      "started": "2026-07-08 23:51:03",
+      "finished": "2026-07-08T23:57:33.586823"
+    },
+    {
+      "ok": true,
+      "preprocess": 1019,
+      "survivors": 2981,
+      "batch": 4000,
+      "matched": 2658,
+      "classified": 323,
+      "applied": 4000,
+      "completed": true,
+      "iter": 15,
+      "batch_size": 4000,
+      "started": "2026-07-08 23:57:39",
+      "finished": "2026-07-09T00:05:10.349220"
+    },
+    {
+      "ok": true,
+      "preprocess": 1024,
+      "survivors": 2976,
+      "batch": 4000,
+      "matched": 2749,
+      "classified": 227,
+      "applied": 4000,
+      "completed": true,
+      "iter": 16,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:05:16",
+      "finished": "2026-07-09T00:11:47.041370"
+    },
+    {
+      "ok": true,
+      "preprocess": 1020,
+      "survivors": 2980,
+      "batch": 4000,
+      "matched": 2782,
+      "classified": 198,
+      "applied": 4000,
+      "completed": true,
+      "iter": 17,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:11:53",
+      "finished": "2026-07-09T00:19:23.556326"
+    },
+    {
+      "ok": true,
+      "preprocess": 1053,
+      "survivors": 2947,
+      "batch": 4000,
+      "matched": 2727,
+      "classified": 220,
+      "applied": 4000,
+      "completed": true,
+      "iter": 18,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:19:29",
+      "finished": "2026-07-09T00:26:00.175312"
+    },
+    {
+      "ok": true,
+      "preprocess": 1090,
+      "survivors": 2910,
+      "batch": 4000,
+      "matched": 2673,
+      "classified": 237,
+      "applied": 4000,
+      "completed": true,
+      "iter": 19,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:26:06",
+      "finished": "2026-07-09T00:32:36.706104"
+    },
+    {
+      "ok": true,
+      "preprocess": 914,
+      "survivors": 3086,
+      "batch": 4000,
+      "matched": 2775,
+      "classified": 311,
+      "applied": 4000,
+      "completed": true,
+      "iter": 20,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:32:42",
+      "finished": "2026-07-09T00:39:13.240041"
+    },
+    {
+      "ok": true,
+      "preprocess": 226,
+      "survivors": 3774,
+      "batch": 4000,
+      "matched": 3323,
+      "classified": 451,
+      "applied": 4000,
+      "completed": true,
+      "iter": 21,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:39:19",
+      "finished": "2026-07-09T00:45:49.775054"
+    },
+    {
+      "ok": true,
+      "preprocess": 228,
+      "survivors": 3772,
+      "batch": 4000,
+      "matched": 3105,
+      "classified": 667,
+      "applied": 4000,
+      "completed": true,
+      "iter": 22,
+      "batch_size": 4000,
+      "started": "2026-07-09 00:45:55",
+      "finished": "2026-07-09T00:52:26.076556"
+    },
+    {
+      "ok": true,
+      "preprocess": 103,
+      "survivors": 1897,
+      "batch": 2000,
+      "matched": 1715,
+      "classified": 182,
+      "applied": 2000,
+      "completed": true,
+      "iter": 23,
+      "batch_size": 2000,
+      "started": "2026-07-09 00:52:32",
+      "finished": "2026-07-09T00:58:02.537901"
+    },
+    {
+      "ok": true,
+      "preprocess": 85,
+      "survivors": 1915,
+      "batch": 2000,
+      "matched": 1709,
+      "classified": 206,
+      "applied": 2000,
+      "completed": true,
+      "iter": 24,
+      "batch_size": 2000,
+      "started": "2026-07-09 00:58:08",
+      "finished": "2026-07-09T01:03:38.746682"
+    },
+    {
+      "ok": true,
+      "preprocess": 101,
+      "survivors": 1899,
+      "batch": 2000,
+      "matched": 1669,
+      "classified": 230,
+      "applied": 2000,
+      "completed": true,
+      "iter": 25,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:03:44",
+      "finished": "2026-07-09T01:09:15.247271"
+    },
+    {
+      "ok": true,
+      "preprocess": 95,
+      "survivors": 1905,
+      "batch": 2000,
+      "matched": 1745,
+      "classified": 160,
+      "applied": 2000,
+      "completed": true,
+      "iter": 26,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:09:21",
+      "finished": "2026-07-09T01:14:51.777558"
+    },
+    {
+      "ok": true,
+      "preprocess": 112,
+      "survivors": 1888,
+      "batch": 2000,
+      "matched": 1582,
+      "classified": 306,
+      "applied": 2000,
+      "completed": true,
+      "iter": 27,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:14:59",
+      "finished": "2026-07-09T01:20:29.626616"
+    },
+    {
+      "ok": true,
+      "preprocess": 412,
+      "survivors": 1588,
+      "batch": 2000,
+      "matched": 1464,
+      "classified": 124,
+      "applied": 2000,
+      "completed": true,
+      "iter": 28,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:20:35",
+      "finished": "2026-07-09T01:26:06.316815"
+    },
+    {
+      "ok": true,
+      "preprocess": 372,
+      "survivors": 1628,
+      "batch": 2000,
+      "matched": 1562,
+      "classified": 66,
+      "applied": 2000,
+      "completed": true,
+      "iter": 29,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:26:12",
+      "finished": "2026-07-09T01:31:42.822284"
+    },
+    {
+      "ok": true,
+      "preprocess": 384,
+      "survivors": 1616,
+      "batch": 2000,
+      "matched": 1484,
+      "classified": 132,
+      "applied": 2000,
+      "completed": true,
+      "iter": 30,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:31:48",
+      "finished": "2026-07-09T01:37:19.232168"
+    },
+    {
+      "ok": true,
+      "preprocess": 426,
+      "survivors": 1574,
+      "batch": 2000,
+      "matched": 1438,
+      "classified": 136,
+      "applied": 2000,
+      "completed": true,
+      "iter": 31,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:37:25",
+      "finished": "2026-07-09T01:41:55.307669"
+    },
+    {
+      "ok": true,
+      "preprocess": 400,
+      "survivors": 1600,
+      "batch": 2000,
+      "matched": 1473,
+      "classified": 127,
+      "applied": 2000,
+      "completed": true,
+      "iter": 32,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:42:01",
+      "finished": "2026-07-09T01:47:31.461750"
+    },
+    {
+      "ok": true,
+      "preprocess": 392,
+      "survivors": 1608,
+      "batch": 2000,
+      "matched": 1448,
+      "classified": 160,
+      "applied": 2000,
+      "completed": true,
+      "iter": 33,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:47:37",
+      "finished": "2026-07-09T01:54:07.869972"
+    },
+    {
+      "ok": true,
+      "preprocess": 439,
+      "survivors": 1561,
+      "batch": 2000,
+      "matched": 1440,
+      "classified": 121,
+      "applied": 2000,
+      "completed": true,
+      "iter": 34,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:54:14",
+      "finished": "2026-07-09T01:59:44.551283"
+    },
+    {
+      "ok": true,
+      "preprocess": 464,
+      "survivors": 1536,
+      "batch": 2000,
+      "matched": 1458,
+      "classified": 78,
+      "applied": 2000,
+      "completed": true,
+      "iter": 35,
+      "batch_size": 2000,
+      "started": "2026-07-09 01:59:50",
+      "finished": "2026-07-09T02:05:20.699518"
+    },
+    {
+      "ok": true,
+      "preprocess": 439,
+      "survivors": 1561,
+      "batch": 2000,
+      "matched": 1460,
+      "classified": 101,
+      "applied": 2000,
+      "completed": true,
+      "iter": 36,
+      "batch_size": 2000,
+      "started": "2026-07-09 02:05:26",
+      "finished": "2026-07-09T02:10:56.883578"
+    },
+    {
+      "ok": true,
+      "preprocess": 435,
+      "survivors": 1565,
+      "batch": 2000,
+      "matched": 1509,
+      "classified": 56,
+      "applied": 2000,
+      "completed": true,
+      "iter": 37,
+      "batch_size": 2000,
+      "started": "2026-07-09 02:11:02",
+      "finished": "2026-07-09T02:17:33.287228"
+    },
+    {
+      "ok": true,
+      "preprocess": 392,
+      "survivors": 1608,
+      "batch": 2000,
+      "matched": 1436,
+      "classified": 172,
+      "applied": 2000,
+      "completed": true,
+      "iter": 38,
+      "batch_size": 2000,
+      "started": "2026-07-09 02:17:39",
+      "finished": "2026-07-09T02:23:09.662212"
+    },
+    {
+      "ok": true,
+      "preprocess": 439,
+      "survivors": 1561,
+      "batch": 2000,
+      "matched": 1498,
+      "classified": 63,
+      "applied": 2000,
+      "completed": true,
+      "iter": 39,
+      "batch_size": 2000,
+      "started": "2026-07-09 02:23:15",
+      "finished": "2026-07-09T02:29:46.195718"
+    },
+    {
+      "ok": true,
+      "preprocess": 384,
+      "survivors": 1616,
+      "batch": 2000,
+      "matched": 1432,
+      "classified": 184,
+      "applied": 2000,
+      "completed": true,
+      "iter": 40,
+      "batch_size": 2000,
+      "started": "2026-07-09 02:29:52",
+      "finished": "2026-07-09T02:36:22.707075"
+    },
+    {
+      "ok": true,
+      "preprocess": 870,
+      "survivors": 3130,
+      "batch": 4000,
+      "matched": 2700,
+      "classified": 430,
+      "applied": 4000,
+      "completed": true,
+      "iter": 41,
+      "batch_size": 4000,
+      "started": "2026-07-09 05:28:09",
+      "finished": "2026-07-09T05:36:39.801778"
+    },
+    {
+      "ok": true,
+      "preprocess": 866,
+      "survivors": 3134,
+      "batch": 4000,
+      "matched": 2841,
+      "classified": 293,
+      "applied": 4000,
+      "completed": true,
+      "iter": 42,
+      "batch_size": 4000,
+      "started": "2026-07-09 05:36:46",
+      "finished": "2026-07-09T05:44:16.649240"
+    },
+    {
+      "ok": true,
+      "preprocess": 929,
+      "survivors": 3071,
+      "batch": 4000,
+      "matched": 2744,
+      "classified": 327,
+      "applied": 4000,
+      "completed": true,
+      "iter": 43,
+      "batch_size": 4000,
+      "started": "2026-07-09 05:44:22",
+      "finished": "2026-07-09T05:51:53.317303"
+    },
+    {
+      "ok": true,
+      "preprocess": 859,
+      "survivors": 3141,
+      "batch": 4000,
+      "matched": 2757,
+      "classified": 384,
+      "applied": 4000,
+      "completed": true,
+      "iter": 44,
+      "batch_size": 4000,
+      "started": "2026-07-09 05:51:59",
+      "finished": "2026-07-09T05:59:59.895388"
+    },
+    {
+      "ok": true,
+      "preprocess": 938,
+      "survivors": 3062,
+      "batch": 4000,
+      "matched": 2813,
+      "classified": 249,
+      "applied": 4000,
+      "completed": true,
+      "iter": 45,
+      "batch_size": 4000,
+      "started": "2026-07-09 06:00:06",
+      "finished": "2026-07-09T06:10:06.680268"
+    },
+    {
+      "ok": true,
+      "preprocess": 810,
+      "survivors": 3190,
+      "batch": 4000,
+      "matched": 2949,
+      "classified": 241,
+      "applied": 4000,
+      "completed": true,
+      "iter": 46,
+      "batch_size": 4000,
+      "started": "2026-07-09 06:10:12",
+      "finished": "2026-07-09T06:18:43.318138"
+    },
+    {
+      "ok": true,
+      "preprocess": 797,
+      "survivors": 3203,
+      "batch": 4000,
+      "matched": 2751,
+      "classified": 452,
+      "applied": 4000,
+      "completed": true,
+      "iter": 47,
+      "batch_size": 4000,
+      "started": "2026-07-09 06:18:49",
+      "finished": "2026-07-09T06:27:19.977402"
+    },
+    {
+      "ok": true,
+      "preprocess": 790,
+      "survivors": 3210,
+      "batch": 4000,
+      "matched": 2971,
+      "classified": 239,
+      "applied": 4000,
+      "completed": true,
+      "iter": 48,
+      "batch_size": 4000,
+      "started": "2026-07-09 06:27:26",
+      "finished": "2026-07-09T06:36:26.591629"
+    },
+    {
+      "ok": false,
+      "preprocess": 818,
+      "survivors": 3182,
+      "batch": 4000,
+      "error": true,
+      "iter": 49,
+      "batch_size": 4000,
+      "started": "2026-07-09 06:36:32",
+      "finished": "2026-07-09T06:44:03.044172"
+    },
+    {
+      "ok": true,
+      "preprocess": 849,
+      "survivors": 3151,
+      "batch": 4000,
+      "matched": 2721,
+      "classified": 430,
+      "applied": 7182,
+      "completed": true,
+      "iter": 50,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:05:41",
+      "finished": "2026-07-09T09:14:41.661213"
+    },
+    {
+      "ok": true,
+      "preprocess": 778,
+      "survivors": 3222,
+      "batch": 4000,
+      "matched": 2958,
+      "classified": 264,
+      "applied": 4000,
+      "completed": true,
+      "iter": 51,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:14:48",
+      "finished": "2026-07-09T09:23:18.955669"
+    },
+    {
+      "ok": true,
+      "preprocess": 860,
+      "survivors": 3140,
+      "batch": 4000,
+      "matched": 2696,
+      "classified": 444,
+      "applied": 4000,
+      "completed": true,
+      "iter": 52,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:23:25",
+      "finished": "2026-07-09T09:31:56.219777"
+    },
+    {
+      "ok": true,
+      "preprocess": 814,
+      "survivors": 3186,
+      "batch": 4000,
+      "matched": 2880,
+      "classified": 306,
+      "applied": 4000,
+      "completed": true,
+      "iter": 53,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:32:02",
+      "finished": "2026-07-09T09:40:32.851237"
+    },
+    {
+      "ok": true,
+      "preprocess": 710,
+      "survivors": 3290,
+      "batch": 4000,
+      "matched": 3016,
+      "classified": 274,
+      "applied": 4000,
+      "completed": true,
+      "iter": 54,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:40:38",
+      "finished": "2026-07-09T09:48:09.436372"
+    },
+    {
+      "ok": true,
+      "preprocess": 786,
+      "survivors": 3214,
+      "batch": 4000,
+      "matched": 2849,
+      "classified": 365,
+      "applied": 4000,
+      "completed": true,
+      "iter": 55,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:48:15",
+      "finished": "2026-07-09T09:57:15.974665"
+    },
+    {
+      "ok": true,
+      "preprocess": 707,
+      "survivors": 3293,
+      "batch": 4000,
+      "matched": 2898,
+      "classified": 395,
+      "applied": 4000,
+      "completed": true,
+      "iter": 56,
+      "batch_size": 4000,
+      "started": "2026-07-09 09:57:22",
+      "finished": "2026-07-09T10:05:52.645405"
+    },
+    {
+      "ok": true,
+      "preprocess": 753,
+      "survivors": 3247,
+      "batch": 4000,
+      "matched": 2833,
+      "classified": 414,
+      "applied": 4000,
+      "completed": true,
+      "iter": 57,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:05:58",
+      "finished": "2026-07-09T10:14:59.242446"
+    },
+    {
+      "ok": true,
+      "preprocess": 730,
+      "survivors": 3270,
+      "batch": 4000,
+      "matched": 2797,
+      "classified": 473,
+      "applied": 4000,
+      "completed": true,
+      "iter": 58,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:15:05",
+      "finished": "2026-07-09T10:23:06.009721"
+    },
+    {
+      "ok": true,
+      "preprocess": 706,
+      "survivors": 3294,
+      "batch": 4000,
+      "matched": 2934,
+      "classified": 360,
+      "applied": 4000,
+      "completed": true,
+      "iter": 59,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:23:12",
+      "finished": "2026-07-09T10:30:42.546707"
+    },
+    {
+      "ok": true,
+      "preprocess": 598,
+      "survivors": 3402,
+      "batch": 4000,
+      "matched": 3161,
+      "classified": 241,
+      "applied": 4000,
+      "completed": true,
+      "iter": 60,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:30:48",
+      "finished": "2026-07-09T10:38:19.002669"
+    },
+    {
+      "ok": true,
+      "preprocess": 760,
+      "survivors": 3240,
+      "batch": 4000,
+      "matched": 2837,
+      "classified": 403,
+      "applied": 4000,
+      "completed": true,
+      "iter": 61,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:38:25",
+      "finished": "2026-07-09T10:45:55.514026"
+    },
+    {
+      "ok": true,
+      "preprocess": 734,
+      "survivors": 3266,
+      "batch": 4000,
+      "matched": 2825,
+      "classified": 441,
+      "applied": 4000,
+      "completed": true,
+      "iter": 62,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:46:01",
+      "finished": "2026-07-09T10:52:31.960416"
+    },
+    {
+      "ok": true,
+      "preprocess": 665,
+      "survivors": 3335,
+      "batch": 4000,
+      "matched": 3020,
+      "classified": 315,
+      "applied": 4000,
+      "completed": true,
+      "iter": 63,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:52:37",
+      "finished": "2026-07-09T10:59:38.194662"
+    },
+    {
+      "ok": true,
+      "preprocess": 624,
+      "survivors": 3376,
+      "batch": 4000,
+      "matched": 2985,
+      "classified": 391,
+      "applied": 4000,
+      "completed": true,
+      "iter": 64,
+      "batch_size": 4000,
+      "started": "2026-07-09 10:59:44",
+      "finished": "2026-07-09T11:07:14.659054"
+    },
+    {
+      "ok": true,
+      "preprocess": 709,
+      "survivors": 3291,
+      "batch": 4000,
+      "matched": 2936,
+      "classified": 355,
+      "applied": 4000,
+      "completed": true,
+      "iter": 65,
+      "batch_size": 4000,
+      "started": "2026-07-09 11:17:39",
+      "finished": "2026-07-09T11:25:39.450049",
+      "mine": {
+        "failures": 355,
+        "clusters": {
+          "ambig": 2,
+          "nota": 10,
+          "unkn_street": 312,
+          "vague": 31
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 749,
+      "survivors": 3251,
+      "batch": 4000,
+      "matched": 2908,
+      "classified": 343,
+      "applied": 4000,
+      "completed": true,
+      "iter": 66,
+      "batch_size": 4000,
+      "started": "2026-07-09 11:25:46",
+      "finished": "2026-07-09T11:33:46.601387",
+      "mine": {
+        "failures": 343,
+        "clusters": {
+          "ambig": 1,
+          "nota": 11,
+          "unkn_street": 298,
+          "vague": 33
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 801,
+      "survivors": 3199,
+      "batch": 4000,
+      "matched": 2664,
+      "classified": 535,
+      "applied": 4000,
+      "completed": true,
+      "iter": 67,
+      "batch_size": 4000,
+      "started": "2026-07-09 11:33:52",
+      "finished": "2026-07-09T11:41:53.113698",
+      "mine": {
+        "failures": 535,
+        "clusters": {
+          "ambig": 2,
+          "nota": 17,
+          "unkn_street": 479,
+          "vague": 37
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 440,
+      "survivors": 1560,
+      "batch": 2000,
+      "matched": 1379,
+      "classified": 181,
+      "applied": 2000,
+      "completed": true,
+      "iter": 68,
+      "batch_size": 2000,
+      "started": "2026-07-09 11:41:59",
+      "finished": "2026-07-09T11:47:29.699634",
+      "mine": {
+        "failures": 181,
+        "clusters": {
+          "ambig": 3,
+          "nota": 11,
+          "unkn_street": 149,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 329,
+      "survivors": 1671,
+      "batch": 2000,
+      "matched": 1476,
+      "classified": 195,
+      "applied": 2000,
+      "completed": true,
+      "iter": 69,
+      "batch_size": 2000,
+      "started": "2026-07-09 11:47:35",
+      "finished": "2026-07-09T11:53:06.104843",
+      "mine": {
+        "failures": 195,
+        "clusters": {
+          "ambig": 1,
+          "nota": 8,
+          "unkn_street": 166,
+          "apo": 1,
+          "vague": 19
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 357,
+      "survivors": 1643,
+      "batch": 2000,
+      "matched": 1443,
+      "classified": 200,
+      "applied": 2000,
+      "completed": true,
+      "iter": 70,
+      "batch_size": 2000,
+      "started": "2026-07-09 11:53:12",
+      "finished": "2026-07-09T11:58:42.456744",
+      "mine": {
+        "failures": 200,
+        "clusters": {
+          "nota": 14,
+          "unkn_street": 175,
+          "vague": 11
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 378,
+      "survivors": 1622,
+      "batch": 2000,
+      "matched": 1316,
+      "classified": 306,
+      "applied": 2000,
+      "completed": true,
+      "iter": 71,
+      "batch_size": 2000,
+      "started": "2026-07-09 11:58:48",
+      "finished": "2026-07-09T12:05:19.762812",
+      "mine": {
+        "failures": 306,
+        "clusters": {
+          "ambig": 1,
+          "nota": 3,
+          "unkn_street": 282,
+          "vague": 20
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 411,
+      "survivors": 1589,
+      "batch": 2000,
+      "matched": 1301,
+      "classified": 288,
+      "applied": 2000,
+      "completed": true,
+      "iter": 72,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:05:25",
+      "finished": "2026-07-09T12:11:56.110452",
+      "mine": {
+        "failures": 288,
+        "clusters": {
+          "ambig": 3,
+          "nota": 5,
+          "unkn_street": 262,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 429,
+      "survivors": 1571,
+      "batch": 2000,
+      "matched": 1301,
+      "classified": 270,
+      "applied": 2000,
+      "completed": true,
+      "iter": 73,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:12:02",
+      "finished": "2026-07-09T12:18:02.475800",
+      "mine": {
+        "failures": 270,
+        "clusters": {
+          "ambig": 2,
+          "nota": 11,
+          "unkn_street": 236,
+          "vague": 21
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 413,
+      "survivors": 1587,
+      "batch": 2000,
+      "matched": 1284,
+      "classified": 303,
+      "applied": 2000,
+      "completed": true,
+      "iter": 74,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:18:08",
+      "finished": "2026-07-09T12:24:09.169201",
+      "mine": {
+        "failures": 303,
+        "clusters": {
+          "ambig": 1,
+          "nota": 4,
+          "unkn_street": 275,
+          "vague": 23
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 418,
+      "survivors": 1582,
+      "batch": 2000,
+      "matched": 1291,
+      "classified": 291,
+      "applied": 2000,
+      "completed": true,
+      "iter": 75,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:24:15",
+      "finished": "2026-07-09T12:30:45.757860",
+      "mine": {
+        "failures": 291,
+        "clusters": {
+          "nota": 11,
+          "unkn_street": 234,
+          "vague": 46
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 308,
+      "survivors": 1692,
+      "batch": 2000,
+      "matched": 1357,
+      "classified": 335,
+      "applied": 2000,
+      "completed": true,
+      "iter": 76,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:30:51",
+      "finished": "2026-07-09T12:36:22.222186",
+      "mine": {
+        "failures": 335,
+        "clusters": {
+          "ambig": 2,
+          "nota": 8,
+          "unkn_street": 306,
+          "vague": 19
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 331,
+      "survivors": 1669,
+      "batch": 2000,
+      "matched": 1398,
+      "classified": 271,
+      "applied": 2000,
+      "completed": true,
+      "iter": 77,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:36:28",
+      "finished": "2026-07-09T12:41:58.661944",
+      "mine": {
+        "failures": 271,
+        "clusters": {
+          "ambig": 2,
+          "nota": 10,
+          "unkn_street": 241,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 310,
+      "survivors": 1690,
+      "batch": 2000,
+      "matched": 1450,
+      "classified": 240,
+      "applied": 2000,
+      "completed": true,
+      "iter": 78,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:42:04",
+      "finished": "2026-07-09T12:47:35.053057",
+      "mine": {
+        "failures": 240,
+        "clusters": {
+          "ambig": 3,
+          "nota": 7,
+          "unkn_street": 212,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 316,
+      "survivors": 1684,
+      "batch": 2000,
+      "matched": 1466,
+      "classified": 218,
+      "applied": 2000,
+      "completed": true,
+      "iter": 79,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:47:41",
+      "finished": "2026-07-09T12:56:11.645469",
+      "mine": {
+        "failures": 218,
+        "clusters": {
+          "ambig": 4,
+          "nota": 8,
+          "unkn_street": 188,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 321,
+      "survivors": 1679,
+      "batch": 2000,
+      "matched": 1322,
+      "classified": 357,
+      "applied": 2000,
+      "completed": true,
+      "iter": 80,
+      "batch_size": 2000,
+      "started": "2026-07-09 12:56:19",
+      "finished": "2026-07-09T13:02:20.131511",
+      "mine": {
+        "failures": 357,
+        "clusters": {
+          "nota": 11,
+          "unkn_street": 326,
+          "vague": 20
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 340,
+      "survivors": 1660,
+      "batch": 2000,
+      "matched": 1266,
+      "classified": 394,
+      "applied": 2000,
+      "completed": true,
+      "iter": 81,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:02:26",
+      "finished": "2026-07-09T13:07:56.532051",
+      "mine": {
+        "failures": 394,
+        "clusters": {
+          "ambig": 3,
+          "nota": 8,
+          "unkn_street": 363,
+          "apo": 1,
+          "vague": 19
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": false,
+      "preprocess": 371,
+      "survivors": 1629,
+      "batch": 2000,
+      "completed": true,
+      "error": true,
+      "iter": 82,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:08:02",
+      "finished": "2026-07-09T13:10:32.754462"
+    },
+    {
+      "ok": true,
+      "preprocess": 60,
+      "survivors": 1940,
+      "batch": 2000,
+      "matched": 1511,
+      "classified": 429,
+      "applied": 2000,
+      "completed": true,
+      "iter": 82,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:11:32",
+      "finished": "2026-07-09T13:18:03.078391",
+      "mine": {
+        "failures": 429,
+        "clusters": {
+          "ambig": 2,
+          "nota": 17,
+          "unkn_street": 390,
+          "vague": 20
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 380,
+      "survivors": 1620,
+      "batch": 2000,
+      "matched": 1205,
+      "classified": 415,
+      "applied": 2000,
+      "completed": true,
+      "iter": 83,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:18:09",
+      "finished": "2026-07-09T13:25:09.456464",
+      "mine": {
+        "failures": 415,
+        "clusters": {
+          "ambig": 2,
+          "nota": 4,
+          "unkn_street": 388,
+          "vague": 21
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 325,
+      "survivors": 1675,
+      "batch": 2000,
+      "matched": 1374,
+      "classified": 301,
+      "applied": 2000,
+      "completed": true,
+      "iter": 84,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:25:15",
+      "finished": "2026-07-09T13:31:46.033755",
+      "mine": {
+        "failures": 301,
+        "clusters": {
+          "nota": 7,
+          "unkn_street": 282,
+          "vague": 12
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 306,
+      "survivors": 1694,
+      "batch": 2000,
+      "matched": 1451,
+      "classified": 243,
+      "applied": 2000,
+      "completed": true,
+      "iter": 85,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:31:52",
+      "finished": "2026-07-09T13:38:22.480952",
+      "mine": {
+        "failures": 243,
+        "clusters": {
+          "nota": 11,
+          "unkn_street": 210,
+          "vague": 22
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 329,
+      "survivors": 1671,
+      "batch": 2000,
+      "matched": 1323,
+      "classified": 348,
+      "applied": 2000,
+      "completed": true,
+      "iter": 86,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:38:28",
+      "finished": "2026-07-09T13:44:58.904560",
+      "mine": {
+        "failures": 348,
+        "clusters": {
+          "ambig": 1,
+          "nota": 9,
+          "unkn_street": 320,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 316,
+      "survivors": 1684,
+      "batch": 2000,
+      "matched": 1397,
+      "classified": 287,
+      "applied": 2000,
+      "completed": true,
+      "iter": 87,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:45:05",
+      "finished": "2026-07-09T13:51:35.472058",
+      "mine": {
+        "failures": 287,
+        "clusters": {
+          "ambig": 1,
+          "nota": 5,
+          "unkn_street": 266,
+          "vague": 15
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 376,
+      "survivors": 1624,
+      "batch": 2000,
+      "matched": 1227,
+      "classified": 397,
+      "applied": 2000,
+      "completed": true,
+      "iter": 88,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:51:41",
+      "finished": "2026-07-09T13:57:11.842685",
+      "mine": {
+        "failures": 397,
+        "clusters": {
+          "ambig": 2,
+          "nota": 4,
+          "unkn_street": 375,
+          "vague": 16
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 366,
+      "survivors": 1634,
+      "batch": 2000,
+      "matched": 1250,
+      "classified": 384,
+      "applied": 2000,
+      "completed": true,
+      "iter": 89,
+      "batch_size": 2000,
+      "started": "2026-07-09 13:57:17",
+      "finished": "2026-07-09T14:03:48.221241",
+      "mine": {
+        "failures": 384,
+        "clusters": {
+          "nota": 5,
+          "unkn_street": 360,
+          "vague": 19
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 433,
+      "survivors": 1567,
+      "batch": 2000,
+      "matched": 1327,
+      "classified": 240,
+      "applied": 2000,
+      "completed": true,
+      "iter": 90,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:03:54",
+      "finished": "2026-07-09T14:11:24.588286",
+      "mine": {
+        "failures": 240,
+        "clusters": {
+          "ambig": 3,
+          "nota": 6,
+          "unkn_street": 213,
+          "vague": 18
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 374,
+      "survivors": 1626,
+      "batch": 2000,
+      "matched": 1341,
+      "classified": 285,
+      "applied": 2000,
+      "completed": true,
+      "iter": 91,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:11:30",
+      "finished": "2026-07-09T14:17:01.114387",
+      "mine": {
+        "failures": 285,
+        "clusters": {
+          "nota": 11,
+          "unkn_street": 259,
+          "vague": 15
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 379,
+      "survivors": 1621,
+      "batch": 2000,
+      "matched": 1358,
+      "classified": 263,
+      "applied": 2000,
+      "completed": true,
+      "iter": 92,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:17:07",
+      "finished": "2026-07-09T14:25:07.588217",
+      "mine": {
+        "failures": 263,
+        "clusters": {
+          "ambig": 2,
+          "nota": 11,
+          "unkn_street": 231,
+          "mail_center": 1,
+          "apo": 1,
+          "vague": 17
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 417,
+      "survivors": 1583,
+      "batch": 2000,
+      "matched": 1386,
+      "classified": 197,
+      "applied": 2000,
+      "completed": true,
+      "iter": 93,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:25:13",
+      "finished": "2026-07-09T14:31:44.052600",
+      "mine": {
+        "failures": 197,
+        "clusters": {
+          "nota": 12,
+          "unkn_street": 164,
+          "vague": 21
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 341,
+      "survivors": 1659,
+      "batch": 2000,
+      "matched": 1385,
+      "classified": 274,
+      "applied": 2000,
+      "completed": true,
+      "iter": 94,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:31:50",
+      "finished": "2026-07-09T14:37:20.539446",
+      "mine": {
+        "failures": 274,
+        "clusters": {
+          "ambig": 1,
+          "nota": 11,
+          "unkn_street": 237,
+          "vague": 25
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 380,
+      "survivors": 1620,
+      "batch": 2000,
+      "matched": 1174,
+      "classified": 446,
+      "applied": 2000,
+      "completed": true,
+      "iter": 95,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:37:26",
+      "finished": "2026-07-09T14:43:56.915415",
+      "mine": {
+        "failures": 446,
+        "clusters": {
+          "ambig": 3,
+          "nota": 2,
+          "unkn_street": 428,
+          "vague": 13
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 370,
+      "survivors": 1630,
+      "batch": 2000,
+      "matched": 1239,
+      "classified": 391,
+      "applied": 2000,
+      "completed": true,
+      "iter": 96,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:44:02",
+      "finished": "2026-07-09T14:49:33.253745",
+      "mine": {
+        "failures": 391,
+        "clusters": {
+          "ambig": 5,
+          "nota": 10,
+          "unkn_street": 359,
+          "vague": 17
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 348,
+      "survivors": 1652,
+      "batch": 2000,
+      "matched": 1430,
+      "classified": 222,
+      "applied": 2000,
+      "completed": true,
+      "iter": 97,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:49:39",
+      "finished": "2026-07-09T14:56:09.643369",
+      "mine": {
+        "failures": 222,
+        "clusters": {
+          "ambig": 4,
+          "nota": 5,
+          "unkn_street": 189,
+          "vague": 24
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 360,
+      "survivors": 1640,
+      "batch": 2000,
+      "matched": 1311,
+      "classified": 329,
+      "applied": 2000,
+      "completed": true,
+      "iter": 98,
+      "batch_size": 2000,
+      "started": "2026-07-09 14:56:15",
+      "finished": "2026-07-09T15:01:45.962044",
+      "mine": {
+        "failures": 329,
+        "clusters": {
+          "ambig": 1,
+          "nota": 5,
+          "unkn_street": 298,
+          "vague": 25
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 360,
+      "survivors": 1640,
+      "batch": 2000,
+      "matched": 1414,
+      "classified": 226,
+      "applied": 2000,
+      "completed": true,
+      "iter": 99,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:01:51",
+      "finished": "2026-07-09T15:08:22.443475",
+      "mine": {
+        "failures": 226,
+        "clusters": {
+          "ambig": 4,
+          "nota": 14,
+          "unkn_street": 162,
+          "vague": 46
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 341,
+      "survivors": 1659,
+      "batch": 2000,
+      "matched": 1223,
+      "classified": 436,
+      "applied": 2000,
+      "completed": true,
+      "iter": 100,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:08:28",
+      "finished": "2026-07-09T15:15:28.783616",
+      "mine": {
+        "failures": 436,
+        "clusters": {
+          "ambig": 1,
+          "nota": 8,
+          "unkn_street": 410,
+          "vague": 17
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 353,
+      "survivors": 1647,
+      "batch": 2000,
+      "matched": 1477,
+      "classified": 170,
+      "applied": 2000,
+      "completed": true,
+      "iter": 101,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:15:35",
+      "finished": "2026-07-09T15:21:05.376174",
+      "mine": {
+        "failures": 170,
+        "clusters": {
+          "nota": 4,
+          "unkn_street": 150,
+          "apo": 2,
+          "vague": 14
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 350,
+      "survivors": 1650,
+      "batch": 2000,
+      "matched": 1335,
+      "classified": 315,
+      "applied": 2000,
+      "completed": true,
+      "iter": 102,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:21:11",
+      "finished": "2026-07-09T15:27:41.782167",
+      "mine": {
+        "failures": 315,
+        "clusters": {
+          "ambig": 24,
+          "nota": 5,
+          "unkn_street": 279,
+          "vague": 7
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 311,
+      "survivors": 1689,
+      "batch": 2000,
+      "matched": 1244,
+      "classified": 445,
+      "applied": 2000,
+      "completed": true,
+      "iter": 103,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:27:47",
+      "finished": "2026-07-09T15:33:18.188875",
+      "mine": {
+        "failures": 445,
+        "clusters": {
+          "ambig": 1,
+          "nota": 4,
+          "unkn_street": 426,
+          "vague": 14
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 323,
+      "survivors": 1677,
+      "batch": 2000,
+      "matched": 1291,
+      "classified": 386,
+      "applied": 2000,
+      "completed": true,
+      "iter": 104,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:33:24",
+      "finished": "2026-07-09T15:38:54.714226",
+      "mine": {
+        "failures": 386,
+        "clusters": {
+          "nota": 9,
+          "unkn_street": 364,
+          "vague": 13
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 312,
+      "survivors": 1688,
+      "batch": 2000,
+      "matched": 1229,
+      "classified": 459,
+      "applied": 2000,
+      "completed": true,
+      "iter": 105,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:39:00",
+      "finished": "2026-07-09T15:44:31.031956",
+      "mine": {
+        "failures": 459,
+        "clusters": {
+          "ambig": 2,
+          "nota": 6,
+          "unkn_street": 439,
+          "apo": 1,
+          "vague": 11
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 352,
+      "survivors": 1648,
+      "batch": 2000,
+      "matched": 1367,
+      "classified": 281,
+      "applied": 2000,
+      "completed": true,
+      "iter": 106,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:44:37",
+      "finished": "2026-07-09T15:50:07.275058",
+      "mine": {
+        "failures": 281,
+        "clusters": {
+          "ambig": 1,
+          "nota": 11,
+          "unkn_street": 260,
+          "vague": 9
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 293,
+      "survivors": 1707,
+      "batch": 2000,
+      "matched": 1235,
+      "classified": 472,
+      "applied": 2000,
+      "completed": true,
+      "iter": 107,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:50:13",
+      "finished": "2026-07-09T15:55:43.859874",
+      "mine": {
+        "failures": 472,
+        "clusters": {
+          "nota": 7,
+          "unkn_street": 454,
+          "vague": 11
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 350,
+      "survivors": 1650,
+      "batch": 2000,
+      "matched": 1346,
+      "classified": 304,
+      "applied": 2000,
+      "completed": true,
+      "iter": 108,
+      "batch_size": 2000,
+      "started": "2026-07-09 15:55:49",
+      "finished": "2026-07-09T16:02:50.163191",
+      "mine": {
+        "failures": 304,
+        "clusters": {
+          "ambig": 1,
+          "nota": 4,
+          "unkn_street": 287,
+          "vague": 12
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 335,
+      "survivors": 1665,
+      "batch": 2000,
+      "matched": 1205,
+      "classified": 460,
+      "applied": 2000,
+      "completed": true,
+      "iter": 109,
+      "batch_size": 2000,
+      "started": "2026-07-09 16:02:56",
+      "finished": "2026-07-09T16:08:26.621705",
+      "mine": {
+        "failures": 460,
+        "clusters": {
+          "nota": 5,
+          "unkn_street": 445,
+          "vague": 10
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 287,
+      "survivors": 1713,
+      "batch": 2000,
+      "matched": 1157,
+      "classified": 556,
+      "applied": 2000,
+      "completed": true,
+      "iter": 110,
+      "batch_size": 2000,
+      "started": "2026-07-09 16:08:32",
+      "finished": "2026-07-09T16:14:02.957583",
+      "mine": {
+        "failures": 556,
+        "clusters": {
+          "ambig": 1,
+          "nota": 7,
+          "unkn_street": 536,
+          "vague": 12
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 142,
+      "survivors": 858,
+      "batch": 1000,
+      "matched": 710,
+      "classified": 148,
+      "applied": 1000,
+      "completed": true,
+      "iter": 111,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:14:09",
+      "finished": "2026-07-09T16:18:39.269603",
+      "mine": {
+        "failures": 148,
+        "clusters": {
+          "nota": 2,
+          "unkn_street": 139,
+          "vague": 7
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 148,
+      "survivors": 852,
+      "batch": 1000,
+      "matched": 762,
+      "classified": 90,
+      "applied": 1000,
+      "completed": true,
+      "iter": 112,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:18:45",
+      "finished": "2026-07-09T16:22:15.556184",
+      "mine": {
+        "failures": 90,
+        "clusters": {
+          "ambig": 1,
+          "nota": 1,
+          "unkn_street": 85,
+          "vague": 3
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 148,
+      "survivors": 852,
+      "batch": 1000,
+      "matched": 687,
+      "classified": 165,
+      "applied": 1000,
+      "completed": true,
+      "iter": 113,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:22:21",
+      "finished": "2026-07-09T16:25:51.808978",
+      "mine": {
+        "failures": 165,
+        "clusters": {
+          "nota": 1,
+          "unkn_street": 159,
+          "vague": 5
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 133,
+      "survivors": 867,
+      "batch": 1000,
+      "matched": 683,
+      "classified": 184,
+      "applied": 1000,
+      "completed": true,
+      "iter": 114,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:25:58",
+      "finished": "2026-07-09T16:30:58.200173",
+      "mine": {
+        "failures": 184,
+        "clusters": {
+          "nota": 5,
+          "unkn_street": 173,
+          "vague": 6
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 139,
+      "survivors": 861,
+      "batch": 1000,
+      "matched": 718,
+      "classified": 143,
+      "applied": 1000,
+      "completed": true,
+      "iter": 115,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:31:04",
+      "finished": "2026-07-09T16:35:34.429380",
+      "mine": {
+        "failures": 143,
+        "clusters": {
+          "nota": 4,
+          "unkn_street": 136,
+          "vague": 3
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 142,
+      "survivors": 858,
+      "batch": 1000,
+      "matched": 671,
+      "classified": 187,
+      "applied": 1000,
+      "completed": true,
+      "iter": 116,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:35:40",
+      "finished": "2026-07-09T16:39:10.491619",
+      "mine": {
+        "failures": 187,
+        "clusters": {
+          "unkn_street": 187
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 154,
+      "survivors": 846,
+      "batch": 1000,
+      "matched": 583,
+      "classified": 263,
+      "applied": 1000,
+      "completed": true,
+      "iter": 117,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:39:16",
+      "finished": "2026-07-09T16:44:16.532837",
+      "mine": {
+        "failures": 263,
+        "clusters": {
+          "ambig": 1,
+          "nota": 2,
+          "unkn_street": 257,
+          "vague": 3
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 138,
+      "survivors": 862,
+      "batch": 1000,
+      "matched": 676,
+      "classified": 186,
+      "applied": 1000,
+      "completed": true,
+      "iter": 118,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:44:22",
+      "finished": "2026-07-09T16:47:52.727893",
+      "mine": {
+        "failures": 186,
+        "clusters": {
+          "ambig": 1,
+          "nota": 1,
+          "unkn_street": 179,
+          "vague": 5
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 151,
+      "survivors": 849,
+      "batch": 1000,
+      "matched": 565,
+      "classified": 284,
+      "applied": 1000,
+      "completed": true,
+      "iter": 119,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:47:58",
+      "finished": "2026-07-09T16:52:58.913028",
+      "mine": {
+        "failures": 284,
+        "clusters": {
+          "ambig": 1,
+          "nota": 4,
+          "unkn_street": 278,
+          "vague": 1
+        },
+        "patterns_added": []
+      }
+    },
+    {
+      "ok": true,
+      "preprocess": 158,
+      "survivors": 842,
+      "batch": 1000,
+      "matched": 587,
+      "classified": 255,
+      "applied": 1000,
+      "completed": true,
+      "iter": 120,
+      "batch_size": 1000,
+      "started": "2026-07-09 16:53:05",
+      "finished": "2026-07-09T16:57:35.905618",
+      "mine": {
+        "failures": 255,
+        "clusters": {
+          "unkn_street": 252,
+          "vague": 3
+        },
+        "patterns_added": []
+      }
+    }
+  ],
+  "last_iter_start": "2026-07-09 16:53:05",
+  "victory_declared": true,
+  "victory_at": "2026-07-09T20:17:39.625764",
+  "victory_min_address_count": 10,
+  "victory_summary": {
+    "tail_rows": 533380,
+    "head_rows": 281,
+    "min_address_count": 10,
+    "export_rows": 5000,
+    "counts": {
+      "Match:Grok-4": 231315,
+      "Match:PatternOwners": 73079,
+      "Match:Photon": 169126,
+      "geocode_tail": 533380,
+      "grok:AMBIG": 253,
+      "grok:NOTA": 1011,
+      "grok:UNKN": 30167,
+      "grok:VAGUE": 3114,
+      "grok_pending": 46182,
+      "pending_api": 281
+    },
+    "photon": {
+      "photon_total": 169126,
+      "photon_intersection_like": 91
+    },
+    "counts_final": {
+      "geocode_tail": {
+        "rows": 378096,
+        "refs": 400250
+      },
+      "Match:Grok-4": {
+        "rows": 232044,
+        "refs": 417329
+      },
+      "Match:PatternOwners": {
+        "rows": 227731,
+        "refs": 330897
+      },
+      "grok_pending": {
+        "rows": 44944,
+        "refs": 70556
+      },
+      "grok:UNKN": {
+        "rows": 30256,
+        "refs": 49774
+      },
+      "grok:VAGUE": {
+        "rows": 3126,
+        "refs": 5012
+      },
+      "grok:NOTA": {
+        "rows": 1031,
+        "refs": 1644
+      }
+    },
+    "tail_preprocess": {
+      "scanned": 533380,
+      "matched": 155284,
+      "tail_remaining": 378096,
+      "pattern_owners": 227731
+    },
+    "completed_at": "2026-07-09T20:51:04"
+  }
+}

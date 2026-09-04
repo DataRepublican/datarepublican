@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Return xmlns="http://www.irs.gov/efile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.irs.gov/efile" returnVersion="2019v5.1">
+  <ReturnHeader binaryAttachmentCnt="0">
+    <ReturnTs>2020-04-13T01:12:52-00:00</ReturnTs>
+    <TaxPeriodEndDt>2019-12-31</TaxPeriodEndDt>
+    <PreparerFirmGrp>
+      <PreparerFirmName>
+        <BusinessNameLine1Txt>Andees Aspen Tax Service</BusinessNameLine1Txt>
+      </PreparerFirmName>
+      <PreparerUSAddress>
+        <AddressLine1Txt>136 Grand Ave PO BOX 817</AddressLine1Txt>
+        <CityNm>Paonia</CityNm>
+        <StateAbbreviationCd>CO</StateAbbreviationCd>
+        <ZIPCd>81428</ZIPCd>
+      </PreparerUSAddress>
+    </PreparerFirmGrp>
+    <ReturnTypeCd>990EZ</ReturnTypeCd>
+    <TaxPeriodBeginDt>2019-01-01</TaxPeriodBeginDt>
+    <Filer>
+      <EIN>822503142</EIN>
+      <BusinessName>
+        <BusinessNameLine1Txt>Paonia Experiential Leadership Academy</BusinessNameLine1Txt>
+      </BusinessName>
+      <BusinessNameControlTxt>PAON</BusinessNameControlTxt>
+      <PhoneNum>9703615600</PhoneNum>
+      <USAddress>
+        <AddressLine1Txt>12999 Minerich Rd</AddressLine1Txt>
+        <CityNm>Paonia</CityNm>
+        <StateAbbreviationCd>CO</StateAbbreviationCd>
+        <ZIPCd>81428</ZIPCd>
+      </USAddress>
+    </Filer>
+    <BusinessOfficerGrp>
+      <PersonNm>EMily Wassell</PersonNm>
+      <PersonTitleTxt>03112020</PersonTitleTxt>
+      <SignatureDt>2020-04-13</SignatureDt>
+      <DiscussWithPaidPreparerInd>false</DiscussWithPaidPreparerInd>
+    </BusinessOfficerGrp>
+    <PreparerPersonGrp>
+      <PreparerPersonNm>Andee M Rose-Small</PreparerPersonNm>
+      <PhoneNum>9704336796</PhoneNum>
+      <PreparationDt>2020-04-13</PreparationDt>
+      <SelfEmployedInd>X</SelfEmployedInd>
+    </PreparerPersonGrp>
+    <TaxYr>2019</TaxYr>
+    <BuildTS>2022-09-23 18:48:47Z</BuildTS>
+  </ReturnHeader>
+  <ReturnData documentCnt="5">
+    <IRS990EZ documentId="990EZ" softwareId="19009610" softwareVersionNum="19.2.1.0">
+      <InitialReturnInd>X</InitialReturnInd>
+      <MethodOfAccountingCashInd>X</MethodOfAccountingCashInd>
+      <WebsiteAddressTxt>https//www.paoniaexperientialleadershipacademy.org</WebsiteAddressTxt>
+      <Organization501c3Ind referenceDocumentId="990A">X</Organization501c3Ind>
+      <TypeOfOrganizationOtherInd>X</TypeOfOrganizationOtherInd>
+      <TypeOfOrganizationOtherDesc>School</TypeOfOrganizationOtherDesc>
+      <GrossReceiptsAmt>105841</GrossReceiptsAmt>
+      <InfoInScheduleOPartIInd>X</InfoInScheduleOPartIInd>
+      <ContributionsGiftsGrantsEtcAmt>755</ContributionsGiftsGrantsEtcAmt>
+      <ProgramServiceRevenueAmt>103423</ProgramServiceRevenueAmt>
+      <FundraisingGrossIncomeAmt referenceDocumentId="990G">1663</FundraisingGrossIncomeAmt>
+      <SpecialEventsNetIncomeLossAmt>1663</SpecialEventsNetIncomeLossAmt>
+      <TotalRevenueAmt>105841</TotalRevenueAmt>
+      <BenefitsPaidToOrForMembersAmt>732</BenefitsPaidToOrForMembersAmt>
+      <SalariesOtherCompEmplBnftAmt>32106</SalariesOtherCompEmplBnftAmt>
+      <FeesAndOtherPymtToIndCntrctAmt>10843</FeesAndOtherPymtToIndCntrctAmt>
+      <OccupancyRentUtltsAndMaintAmt>10200</OccupancyRentUtltsAndMaintAmt>
+      <OtherExpensesTotalAmt>38195</OtherExpensesTotalAmt>
+      <TotalExpensesAmt>92076</TotalExpensesAmt>
+      <ExcessOrDeficitForYearAmt>13765</ExcessOrDeficitForYearAmt>
+      <NetAssetsOrFundBalancesBOYAmt>8383</NetAssetsOrFundBalancesBOYAmt>
+      <NetAssetsOrFundBalancesEOYAmt>22148</NetAssetsOrFundBalancesEOYAmt>
+      <InfoInScheduleOPartIIInd>X</InfoInScheduleOPartIIInd>
+      <CashSavingsAndInvestmentsGrp>
+        <EOYAmt>13765</EOYAmt>
+      </CashSavingsAndInvestmentsGrp>
+      <OtherAssetsTotalDetail>
+        <BOYAmt>8383</BOYAmt>
+        <EOYAmt>8383</EOYAmt>
+      </OtherAssetsTotalDetail>
+      <Form990TotalAssetsGrp>
+        <BOYAmt>8383</BOYAmt>
+        <EOYAmt>22148</EOYAmt>
+      </Form990TotalAssetsGrp>
+      <NetAssetsOrFundBalancesGrp>
+        <BOYAmt>8383</BOYAmt>
+        <EOYAmt>22148</EOYAmt>
+      </NetAssetsOrFundBalancesGrp>
+      <PrimaryExemptPurposeTxt>Education</PrimaryExemptPurposeTxt>
+      <ProgramSrvcAccomplishmentGrp>
+        <DescriptionProgramSrvcAccomTxt>PELA began 2019 with 12 students in the Spring semester the next fall we had increased enrollment to 19 and implement a full time schedule for them. The school collaborated with 30 local businesses and non-profits.</DescriptionProgramSrvcAccomTxt>
+      </ProgramSrvcAccomplishmentGrp>
+      <ProgramSrvcAccomplishmentGrp>
+        <DescriptionProgramSrvcAccomTxt>No Contributions or Grants were made in 2019.</DescriptionProgramSrvcAccomTxt>
+      </ProgramSrvcAccomplishmentGrp>
+      <OfficerDirectorTrusteeEmplGrp>
+        <PersonNm>Christy Eller</PersonNm>
+        <TitleTxt>President</TitleTxt>
+        <AverageHrsPerWkDevotedToPosRt>010.00</AverageHrsPerWkDevotedToPosRt>
+        <CompensationAmt>0</CompensationAmt>
+      </OfficerDirectorTrusteeEmplGrp>
+      <OfficerDirectorTrusteeEmplGrp>
+        <PersonNm>Emily Wassell</PersonNm>
+        <TitleTxt>Vice-President</TitleTxt>
+        <AverageHrsPerWkDevotedToPosRt>010.00</AverageHrsPerWkDevotedToPosRt>
+        <CompensationAmt>0</CompensationAmt>
+      </OfficerDirectorTrusteeEmplGrp>
+      <OfficerDirectorTrusteeEmplGrp>
+        <PersonNm>Lisa Delaney</PersonNm>
+        <TitleTxt>Treasurer</TitleTxt>
+        <AverageHrsPerWkDevotedToPosRt>010.00</AverageHrsPerWkDevotedToPosRt>
+        <CompensationAmt>0</CompensationAmt>
+      </OfficerDirectorTrusteeEmplGrp>
+      <OfficerDirectorTrusteeEmplGrp>
+        <PersonNm>Phil Wassell</PersonNm>
+        <TitleTxt>Secretary</TitleTxt>
+        <AverageHrsPerWkDevotedToPosRt>010.00</AverageHrsPerWkDevotedToPosRt>
+        <CompensationAmt>0</CompensationAmt>
+      </OfficerDirectorTrusteeEmplGrp>
+      <OfficerDirectorTrusteeEmplGrp>
+        <PersonNm>Russell Edgar</PersonNm>
+        <TitleTxt>Board Member</TitleTxt>
+        <AverageHrsPerWkDevotedToPosRt>002.00</AverageHrsPerWkDevotedToPosRt>
+        <CompensationAmt>0</CompensationAmt>
+      </OfficerDirectorTrusteeEmplGrp>
+      <OfficerDirectorTrusteeEmplGrp>
+        <PersonNm>Jake Hartter</PersonNm>
+        <TitleTxt>Board Member</TitleTxt>
+        <AverageHrsPerWkDevotedToPosRt>002.00</AverageHrsPerWkDevotedToPosRt>
+        <CompensationAmt>0</CompensationAmt>
+      </OfficerDirectorTrusteeEmplGrp>
+      <ActivitiesNotPreviouslyRptInd>true</ActivitiesNotPreviouslyRptInd>
+      <ChgMadeToOrgnzngDocNotRptInd>false</ChgMadeToOrgnzngDocNotRptInd>
+      <OrganizationHadUBIInd>false</OrganizationHadUBIInd>
+      <SubjectToProxyTaxInd>false</SubjectToProxyTaxInd>
+      <OrganizationDissolvedEtcInd>false</OrganizationDissolvedEtcInd>
+      <Form1120PolFiledInd>false</Form1120PolFiledInd>
+      <MadeLoansToFromOfficersInd>false</MadeLoansToFromOfficersInd>
+      <TaxImposedUnderIRC4911Amt>0</TaxImposedUnderIRC4911Amt>
+      <TaxImposedUnderIRC4912Amt>0</TaxImposedUnderIRC4912Amt>
+      <TaxImposedUnderIRC4955Amt>0</TaxImposedUnderIRC4955Amt>
+      <EngagedInExcessBenefitTransInd>false</EngagedInExcessBenefitTransInd>
+      <ProhibitedTaxShelterTransInd>false</ProhibitedTaxShelterTransInd>
+      <BooksInCareOfDetail>
+        <BusinessName>
+          <BusinessNameLine1Txt>Emily Wassell</BusinessNameLine1Txt>
+        </BusinessName>
+        <USAddress>
+          <AddressLine1Txt>12999 Minerich Rd</AddressLine1Txt>
+          <CityNm>Paonia</CityNm>
+          <StateAbbreviationCd>CO</StateAbbreviationCd>
+          <ZIPCd>81428</ZIPCd>
+        </USAddress>
+        <PhoneNum>9703615600</PhoneNum>
+      </BooksInCareOfDetail>
+      <ForeignFinancialAccountInd>false</ForeignFinancialAccountInd>
+      <ForeignOfficeInd>false</ForeignOfficeInd>
+      <DonorAdvisedFndsInd>false</DonorAdvisedFndsInd>
+      <OperateHospitalInd>false</OperateHospitalInd>
+      <TanningServicesProvidedInd>false</TanningServicesProvidedInd>
+      <RelatedOrganizationCtrlEntInd>false</RelatedOrganizationCtrlEntInd>
+      <TransactionWithControlEntInd>false</TransactionWithControlEntInd>
+      <PoliticalCampaignActyInd>false</PoliticalCampaignActyInd>
+      <LobbyingActivitiesInd>false</LobbyingActivitiesInd>
+      <SchoolOperatingInd>false</SchoolOperatingInd>
+      <TrnsfrExmptNonChrtblRltdOrgInd>false</TrnsfrExmptNonChrtblRltdOrgInd>
+      <CompensationHighestPaidEmplGrp>
+        <PersonNm>Emily Wassell</PersonNm>
+        <TitleTxt>Teacher</TitleTxt>
+        <AverageHoursPerWeekRt>020.00</AverageHoursPerWeekRt>
+        <CompensationAmt>13506</CompensationAmt>
+        <EmployeeBenefitsAmt>0</EmployeeBenefitsAmt>
+        <ExpenseAccountAmt>0</ExpenseAccountAmt>
+      </CompensationHighestPaidEmplGrp>
+      <CompensationHighestPaidEmplGrp>
+        <PersonNm>Phil Wassel</PersonNm>
+        <TitleTxt>Teacher</TitleTxt>
+        <AverageHoursPerWeekRt>035.00</AverageHoursPerWeekRt>
+        <CompensationAmt>21083</CompensationAmt>
+        <EmployeeBenefitsAmt>0</EmployeeBenefitsAmt>
+        <ExpenseAccountAmt>0</ExpenseAccountAmt>
+      </CompensationHighestPaidEmplGrp>
+      <PartVIHghstPdCntrctProfSrvcTxt>NONE</PartVIHghstPdCntrctProfSrvcTxt>
+      <FiledScheduleAInd>true</FiledScheduleAInd>
+    </IRS990EZ>
+    <IRS990ScheduleA documentId="990A" softwareId="19009610" softwareVersionNum="19.2.1.0">
+      <SchoolInd>X</SchoolInd>
+      <GiftsGrantsContriRcvd170Grp>
+        <CurrentTaxYearAmt>755</CurrentTaxYearAmt>
+        <TotalAmt>755</TotalAmt>
+      </GiftsGrantsContriRcvd170Grp>
+      <TotalCalendarYear170Grp>
+        <CurrentTaxYearAmt>755</CurrentTaxYearAmt>
+        <TotalAmt>755</TotalAmt>
+      </TotalCalendarYear170Grp>
+      <PublicSupportTotal170Amt>755</PublicSupportTotal170Amt>
+      <UnrelatedBusinessNetIncm170Grp>
+        <CurrentTaxYearAmt>103423</CurrentTaxYearAmt>
+        <TotalAmt>103423</TotalAmt>
+      </UnrelatedBusinessNetIncm170Grp>
+      <TotalSupportAmt>104178</TotalSupportAmt>
+      <First5Years170Ind>X</First5Years170Ind>
+      <PublicSupportCY170Pct>0.00000</PublicSupportCY170Pct>
+      <PublicSupportCY509Pct>0.00000</PublicSupportCY509Pct>
+      <InvestmentIncomeCYPct>0.00000</InvestmentIncomeCYPct>
+      <FactsAndCircumstancesTestTxt>Part I Section A Line 12f This is a nonprofit School that does not support or contribut to any other organizations.</FactsAndCircumstancesTestTxt>
+    </IRS990ScheduleA>
+    <IRS990ScheduleE documentId="990E" softwareId="19009610" softwareVersionNum="19.2.1.0"></IRS990ScheduleE>
+    <IRS990ScheduleG documentId="990G" softwareId="19009610" softwareVersionNum="19.2.1.0">
+      <SpecialFundraisingEventsInd>X</SpecialFundraisingEventsInd>
+      <AgrmtProfFundraisingActyInd>false</AgrmtProfFundraisingActyInd>
+      <LicensedStatesCd>CO</LicensedStatesCd>
+      <FundraisingEventInformationGrp>
+        <Event1Nm>Fund Raiser Booth</Event1Nm>
+        <GrossReceiptsEvent1Amt>1663</GrossReceiptsEvent1Amt>
+        <GrossRevenueEvent1Amt>1663</GrossRevenueEvent1Amt>
+        <GrossReceiptsTotalAmt>1663</GrossReceiptsTotalAmt>
+        <GrossRevenueTotalEventsAmt>1663</GrossRevenueTotalEventsAmt>
+        <NetIncomeSummaryAmt>1663</NetIncomeSummaryAmt>
+      </FundraisingEventInformationGrp>
+    </IRS990ScheduleG>
+    <IRS990ScheduleO documentId="990O" softwareId="19009610" softwareVersionNum="19.2.1.0">
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Travel 5,112</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Supplies 15,128</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Telephone 420</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Unrelated business income taxes 2,686</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Legal Professional Fees- Accounting 373</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Bank Fees Charges 71</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Bad Debts Refunds 948</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Gas for the VAN 705</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>VAN 8,383</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Insurance 2,458</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Marketing 207</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Operating Cost 803</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part I, Line 16, Other Expenses</FormAndLineReferenceDesc>
+        <ExplanationTxt>Teacher Training 901</ExplanationTxt>
+      </SupplementalInformationDetail>
+      <SupplementalInformationDetail>
+        <FormAndLineReferenceDesc>Form 990-EZ, Part II, Line 24, Other Assets</FormAndLineReferenceDesc>
+        <ExplanationTxt>Van Beginning of year 8,383, End of year 8,383</ExplanationTxt>
+      </SupplementalInformationDetail>
+    </IRS990ScheduleO>
+  </ReturnData>
+</Return>

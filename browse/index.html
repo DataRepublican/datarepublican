@@ -3,21 +3,21 @@ layout: nofooter
 title: Charity explorer - Sankey chart of NGOs and their flows
 ---
 
-<script src="../expose/jquery.min.js"></script>
+<script src="/expose/jquery.min.js"></script>
 <script>
   let nodes = [],
     edges = [];
 </script>
 <!-- work aroudn for crash with vis.js -->
-<script src="../expose/svg-pan-zoom.min.js"></script>
+<script src="/expose/svg-pan-zoom.min.js"></script>
 <script
   src="https://kit.fontawesome.com/40b73c03f4.js"
   crossorigin="anonymous"
 ></script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
-<script type="module" src="./d3-sankey-circular.js"></script>
-<link rel="stylesheet" href="./browsestyles.css" />
-<script type="module" src="script.js"></script>
+<script type="module" src="/browse/d3-sankey-circular.js"></script>
+<link rel="stylesheet" href="/browse/browsestyles.css" />
+<script type="module" src="/browse/script.js"></script>
 <style>
   :root {
     --panel-shown: none;
@@ -112,20 +112,29 @@ title: Charity explorer - Sankey chart of NGOs and their flows
         Hide Controls
       </button>
     </div>
-    <span id="downloadPanel" class="flex gap-2 hidden">
+    <span id="downloadPanel" class="flex gap-3 items-end hidden">
+      <div
+        id="bandControl"
+        class="band-control"
+        role="radiogroup"
+        aria-label="Dollar band"
+      ></div>
       <button
         id="downloadBtn"
         class="text-gray-500 hover:text-black-800 flex items-center gap-1 text-base"
       >
         <i class="fas fa-download" data-fa-svg></i> Download SVG
       </button>
-      <button
+      <a
         id="exportDBBtn"
+        href="https://www.grumpytechbro.com/irs990.html"
+        target="_blank"
+        rel="noopener"
         class="text-gray-500 hover:text-black-800 flex items-center gap-1 text-base"
-        title="Export Database"
+        title="Full IRS 990 warehouse"
       >
         <i class="fas fa-database" data-fa-svg></i> Export Database
-      </button>
+      </a>
       <button id="PostBox" class="x-share-button h-8"></button>
     </span>
   </div>
@@ -147,7 +156,7 @@ title: Charity explorer - Sankey chart of NGOs and their flows
       you know the EIN, start there. If you don't you can try the keyword
       search. Find a suspicious set? Post the URL to X under #DRBadNGOs usting
       the button in the upper left. Questions/Suggestions/feedback? Verified can
-      DM @twinforces.
+      DM @GrumpyTechBro.
     </p>
     <p class="text-xs">
       We show NGOs and the money that flows between them. Money comes in from
@@ -159,15 +168,23 @@ title: Charity explorer - Sankey chart of NGOs and their flows
       flows don't dwarf small ones, you can adjust scaling up or down with the
       buttons to the left of the zoom controls. Octogons (aka stop sign) are
       NGOs that don't have any outflows to other NGOs, presumably spend it all.
-      Gray "plus" grift pimples hold hidden grants to keep the graph from being
-      overwhelming. Click the pimples to see 3 more from that side, or click the
-      NGO to see 3 more from both sides. Command/Windows click on a node to
-      bring up a control panel with more controls and cross links.
+      Dashed octagons are <b>name-only</b> (no EIN on the 990, or grants below
+      this dollar cut). Click a node to <b>focus</b>
+      it (this org and its up/down only). Hats still expand 3 more on that side;
+      double-click expands both sides. Alt-click opens the control panel.
+      The <b>$10M / $1M / All</b> notches each load a full new set (another wait).
+      $10M ships with the site; $1M and All download from grumpytechbro.com.
+      Preset <b>add</b> seeds several nodes (Uniparty); flip the switch to replace.
+      Click mode sits above circular links: pointing hand isolates that org,
+      expand-arrows frames it ± one hop (camera only), plus keeps the graph,
+      magnifying glass opens the inspector. Deeper bands load from leftover
+      See more in that drawer. Drag pans.
+      Wheel zooms. <b>Shift-drag</b> box-zooms. <b>Shift-click</b> hides a node.
     </p>
     <p class="text-xs">In the control panel:</p>
     <ul class="text-xs">
       <li>
-        Focus will remove all the other NGOs, Remove will remove just that NGO.
+        Only This focuses the graph on that org. Remove hides just that NGO.
       </li>
       <li>
         🐷 will show all nodes that trace from that node back to the US
@@ -199,14 +216,13 @@ title: Charity explorer - Sankey chart of NGOs and their flows
       <div id="hideEINs" class="max-h-36 overflow-y-auto bg-gray-50"></div>
     </div>
 
-    <!-- Block EIN(s) --><!-- prettier-ignore -->
     <div class="col-span-1 flex flex-col gap-2">
-      <button id="hideCircularBtn" class="max-w-fit" title="Informative, but cluttery">Hide Circular Links</button>
-      <button id="showCircularBtn" class="hidden max-w-fit" title="Information over beauty">Show Circular Links</button>
       <ul class="text-xs list-disc">
         <li>Drag to pan</li>
         <li>Wheel to zoom</li>
-        <li>Shift Drag to zoom select</li>
+        <li>Shift-drag box-zooms a region</li>
+        <li>Click mode: Focus / Zoom / Add / Remove / Inspect</li>
+        <li>Shift-click a node hides it</li>
       </ul>
     </div>
 
@@ -228,11 +244,15 @@ title: Charity explorer - Sankey chart of NGOs and their flows
   class="relative border-y md:border-x border-gray-200 rounded-md bg-white min-h-[calc(100vh-135px)] h-full flex flex-col flex-grow"
 >
   <!-- Controls and Status Row -->
-  <div
-    class="absolute top-0 left-0 w-full z-10 flex justify-between items-start"
-  >
+  <div class="absolute top-0 left-0 w-full z-10 flex flex-col">
+    <nav
+      id="focusCrumbs"
+      class="crumb-bar hidden mx-4 mt-2"
+      aria-label="Focus history"
+    ></nav>
+    <div class="flex justify-between items-start">
     <!-- Control Panel: 2 rows of buttons, 1 row of text, trailing button -->
-    <div class="ml-4 mt-4 bg-gray-100 p-4 rounded-md flex space-x-4">
+    <div class="ml-4 mt-2 bg-gray-100 p-4 rounded-md flex space-x-4">
       <div class="flex flex-col space-y-4">
         <div class="flex space-x-2">
           <button
@@ -637,6 +657,33 @@ L21.96,11.51"
         </button>
         <div class="h-5"></div>
       </div>
+      <div class="flex flex-col justify-center gap-2">
+        <div id="clickMode" class="click-mode" role="radiogroup" aria-label="Click mode">
+          <button type="button" data-mode="focus" class="is-on" title="Focus: click isolates this org; click it again to expand both sides">
+            <i class="fas fa-hand-pointer" data-fa-svg></i>
+          </button>
+          <button type="button" data-mode="zoom" title="Zoom: frame this org and one hop up/down">
+            <i class="fas fa-expand" data-fa-svg></i>
+          </button>
+          <button type="button" data-mode="add" title="Add: keep the graph and seed this org">
+            <i class="fas fa-plus" data-fa-svg></i>
+          </button>
+          <button type="button" data-mode="subtract" title="Remove this org from the graph (Shift)">
+            <i class="fas fa-xmark" data-fa-svg></i>
+          </button>
+          <button type="button" data-mode="inspect" title="Inspect: open the card">
+            <i class="fas fa-magnifying-glass" data-fa-svg></i>
+          </button>
+        </div>
+        <div class="circular-toggle ngopreset-mode-switch" title="Looping grant flows">
+          <span class="toggle-label toggle-label-add text-[10px] leading-tight">Show<br>circular</span>
+          <div class="toggle-switch">
+            <input type="checkbox" id="circularToggle" />
+            <label for="circularToggle"></label>
+          </div>
+          <span class="toggle-label toggle-label-replace text-[10px] leading-tight">Hide<br>circular</span>
+        </div>
+      </div>
     </div>
     <!-- Status Box: Flushed right -->
     <div
@@ -654,20 +701,14 @@ L21.96,11.51"
         <span id="status" class="text-sm"></span>
       </div>
     </div>
+    </div>
   </div>
-  <div
-    id="control-panel"
-    class="hidden fixed top-2 right-2 bg-white border border-gray-300 p-4 z-30 shadow-lg rounded"
-  >
-    <button onclick="closePanel()" class="absolute top-1 right-1 text-sm">
-      X
-    </button>
-    <!-- Dynamic content will be inserted here -->
-  </div>
+  <div id="graphTip" class="graph-tip hidden"></div>
+  <div id="control-panel" class="inspector-drawer"></div>
   <!-- Floating Message Box: Centered below -->
   <div
     id="loading"
-    class="mt-4 w-96 mx-auto bg-yellow-100 p-4 rounded shadow-lg flex"
+    class="mt-4 w-96 mx-auto bg-yellow-100 p-4 rounded shadow-lg flex relative z-20"
   >
     <div class="flex flex-col items-center justify-center w-12 mr-4">
       <i
@@ -680,45 +721,46 @@ L21.96,11.51"
       ></i>
     </div>
     <div class="prose prose-sm flex-1">
-      <p class="text-sm mb-4">
-        Hello and welcome. The page is now loading every organization that files
-        an IRS form 990 or 990EZ, which means all non profits that aren't a
-        church, or a state/local government, just over 727,000, to that we add
-        nonprofits we have found based on donations, to bring the total to 913K.
+      <p id="loadingBandTitle" class="text-sm mb-4">
+        This is the <b>$10M band</b>. About 104k organizations and 583k grants.
+        Each deeper notch is a full new load. Dashed octagons are
+        <b>name-only</b> — no EIN on the 990, or grants below this cut.
+      </p>
+      <p id="loadingBandBody" class="text-sm mb-4">
+        After this finishes, pick a preset or search an EIN. Click a node to
+        focus it. Shift-drag box-zooms; shift-click hides a node.
       </p>
       <p class="text-sm mb-4">
-        For private foundations, which file a 990PF, donations are reverse
-        mapped by address and name to a charity or country if going to a foreign
-        address. Total: 1.3M grants.
-      </p>
-      <p class="text-sm mb-4">
-        In other words, there's a reason you're waiting. The NGO ecosystem is
-        <b>huge</b>.
-      </p>
-      <p class="text-sm mb-4">
-        Thank you for your patience, and I hope you you enjoy exploring the
-        crazy world of NGOs. After the data downloads, you'll be able to choose
-        from a list of starting points or presets. Follow
-        <a href="https://x.com/twinforces" target="_blank">@twinforces</a>
-        to see insights and previews of works in progress (WIP).
+        After this finishes, pick a preset or search an EIN. Click a node to
+        focus it. Follow
+        <a href="https://x.com/grumpytechbro" target="_blank">@GrumpyTechBro</a>.
       </p>
       <p class="show-web-load text-sm mb-4">
-        Don't worry, you'll only have to download the data once (or whenever we
-        update the database). On subsequent reloads, it will load much faster
-        (seconds instead of minutes).
+        First visit downloads the band into this browser (IndexedDB). Reloads
+        should be seconds, until we ship a new data version.
       </p>
-      <p class="text-sm mb-4 show-db-load">
-        Welcome back! This is loading from your local store, so it will only
-        take a few seconds.
+      <p id="loadingBandLocal" class="text-sm mb-4 show-db-load">
+        Welcome back — loading the $10M band from your local store.
       </p>
       <p class="text-sm mb-4">
-        All code/data is open source, hosted at
-        <a href="https://github.com/twinforces" target="_blank">github</a>. Data
-        can be downlaoded from the Export Database link once complete.
+        Open source:
+        <a href="https://github.com/twinforces/datarepublican" target="_blank">github.com/twinforces/datarepublican</a>.
+        <a href="https://www.grumpytechbro.com/irs990.html" target="_blank" rel="noopener">Export Database</a>
+        for the warehouse.
       </p>
+      <p id="loadingBandMissing" class="text-sm mb-4 hidden">
+        Stay on the band you already have.
+      </p>
+      <button
+        id="loadingBandDismiss"
+        class="hidden mt-2 px-3 py-1 text-sm bg-white border border-gray-400 rounded"
+        type="button"
+      >
+        Stay on this band
+      </button>
     </div>
   </div>
-  <div id="nonodes" class="mt-4 w-96 mx-auto p-4 rounded shadow-lg flex hidden">
+  <div id="nonodes" class="mt-4 w-96 mx-auto p-4 rounded shadow-lg flex hidden relative z-20">
     <div class="prose prose-sm flex-1">
       <p class="text-sm mb-4">
         Thank you for your patience. All data is now successfully loaded, choose
@@ -726,9 +768,9 @@ L21.96,11.51"
       </p>
       <p class="text-sm mb-4">
         All code/data is open source, hosted at
-        <a href="https://github.com/twinforces" target="_blank">github</a>. Data
-        can be downloaded from the Export Database link above, its local and
-        quick.
+        <a href="https://github.com/twinforces" target="_blank">github</a>.
+        <a href="https://www.grumpytechbro.com/irs990.html" target="_blank" rel="noopener">Export Database</a>
+        opens the warehouse in a new tab. The $1M notch above is the next in-browser load.
       </p>
     </div>
   </div>

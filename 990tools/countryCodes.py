@@ -1,5 +1,8 @@
 # iso3166_1_alpha_2.py
 # Complete list of ISO 3166-1 alpha-2 country codes with number (starting from 002) and name
+import re
+from typing import Optional
+
 iso3166_alpha2 = {
     "AF": {"number": "002", "name": "Afghanistan"},
     "AL": {"number": "003", "name": "Albania"},
@@ -264,6 +267,15 @@ iso3166_alpha2 = {
     "BQ": {"number": "247", "name": "Bonaire, Sint Eustatius and Saba"},
     "SS": {"number": "248", "name": "South Sudan"},
     "XK": {"number": "249", "name": "Kosovo"},
+    # Continents / regions for vague foreign reporting (e.g. IRI-style grants by continent or portion)
+    # Use high numbers (900+) so they stand out as synthetics. Simple "AFRICA" etc. matches are fine per user.
+    "AFRICA": {"number": "900", "name": "Africa (vague/continent or sub-region)"},
+    "SUB-SAHARAN AFRICA": {"number": "900", "name": "Sub-Saharan Africa"},
+    "ASIA": {"number": "901", "name": "Asia (vague/continent or sub-region)"},
+    "EUROPE": {"number": "902", "name": "Europe (vague/continent or sub-region)"},
+    "LATIN AMERICA": {"number": "903", "name": "Latin America (vague/continent or sub-region)"},
+    "CARIBBEAN": {"number": "904", "name": "Caribbean (vague/region)"},
+    "MIDDLE EAST": {"number": "905", "name": "Middle East (vague/region)"},
     "ZZ": {"number": "999", "name": "Unknown Country Code"},
     "OC": {"number": "999", "name": "Unknown Country Code-2"},
     "PC": {"number": "999", "name": "Unknown Country Code-2"},
@@ -484,9 +496,103 @@ FIPS_TO_ISO = {
 }
 
 def lookupCC(code):
-    if (code in iso3166_alpha2):
-        return iso3166_alpha2
+    if code in iso3166_alpha2:
+        return iso3166_alpha2[code]
     else:
-        if (code in FIPS_TO_ISO):
+        if code in FIPS_TO_ISO:
             return iso3166_alpha2[FIPS_TO_ISO[code]]
     return None
+
+
+# --- Foreign synthetic EIN support (for named foreign orgs in no-EIN grantee text) ---
+# These get fake "99-NNN0000" style EINs (consistent with other 99- synthetics like 99-7777777)
+# so they can be rolled up for visualization, totals by country/region, fraud detection, etc.
+# instead of staying as unmatchable hard no-EIN or wasting Grok calls.
+# Detection is heuristic (keywords + country name mentions); not perfect but targets the
+# common cases like STICHTING (NL), IMPERIAL COLLEGE / OXFORD (GB), AGENCE (FR), MINISTRY OF ... NIGERIA (NG),
+# PTY/GMBH foreign, etc. Vague continent reports (e.g. from orgs like International Republican Institute)
+# can map to "ZZ" / 999.
+
+FOREIGN_TRIGGERS = [
+    (re.compile(r"\bSTICHTING\b", re.IGNORECASE), "NL"),
+    (re.compile(r"\bIMPERIAL COLLEGE\b", re.IGNORECASE), "GB"),
+    (re.compile(r"\bUNIVERSITY OF OXFORD\b", re.IGNORECASE), "GB"),
+    (re.compile(r"\bAGENCE FRANCAISE\b", re.IGNORECASE), "FR"),
+    (re.compile(r"FEDERAL MINISTRY.*NIGERIA|NIGERIA.*MINISTRY OF HEALTH", re.IGNORECASE), "NG"),
+    (re.compile(r"\bWITS\b.*(PTY|HEALTH|CONSORTIUM)", re.IGNORECASE), "ZA"),
+    (re.compile(r"\(PTY\)\s*LTD|PTY\s*LTD", re.IGNORECASE), "ZA"),
+    (re.compile(r"\bHELMHOLTZ\b", re.IGNORECASE), "DE"),
+    (re.compile(r"\bGMBH\b", re.IGNORECASE), "DE"),
+    (re.compile(r"\bISLAMIC DEVELOPMENT BANK\b", re.IGNORECASE), "SA"),
+    (re.compile(r"\bAGA KHAN\b", re.IGNORECASE), "PK"),
+    (re.compile(r"\bTARA CLIMATE\b", re.IGNORECASE), "GB"),  # or other; often UK registered
+    (re.compile(r"\bKAROLINSKA\b", re.IGNORECASE), "SE"),
+    (re.compile(r"\bUNIVERSITE DE MONTREAL\b", re.IGNORECASE), "CA"),
+    (re.compile(r"\bAUSVET\b", re.IGNORECASE), "AU"),
+    # Expanded from 1M/ by_dollars hard review (foreign unis, stiftungen, associations, bureaus, corporacions)
+    (re.compile(r"\bUNIVERSITAET\b", re.IGNORECASE), "DE"),  # or AT for Vienna etc.
+    (re.compile(r"\bKATHOLIEKE UNIVERSITEIT\b", re.IGNORECASE), "BE"),
+    (re.compile(r"\bSTIFTELSEN\b", re.IGNORECASE), "NO"),  # Norwegian foundation
+    (re.compile(r"\bSTOWARZYSZENIE\b", re.IGNORECASE), "PL"),  # Polish association
+    (re.compile(r"\bCORPORACION\b.*(AFRO|COLOMBIANA|PASTORAL)", re.IGNORECASE), "CO"),
+    (re.compile(r"\bTIGRAY\b.*(HEALTH|BUREAU|REGIONAL)", re.IGNORECASE), "ET"),
+    (re.compile(r"\bAMHARA\b.*(HEALTH|BUREAU|REGIONAL)", re.IGNORECASE), "ET"),
+    (re.compile(r"\b(OROMIA|SIDAMA|AFAR|SOMALI)\s+REGIONAL\s+HEALTH\s+BUREAU\b", re.IGNORECASE), "ET"),
+    (re.compile(r"\bFRIEDRICH-ALEXANDER\b", re.IGNORECASE), "DE"),
+    (re.compile(r"\bFLYKTNINGHJELPEN\b", re.IGNORECASE), "NO"),
+    (re.compile(r"\bREGIONAL HEALTH BUREAU\b", re.IGNORECASE), "ZZ"),  # generic foreign bureau
+    (re.compile(r"\bOTWARTE KLATKI\b", re.IGNORECASE), "PL"),
+    # Add more as seen in hards / grants. Vague foreign: map to continent/region keys (simple "AFRICA" match ok)
+    (re.compile(r"\b(SUB[-\s]?SAHARAN\s+)?AFRICA\b", re.IGNORECASE), "AFRICA"),
+    (re.compile(r"\bLATIN\s+AMERICA\b", re.IGNORECASE), "LATIN AMERICA"),
+    (re.compile(r"\bMIDDLE\s+EAST\b", re.IGNORECASE), "MIDDLE EAST"),
+    (re.compile(r"\bASIA\b", re.IGNORECASE), "ASIA"),
+    (re.compile(r"\bEUROPE\b", re.IGNORECASE), "EUROPE"),
+    (re.compile(r"\bCARIBBEAN\b", re.IGNORECASE), "CARIBBEAN"),
+    (re.compile(r"\bVARIOUS\s+(COUNTRIES|CONTINENTS|REGIONS)\b", re.IGNORECASE), "ZZ"),
+]
+
+
+def detect_foreign_country(name: str) -> Optional[str]:
+    """Return ISO alpha2 (or ZZ for unknown/vague) if name looks like a foreign org reference.
+    Uses triggers + country name mentions from the iso list. Skips US.
+    """
+    if not name:
+        return None
+    upper = name.upper()
+    for pat, cc in FOREIGN_TRIGGERS:
+        if pat.search(name):
+            return cc
+    # Fallback: explicit country name in the grantee text (e.g. "... Nigeria", "... London") -- word bounded to avoid "INDIA" in "INDIANA..."
+    for cc, info in iso3166_alpha2.items():
+        cname = info.get("name", "").upper()
+        if cname and cc not in ("US", "United States"):
+            if len(cname) > 5 or cname in ("NIGERIA", "FRANCE", "GERMANY", "KENYA", "INDIA", "CHINA", "BRAZIL", "MEXICO", "ISRAEL", "JAPAN", "KOREA", "EGYPT", "GHANA", "KENYA"):
+                # word boundary check
+                if re.search(r"\b" + re.escape(cname) + r"\b", upper):
+                    return cc
+    # Common non-US english speaking or obvious
+    if re.search(r"\b(LONDON|PARIS|GENEVA|AMSTERDAM|TORONTO|SYDNEY|JOHANNESBURG)\b", upper):
+        # rough city -> country; improve later with city db if needed
+        if "LONDON" in upper: return "GB"
+        if "PARIS" in upper: return "FR"
+        if "AMSTERDAM" in upper: return "NL"
+        if "JOHANNESBURG" in upper or "CAPE TOWN" in upper: return "ZA"
+        if "TORONTO" in upper: return "CA"
+        if "SYDNEY" in upper: return "AU"
+    return None
+
+def get_synthetic_foreign_ein(name: str) -> Optional[str]:
+    """Return literally just the 3-digit country/region number from countryCodes (no 99-, no dash).
+    E.g. "232" for UK, "900" for Africa/vague, "154" for NL.
+    These are intentionally the bare 3-digit codes for foreign rollups/synthetics in hard cases.
+    (We don't use the - or 99- prefix in the data for these.)
+    """
+    cc = detect_foreign_country(name)
+    if not cc:
+        return None
+    info = lookupCC(cc)
+    if info:
+        num = info.get("number", "999")
+        return num  # literally just the 3 digits, e.g. 232
+    return "999"

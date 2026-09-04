@@ -1,0 +1,7 @@
+{
+  "2410 W Memorial Rd Ste C533, Oklahoma City, Ok, 73134": "Google Maps / Street View shows a parking lot and limited commercial building space. Multiple carriers list this suite as both physical and mailing address. Low apparent footprint for high power-unit counts. FMCSA has flagged similar mailbox/virtual patterns in enforcement actions.",
+  "Po Box 720655, Po Box 720655, Oklahoma City, Ok, 73172": "Mailbox-style address with 1,000+ carrier registrations. Typical virtual office / registered-agent clustering pattern.",
+  "5900 Balcones Dr Ste 100, Austin, Tx, 78731": "Known registered-agent / virtual office hub (Northwest Registered Agent and similar). Nine entity types colocated — charities, grants, NPPES, DOT, contractors.",
+  "30 N Gould St Ste R, Sheridan, Wy, 82801": "Wyoming registered-agent shell address pattern. High multi-type colocation (charity, grant, DOT, NPPES, BMF).",
+  "360 Huntington Ave, Boston, Ma, 02115": "Northeastern University campus address with heavy multi-type overlap — verify DOT/FEC listings vs. legitimate institutional mail stops."
+}

@@ -152,6 +152,23 @@ export default [
         type: "501(c)(3)",
       },
       {
+        title: "Biggest Pharma",
+        sink: "patientSubsidies",
+        eins: [
+          "460500266",
+          "311520982",
+          "431614543",
+          "311810072",
+          "200031992",
+          "261437283",
+          "814571545",
+        ],
+        url: "/browse/?ein=460500266&ein=311520982&ein=431614543",
+        description:
+          "Largest patient-assistance foundations feeding one Patient Subsidies sink (HIPAA-redacted copays). Genentech, J&J, Sanofi, Boehringer, GSK, Pfizer, Otsuka.",
+        type: "501(c)(3)",
+      },
+      {
         title: "Health & Policy",
         eins: [
           "311726494",

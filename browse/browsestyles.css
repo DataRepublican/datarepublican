@@ -1,7 +1,9 @@
 /* Preserve non-Tailwind styles */
 .node { fill: #999; }
-.node.expand { cursor: grab; }
-.node.no-grants { cursor: zoom-out; }
+.node.expand { cursor: pointer; }
+.node.no-grants { cursor: pointer; }
+.node-ghost path, .node-leftover path { stroke-dasharray: 4 3; }
+.nodeLabel-ghost, .nodeLabel-leftover { font-style: italic; }
 .link { stroke-opacity: 0.5; }
 .hat-up, .hat-down { cursor: pointer; }
 .nodeLabel:hover{fill:#000}
@@ -184,6 +186,122 @@
 }
 #nonodes {
   background-color: lightgreen;
+  pointer-events: auto;
+}
+.crumb-bar {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+  width: calc(100% - 2rem);
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  padding: 0.15rem 0.4rem;
+  font-size: 9px;
+  line-height: 1.2;
+}
+.crumb-bar.hidden {
+  display: none;
+}
+.crumb-bar a,
+.crumb-bar span {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+.crumb-bar a {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+.crumb-bar a:hover {
+  text-decoration: underline;
+}
+.circular-toggle {
+  gap: 0.25rem;
+}
+.click-mode {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+.click-mode button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  border-radius: 0.25rem;
+}
+.click-mode button.is-on {
+  background: #111;
+  color: #fff;
+}
+.click-mode button i,
+.click-mode button svg {
+  width: 14px;
+  height: 14px;
+  font-size: 12px;
+}
+#graph-container.click-focus .node path,
+#graph-container.click-focus .nodeLabel,
+#graph-container.click-focus .link,
+#graph-container.click-focus .circular-link {
+  cursor: pointer;
+}
+#graph-container.click-add .node path,
+#graph-container.click-add .nodeLabel,
+#graph-container.click-add .link,
+#graph-container.click-add .circular-link {
+  cursor: cell;
+}
+#graph-container.click-inspect .node path,
+#graph-container.click-inspect .nodeLabel,
+#graph-container.click-inspect .link,
+#graph-container.click-inspect .circular-link {
+  cursor: zoom-in;
+}
+#graph-container.click-subtract .node path,
+#graph-container.click-subtract .nodeLabel,
+#graph-container.click-subtract .link,
+#graph-container.click-subtract .circular-link {
+  cursor: not-allowed;
+}
+#graph-container.click-zoom .node path,
+#graph-container.click-zoom .nodeLabel,
+#graph-container.click-zoom .link,
+#graph-container.click-zoom .circular-link {
+  cursor: crosshair;
+}
+.graph-tip {
+  position: fixed;
+  z-index: 50;
+  max-width: 22rem;
+  background: #111;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  padding: 6px 8px;
+  border-radius: 4px;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+.graph-tip.hidden {
+  display: none;
+}
+#nonodes a {
+  text-decoration: underline;
+  color: inherit;
 }
 .button-group {
   display: flex;
@@ -222,40 +340,111 @@
     overflow: hidden;
   }
 
-  #control-panel {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    padding: 15px;
-    width: 500px;
-    font-family: Arial, sans-serif;
+  #control-panel,
+  .inspector-drawer {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(340px, 92vw);
+    margin: 0;
+    padding: 12px 14px 20px;
+    background: #f8fafc;
+    border: none;
+    border-left: 1px solid #d1d5db;
+    box-shadow: -8px 0 24px rgba(0,0,0,0.12);
+    z-index: 40;
+    overflow-y: auto;
+    flex-direction: column;
+    font-family: system-ui, sans-serif;
   }
-
+  #control-panel.is-open,
+  .inspector-drawer.is-open {
+    display: flex;
+  }
   #control-panel h3 {
-    margin-top: 0;
-    font-size: 0.8rem;
+    margin: 0.2rem 0 0.35rem;
+    font-size: 0.95rem;
+    line-height: 1.25;
   }
-
   #control-panel p {
-    margin: 5px 0;
+    margin: 0.25rem 0;
     font-size: 0.75rem;
   }
-
-  #control-panel button {
-    margin-right: 5px;
-    margin-top: 5px;
-    padding: 0.3rem 0.6rem;
-    background: #007bff;
-    color: white;
+  .insp-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: none;
     border: none;
-    border-radius: 3px;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #111;
+  }
+  .insp-kind {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #4b5563;
+    margin: 0;
+  }
+  .insp-id { color: #4b5563; }
+  .insp-primary {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 0.45rem 0.6rem;
+    background: #111;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .insp-primary:hover { background: #2563eb; }
+  .insp-links {
+    font-size: 11px;
+    line-height: 1.5;
+    margin-top: 0.75rem;
+  }
+  .insp-links a { text-decoration: underline; }
+  .insp-note { font-size: 10px; color: #6b7280; }
+  .insp-neighbors ul {
+    list-style: none;
+    margin: 0 0 0.5rem;
+    padding: 0;
+  }
+  .insp-neighbors li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 11px;
+    margin: 0.15rem 0;
+  }
+  .insp-k { font-weight: 700; font-size: 10px; text-transform: uppercase; margin-top: 0.6rem; }
+  .insp-neighbor {
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    text-decoration: underline;
     cursor: pointer;
     font-size: 11px;
-    line-height: 1rem;
+    color: #111;
   }
-
-  #control-panel button:hover {
-    background: #0056b3;
+  .insp-grant {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 12px;
+  }
+  #control-panel button.insp-primary,
+  #control-panel button.insp-neighbor,
+  #control-panel button.insp-close {
+    margin-right: 0;
   }
 
   .disabled button {
@@ -401,7 +590,113 @@
     display:none;
   }
 
+  .band-control {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    min-width: 240px;
+    padding-top: 2px;
+  }
+  .band-control::before {
+    content: "";
+    position: absolute;
+    top: 9px;
+    left: 18%;
+    right: 18%;
+    height: 2px;
+    background: #111;
+    z-index: 0;
+  }
+  .band-notch {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    padding: 0 4px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    color: inherit;
+  }
+  .band-notch .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #111;
+    background: #fff;
+    display: block;
+  }
+  .band-notch .label {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.1;
+  }
+  .band-notch .stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.15;
+  }
+  .band-notch .stat-nodes,
+  .band-notch .stat-grants,
+  .band-notch .stat-wait {
+    font-size: 10px;
+    color: #4b5563;
+  }
+  .band-notch .stat-wait {
+    font-size: 9px;
+    font-style: italic;
+  }
+  .band-notch .stat-nodes {
+    font-weight: 600;
+    color: #111;
+  }
+  .band-notch.is-current .dot {
+    background: #111;
+    box-shadow: 0 0 0 3px #111;
+  }
+  .band-notch.is-current .label {
+    font-weight: 700;
+  }
+  .band-notch.is-next .dot {
+    background: #fff;
+    border-style: dashed;
+  }
+  .band-notch.is-locked {
+    opacity: 0.55;
+    cursor: pointer;
+  }
+  .band-notch.is-locked .dot {
+    border-style: dotted;
+    background: #e5e7eb;
+  }
+  .band-notch.is-locked .soon {
+    font-size: 9px;
+    font-weight: 600;
+    font-style: italic;
+    color: #6b7280;
+    line-height: 1.1;
+  }
+  .band-notch.is-locked .stat-nodes,
+  .band-notch.is-locked .stat-grants {
+    color: #9ca3af;
+  }
+  .band-notch:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+  }
+
   #downloadBtn:hover {
+    color: #2563eb;
+  }
+
+  #exportDBBtn {
+    text-decoration: none;
+  }
+  #exportDBBtn:hover {
     color: #2563eb;
   }
 

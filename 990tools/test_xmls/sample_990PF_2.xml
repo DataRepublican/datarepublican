@@ -1,0 +1,919 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Return xmlns="http://www.irs.gov/efile" xsi:schemaLocation="http://www.irs.gov/efile" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" returnVersion="2019v5.0">
+  <ReturnHeader binaryAttachmentCnt="0">
+    <ReturnTs>2020-04-16T17:01:34-05:00</ReturnTs>
+    <TaxPeriodEndDt>2019-12-31</TaxPeriodEndDt>
+    <ReturnTypeCd>990PF</ReturnTypeCd>
+    <TaxPeriodBeginDt>2019-01-01</TaxPeriodBeginDt>
+    <Filer>
+      <EIN>066029636</EIN>
+      <BusinessName>
+        <BusinessNameLine1Txt>SLUYTER ELIZABETH L TRUST</BusinessNameLine1Txt>
+      </BusinessName>
+      <BusinessNameControlTxt>SLUY</BusinessNameControlTxt>
+      <PhoneNum>8888663275</PhoneNum>
+      <USAddress>
+        <AddressLine1Txt>P O BOX 1802</AddressLine1Txt>
+        <CityNm>PROVIDENCE</CityNm>
+        <StateAbbreviationCd>RI</StateAbbreviationCd>
+        <ZIPCd>029011802</ZIPCd>
+      </USAddress>
+    </Filer>
+    <BusinessOfficerGrp>
+      <PersonNm>BANK OF AMERICA N A</PersonNm>
+      <PersonTitleTxt>MANAGING DIR</PersonTitleTxt>
+      <PhoneNum>8888663275</PhoneNum>
+      <SignatureDt>2020-04-16</SignatureDt>
+    </BusinessOfficerGrp>
+    <TaxYr>2019</TaxYr>
+    <BuildTS>2022-09-23 18:48:47Z</BuildTS>
+  </ReturnHeader>
+  <ReturnData documentCnt="10">
+    <IRS990PF documentId="IRS990PF" referenceDocumentId="GeneralExplanationAttachment">
+      <Organization501c3ExemptPFInd>X</Organization501c3ExemptPFInd>
+      <FMVAssetsEOYAmt>401029</FMVAssetsEOYAmt>
+      <AnalysisOfRevenueAndExpenses>
+        <ScheduleBNotRequiredInd>X</ScheduleBNotRequiredInd>
+        <DividendsRevAndExpnssAmt>8750</DividendsRevAndExpnssAmt>
+        <DividendsNetInvstIncmAmt>8765</DividendsNetInvstIncmAmt>
+        <NetGainSaleAstRevAndExpnssAmt referenceDocumentId="GainLossFrmSaleOthAssetsSch">14256</NetGainSaleAstRevAndExpnssAmt>
+        <GrossSalesPriceAmt>124273</GrossSalesPriceAmt>
+        <CapGainNetIncmNetInvstIncmAmt>14256</CapGainNetIncmNetInvstIncmAmt>
+        <NetSTCapitalGainAdjNetIncmAmt>0</NetSTCapitalGainAdjNetIncmAmt>
+        <OtherIncomeRevAndExpnssAmt referenceDocumentId="OtherIncomeSchedule2">121</OtherIncomeRevAndExpnssAmt>
+        <OtherIncomeNetInvstIncmAmt>931</OtherIncomeNetInvstIncmAmt>
+        <TotalRevAndExpnssAmt>23127</TotalRevAndExpnssAmt>
+        <TotalNetInvstIncmAmt>23952</TotalNetInvstIncmAmt>
+        <CompOfcrDirTrstRevAndExpnssAmt>5151</CompOfcrDirTrstRevAndExpnssAmt>
+        <CompOfcrDirTrstNetInvstIncmAmt>3091</CompOfcrDirTrstNetInvstIncmAmt>
+        <CompOfcrDirTrstDsbrsChrtblAmt>2061</CompOfcrDirTrstDsbrsChrtblAmt>
+        <OthEmplSlrsWgsNetInvstIncmAmt>0</OthEmplSlrsWgsNetInvstIncmAmt>
+        <OthEmplSlrsWgsAdjNetIncmAmt>0</OthEmplSlrsWgsAdjNetIncmAmt>
+        <OthEmplSlrsWgsDsbrsChrtblAmt>0</OthEmplSlrsWgsDsbrsChrtblAmt>
+        <PensionEmplBnftNetInvstIncmAmt>0</PensionEmplBnftNetInvstIncmAmt>
+        <PensionEmplBnftAdjNetIncmAmt>0</PensionEmplBnftAdjNetIncmAmt>
+        <LegalFeesDsbrsChrtblAmt>0</LegalFeesDsbrsChrtblAmt>
+        <AccountingFeesRevAndExpnssAmt referenceDocumentId="AccountingFeesSchedule">1250</AccountingFeesRevAndExpnssAmt>
+        <AccountingFeesNetInvstIncmAmt>750</AccountingFeesNetInvstIncmAmt>
+        <AccountingFeesAdjNetIncmAmt>0</AccountingFeesAdjNetIncmAmt>
+        <AccountingFeesChrtblPrpsAmt>500</AccountingFeesChrtblPrpsAmt>
+        <OtherProfFeesDsbrsChrtblAmt>0</OtherProfFeesDsbrsChrtblAmt>
+        <InterestDsbrsChrtblAmt>0</InterestDsbrsChrtblAmt>
+        <TaxesRevAndExpnssAmt referenceDocumentId="TaxesSchedule">192</TaxesRevAndExpnssAmt>
+        <TaxesNetInvstIncmAmt>192</TaxesNetInvstIncmAmt>
+        <TaxesDsbrsChrtblAmt>0</TaxesDsbrsChrtblAmt>
+        <DeprecAndDpltnRevAndExpnssAmt>0</DeprecAndDpltnRevAndExpnssAmt>
+        <DeprecAndDpltnNetInvstIncmAmt>0</DeprecAndDpltnNetInvstIncmAmt>
+        <TravConfMeetingNetInvstIncmAmt>0</TravConfMeetingNetInvstIncmAmt>
+        <TravConfMeetingAdjNetIncmAmt>0</TravConfMeetingAdjNetIncmAmt>
+        <PrintingAndPubNetInvstIncmAmt>0</PrintingAndPubNetInvstIncmAmt>
+        <PrintingAndPubAdjNetIncmAmt>0</PrintingAndPubAdjNetIncmAmt>
+        <OtherExpensesRevAndExpnssAmt referenceDocumentId="OtherExpensesSchedule">88</OtherExpensesRevAndExpnssAmt>
+        <OtherExpensesNetInvstIncmAmt>89</OtherExpensesNetInvstIncmAmt>
+        <TotOprExpensesRevAndExpnssAmt>6681</TotOprExpensesRevAndExpnssAmt>
+        <TotOprExpensesNetInvstIncmAmt>4122</TotOprExpensesNetInvstIncmAmt>
+        <TotOprExpensesAdjNetIncmAmt>0</TotOprExpensesAdjNetIncmAmt>
+        <TotOprExpensesDsbrsChrtblAmt>2561</TotOprExpensesDsbrsChrtblAmt>
+        <ContriPaidRevAndExpnssAmt>14064</ContriPaidRevAndExpnssAmt>
+        <ContriPaidDsbrsChrtblAmt>14064</ContriPaidDsbrsChrtblAmt>
+        <TotalExpensesRevAndExpnssAmt>20745</TotalExpensesRevAndExpnssAmt>
+        <TotalExpensesNetInvstIncmAmt>4122</TotalExpensesNetInvstIncmAmt>
+        <TotalExpensesAdjNetIncmAmt>0</TotalExpensesAdjNetIncmAmt>
+        <TotalExpensesDsbrsChrtblAmt>16625</TotalExpensesDsbrsChrtblAmt>
+        <ExcessRevenueOverExpensesAmt>2382</ExcessRevenueOverExpensesAmt>
+        <NetInvestmentIncomeAmt>19830</NetInvestmentIncomeAmt>
+        <AdjustedNetIncomeAmt>0</AdjustedNetIncomeAmt>
+      </AnalysisOfRevenueAndExpenses>
+      <Form990PFBalanceSheetsGrp>
+        <SavAndTempCashInvstBOYAmt>10610</SavAndTempCashInvstBOYAmt>
+        <SavAndTempCashInvstEOYAmt>22493</SavAndTempCashInvstEOYAmt>
+        <SavAndTempCashInvstEOYFMVAmt>22493</SavAndTempCashInvstEOYFMVAmt>
+        <AcctRcvblEOYAmt>0</AcctRcvblEOYAmt>
+        <AcctRcvblEOYFMVAmt>0</AcctRcvblEOYFMVAmt>
+        <OtherRcvblAllwncDbtflAcctAmt>0</OtherRcvblAllwncDbtflAcctAmt>
+        <CorporateStockBOYAmt>325429</CorporateStockBOYAmt>
+        <CorporateStockEOYAmt referenceDocumentId="InvestmentsCorpStockSchedule">313013</CorporateStockEOYAmt>
+        <CorporateStockEOYFMVAmt>378536</CorporateStockEOYFMVAmt>
+        <OtherInvestmentsEOYFMVAmt>0</OtherInvestmentsEOYFMVAmt>
+        <TotalAssetsBOYAmt>336039</TotalAssetsBOYAmt>
+        <TotalAssetsEOYAmt>335506</TotalAssetsEOYAmt>
+        <TotalAssetsEOYFMVAmt>401029</TotalAssetsEOYFMVAmt>
+        <TotalLiabilitiesEOYAmt>0</TotalLiabilitiesEOYAmt>
+        <OrgDoesNotFollowFASB117Ind>X</OrgDoesNotFollowFASB117Ind>
+        <CapitalStockBOYAmt>336039</CapitalStockBOYAmt>
+        <CapitalStockEOYAmt>335506</CapitalStockEOYAmt>
+        <TotNetAstOrFundBalancesBOYAmt>336039</TotNetAstOrFundBalancesBOYAmt>
+        <TotNetAstOrFundBalancesEOYAmt>335506</TotNetAstOrFundBalancesEOYAmt>
+        <TotalLiabilitiesNetAstBOYAmt>336039</TotalLiabilitiesNetAstBOYAmt>
+        <TotalLiabilitiesNetAstEOYAmt>335506</TotalLiabilitiesNetAstEOYAmt>
+      </Form990PFBalanceSheetsGrp>
+      <ChgInNetAssetsFundBalancesGrp>
+        <TotNetAstOrFundBalancesBOYAmt>336039</TotNetAstOrFundBalancesBOYAmt>
+        <ExcessRevenueOverExpensesAmt>2382</ExcessRevenueOverExpensesAmt>
+        <OtherIncreasesAmt referenceDocumentId="OtherIncreasesSchedule">31</OtherIncreasesAmt>
+        <SubtotalAmt>338452</SubtotalAmt>
+        <OtherDecreasesAmt referenceDocumentId="OtherDecreasesSchedule">2946</OtherDecreasesAmt>
+        <TotNetAstOrFundBalancesEOYAmt>335506</TotNetAstOrFundBalancesEOYAmt>
+      </ChgInNetAssetsFundBalancesGrp>
+      <CapGainsLossTxInvstIncmDetail>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>739.338 INVESCO BALANCED-RISK ALLOCATION FUND CL R6</PropertyDesc>
+          <AcquiredDt>2018-02-01</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>7889</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>8155</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-266</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-266</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>336.283 AQR MANAGED FUTURES STRATEGY FUND CL I</PropertyDesc>
+          <AcquiredDt>2016-06-30</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>2761</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>3497</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-736</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-736</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>42.783 AQR MANAGED FUTURES STRATEGY FUND CL I</PropertyDesc>
+          <AcquiredDt>2016-10-18</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>351</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>424</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-73</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-73</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>53.06 AQR MANAGED FUTURES STRATEGY FUND CL I</PropertyDesc>
+          <AcquiredDt>2017-10-02</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>436</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>466</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-30</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-30</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>669.745 BLACKSTONE ALTERNATIVE MULTI- STRATEGY FUND-ISTL</PropertyDesc>
+          <AcquiredDt>2018-11-30</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>7133</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>7160</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-27</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-27</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>217.512 BLACKROCK STRATEGIC INCOME OPPORTUNITIES PORTFOLIO INSTL CL</PropertyDesc>
+          <AcquiredDt>2018-02-01</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>2110</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2190</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-80</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-80</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>569.856 BLACKROCK STRATEGIC INCOME OPPORTUNITIES PORTFOLIO INSTL CL</PropertyDesc>
+          <AcquiredDt>2017-10-02</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>5528</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>5680</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-152</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-152</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>204.793 BLACKROCK STRATEGIC INCOME OPPORTUNITIES PORTFOLIO INSTL CL</PropertyDesc>
+          <AcquiredDt>2017-02-02</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>1986</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2017</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-31</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-31</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>1057.91 BLACKROCK STRATEGIC INCOME OPPORTUNITIES PORTFOLIO INSTL CL</PropertyDesc>
+          <AcquiredDt>2016-06-30</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>10262</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>10217</CostOrOtherBasisAmt>
+          <GainOrLossAmt>45</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>45</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>12.58 EMERGING MARKETS STOCK COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2014-02-28</AcquiredDt>
+          <SoldDt>2019-04-30</SoldDt>
+          <GrossSalesPriceAmt>733</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>664</CostOrOtherBasisAmt>
+          <GainOrLossAmt>69</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>69</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>4.737 EMERGING MARKETS STOCK COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2014-02-28</AcquiredDt>
+          <SoldDt>2019-06-30</SoldDt>
+          <GrossSalesPriceAmt>275</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>250</CostOrOtherBasisAmt>
+          <GainOrLossAmt>25</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>25</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>44.208 EMERGING MARKETS STOCK COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2018-11-30</AcquiredDt>
+          <SoldDt>2019-06-30</SoldDt>
+          <GrossSalesPriceAmt>2570</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2331</CostOrOtherBasisAmt>
+          <GainOrLossAmt>239</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>239</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>25.345 EMERGING MARKETS STOCK COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2012-11-30</AcquiredDt>
+          <SoldDt>2019-06-30</SoldDt>
+          <GrossSalesPriceAmt>1473</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>1299</CostOrOtherBasisAmt>
+          <GainOrLossAmt>174</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>174</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>1.55 EMERGING MARKETS STOCK COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2013-09-13</AcquiredDt>
+          <SoldDt>2019-06-30</SoldDt>
+          <GrossSalesPriceAmt>90</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>79</CostOrOtherBasisAmt>
+          <GainOrLossAmt>11</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>11</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>13.703 DIVIDEND INCOME COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2019-06-30</AcquiredDt>
+          <SoldDt>2019-11-30</SoldDt>
+          <GrossSalesPriceAmt>1055</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>977</CostOrOtherBasisAmt>
+          <GainOrLossAmt>78</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>78</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>911. INVESCO DB COMMODITY INDEX TRACKING FUND</PropertyDesc>
+          <AcquiredDt>2018-01-31</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>14235</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>13853</CostOrOtherBasisAmt>
+          <GainOrLossAmt>382</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>382</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>163. INVESCO DB COMMODITY INDEX TRACKING FUND</PropertyDesc>
+          <AcquiredDt>2016-05-31</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>2547</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2116</CostOrOtherBasisAmt>
+          <GainOrLossAmt>431</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>431</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>123.503 CATALYST/MILLBURN HEDGE STRATEGY FUND CL I</PropertyDesc>
+          <AcquiredDt>2018-02-01</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>3835</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>3927</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-92</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-92</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>158.194 CATALYST/MILLBURN HEDGE STRATEGY FUND CL I</PropertyDesc>
+          <AcquiredDt>2017-10-02</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>4912</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>4991</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-79</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-79</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>55.31 PRINCIPAL MIDCAP BLEND FUND INSTL CL</PropertyDesc>
+          <AcquiredDt>2017-02-02</AcquiredDt>
+          <SoldDt>2019-11-29</SoldDt>
+          <GrossSalesPriceAmt>1768</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>1286</CostOrOtherBasisAmt>
+          <GainOrLossAmt>482</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>482</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>93. VANGUARD FTSE DEVELOPED MARKETS ETF</PropertyDesc>
+          <AcquiredDt>2017-01-31</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>3705</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>3522</CostOrOtherBasisAmt>
+          <GainOrLossAmt>183</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>183</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>79. VANGUARD FTSE DEVELOPED MARKETS ETF</PropertyDesc>
+          <AcquiredDt>2017-01-31</AcquiredDt>
+          <SoldDt>2019-06-28</SoldDt>
+          <GrossSalesPriceAmt>3290</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2992</CostOrOtherBasisAmt>
+          <GainOrLossAmt>298</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>298</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>71. VANGUARD FTSE EMERGING MKTS ETF</PropertyDesc>
+          <AcquiredDt>2016-05-31</AcquiredDt>
+          <SoldDt>2019-06-28</SoldDt>
+          <GrossSalesPriceAmt>3013</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2400</CostOrOtherBasisAmt>
+          <GainOrLossAmt>613</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>613</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>4. VANGUARD S&amp;P 500 ETF</PropertyDesc>
+          <AcquiredDt>2019-01-31</AcquiredDt>
+          <SoldDt>2019-11-29</SoldDt>
+          <GrossSalesPriceAmt>1156</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>992</CostOrOtherBasisAmt>
+          <GainOrLossAmt>164</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>164</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>8. VANGUARD S&amp;P 500 ETF</PropertyDesc>
+          <AcquiredDt>2016-01-08</AcquiredDt>
+          <SoldDt>2019-11-29</SoldDt>
+          <GrossSalesPriceAmt>2313</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>1422</CostOrOtherBasisAmt>
+          <GainOrLossAmt>891</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>891</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>335.491 WELLS FARGO ABSOLUTE RETURN FUND INSTL CL</PropertyDesc>
+          <AcquiredDt>2016-01-08</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>3670</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>3291</CostOrOtherBasisAmt>
+          <GainOrLossAmt>379</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>379</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>233.059 INTERNATIONAL FOCUSED EQUITY COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2013-02-28</AcquiredDt>
+          <SoldDt>2019-01-31</SoldDt>
+          <GrossSalesPriceAmt>2954</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>2655</CostOrOtherBasisAmt>
+          <GainOrLossAmt>299</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>299</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>329.581 INTERNATIONAL FOCUSED EQUITY COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2013-02-28</AcquiredDt>
+          <SoldDt>2019-06-30</SoldDt>
+          <GrossSalesPriceAmt>4541</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>3840</CostOrOtherBasisAmt>
+          <GainOrLossAmt>701</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>701</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>816.5 STRATEGIC GROWTH COMMON TRUST FUND</PropertyDesc>
+          <AcquiredDt>2013-04-30</AcquiredDt>
+          <SoldDt>2019-04-30</SoldDt>
+          <GrossSalesPriceAmt>16482</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>15247</CostOrOtherBasisAmt>
+          <GainOrLossAmt>1235</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>1235</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>112.391 LARGE CAP CORE CTF</PropertyDesc>
+          <AcquiredDt>2018-01-31</AcquiredDt>
+          <SoldDt>2019-11-30</SoldDt>
+          <GrossSalesPriceAmt>1258</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>1116</CostOrOtherBasisAmt>
+          <GainOrLossAmt>142</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>142</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>80.232 MID CAP CORE CTF</PropertyDesc>
+          <AcquiredDt>2018-01-31</AcquiredDt>
+          <SoldDt>2019-05-31</SoldDt>
+          <GrossSalesPriceAmt>781</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>802</CostOrOtherBasisAmt>
+          <GainOrLossAmt>-21</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>-21</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>15.799 MID CAP CORE CTF</PropertyDesc>
+          <AcquiredDt>2018-01-31</AcquiredDt>
+          <SoldDt>2019-11-30</SoldDt>
+          <GrossSalesPriceAmt>171</GrossSalesPriceAmt>
+          <CostOrOtherBasisAmt>159</CostOrOtherBasisAmt>
+          <GainOrLossAmt>12</GainOrLossAmt>
+          <GainsMinusExcessOrLossesAmt>12</GainsMinusExcessOrLossesAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapGainsLossTxInvstIncmGrp>
+          <PropertyDesc>CAPITAL GAIN DIVIDENDS</PropertyDesc>
+          <HowAcquiredCd>P</HowAcquiredCd>
+          <GainOrLossAmt>1126</GainOrLossAmt>
+        </CapGainsLossTxInvstIncmGrp>
+        <CapitalGainNetIncomeAmt>14256</CapitalGainNetIncomeAmt>
+      </CapGainsLossTxInvstIncmDetail>
+      <QlfyUndSect4940eReducedTaxGrp>
+        <LiableSection4942TaxInd>false</LiableSection4942TaxInd>
+        <AdjustedQlfyDistriYr1Amt>19261</AdjustedQlfyDistriYr1Amt>
+        <NetVlNoncharitableAssetsYr1Amt>377356</NetVlNoncharitableAssetsYr1Amt>
+        <DistributionYr1Rt>0.051042</DistributionYr1Rt>
+        <AdjustedQlfyDistriYr2Amt>17289</AdjustedQlfyDistriYr2Amt>
+        <NetVlNoncharitableAssetsYr2Amt>370362</NetVlNoncharitableAssetsYr2Amt>
+        <DistributionYr2Rt>0.046681</DistributionYr2Rt>
+        <AdjustedQlfyDistriYr3Amt>16239</AdjustedQlfyDistriYr3Amt>
+        <NetVlNoncharitableAssetsYr3Amt>343262</NetVlNoncharitableAssetsYr3Amt>
+        <DistributionYr3Rt>0.047308</DistributionYr3Rt>
+        <AdjustedQlfyDistriYr4Amt>18386</AdjustedQlfyDistriYr4Amt>
+        <NetVlNoncharitableAssetsYr4Amt>362741</NetVlNoncharitableAssetsYr4Amt>
+        <DistributionYr4Rt>0.050686</DistributionYr4Rt>
+        <AdjustedQlfyDistriYr5Amt>18999</AdjustedQlfyDistriYr5Amt>
+        <NetVlNoncharitableAssetsYr5Amt>379776</NetVlNoncharitableAssetsYr5Amt>
+        <DistributionYr5Rt>0.050027</DistributionYr5Rt>
+        <TotalDistributionRt>0.245744</TotalDistributionRt>
+        <AverageDistributionRt>0.049149</AverageDistributionRt>
+        <NetVlNoncharitableAssetsAmt>375156</NetVlNoncharitableAssetsAmt>
+        <AdjNetVlNoncharitableAssetsAmt>18439</AdjNetVlNoncharitableAssetsAmt>
+        <NetInvestmentIncomePctAmt>198</NetInvestmentIncomePctAmt>
+        <AdjNonchrtblNetInvstIncmPctAmt>18637</AdjNonchrtblNetInvstIncmPctAmt>
+        <QualifyingDistributionsAmt>16625</QualifyingDistributionsAmt>
+      </QlfyUndSect4940eReducedTaxGrp>
+      <ExciseTaxBasedOnInvstIncmGrp>
+        <InvestmentIncomeExciseTaxAmt>397</InvestmentIncomeExciseTaxAmt>
+        <TaxUnderSection511Amt>0</TaxUnderSection511Amt>
+        <SubtotalAmt>397</SubtotalAmt>
+        <SubtitleATaxAmt>0</SubtitleATaxAmt>
+        <TaxBasedOnInvestmentIncomeAmt>397</TaxBasedOnInvestmentIncomeAmt>
+        <EstimatedPlusOvpmtIncmTxAmt>256</EstimatedPlusOvpmtIncmTxAmt>
+        <ExtsnRequestIncomeTaxPaidAmt>0</ExtsnRequestIncomeTaxPaidAmt>
+        <TotalPaymentsAndCreditsAmt>256</TotalPaymentsAndCreditsAmt>
+        <EsPenaltyAmt>0</EsPenaltyAmt>
+        <TaxDueAmt>141</TaxDueAmt>
+        <AppliedToESTaxAmt>0</AppliedToESTaxAmt>
+        <RefundAmt>0</RefundAmt>
+      </ExciseTaxBasedOnInvstIncmGrp>
+      <StatementsRegardingActyGrp>
+        <LegislativePoliticalActyInd>false</LegislativePoliticalActyInd>
+        <MoreThan100SpentInd>false</MoreThan100SpentInd>
+        <Form1120POLFiledInd>false</Form1120POLFiledInd>
+        <ActivitiesNotPreviouslyRptInd>false</ActivitiesNotPreviouslyRptInd>
+        <ChangesToArticlesOrBylawsInd>false</ChangesToArticlesOrBylawsInd>
+        <UnrelatedBusIncmOverLimitInd>false</UnrelatedBusIncmOverLimitInd>
+        <OrganizationDissolvedEtcInd>false</OrganizationDissolvedEtcInd>
+        <Section508eRqrSatisfiedInd>true</Section508eRqrSatisfiedInd>
+        <AtLeast5000InAssetsInd>true</AtLeast5000InAssetsInd>
+        <OrgReportOrRegisterStateCd>CT</OrgReportOrRegisterStateCd>
+        <Form990PFFiledWithAttyGenInd>true</Form990PFFiledWithAttyGenInd>
+        <PrivateOperatingFoundationInd>false</PrivateOperatingFoundationInd>
+        <NewSubstantialContributorsInd>false</NewSubstantialContributorsInd>
+        <OwnControlledEntityInd>false</OwnControlledEntityInd>
+        <DonorAdvisedFundInd>false</DonorAdvisedFundInd>
+        <ComplyWithPublicInspRqrInd>true</ComplyWithPublicInspRqrInd>
+        <WebsiteAddressTxt>N/A</WebsiteAddressTxt>
+        <PersonsWithBooksName>
+          <BusinessNameLine1Txt>BANK OF AMERICA NA</BusinessNameLine1Txt>
+        </PersonsWithBooksName>
+        <PhoneNum>4012788903</PhoneNum>
+        <LocationOfBooksUSAddress>
+          <AddressLine1Txt>PO BOX 1802</AddressLine1Txt>
+          <CityNm>PROVIDENCE</CityNm>
+          <StateAbbreviationCd>RI</StateAbbreviationCd>
+          <ZIPCd>029011802</ZIPCd>
+        </LocationOfBooksUSAddress>
+        <ForeignAccountsQuestionInd>false</ForeignAccountsQuestionInd>
+      </StatementsRegardingActyGrp>
+      <StatementsRegardingActy4720Grp>
+        <SaleOrExchDisqualifiedPrsnInd>false</SaleOrExchDisqualifiedPrsnInd>
+        <BrrwOrLendDisqualifiedPrsnInd>false</BrrwOrLendDisqualifiedPrsnInd>
+        <FurnGoodsDisqualifiedPrsnInd>false</FurnGoodsDisqualifiedPrsnInd>
+        <PayCompDisqualifiedPrsnInd>true</PayCompDisqualifiedPrsnInd>
+        <TransferAstDisqualifiedPrsnInd>false</TransferAstDisqualifiedPrsnInd>
+        <PaymentToGovernmentOfficialInd>false</PaymentToGovernmentOfficialInd>
+        <ActsFailToQlfyAsExceptionsInd>false</ActsFailToQlfyAsExceptionsInd>
+        <UncorrectedPriorActsInd>false</UncorrectedPriorActsInd>
+        <UndistributedIncomePYInd>false</UndistributedIncomePYInd>
+        <BusinessHoldingsInd>false</BusinessHoldingsInd>
+        <JeopardyInvestmentsInd>false</JeopardyInvestmentsInd>
+        <UncorrectedPYJeopardyInvstInd>false</UncorrectedPYJeopardyInvstInd>
+        <InfluenceLegislationInd>false</InfluenceLegislationInd>
+        <InfluenceElectionInd>false</InfluenceElectionInd>
+        <GrantsToIndividualsInd>false</GrantsToIndividualsInd>
+        <GrantsToOrganizationsInd>false</GrantsToOrganizationsInd>
+        <NoncharitablePurposeInd>false</NoncharitablePurposeInd>
+        <RcvFndsToPayPrsnlBnftCntrctInd>false</RcvFndsToPayPrsnlBnftCntrctInd>
+        <PayPremiumsPrsnlBnftCntrctInd>false</PayPremiumsPrsnlBnftCntrctInd>
+        <ProhibitedTaxShelterTransInd>false</ProhibitedTaxShelterTransInd>
+        <SubjToTaxRmnrtnExPrchtPymtInd>false</SubjToTaxRmnrtnExPrchtPymtInd>
+      </StatementsRegardingActy4720Grp>
+      <OfficerDirTrstKeyEmplInfoGrp>
+        <OfficerDirTrstKeyEmplGrp>
+          <PersonNm>BANK OF AMERICA</PersonNm>
+          <USAddress>
+            <AddressLine1Txt>99 FOUNDERS PLAZA</AddressLine1Txt>
+            <CityNm>EAST HARTFORD</CityNm>
+            <StateAbbreviationCd>CT</StateAbbreviationCd>
+            <ZIPCd>06108</ZIPCd>
+          </USAddress>
+          <TitleTxt>TRUSTEE</TitleTxt>
+          <AverageHrsPerWkDevotedToPosRt>1</AverageHrsPerWkDevotedToPosRt>
+          <CompensationAmt>5151</CompensationAmt>
+        </OfficerDirTrstKeyEmplGrp>
+        <CompOfHghstPdEmplOrNONETxt>NONE</CompOfHghstPdEmplOrNONETxt>
+        <OtherEmployeePaidOver50kCnt>0</OtherEmployeePaidOver50kCnt>
+        <CompOfHghstPdCntrctOrNONETxt>NONE</CompOfHghstPdCntrctOrNONETxt>
+        <ContractorPaidOver50kCnt>0</ContractorPaidOver50kCnt>
+      </OfficerDirTrstKeyEmplInfoGrp>
+      <SummaryOfDirectChrtblActyGrp />
+      <SumOfProgramRelatedInvstGrp />
+      <MinimumInvestmentReturnGrp>
+        <AverageMonthlyFMVOfSecAmt>367386</AverageMonthlyFMVOfSecAmt>
+        <AverageMonthlyCashBalancesAmt>13483</AverageMonthlyCashBalancesAmt>
+        <FMVAllOtherNoncharitableAstAmt>0</FMVAllOtherNoncharitableAstAmt>
+        <TotalFMVOfUnusedAssetsAmt>380869</TotalFMVOfUnusedAssetsAmt>
+        <ReductionClaimedAmt>0</ReductionClaimedAmt>
+        <AcquisitionIndebtednessAmt>0</AcquisitionIndebtednessAmt>
+        <AdjustedTotalFMVOfUnusedAstAmt>380869</AdjustedTotalFMVOfUnusedAstAmt>
+        <CashDeemedCharitableAmt>5713</CashDeemedCharitableAmt>
+        <NetVlNoncharitableAssetsAmt>375156</NetVlNoncharitableAssetsAmt>
+        <MinimumInvestmentReturnAmt>18758</MinimumInvestmentReturnAmt>
+      </MinimumInvestmentReturnGrp>
+      <DistributableAmountGrp>
+        <MinimumInvestmentReturnAmt>18758</MinimumInvestmentReturnAmt>
+        <TaxBasedOnInvestmentIncomeAmt>397</TaxBasedOnInvestmentIncomeAmt>
+        <TotalTaxAmt>397</TotalTaxAmt>
+        <DistributableBeforeAdjAmt>18361</DistributableBeforeAdjAmt>
+        <RecoveriesQualfiedDistriAmt>0</RecoveriesQualfiedDistriAmt>
+        <DistributableBeforeDedAmt>18361</DistributableBeforeDedAmt>
+        <DeductionFromDistributableAmt>0</DeductionFromDistributableAmt>
+        <DistributableAsAdjustedAmt>18361</DistributableAsAdjustedAmt>
+      </DistributableAmountGrp>
+      <QualifyingDistriPartXIIGrp>
+        <ExpensesAndContributionsAmt>16625</ExpensesAndContributionsAmt>
+        <ProgramRelatedInvstTotalAmt>0</ProgramRelatedInvstTotalAmt>
+        <CharitableAssetsAcquisPaidAmt>0</CharitableAssetsAcquisPaidAmt>
+        <SetAsideSuitabilityTestAmt>0</SetAsideSuitabilityTestAmt>
+        <SetAsideCashDistriTestAmt>0</SetAsideCashDistriTestAmt>
+        <QualifyingDistributionsAmt>16625</QualifyingDistributionsAmt>
+        <PctSect4940eOrgNetInvstIncmAmt>0</PctSect4940eOrgNetInvstIncmAmt>
+        <AdjustedQualifyingDistriAmt>16625</AdjustedQualifyingDistriAmt>
+      </QualifyingDistriPartXIIGrp>
+      <UndistributedIncomeGrp>
+        <DistributableAsAdjustedAmt>18361</DistributableAsAdjustedAmt>
+        <UndistributedIncomePYAmt>2095</UndistributedIncomePYAmt>
+        <TotalForPriorYearsAmt>0</TotalForPriorYearsAmt>
+        <ExcessDistributionCyovYr5Amt>0</ExcessDistributionCyovYr5Amt>
+        <ExcessDistributionCyovYr4Amt>0</ExcessDistributionCyovYr4Amt>
+        <ExcessDistributionCyovYr3Amt>0</ExcessDistributionCyovYr3Amt>
+        <ExcessDistributionCyovYr2Amt>0</ExcessDistributionCyovYr2Amt>
+        <ExcessDistributionCyovYr1Amt>0</ExcessDistributionCyovYr1Amt>
+        <TotalExcessDistributionCyovAmt>0</TotalExcessDistributionCyovAmt>
+        <QualifyingDistributionsAmt>16625</QualifyingDistributionsAmt>
+        <AppliedToYear1Amt>2095</AppliedToYear1Amt>
+        <AppliedToPriorYearsAmt>0</AppliedToPriorYearsAmt>
+        <TreatedAsDistriFromCorpusAmt>0</TreatedAsDistriFromCorpusAmt>
+        <AppliedToCurrentYearAmt>14530</AppliedToCurrentYearAmt>
+        <RemainingDistriFromCorpusAmt>0</RemainingDistriFromCorpusAmt>
+        <ExcessDistriCyovAppCYCorpusAmt>0</ExcessDistriCyovAppCYCorpusAmt>
+        <ExcessDistributionCyovAppCYAmt>0</ExcessDistributionCyovAppCYAmt>
+        <TotalCorpusAmt>0</TotalCorpusAmt>
+        <PriorYearUndistributedIncmAmt>0</PriorYearUndistributedIncmAmt>
+        <PriorYearDeficiencyOrTaxAmt>0</PriorYearDeficiencyOrTaxAmt>
+        <Taxable1Amt>0</Taxable1Amt>
+        <Taxable2Amt>0</Taxable2Amt>
+        <UndistributedIncomeCYAmt>3831</UndistributedIncomeCYAmt>
+        <CorpusDistri170b1EOr4942g3Amt>0</CorpusDistri170b1EOr4942g3Amt>
+        <ExcessDistriCyovFromYr5Amt>0</ExcessDistriCyovFromYr5Amt>
+        <ExcessDistriCyovToNextYrAmt>0</ExcessDistriCyovToNextYrAmt>
+        <ExcessFromYear4Amt>0</ExcessFromYear4Amt>
+        <ExcessFromYear3Amt>0</ExcessFromYear3Amt>
+        <ExcessFromYear2Amt>0</ExcessFromYear2Amt>
+        <ExcessFromYear1Amt>0</ExcessFromYear1Amt>
+        <ExcessFromCurrentYearAmt>0</ExcessFromCurrentYearAmt>
+      </UndistributedIncomeGrp>
+      <SupplementaryInformationGrp>
+        <ContributingManagerNm>NA</ContributingManagerNm>
+        <ShareholderManagerNm>NA</ShareholderManagerNm>
+        <OnlyContriToPreselectedInd>X</OnlyContriToPreselectedInd>
+        <GrantOrContributionPdDurYrGrp>
+          <RecipientBusinessName>
+            <BusinessNameLine1Txt>HARTFORD NEIGHBORHOOD CENTERS</BusinessNameLine1Txt>
+            <BusinessNameLine2Txt>ATTN DIRECTOR LYNN FORD</BusinessNameLine2Txt>
+          </RecipientBusinessName>
+          <RecipientUSAddress>
+            <AddressLine1Txt>38 LAWRENCE STREET</AddressLine1Txt>
+            <CityNm>HARTFORD</CityNm>
+            <StateAbbreviationCd>CT</StateAbbreviationCd>
+            <ZIPCd>061062409</ZIPCd>
+          </RecipientUSAddress>
+          <RecipientRelationshipTxt>N/A</RecipientRelationshipTxt>
+          <RecipientFoundationStatusTxt>PC</RecipientFoundationStatusTxt>
+          <GrantOrContributionPurposeTxt>UNRESTRICTED GENERAL</GrantOrContributionPurposeTxt>
+          <Amt>14064</Amt>
+        </GrantOrContributionPdDurYrGrp>
+        <TotalGrantOrContriPdDurYrAmt>14064</TotalGrantOrContriPdDurYrAmt>
+      </SupplementaryInformationGrp>
+      <AnalysisIncomeProducingActyGrp>
+        <FeesContractsFromGovtAgGrp />
+        <MembershipDuesAndAssmntGrp />
+        <IntOnSavAndTempCashInvstGrp />
+        <DivAndIntFromSecPartVIIGrp>
+          <ExclusionCd>14</ExclusionCd>
+          <ExclusionAmt>8750</ExclusionAmt>
+        </DivAndIntFromSecPartVIIGrp>
+        <NetRntlIncmReDebtFincdPropGrp />
+        <NetRntlIncmReNotDebtFincdProp />
+        <NetRentalIncomePersonalPropGrp />
+        <OtherInvestmentIncmPartVIIGrp />
+        <GainSalesAstOthThanInvntryGrp>
+          <ExclusionCd>18</ExclusionCd>
+          <ExclusionAmt>14256</ExclusionAmt>
+        </GainSalesAstOthThanInvntryGrp>
+        <NetIncomeLossFromSpecialEvtGrp />
+        <GrossProfitLossSlsOfInvntryGrp />
+        <OtherRevenueDescribedGrp>
+          <Desc>EXCISE TAX REFUND</Desc>
+          <ExclusionCd>1</ExclusionCd>
+          <ExclusionAmt>121</ExclusionAmt>
+        </OtherRevenueDescribedGrp>
+        <SubtotalsIncmProducingActyGrp>
+          <ExclusionAmt>23127</ExclusionAmt>
+        </SubtotalsIncmProducingActyGrp>
+        <TotalIncomeProducingActyAmt>23127</TotalIncomeProducingActyAmt>
+      </AnalysisIncomeProducingActyGrp>
+      <RlnOfActyToAccomOfExmptPrpsGrp />
+      <TrnsfrTransRlnNonchrtblEOGrp>
+        <TrnsfrOfCashToNonchrtblEOInd>false</TrnsfrOfCashToNonchrtblEOInd>
+        <TrnsfrOtherAssetNonchrtblEOInd>false</TrnsfrOtherAssetNonchrtblEOInd>
+        <SalesOrExchangesOfAssetsInd>false</SalesOrExchangesOfAssetsInd>
+        <PurchaseOfAssetsNonchrtblEOInd>false</PurchaseOfAssetsNonchrtblEOInd>
+        <RentalOfFacilitiesOthAssetsInd>false</RentalOfFacilitiesOthAssetsInd>
+        <ReimbursementArrangementsInd>false</ReimbursementArrangementsInd>
+        <LoansOrLoanGuaranteesInd>false</LoansOrLoanGuaranteesInd>
+        <PerformanceOfServicesEtcInd>false</PerformanceOfServicesEtcInd>
+        <SharingOfFacilitiesEtcInd>false</SharingOfFacilitiesEtcInd>
+        <RelationshipsNonchrtblEOInd>false</RelationshipsNonchrtblEOInd>
+      </TrnsfrTransRlnNonchrtblEOGrp>
+    </IRS990PF>
+    <AccountingFeesSchedule documentId="AccountingFeesSchedule">
+      <AccountingFeesDetail>
+        <CategoryTxt>TAX PREPARATION FEE - BOA</CategoryTxt>
+        <Amt>1250</Amt>
+        <NetInvestmentIncomeAmt>750</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>500</DisbursementsCharitablePrpsAmt>
+      </AccountingFeesDetail>
+    </AccountingFeesSchedule>
+    <GainLossSaleOtherAssetsSch documentId="GainLossFrmSaleOthAssetsSch">
+      <GainLossSaleOtherAssetGrp>
+        <AssetDesc>911. INVESCO</AssetDesc>
+        <AcquiredDt>2019-01</AcquiredDt>
+        <SoldDt>2018-01</SoldDt>
+        <PurchaserNameGrp>
+          <BusinessName>
+            <BusinessNameLine1Txt>PURCHASER</BusinessNameLine1Txt>
+          </BusinessName>
+        </PurchaserNameGrp>
+        <GrossSalesPriceAmt>14235</GrossSalesPriceAmt>
+        <BasisAmt>13853</BasisAmt>
+        <TotalNetAmt>382</TotalNetAmt>
+      </GainLossSaleOtherAssetGrp>
+      <GainLossSaleOtherAssetGrp>
+        <AssetDesc>163. INVESCO</AssetDesc>
+        <AcquiredDt>2019-01</AcquiredDt>
+        <SoldDt>2016-05</SoldDt>
+        <PurchaserNameGrp>
+          <BusinessName>
+            <BusinessNameLine1Txt>PURCHASER</BusinessNameLine1Txt>
+          </BusinessName>
+        </PurchaserNameGrp>
+        <GrossSalesPriceAmt>2547</GrossSalesPriceAmt>
+        <BasisAmt>2116</BasisAmt>
+        <TotalNetAmt>431</TotalNetAmt>
+      </GainLossSaleOtherAssetGrp>
+    </GainLossSaleOtherAssetsSch>
+    <GeneralExplanationAttachment documentId="GeneralExplanationAttachment">
+      <GeneralExplanationGrp>
+        <IdentifierTxt>FEDERAL FOOTNOTE</IdentifierTxt>
+        <FormAndLineReferenceDesc>PART VIII LIST OF OFFICERS AND DIRECTORS</FormAndLineReferenceDesc>
+        <MediumExplanationTxt>THE COMPENSATION SHOWN ON THE RETURN THAT IS PAID TO BANK OF AMERICA, N.A. AS CORPORATE TRUSTEE IS NOT CALCULATED BASED UPON AN HOURLY RATE FOR THE TIME SPENT BY THE TRUSTEE; RATHER, BANK OF AMERICA'S COMPENSATION AS CORPORATE TRUSTEE IS CALCULATED USING A MARKET VALUE FEE SCHEDULE. THE TRUST OFFICER'S TIME SPENT PERFORMING ADMINISTRATIVE RESPONSIBILITIES FOR THIS FOUNDATION AVERAGES ONE HOUR PER WEEK. IN ADDITION, TIME IS SPENT BY OTHER STAFF MEMBERS FOR RECORDKEEPING, INVESTMENT MANAGEMENT, INCOME COLLECTION, RENDERING STATEMENTS AND ACCOUNTINGS, REGULATORY REPORTING, REGULATORY COMPLIANCE, AND TAX SERVICES.</MediumExplanationTxt>
+      </GeneralExplanationGrp>
+    </GeneralExplanationAttachment>
+    <InvestmentsCorpStockSchedule documentId="InvestmentsCorpStockSchedule">
+      <InvestmentsCorporateStockGrp>
+        <StockNm>464287507 ISHARES CORE S&amp;P MID</StockNm>
+        <EOYBookValueAmt>9680</EOYBookValueAmt>
+        <EOYFMVAmt>15642</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>464287655 ISHARES RUSSELL 2000</StockNm>
+        <EOYBookValueAmt>7496</EOYBookValueAmt>
+        <EOYFMVAmt>13585</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>921943858 VANGUARD FTSE DEVELO</StockNm>
+        <EOYBookValueAmt>18216</EOYBookValueAmt>
+        <EOYFMVAmt>22382</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>693390841 PIMCO HIGH YIELD FD</StockNm>
+        <EOYBookValueAmt>3473</EOYBookValueAmt>
+        <EOYFMVAmt>3698</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>202671913 AGGREGATE BOND CTF</StockNm>
+        <EOYBookValueAmt>35404</EOYBookValueAmt>
+        <EOYFMVAmt>37793</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>207543877 SMALL CAP GROWTH LEA</StockNm>
+        <EOYBookValueAmt>7131</EOYBookValueAmt>
+        <EOYFMVAmt>8576</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>29099J109 EMERGING MARKETS STO</StockNm>
+        <EOYBookValueAmt>12632</EOYBookValueAmt>
+        <EOYFMVAmt>15054</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>302993993 MID CAP VALUE CTF</StockNm>
+        <EOYBookValueAmt>10619</EOYBookValueAmt>
+        <EOYFMVAmt>12279</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>303995997 SMALL CAP VALUE CTF</StockNm>
+        <EOYBookValueAmt>6801</EOYBookValueAmt>
+        <EOYFMVAmt>7767</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>323991307 MID CAP GROWTH CTF</StockNm>
+        <EOYBookValueAmt>10167</EOYBookValueAmt>
+        <EOYFMVAmt>12911</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>45399C107 DIVIDEND INCOME COMM</StockNm>
+        <EOYBookValueAmt>24975</EOYBookValueAmt>
+        <EOYFMVAmt>28356</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>99Z466197 INTERNATIONAL FOCUSE</StockNm>
+        <EOYBookValueAmt>17803</EOYBookValueAmt>
+        <EOYFMVAmt>22461</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>99Z501647 STRATEGIC GROWTH COM</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>464287226 ISHARES CORE US AGGR</StockNm>
+        <EOYBookValueAmt>18098</EOYBookValueAmt>
+        <EOYFMVAmt>18878</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>922042858 VANGUARD FTSE EMERGI</StockNm>
+        <EOYBookValueAmt>4161</EOYBookValueAmt>
+        <EOYFMVAmt>6003</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>922908363 VANGUARD S&amp;P 500 ETF</StockNm>
+        <EOYBookValueAmt>23812</EOYBookValueAmt>
+        <EOYFMVAmt>39637</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>00203H859 AQR MANAGED FUTURES</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>94987W737 WELLS FARGO ABSOLUTE</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>62827P816 CATALYST/MILLBURN HE</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>74253Q747 PRINCIPAL MIDCAP BLE</StockNm>
+        <EOYBookValueAmt>8470</EOYBookValueAmt>
+        <EOYFMVAmt>11260</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>46138B103 INVESCO DB COMMODITY</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>09257V201 BLACKSTONE ALTERNATI</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>09260B382 BLACKROCK STRATEGIC</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>00142R539 INVESCO BALANCED-RIS</StockNm>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>99Z639934 LARGE CAP CORE CTF</StockNm>
+        <EOYBookValueAmt>17302</EOYBookValueAmt>
+        <EOYFMVAmt>20624</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>99Z639942 MID CAP CORE CTF</StockNm>
+        <EOYBookValueAmt>15491</EOYBookValueAmt>
+        <EOYFMVAmt>16991</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>99Z639959 SMALL CAP CORE CTF</StockNm>
+        <EOYBookValueAmt>17458</EOYBookValueAmt>
+        <EOYFMVAmt>18197</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>78468R622 SPDR BLOOMBERG BARCL</StockNm>
+        <EOYBookValueAmt>3611</EOYBookValueAmt>
+        <EOYFMVAmt>3724</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>92203J407 VANGUARD TOTAL INTL</StockNm>
+        <EOYBookValueAmt>7189</EOYBookValueAmt>
+        <EOYFMVAmt>7412</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>52469H784 CLEARBRIDGE LARGE CA</StockNm>
+        <EOYBookValueAmt>12538</EOYBookValueAmt>
+        <EOYFMVAmt>13829</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>77954Q403 ROWE T PRICE BLUE CH</StockNm>
+        <EOYBookValueAmt>13279</EOYBookValueAmt>
+        <EOYFMVAmt>14311</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+      <InvestmentsCorporateStockGrp>
+        <StockNm>693390882 PIMCO FOREIGN BD US$</StockNm>
+        <EOYBookValueAmt>7207</EOYBookValueAmt>
+        <EOYFMVAmt>7166</EOYFMVAmt>
+      </InvestmentsCorporateStockGrp>
+    </InvestmentsCorpStockSchedule>
+    <OtherDecreasesSchedule documentId="OtherDecreasesSchedule">
+      <OtherDecreasesDetail>
+        <Desc>CTF COST ADJUSTMENT</Desc>
+        <Amt>893</Amt>
+      </OtherDecreasesDetail>
+      <OtherDecreasesDetail>
+        <Desc>TYE COST ADJUSTMENT</Desc>
+        <Amt>2044</Amt>
+      </OtherDecreasesDetail>
+      <OtherDecreasesDetail>
+        <Desc>TYE CARRYING VALUE ADJUSTMENT</Desc>
+        <Amt>8</Amt>
+      </OtherDecreasesDetail>
+      <OtherDecreasesDetail>
+        <Desc>TYE ROUNDING ADJUSTMENT</Desc>
+        <Amt>1</Amt>
+      </OtherDecreasesDetail>
+    </OtherDecreasesSchedule>
+    <OtherExpensesSchedule documentId="OtherExpensesSchedule">
+      <OtherExpensesScheduleGrp>
+        <Desc>OTHER ALLOCABLE EXPENSE-PRINCI</Desc>
+        <RevenueAndExpensesPerBooksAmt>44</RevenueAndExpensesPerBooksAmt>
+        <NetInvestmentIncomeAmt>44</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>0</DisbursementsCharitablePrpsAmt>
+      </OtherExpensesScheduleGrp>
+      <OtherExpensesScheduleGrp>
+        <Desc>OTHER ALLOCABLE EXPENSE-INCOME</Desc>
+        <RevenueAndExpensesPerBooksAmt>44</RevenueAndExpensesPerBooksAmt>
+        <NetInvestmentIncomeAmt>44</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>0</DisbursementsCharitablePrpsAmt>
+      </OtherExpensesScheduleGrp>
+      <OtherExpensesScheduleGrp>
+        <Desc>FROM PARTNERSHIP/S-CORP</Desc>
+        <NetInvestmentIncomeAmt>1</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>0</DisbursementsCharitablePrpsAmt>
+      </OtherExpensesScheduleGrp>
+    </OtherExpensesSchedule>
+    <OtherIncomeSchedule2 documentId="OtherIncomeSchedule2">
+      <OtherIncomeDetail>
+        <Desc>EXCISE TAX REFUND</Desc>
+        <RevenueAndExpensesPerBooksAmt>121</RevenueAndExpensesPerBooksAmt>
+        <NetInvestmentIncomeAmt>0</NetInvestmentIncomeAmt>
+      </OtherIncomeDetail>
+      <OtherIncomeDetail>
+        <Desc>FROM PARTNERSHIP/S-CORP</Desc>
+        <NetInvestmentIncomeAmt>931</NetInvestmentIncomeAmt>
+      </OtherIncomeDetail>
+    </OtherIncomeSchedule2>
+    <OtherIncreasesSchedule documentId="OtherIncreasesSchedule">
+      <OtherIncreasesDetail>
+        <Desc>TYE INCOME ADJUSTMENT</Desc>
+        <Amt>31</Amt>
+      </OtherIncreasesDetail>
+    </OtherIncreasesSchedule>
+    <TaxesSchedule documentId="TaxesSchedule">
+      <TaxesDetail>
+        <CategoryTxt>FOREIGN TAXES</CategoryTxt>
+        <Amt>119</Amt>
+        <NetInvestmentIncomeAmt>119</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>0</DisbursementsCharitablePrpsAmt>
+      </TaxesDetail>
+      <TaxesDetail>
+        <CategoryTxt>FOREIGN TAXES ON QUALIFIED FOR</CategoryTxt>
+        <Amt>50</Amt>
+        <NetInvestmentIncomeAmt>50</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>0</DisbursementsCharitablePrpsAmt>
+      </TaxesDetail>
+      <TaxesDetail>
+        <CategoryTxt>FOREIGN TAXES ON NONQUALIFIED</CategoryTxt>
+        <Amt>23</Amt>
+        <NetInvestmentIncomeAmt>23</NetInvestmentIncomeAmt>
+        <DisbursementsCharitablePrpsAmt>0</DisbursementsCharitablePrpsAmt>
+      </TaxesDetail>
+    </TaxesSchedule>
+  </ReturnData>
+</Return>

@@ -1,0 +1,12 @@
+{
+  "520591627": "BMF duplicate; real Johns Hopkins University is 520595110",
+  "934792247": "Copycat INC; real Fidelity Charitable Gift Fund is 110303001 (~$86B)",
+  "030405251": "Palm Beach namesake; real Robin Hood Foundation is 133441066 NYC",
+  "010471949": "Maine 990-EZ namesake; real Partners In Health is 043567502 Boston",
+  "320534221": "Small MS GIFT duplicate; real Morgan Stanley GIFT is 527082731",
+  "800744809": "Empty Fairburn namesake; Mary Parker Foundation 990-PF is 592708325",
+  "750871727": "Generic First Presbyterian Church (400+ BMF rows); not a unique org",
+  "371951649": "Princeton subordinate BMF row; university EIN is 210634501",
+  "026015929": "Scholarship America subordinate; national org is 042296967",
+  "941539563": "UC Santa Cruz BMF row using the system name; not that campus"
+}
