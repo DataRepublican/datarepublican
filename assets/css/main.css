@@ -319,7 +319,11 @@
     padding: 0 !important;
   }
 
-  .dr-sheet__scrim {
+  /* :not([hidden]) is load-bearing. `hidden` only sets display:none through the
+     UA stylesheet, so a bare `.dr-sheet__scrim { display: block }` here beats it
+     on specificity and leaves a transparent full-screen overlay swallowing
+     every tap on the page while the sheet is closed. */
+  .dr-sheet__scrim:not([hidden]) {
     display: block;
     position: fixed;
     inset: 0;

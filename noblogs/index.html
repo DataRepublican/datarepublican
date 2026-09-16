@@ -32,7 +32,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .tab{padding:6px 15px;border-radius:8px;cursor:pointer;color:var(--dim);font-size:13px;font-weight:600;user-select:none}
   .tab.on{background:var(--accent);color:#fff}
   .layout{display:flex;align-items:flex-start}
-  aside#facets{width:232px;flex:none;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;
+  aside#facets{width:232px;flex:none;position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
     border-right:1px solid var(--line);padding:14px 14px 40px;background:#FBFBF9}
   .fgroup{margin-bottom:16px}
   .fgroup h3{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
@@ -83,10 +83,10 @@ title: TrumpBlogs formerly known as NoBlogs
   .loadmore:hover{background:#F2F2EC}
 
   /* ---- detail drawer (dsa-explorer style: docked sidebar, not a modal) ---- */
-  #scrim{position:fixed;inset:56px 0 0 0;background:rgba(20,20,18,.20);z-index:850;
+  #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:850;
     opacity:0;pointer-events:none;transition:opacity .2s}
   #scrim.on{opacity:1;pointer-events:auto}
-  #panel{position:fixed;top:56px;right:0;bottom:0;width:392px;max-width:94vw;background:var(--panel);
+  #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;width:392px;max-width:94vw;background:var(--panel);
     border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:900;
     transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto}
   #panel.on{transform:translateX(0)}
@@ -153,6 +153,52 @@ title: TrumpBlogs formerly known as NoBlogs
   a.live:hover{text-decoration:underline}
   .pempty{color:#9a9ea6;font-size:13px;line-height:1.55;padding:24px 18px}
   @media(max-width:820px){#panel{width:340px}}
+
+  /* The filter bar only exists on a phone. */
+  #nb-filterbar{display:none;gap:8px;align-items:center;padding:10px 14px 0}
+  #nb-filterbar button{min-height:2.75rem;min-width:0;margin:0;border-radius:9999px;
+    border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:700;font-size:13px;padding:0 14px}
+  #nb-filterbar .nb-count{background:var(--accent);color:#fff;border-radius:9999px;
+    padding:1px 7px;font-size:11px;margin-left:6px}
+
+  /* ---- Phone -------------------------------------------------------------
+     The only mobile rule here used to be `#panel{width:340px}`. Everything
+     else — a 232px facet rail, a sticky header assumed to be 56px tall, a
+     drawer pinned to that number — was desktop geometry that a phone inherited
+     whole.
+
+     Three changes: the facet rail becomes a filter sheet behind one button,
+     the detail drawer becomes a bottom sheet, and the tab strip gets real tap
+     targets. --nb-header-h is measured at runtime, because this header wraps. */
+  @media(max-width:767px){
+    header{padding:9px 14px;gap:10px}
+    h1{font-size:15px}
+    h1 .gold{display:none}
+    .sub{font-size:11px}
+    /* The disclaimer is four lines of small print above the fold on a phone.
+       Clipped to two with the full text still in the DOM for anyone reading it
+       with a screen reader or expanding it. */
+    .disclaimer{font-size:10px;max-height:2.9em;overflow:hidden;margin-top:5px}
+    .disclaimer.open{max-height:none}
+    #search{width:100%;max-width:none;order:10;font-size:16px;min-height:2.75rem}
+
+    .tabs{order:5;gap:2px}
+    .tabs .tab{min-height:2.75rem;display:flex;align-items:center;padding:0 14px}
+
+    /* Facets move into a sheet; the rail itself is hidden until opened. */
+    .layout{display:block}
+    aside#facets{display:none}
+    aside#facets.nb-open{display:block;width:auto;position:static;height:auto;max-height:none;overflow:visible}
+    main{padding:12px 14px calc(var(--nav-clearance) + 12px)}
+
+    #nb-filterbar{display:flex}
+
+    /* The detail drawer is positioned by .dr-sheet from the site stylesheet. */
+    #panel{position:static;width:auto;max-width:none;top:auto;right:auto;bottom:auto;
+      box-shadow:none;border-left:0;transform:none;height:auto}
+    #scrim{display:none}
+  }
+
 </style>
 <!-- institutional-citation quotes (byHost/byInst) — same redacted, link-gated layer the
      graph uses; loaded here so the shared drawer can show a blog's citing quotes too (#1) -->
@@ -162,12 +208,18 @@ title: TrumpBlogs formerly known as NoBlogs
   <input id="search" placeholder="search name, summary, city, tags, quote text…" autocomplete="off">
   <div class="grow"></div>
   <div class="tabs" id="tabs">
-    <div class="tab" data-v="dash">Dashboard</div>
-    <div class="tab on" data-v="map">Map</div>
+    <div class="tab on" data-v="dash">Dashboard</div>
+    <div class="tab" data-v="map">Map</div>
     <div class="tab" data-v="graph">Graph</div>
   </div>
   <p class="disclaimer"><strong>Disclaimer:</strong> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</p>
 </header>
+
+<div id="nb-filterbar">
+  <button type="button" id="nb-filters" aria-expanded="false" aria-controls="facets">
+    Filters<span class="nb-count" id="nb-filtercount" hidden>0</span>
+  </button>
+</div>
 
 <div class="layout" id="dashview" style="display:none">
   <aside id="facets"></aside>
@@ -178,9 +230,9 @@ title: TrumpBlogs formerly known as NoBlogs
   </main>
 </div>
 
-<div id="mapview" style="display:none"><iframe id="mapframe" title="World hyperlocal map" style="width:100%;height:calc(100vh - 56px);border:0;display:block"></iframe></div>
+<div id="mapview" style="display:none"><iframe id="mapframe" title="World hyperlocal map" style="width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance));border:0;display:block"></iframe></div>
 
-<div id="graphview" style="display:none"><iframe id="graphframe" title="Epistemic-anchor graph" style="width:100%;height:calc(100vh - 56px);border:0;display:block"></iframe></div>
+<div id="graphview" style="display:none"><iframe id="graphframe" title="Epistemic-anchor graph" style="width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance));border:0;display:block"></iframe></div>
 
 <!-- detail drawer + scrim (shared by cards, map pins, and reference chips) -->
 <div id="scrim" onclick="closeModal()"></div>
@@ -200,7 +252,7 @@ const COUNTRYNAME={DE:"Germany",IT:"Italy",FR:"France",ES:"Spain",US:"United Sta
   AT:"Austria",CH:"Switzerland",GR:"Greece",GB:"UK",NL:"Netherlands",BE:"Belgium",CL:"Chile",
   MX:"Mexico",CA:"Canada",PL:"Poland",RU:"Russia",AR:"Argentina",SE:"Sweden",FI:"Finland"};
 const THUMB=h=>`thumbs/${h}.webp`;
-let DATA=[], BYHOST={}, view="map", PAGE=0, PER=120, SEL=null;
+let DATA=[], BYHOST={}, view="dash", PAGE=0, PER=120, SEL=null;
 const F={q:"",co:new Set(),cat:new Set(),mil:new Set(),sc:new Set(),flags:new Set()};
 const AUTH_UID={};                          // uid -> [hosts]  (authors on >1 blog)
 let IDX=new Map(), IDX_KEYS=[], SEARCHSET=null;   // ned-style reverse keyword index
@@ -344,6 +396,7 @@ function clearAll(){F.q="";setSearch("");document.getElementById('search').value
 function render(){
   const fl=filtered();
   renderKPIs(fl);
+  if(window.nbUpdateFilterCount) window.nbUpdateFilterCount();
   const grid=document.getElementById('grid');
   const slice=fl.slice(0,(PAGE+1)*PER);
   if(!slice.length){grid.innerHTML=`<div class="empty">No blogs match these filters.</div>`;}
@@ -672,10 +725,71 @@ function readURL(){const p=new URLSearchParams(location.search);
   (p.get('mil')||"").split(',').filter(Boolean).forEach(x=>F.mil.add(x));
   (p.get('sc')||"").split(',').filter(Boolean).forEach(x=>F.sc.add(x));
   (p.get('f')||"").split(',').filter(Boolean).forEach(x=>F.flags.add(x));
-  // default landing view is the Map at cross-continental zoom (#3); dashboard/graph
-  // states carry an explicit ?view= so deep-links and the back button still work.
-  const v=p.get('view')||'map'; document.querySelector(`.tab[data-v="${v}"]`)?.click();
+  // Landing view is the Dashboard. It used to be the Map, which meant every
+  // visitor downloaded world_hyperlocal_map.html — 3.87 MB, because its DATA
+  // and EDGES are inlined into the document — before seeing anything. The map
+  // is one tap away and still loads lazily on first activation.
+  const v=p.get('view')||'dash'; document.querySelector(`.tab[data-v="${v}"]`)?.click();
   const host=p.get('host'); if(host)setTimeout(()=>{openModal(host);
     if(p.get('opennews'))document.querySelector('#pinner details.news')?.setAttribute('open','');},0);}
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---- mobile shell -------------------------------------------------------
+   The header is `flex-wrap` with a long disclaimer, so it is 56px tall only on
+   a wide screen. The facet rail, the scrim, the drawer and both iframes were
+   all pinned to that literal 56. Measure it instead. */
+(function(){
+  const header=document.querySelector('header');
+  if(!header) return;
+  const setH=()=>document.documentElement.style.setProperty('--nb-header-h',header.offsetHeight+'px');
+  setH();
+  if(window.ResizeObserver) new ResizeObserver(setH).observe(header);
+  else window.addEventListener('resize',setH);
+
+  // Tapping the clipped disclaimer expands it rather than leaving it truncated.
+  const disc=document.querySelector('.disclaimer');
+  if(disc){
+    disc.addEventListener('click',()=>{disc.classList.toggle('open');setH();});
+    disc.style.cursor='pointer';
+  }
+
+  /* The detail drawer becomes a bottom sheet on a phone. Without this, tapping
+     a card or a map pin updated a panel sitting off the right edge of a 390px
+     screen — the same no-visible-response failure as the graph tools. */
+  const panel=document.getElementById('panel');
+  const sheet=(window.DRSheet&&panel)?window.DRSheet.attach(panel,{
+    label:'Blog details', detent:'half',
+    onClose:()=>{ if(typeof closeModal==='function') closeModal(); }
+  }):null;
+
+  if(sheet){
+    // openModal/closeModal toggle .on; mirror that onto the sheet.
+    const obs=new MutationObserver(()=>{
+      if(!window.DRSheet.isMobile()) return;
+      const on=panel.classList.contains('on');
+      if(on&&!sheet.isOpen()) sheet.open();
+      else if(!on&&sheet.isOpen()) sheet.close();
+    });
+    obs.observe(panel,{attributes:true,attributeFilter:['class']});
+  }
+
+  /* Facets behind one button. On a phone the rail put four scrolling filter
+     sections between the user and the first result. */
+  const bar=document.getElementById('nb-filters');
+  const facets=document.getElementById('facets');
+  const count=document.getElementById('nb-filtercount');
+  if(bar&&facets){
+    bar.addEventListener('click',()=>{
+      const open=facets.classList.toggle('nb-open');
+      bar.setAttribute('aria-expanded',String(open));
+      if(open) facets.scrollIntoView({behavior:'smooth',block:'nearest'});
+    });
+  }
+  // Keep the badge honest about how many filters are active.
+  window.nbUpdateFilterCount=function(){
+    if(!count) return;
+    const n=(F.co.size||0)+(F.cat.size||0)+(F.mil.size||0)+(F.sc.size||0)+(F.flags.size||0);
+    count.hidden=n===0; count.textContent=String(n);
+  };
+})();
 </script>
