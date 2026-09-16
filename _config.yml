@@ -31,8 +31,24 @@ exclude:
   - node_modules
   - package.json
   - package-lock.json
+  - yarn.lock
   - postcss.config.js
   - tailwind.config.js
+  - .github
+  - scripts
+  # The committed build output. Jekyll excludes its own destination
+  # automatically, so this was a no-op while `destination` was `docs` — it
+  # matters as soon as anything builds to `_site`, or `docs/` gets copied into
+  # the new build and doubles its size.
+  - docs
+  # Built locally but never published: `.gitignore` keeps docs/charity,
+  # docs/pa and docs/990tools out of the commit, so GitHub Pages has never
+  # served them. Excluding them here makes the build match what is live.
+  - charity
+  - pa
+  - 990tools
+  - python
+  - README.md
 
 plugins:
   - jekyll-seo-tag

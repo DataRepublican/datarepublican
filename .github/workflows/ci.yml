@@ -1,0 +1,96 @@
+name: CI
+
+# Builds the site and checks it. No deploy — GitHub Pages still serves the
+# committed `docs/` from master. The deploy job arrives in Phase 1, once the
+# build stops being a committed artifact.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1.4'
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Tailwind is built by PostCSS and Jekyll does not invoke it, so the
+      # stylesheet has to be generated before the site build. `npm run build`
+      # does both in order.
+      - name: Build site
+        run: npm run build
+
+      - name: Report build size
+        run: |
+          du -sh _site
+          echo "GitHub Pages publishes at most 1 GB."
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: _site
+          retention-days: 5
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: _site
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Serve the build
+        run: |
+          npx --yes serve -l 4000 _site &
+          npx --yes wait-on http://localhost:4000 --timeout 60000
+
+      # The route contract. Every URL the live site serves today must still
+      # resolve. A deliberate removal means updating tests/routes.txt in the
+      # same commit, so it shows up in review.
+      - name: Check routes
+        run: scripts/check-routes.sh http://localhost:4000 _site
+
+      - name: Playwright
+        run: npx playwright test
+        env:
+          HOST: http://localhost:4000
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 5
