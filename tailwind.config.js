@@ -140,6 +140,8 @@ module.exports = {
       colors: {
         transparent: 'transparent',
         current: 'currentColor',
+
+        // Brand. Used throughout the tool interiors — do not repurpose.
         navy: '#252739',
         blue: '#349CE2',
         'blue-500': '#349CE2',
@@ -148,7 +150,53 @@ module.exports = {
         red: '#EF3E28',
         'green-light': '#34E297',
         green: '#19B270',
+
+        // v2 chrome, measured from the Figma frames. The mocks define no
+        // Figma variables — the fills are raw — so these values are the
+        // source of truth and live here rather than being reverse-engineered
+        // from the file each time.
+        surface: '#E5E7EB',   // page ground
+        card: '#FFFFFF',      // card fill
+        rule: '#B0B0B0',      // hairlines and card borders
+        ink: '#111111',       // body text
+        'ink-strong': '#000000', // wordmark, card titles
+        'ink-muted': '#5A5A5A',  // taglines, meta
+        label: '#0A3552',     // section headers. Deep navy, NOT brand blue.
+        band: '#E9B408',      // the promo/alert band
       },
+
+      // A named ramp, so the 15px body / 13px meta sizes stop being repeated
+      // as arbitrary values. Line heights are paired in.
+      fontSize: {
+        display: ['3.4375rem', { lineHeight: '1', letterSpacing: '-0.05em' }], // 55px wordmark
+        title: ['1.5rem', { lineHeight: '1.15', letterSpacing: '-0.02em' }],
+        'card-title': ['1.375rem', { lineHeight: '1.2', letterSpacing: '-0.02em' }],
+        lede: ['1.0625rem', { lineHeight: '1.45', letterSpacing: '-0.01em' }],
+        body: ['1rem', { lineHeight: '1.5', letterSpacing: '-0.01em' }],
+        meta: ['0.8125rem', { lineHeight: '1.4' }],
+      },
+
+      letterSpacing: {
+        display: '-0.05em',
+        title: '-0.02em',
+        body: '-0.01em',
+      },
+
+      spacing: {
+        gutter: '1.25rem', // 20px — the mock's page gutter
+        tap: '2.75rem',    // 44px — the minimum tappable dimension
+      },
+
+      borderRadius: {
+        card: '0.5rem',
+        pill: '9999px',
+      },
+
+      maxWidth: {
+        column: '64rem',  // reading column
+        wide: '90rem',    // tool pages
+      },
+
       outlineColor: theme => ({
         ...theme('colors')
       })

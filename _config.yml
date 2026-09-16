@@ -28,6 +28,14 @@ include:
 favicon: /assets/images/favicon.png
 
 exclude:
+  # `bundle install --path vendor/bundle`, which is what ruby/setup-ruby's
+  # bundler-cache does, puts the gems inside the source tree. Jekyll then scans
+  # them and chokes on its own gem's site template, whose front matter has a
+  # literal ERB tag where the date goes:
+  #   Invalid date '<%= Time.now.strftime(...) %>' ... does not have a valid
+  #   date in the YAML front matter
+  # .gitignore already has `vendor`, but Jekyll does not read .gitignore.
+  - vendor
   - node_modules
   - package.json
   - package-lock.json

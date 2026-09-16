@@ -2386,6 +2386,9 @@ body > div#main-content {
 .fill-current {
   fill: currentColor;
 }
+.fill-rule {
+  fill: #B0B0B0;
+}
 .fill-white {
   fill: #fff;
 }
