@@ -1,0 +1,82 @@
+---
+layout: default
+title: About
+description: Why DataRepublican exists, and who builds it.
+permalink: /about/
+---
+
+{% include section-header.html title="About" %}
+
+<div class="mt-5 max-w-[46rem] text-lede leading-relaxed">
+  <p>
+    Billions of dollars are spent on government grants, charities, and other
+    organizations every year. Have you ever wondered where the money is awarded
+    or where it ends up?
+  </p>
+  <p>
+    We're connecting the dots between government grants, charities, and drawing
+    connections to expose where the money flows.
+  </p>
+  <p>
+    We've found some interesting connections, and we've made the data available
+    for you to explore.
+  </p>
+  <p>
+    See what you can find, and if you find something interesting, please
+    <a href="https://x.com/datarepublican" target="_blank" rel="noopener">let me know on X</a>!
+  </p>
+</div>
+
+<div class="mt-8 flex flex-wrap items-center gap-5">
+  <img
+    src="{{ '/assets/images/avatar.jpg' | relative_url }}"
+    alt="Jennica Pounds"
+    width="160" height="160"
+    class="size-[7.5rem] shrink-0 rounded-full object-cover"
+    loading="lazy" decoding="async"
+    onerror="this.style.display='none'">
+  <div>
+    <p class="m-0 text-card-title font-bold tracking-title text-ink-strong">&ndash; Jennica Pounds</p>
+    <a href="https://x.com/datarepublican" target="_blank" rel="noopener"
+       class="mt-2 inline-flex min-h-tap items-center gap-2 rounded-pill bg-black/[0.07] px-4 text-body font-bold !text-ink-strong !no-underline">
+      <svg viewBox="0 0 24 24" class="size-4 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      DataRepublican
+      <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+    </a>
+  </div>
+</div>
+
+{%- comment -%}
+  The laurel/quote treatment from the About mock. The laurels are decorative
+  and marked aria-hidden; the quote itself is a blockquote so it is announced
+  as one.
+{%- endcomment -%}
+{%- capture laurel -%}
+<svg viewBox="0 0 62 104" class="h-16 w-10 shrink-0 fill-black/20" aria-hidden="true">
+  <path d="M48 101C33 86 24 66 24 44c0-13 3-25 9-36-2 12-3 23-3 34 0 22 6 42 18 59z"/>
+  <ellipse cx="22" cy="80" rx="11" ry="5" transform="rotate(-34 22 80)"/>
+  <ellipse cx="19" cy="66" rx="11" ry="5" transform="rotate(-27 19 66)"/>
+  <ellipse cx="18" cy="52" rx="11" ry="5" transform="rotate(-18 18 52)"/>
+  <ellipse cx="20" cy="38" rx="10" ry="4.6" transform="rotate(-8 20 38)"/>
+  <ellipse cx="24" cy="25" rx="9" ry="4.3" transform="rotate(4 24 25)"/>
+  <ellipse cx="31" cy="14" rx="8" ry="4" transform="rotate(18 31 14)"/>
+  <ellipse cx="36" cy="86" rx="9" ry="4.3" transform="rotate(28 36 86)"/>
+  <ellipse cx="31" cy="72" rx="9" ry="4.3" transform="rotate(22 31 72)"/>
+  <ellipse cx="29" cy="58" rx="9" ry="4.3" transform="rotate(14 29 58)"/>
+  <ellipse cx="30" cy="44" rx="8" ry="4" transform="rotate(6 30 44)"/>
+</svg>
+{%- endcapture -%}
+
+<figure class="mx-auto mt-10 max-w-[34rem] rounded-card bg-black/[0.03] px-6 py-7 text-center">
+  <div class="flex items-center justify-center gap-4">
+    {{ laurel }}
+    <blockquote class="m-0 text-title font-bold tracking-title text-ink-strong">
+      &ldquo;Worth following&rdquo;
+    </blockquote>
+    <span class="-scale-x-100">{{ laurel }}</span>
+  </div>
+  <figcaption class="mt-3 text-meta font-semibold text-ink-muted">
+    <a href="https://x.com/elonmusk/status/1884490061195989176" target="_blank" rel="noopener"
+       class="!font-semibold !text-ink-muted !no-underline hover:!underline">Elon Musk</a>
+  </figcaption>
+</figure>

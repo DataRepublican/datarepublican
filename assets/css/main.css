@@ -2,13 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* How much room the floating nav pill needs at the bottom of a phone
+     viewport. Tool pages size canvases against this so nothing ends up
+     underneath the nav. Cleared at md, where the pill becomes static. */
+  --nav-clearance: 5.5rem;
+}
+
+@media (min-width: 768px) {
+  :root { --nav-clearance: 0rem; }
+}
+
 @layer components {
   body {
-    @apply bg-gray-100 text-neutral-600 font-['Open_Sans',_Helvetica,_sans-serif] font-light m-4 mt-2 py-0.5 mb-4 min-h-screen;
-    font-family: "Libre Franklin", serif;
+    @apply bg-surface text-ink m-0 p-0 min-h-screen;
+    font-family: "Libre Franklin", ui-sans-serif, system-ui, sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+    padding-bottom: var(--nav-clearance);
+  }
+
+  /* The page gutter and reading measure from the mocks: 20px either side,
+     content capped so long-form text stays readable. Tool pages opt out with
+     `wide: true` in front matter. */
+  .page-column {
+    @apply mx-auto w-full px-gutter;
+    max-width: var(--column-max, theme('maxWidth.column'));
+  }
+
+  .page-column--wide {
+    --column-max: theme('maxWidth.wide');
+  }
+
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-[200] rounded-card bg-ink-strong px-4 py-2 font-bold !text-white !no-underline;
   }
 
   strong {
@@ -131,27 +163,10 @@
     }
   }
 
-  /* Menu collapse/expand styles */
-  header#site-header {
-    @apply md:fixed flex flex-col bg-navy md:overflow-auto md:mx-auto p-2 md:p-0 text-white left-4 top-4 transition-all duration-300 md:rounded-lg md:w-[300px] max-h-[calc(100vh-2rem)] bottom-4;
-  }
-  
-  header#site-header.collapsed {
-    @apply md:w-8 max-h-36 md:rounded !bottom-auto;
-  }
-  
-  /* Main content margin adjustment */
-  body > div#main-content {
-    @apply transition-all duration-300;
-  }
-  
-  body > div#main-content.menu-collapsed {
-    @apply md:ml-10;
-  }
-
-  body > div#main-content.menu-expanded {
-    @apply md:ml-[316px] xl:ml-[326px];
-  }
+  /* The collapsible left rail (header#site-header, #main-content.menu-*) was
+     removed with the v2 chrome. Its styles went with it — the eleven-item nav
+     is now the three-item pill in _includes/nav.html, and the tools it used to
+     list are cards on the home page. */
 }
 
 .tooltip {

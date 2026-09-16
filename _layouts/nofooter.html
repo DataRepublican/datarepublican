@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{%- comment -%}
+  browse/index.html has declared `layout: nofooter` since it was written, and
+  this layout has never existed. Jekyll warned on every build and rendered the
+  page with no layout at all, which is why https://datarepublican.com/browse/
+  ships with no <head>, no <title>, no nav and no SEO tags.
+
+  Same as `default` minus the footer: the Sankey sizes itself against the
+  viewport and a footer underneath it produced a second scroll region.
+{%- endcomment -%}
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   {% include head-custom.html %}
   {% seo %}
 </head>
-
-{%- comment -%}
-  One DOM order for both layouts: banner, masthead, nav, content, footer.
-
-  The nav is fixed to the bottom of the viewport on a phone and static at md,
-  where it lands directly under the wordmark. Because the order is the same
-  either way, there is no duplicate markup and no route-gated rendering — the
-  only difference is `position`.
-
-  `page.wide: true` in front matter widens the content column for tool pages.
-{%- endcomment -%}
 
 <body>
   <a class="skip-link" href="#content">Skip to content</a>
@@ -34,8 +33,6 @@
       {{ content }}
     </main>
   </div>
-
-  {% include footer.html %}
 </body>
 
 </html>

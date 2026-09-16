@@ -110,9 +110,15 @@
     </a>
   </div>
 
-  <a
-    href="/policies"
-    class="text-navy text-xs opacity-60 hover:opacity-80 font-normal"
-    >Website policies</a
-  >
+  {%- comment -%}
+    These four were reachable only from the collapsible left rail, which the v2
+    chrome removed. The three-item pill nav is deliberately Tools/About/Donate
+    and does not grow to hold them, so they live here or nowhere.
+  {%- endcomment -%}
+  <nav aria-label="Secondary" class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-gutter text-center">
+    <a href="{{ '/policies' | relative_url }}" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">Website policies</a>
+    <a href="{{ '/christianity' | relative_url }}" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">The historical case for Christianity</a>
+    <a href="https://x.com/datarepublican" target="_blank" rel="noopener" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">@datarepublican</a>
+    <a href="https://x.com/twinforces" target="_blank" rel="noopener" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">@twinforces</a>
+  </nav>
 </footer>

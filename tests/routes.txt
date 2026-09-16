@@ -1,4 +1,5 @@
 /
+/about/
 /award_search/
 /browse/
 /browse/circleTest.html

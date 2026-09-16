@@ -43,12 +43,12 @@
           {%- if a.modal == 'trailer' -%}
         <button type="button"
                 data-trailer-open
-                class="inline-flex min-h-tap items-center gap-2 rounded-pill !bg-white px-4 !text-ink-strong !min-w-0 !mr-0 text-body font-bold no-underline shadow-sm">
+                class="inline-flex min-h-tap shrink-0 items-center gap-2 whitespace-nowrap rounded-pill !bg-white px-3.5 !text-ink-strong !min-w-0 !mr-0 text-meta font-bold no-underline shadow-sm sm:px-4 sm:text-body">
           {{ a.label }}
         </button>
           {%- else -%}
         <a href="{{ a.href }}" target="_blank" rel="noopener"
-           class="inline-flex min-h-tap items-center gap-2 rounded-pill bg-white px-4 text-body font-bold !text-ink-strong !no-underline shadow-sm">
+           class="inline-flex min-h-tap shrink-0 items-center gap-2 whitespace-nowrap rounded-pill bg-white px-3.5 text-meta font-bold !text-ink-strong !no-underline shadow-sm sm:px-4 sm:text-body">
             {%- if a.icon == 'amazon' -%}
           <svg viewBox="0 0 24 24" class="size-4 shrink-0 fill-current" aria-hidden="true"><path d="M14.7 16.9c-1.4 1-3.4 1.6-5.1 1.6-2.4 0-4.6-.9-6.3-2.4-.1-.1 0-.3.1-.2 1.8 1 4 1.7 6.3 1.7 1.6 0 3.3-.3 4.9-1 .3-.1.5.2.1.3zm.6-.7c-.2-.2-1.2-.1-1.7-.1-.1 0-.2-.1-.1-.2.8-.6 2.2-.4 2.4-.2.2.2-.1 1.6-.8 2.3-.1.1-.2 0-.2-.1.2-.5.6-1.5.4-1.7z"/><path d="M11.3 14.7c-.6.5-1.3.8-2.2.8-1.2 0-2-.9-2-2.2 0-1.7 1.5-2.6 3.5-2.6h.6v-.4c0-.9-.1-1.6-1.2-1.6-.9 0-1.4.5-1.5 1.1 0 .1-.1.2-.2.2l-1.4-.2c-.1 0-.2-.1-.2-.3.3-1.7 1.8-2.3 3.2-2.3.9 0 2 .2 2.6.8.8.8.7 1.8.7 2.9v2.6c0 .8.3 1.1.6 1.5.1.1.1.3 0 .3-.4.3-1 .8-1.3 1.1-.1.1-.3.1-.4 0-.3-.3-.4-.5-.8-.9v-.8zm-.1-2.7v-.4c-1.4 0-2.8.3-2.8 1.9 0 .8.4 1.4 1.2 1.4.5 0 1-.3 1.3-.9.3-.6.3-1.2.3-2z"/></svg>
             {%- endif -%}
