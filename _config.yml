@@ -84,6 +84,13 @@ exclude:
   - 990tools
   - python
   - README.md
+  # The dsa-explorer logo blobs: pipeline artifacts kept in the repo, but the
+  # page loads logos/index.js and logos/img/ instead. Publishing them would ship
+  # 23.4 MB nothing fetches.
+  - dsa-explorer/logos/logos.embed.js
+  - dsa-explorer/logos/avatars.embed.js
+  - dsa-explorer/logos/emblems.embed.js
+  - dsa-explorer/logos/afgj_logos.embed.js
 
 plugins:
   - jekyll-seo-tag

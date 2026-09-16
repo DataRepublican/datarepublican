@@ -5,15 +5,18 @@ title: DSA Explorer
 
 <script src="cytoscape.min.js"></script>
 <script src="papaparse.min.js"></script>
-<script src="logos/logos.embed.js"></script>
-<script src="logos/avatars.embed.js"></script>
-<script src="logos/emblems.embed.js"></script>
-<script src="logos/afgj_logos.embed.js"></script>
-<script>
-var _hatueyLogo = window.LOGOS&&window.LOGOS.hatuey;
-window.LOGOS = Object.assign({}, window.LOGOS||{}, window.AVATARS||{}, window.EMBLEMS||{}, window.AFGJ_LOGOS||{});
-if(_hatueyLogo) window.LOGOS.hatuey = _hatueyLogo; /* canonical Hatuey keeps its real branded logo, not the generic emblem */
-</script>
+{%- comment -%}
+  These four files — logos, avatars, emblems and afgj_logos — were 23.4 MB of
+  base64 PNG loaded as blocking scripts before anything rendered, then merged
+  here at runtime. logos/index.js is the same two globals already merged, 73 KB,
+  with `uri` pointing at logos/img/ instead of carrying the bytes. The images
+  load lazily as the graph draws them.
+
+  Regenerate with `node scripts/extract-dsa-logos.mjs` after the pipeline drops
+  new .embed.js files in. Those stay in the repo as the pipeline's artifacts and
+  are excluded from the build in _config.yml.
+{%- endcomment -%}
+<script src="logos/index.js"></script>
 
 <style>
   :root{

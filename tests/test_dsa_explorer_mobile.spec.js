@@ -112,3 +112,35 @@ test.describe('dsa-explorer on a desktop', () => {
     await expect(page.locator('.dr-sheet__close')).toBeHidden();
   });
 });
+
+// The logos were four .embed.js blobs totalling 23.4 MB of base64 PNG, loaded
+// as blocking scripts before anything rendered. They are image files now, and
+// logos/index.js is the 73 KB manifest. On Fast 3G this took the graph from
+// 120.6s to 7.9s.
+test.describe('dsa-explorer logo payload', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('no base64 logo blobs are loaded', async ({ page }) => {
+    const blobs = [];
+    page.on('request', (r) => { if (/\.embed\.js(\?|$)/.test(r.url())) blobs.push(r.url()); });
+
+    await page.goto(HOST + '/dsa-explorer/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#cy canvas', { timeout: 60000 });
+    await page.waitForTimeout(4000);
+
+    expect(blobs, `embed.js still loaded: ${blobs.join(', ')}`).toEqual([]);
+
+    // Logos resolve to paths, not data URIs, and the graph still draws them.
+    const info = await page.evaluate(() => {
+      const withLogo = cy.nodes().filter((n) => n.data('hasLogo') === 1);
+      return {
+        count: withLogo.length,
+        allPaths: withLogo.map((n) => n.data('logoUri')).every((u) => u.startsWith('logos/img/')),
+        globalKB: Math.round(JSON.stringify(window.LOGOS).length / 1024),
+      };
+    });
+    expect(info.count).toBeGreaterThan(400);
+    expect(info.allPaths, 'every logoUri should be a path').toBe(true);
+    expect(info.globalKB, 'window.LOGOS should be a manifest, not the images').toBeLessThan(200);
+  });
+});
