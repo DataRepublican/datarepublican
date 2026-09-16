@@ -154,6 +154,40 @@ title: TrumpBlogs formerly known as NoBlogs
   .pempty{color:#9a9ea6;font-size:13px;line-height:1.55;padding:24px 18px}
   @media(max-width:820px){#panel{width:340px}}
 
+  /* ---- Map tab ------------------------------------------------------------
+     These rules came from world_hyperlocal_map.html, which could use bare
+     `.info` and `.legend` because it owned its document. Here they are scoped
+     under #mapwrap — the reason the iframe existed in the first place was to
+     keep three stylesheets that each assumed that from colliding. */
+  #mapwrap{position:relative;width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
+  #mapcanvas{position:absolute;inset:0}
+  #mapwrap .info{position:absolute;top:10px;right:10px;z-index:1000;background:#fff;padding:10px 12px;
+    border-radius:6px;box-shadow:0 1px 5px rgba(0,0,0,.4);font:13px/1.4 system-ui;max-width:230px;
+    max-height:calc(100% - 20px);overflow-y:auto}
+  #mapwrap .info h4{margin:0 0 6px;font-size:14px}
+  #mapwrap .legend div{display:flex;align-items:center;margin:2px 0}
+  #mapwrap .legend .lgrow{cursor:pointer;border-radius:4px;padding:1px 3px;user-select:none}
+  #mapwrap .legend .lgrow:hover{background:#f0f0ea}
+  #mapwrap .legend .lgrow.off{opacity:.32}
+  #mapwrap .legend .lghint{color:#999;font-size:10.5px;margin-top:5px;cursor:default}
+  #mapwrap .legend .lghint:hover{background:none}
+  #mapwrap .legend span{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;border:1px solid #333}
+  #mapwrap .logopin i{display:block;width:40px;height:40px;border-radius:50%;background:#fff center/cover no-repeat;
+    box-shadow:0 0 0 1px #fff}
+  .nb-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--dim);font-size:13px;background:var(--bg);z-index:1100}
+  .nb-loading[hidden]{display:none}
+
+  /* On a phone the 230px info panel covered most of a 390px map. It collapses
+     to its heading, and tapping expands it. */
+  @media(max-width:767px){
+    #mapwrap .info{max-width:none;left:8px;right:8px;top:8px;padding:8px 10px}
+    #mapwrap .info:not(.open) > *:not(h4){display:none}
+    #mapwrap .info h4{margin:0;font-size:13px;cursor:pointer}
+    #mapwrap .info h4::after{content:" ▾";color:#999}
+    #mapwrap .info.open h4::after{content:" ▴"}
+  }
+
   /* The filter bar only exists on a phone. */
   #nb-filterbar{display:none;gap:8px;align-items:center;padding:10px 14px 0}
   #nb-filterbar button{min-height:2.75rem;min-width:0;margin:0;border-radius:9999px;
@@ -230,7 +264,27 @@ title: TrumpBlogs formerly known as NoBlogs
   </main>
 </div>
 
-<div id="mapview" style="display:none"><iframe id="mapframe" title="World hyperlocal map" style="width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance));border:0;display:block"></iframe></div>
+{%- comment -%}
+  The Map tab. This was an iframe pointing at world_hyperlocal_map.html; both
+  now share noblogs/map.js, and the explorer drives it with direct calls
+  instead of postMessage. The markup below is the .info panel that used to live
+  inside that document, moved out so it is part of this page's DOM.
+{%- endcomment -%}
+<div id="mapview" style="display:none">
+  <div id="mapwrap">
+    <div id="mapcanvas"></div>
+    <div class="info" id="mapinfo">
+      <h4>World Hyperlocal TrumpBlogs<br><small style="font-weight:400;opacity:.7">formerly known as NoBlogs</small></h4>
+      <div><span id="shownCount">4620</span> of 4620 blogs &middot; 1105 cities</div>
+      <div style="color:#888;font-size:11px">4620 image pins (708 hidden-card) &middot; 383 omitted (no/unresolved city)</div>
+      <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;cursor:pointer">
+        <input type="checkbox" id="edgeToggle" checked> co-citation edges (2413)</label>
+      <div style="color:#888;font-size:11px">cities linked by shared movement sources</div>
+      <div class="legend" style="margin-top:8px"><div class='lgrow' data-cat='antifascist'><span style='background:#2C3E50'></span>antifascist</div><div class='lgrow' data-cat='radical_counterinfo_media'><span style='background:#8E44AD'></span>radical counterinfo media</div><div class='lgrow' data-cat='anarchist'><span style='background:#C0392B'></span>anarchist</div><div class='lgrow' data-cat='prisoner_solidarity'><span style='background:#E74C3C'></span>prisoner solidarity</div><div class='lgrow' data-cat='location_based_group'><span style='background:#2980B9'></span>location based group</div><div class='lgrow' data-cat='protest_mobilization'><span style='background:#E67E22'></span>protest mobilization</div><div class='lgrow' data-cat='revolutionary_militant'><span style='background:#7B241C'></span>revolutionary militant</div><div class='lgrow' data-cat='migrant_border_solidarity'><span style='background:#16A085'></span>migrant border solidarity</div><div class='lgrow' data-cat='housing_squat'><span style='background:#D4AC0D'></span>housing squat</div><div class='lgrow' data-cat='labor_militant'><span style='background:#CA6F1E'></span>labor militant</div><div class='lgrow' data-cat='ecological_militant'><span style='background:#229954'></span>ecological militant</div><div class='lgrow' data-cat='feminist_queer_militant'><span style='background:#C2185B'></span>feminist queer militant</div><div class='lgrow' data-cat='historical_resistance_memory'><span style='background:#5D6D7E'></span>historical resistance memory</div><div class='lgrow' data-cat='__other__'><span style='background:#7F8C8D'></span>other</div><div class="lghint">click a category to filter</div></div>
+    </div>
+    <div id="maploading" class="nb-loading">Loading map&hellip;</div>
+  </div>
+</div>
 
 <div id="graphview" style="display:none"><iframe id="graphframe" title="Epistemic-anchor graph" style="width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance));border:0;display:block"></iframe></div>
 
@@ -638,8 +692,9 @@ function urlFor(h){const p=new URLSearchParams(location.search);p.set('host',h);
 // consulted institution when the exact blog isn't a graph node.
 let pendingFocus=null;
 function instDoms(h){const b=BYHOST[h];return b&&b.inst?b.inst.map(x=>x[0]):[];}
-function tryFocusMap(){if(mapReady&&pendingFocus){const f=document.getElementById('mapframe');
-  f.contentWindow&&f.contentWindow.postMessage({type:'focus',host:pendingFocus},'*');pendingFocus=null;}}
+function tryFocusMap(){
+  if(mapReady&&mapApi&&pendingFocus){ mapApi.focus(pendingFocus); pendingFocus=null; }
+}
 // Robust focus delivery: a single postMessage is lost when the graph iframe is still
 // building its layout (slow devices) — the graph would land on the default view (#2).
 // Retry every 150ms until the graph ACKs {type:'focusDone'}, capped at ~6s.
@@ -660,19 +715,66 @@ function tryFocusGraph(){
 function gotoInstitution(dom){pendingFocus=dom; closeModal();
   document.querySelector('.tab[data-v="graph"]').click(); tryFocusGraph();}
 
-let mapLoaded=false, mapReady=false;
-function showMap(){
-  const f=document.getElementById('mapframe');
-  if(!mapLoaded){mapLoaded=true;f.onload=()=>{mapReady=true;postFilter();tryFocusMap();};
-    f.src='world_hyperlocal_map.html';}
-  else {postFilter();tryFocusMap();}
+/* ---- Map tab ------------------------------------------------------------
+   No iframe. Leaflet, the map payload and noblogs/map.js load on first
+   activation — the same laziness the iframe's deferred `src` gave us — and
+   after that the explorer calls the module directly. postFilter used to be a
+   postMessage that was dropped whenever the frame had not finished loading;
+   setHosts is a function call that either exists or does not. */
+let mapLoaded=false, mapReady=false, mapApi=null;
+
+function loadScript(src){
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src=src; s.onload=res; s.onerror=()=>rej(new Error('failed to load '+src));
+    document.head.appendChild(s);
+  });
+}
+function loadStyle(href){
+  return new Promise(res=>{
+    const l=document.createElement('link');
+    l.rel='stylesheet'; l.href=href; l.onload=res; l.onerror=res;
+    document.head.appendChild(l);
+  });
+}
+
+async function showMap(){
+  if(mapReady){ postFilter(); tryFocusMap(); mapApi&&mapApi.invalidateSize(); return; }
+  if(mapLoaded) return;                      // load already in flight
+  mapLoaded=true;
+  const loading=document.getElementById('maploading');
+  try{
+    await Promise.all([
+      loadStyle('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'),
+      loadStyle('https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css'),
+      loadStyle('https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css')
+    ]);
+    await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+    await loadScript('https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js');
+    await loadScript('map_data.js');
+    await loadScript('map.js');
+
+    mapApi=NBMap.init(document.getElementById('mapcanvas'),{
+      standalone:false,
+      legendScope:document.getElementById('mapwrap'),
+      onOpenHost:openModal          // was {type:'openHost'} over postMessage
+    });
+    mapReady=true;
+    if(loading) loading.hidden=true;
+    postFilter(); tryFocusMap();
+    mapApi.invalidateSize();
+  }catch(err){
+    mapLoaded=false;
+    if(loading) loading.textContent='Could not load the map. Reload to try again.';
+    console.error(err);
+  }
 }
 function postFilter(){
-  if(!mapReady)return;
-  const f=document.getElementById('mapframe');
-  if(f&&f.contentWindow)
-    f.contentWindow.postMessage({type:'filter',hosts:filtered().map(b=>b.h)},'*');
+  if(!mapReady||!mapApi)return;
+  mapApi.setHosts(filtered().map(b=>b.h));
 }
+// The graph is still an iframe, so this listener stays for it. The map no
+// longer posts anything — it calls openModal directly through onOpenHost.
 window.addEventListener('message',ev=>{
   const m=ev.data||{};
   if(m.type==='openHost'&&m.host)openModal(m.host);
@@ -772,6 +874,12 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;'
     });
     obs.observe(panel,{attributes:true,attributeFilter:['class']});
   }
+
+  // The map's info panel is collapsed on a phone; its heading toggles it.
+  document.addEventListener('click',e=>{
+    const h=e.target.closest('#mapwrap .info h4');
+    if(h) h.parentElement.classList.toggle('open');
+  });
 
   /* Facets behind one button. On a phone the rail put four scrolling filter
      sections between the user and the first result. */

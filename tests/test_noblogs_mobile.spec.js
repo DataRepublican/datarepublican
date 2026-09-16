@@ -11,17 +11,38 @@ const HOST = process.env.HOST || 'http://localhost:4000';
 test.describe('noblogs on a phone', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
-  test('lands on the dashboard, not the 3.87 MB map', async ({ page }) => {
+  test('lands on the dashboard and does not fetch the map payload', async ({ page }) => {
+    const fetched = [];
+    page.on('request', (r) => {
+      const u = r.url();
+      if (u.includes('map_data.js') || u.includes('/map.js') || u.includes('leaflet')) fetched.push(u);
+    });
+
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.card', { timeout: 60000 });
 
     await expect(page.locator('.tab.on')).toHaveAttribute('data-v', 'dash');
 
-    // world_hyperlocal_map.html carries its DATA and EDGES inline, so loading
-    // it is a 3.87 MB document. It must stay unfetched until the Map tab is
-    // actually chosen.
-    const src = await page.getAttribute('#mapframe', 'src');
-    expect(src == null || src === '').toBe(true);
+    // map_data.js is 3.68 MB. The Map tab loads it, Leaflet and map.js on first
+    // activation; landing on the dashboard must not. This replaces the old
+    // check that the iframe had no src — there is no iframe now, so the
+    // question is whether the payload was requested at all.
+    expect(fetched, `map payload fetched on landing: ${fetched.join(', ')}`).toEqual([]);
+    await expect(page.locator('#mapcanvas')).toHaveCount(1);
+  });
+
+  test('the Map tab loads the module and renders pins', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { timeout: 60000 });
+
+    await page.click('.tab[data-v="map"]');
+    await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
+
+    // No iframe for the map any more — it is this document's own DOM.
+    const framesInMapView = await page.locator('#mapview iframe').count();
+    expect(framesInMapView).toBe(0);
+
+    await expect(page.locator('#maploading')).toBeHidden();
   });
 
   test('the header height is measured, not assumed to be 56px', async ({ page }) => {
