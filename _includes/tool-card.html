@@ -1,0 +1,46 @@
+{%- comment -%}
+  A tool card. Two treatments from the Figma frames:
+
+    feature   tall, image behind the copy, with a white gradient scrim so the
+              text stays readable over whatever the screenshot happens to be
+    standard  image well on top, copy beneath
+
+  Parameters: tool (an entry from _data/tools.yml)
+
+  The whole card is one link. The <h3> sits inside it, so the accessible name
+  is the tool name rather than the whole paragraph, and `after:absolute
+  after:inset-0` gives the link a hit area covering the card without nesting
+  interactive elements.
+{%- endcomment -%}
+
+{%- assign t = include.tool -%}
+{%- assign img = '/assets/images/products/' | append: t.preview -%}
+
+<a href="{{ t.href | relative_url }}"
+   class="group relative block overflow-hidden rounded-card border border-rule/70 bg-card !no-underline shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-shadow hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-label">
+
+  {%- if t.feature -%}
+  <div class="relative aspect-[362/275] w-full">
+    <img src="{{ img | relative_url }}" alt=""
+         class="absolute inset-0 size-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transform-none"
+         loading="lazy" decoding="async">
+    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-b from-transparent via-white/75 to-white/95 px-4 pb-4 pt-10 backdrop-blur-[2px]">
+      <h3 class="m-0 text-card-title font-bold tracking-title !text-ink-strong">{{ t.name }}</h3>
+      <p class="m-0 mt-0.5 text-lede font-bold tracking-body !text-ink-strong">{{ t.tagline }}</p>
+      <p class="m-0 mt-1 text-body !text-ink">{{ t.description }}</p>
+    </div>
+  </div>
+
+  {%- else -%}
+  <div class="aspect-[362/186] w-full overflow-hidden bg-surface">
+    <img src="{{ img | relative_url }}" alt=""
+         class="size-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transform-none"
+         loading="lazy" decoding="async">
+  </div>
+  <div class="px-4 pb-4 pt-3">
+    <h3 class="m-0 text-card-title font-bold tracking-title !text-ink-strong">{{ t.name }}</h3>
+    <p class="m-0 mt-0.5 text-body font-bold tracking-body !text-ink-strong">{{ t.tagline }}</p>
+    <p class="m-0 mt-1 text-body !text-ink">{{ t.description }}</p>
+  </div>
+  {%- endif -%}
+</a>

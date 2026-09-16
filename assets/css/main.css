@@ -35,6 +35,20 @@
     --column-max: theme('maxWidth.wide');
   }
 
+  /* Tools index sorting.
+     Jekyll writes each card's position under every sort onto the <li> as a
+     custom property; the <select> sets data-sort on the <ul>; `order` does the
+     work. The list is correctly ordered before any script runs, and stays
+     usable with JavaScript off — it just cannot be re-sorted. */
+  [data-sort] > li { order: var(--order-latest); }
+  [data-sort="featured"] > li { order: var(--order-featured); }
+  [data-sort="alpha"]    > li { order: var(--order-alpha); }
+  [data-sort="category"] > li { order: var(--order-category); }
+
+  /* Group headings belong to category mode only. */
+  .tool-group-header { display: none; }
+  [data-sort="category"] > .tool-group-header { display: block; }
+
   .skip-link {
     @apply sr-only;
   }
