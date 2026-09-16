@@ -1722,6 +1722,9 @@ select {
 .mt-1 {
   margin-top: 0.25rem;
 }
+.mt-1\.5 {
+  margin-top: 0.375rem;
+}
 .mt-10 {
   margin-top: 2.5rem;
 }
@@ -1863,6 +1866,9 @@ select {
 .h-\[0px\] {
   height: 0px;
 }
+.h-\[3px\] {
+  height: 3px;
+}
 .h-\[5px\] {
   height: 5px;
 }
@@ -1889,6 +1895,9 @@ select {
 }
 .max-h-\[50vh\] {
   max-height: 50vh;
+}
+.max-h-\[72px\] {
+  max-height: 72px;
 }
 .max-h-\[calc\(100vh-2rem\)\] {
   max-height: calc(100vh - 2rem);
@@ -2142,6 +2151,9 @@ select {
 .flex-wrap {
   flex-wrap: wrap;
 }
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
 .items-start {
   align-items: flex-start;
 }
@@ -2309,6 +2321,10 @@ select {
 .border-y {
   border-top-width: 1px;
   border-bottom-width: 1px;
+}
+.border-y-2 {
+  border-top-width: 2px;
+  border-bottom-width: 2px;
 }
 .border-y-\[3px\] {
   border-top-width: 3px;
@@ -2686,10 +2702,6 @@ select {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
-.py-3 {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -2768,6 +2780,9 @@ select {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+.text-\[1\.5rem\] {
+  font-size: 1.5rem;
 }
 .text-\[11px\] {
   font-size: 11px;
@@ -3165,6 +3180,9 @@ select {
 .\@container {
   container-type: inline-size;
 }
+.\[scrollbar-width\:none\] {
+  scrollbar-width: none;
+}
 
 :root {
   /* How much room the floating nav pill needs at the bottom of a phone
@@ -3176,6 +3194,187 @@ select {
 @media (min-width: 768px) {
   :root { --nav-clearance: 0rem; }
 }
+
+
+/* ================================================================
+   Tool shell — canvas, floating controls, and the bottom sheet.
+
+   Deliberately OUTSIDE @layer components. Tailwind scans the HTML and drops
+   plain CSS inside a layer when the class never appears there, and every class
+   below is created at runtime by assets/js/sheet.js. The first version of this
+   lived in the layer and was silently purged: .dr-canvas and .dr-controls
+   vanished entirely, and .dr-sheet__grip kept its mobile rules while losing the
+   base `display: none`, so the drag handle showed up on desktop.
+
+   The .tooltip and .legend-item rules below are outside the layer for the same
+   reason.
+   ================================================================ */
+
+/* ---- Tool shell -----------------------------------------------------
+   Shared behaviour for the graph and map tools. See assets/js/sheet.js for
+   why the detail panel becomes a sheet below 768px. */
+
+/* A canvas sized to what is left of the viewport, never taller. The old
+   tools hardcode `calc(100vh - 110px)` and similar, which assumes a fixed
+   chrome height and is wrong on every phone with a dynamic URL bar. */
+.dr-canvas {
+  height: calc(100dvh - var(--tool-chrome, 13rem) - var(--nav-clearance));
+  min-height: 22rem;
+  /* Cytoscape and Leaflet both claim one-finger drag. Without this the page
+     cannot be scrolled past a full-bleed canvas on a phone. */
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+.dr-canvas--grab { touch-action: none; }
+
+/* Floating control cluster. 44px targets, and it does not run under the
+   nav pill. */
+.dr-controls {
+  position: absolute;
+  z-index: 20;
+  display: flex;
+  gap: 0.375rem;
+}
+
+.dr-controls button,
+.dr-controls .dr-btn {
+  margin-right: 0px !important;
+  display: inline-flex;
+  min-width: 0px !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  border-width: 1px;
+  border-color: rgb(176 176 176 / 0.6);
+  background-color: rgb(255 255 255 / 0.95) !important;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-weight: 700;
+  --tw-text-opacity: 1 !important;
+  color: rgb(0 0 0 / var(--tw-text-opacity)) !important;
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  --tw-backdrop-blur: blur(2px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+  min-height: 2.75rem;
+  min-width: 2.75rem;
+}
+
+.dr-controls button[aria-pressed="true"] {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity)) !important;
+  --tw-text-opacity: 1 !important;
+  color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+}
+
+/* ---- Sheet ---------------------------------------------------------- */
+
+/* The wrapper vanishes from layout at desktop width so the panel it wraps
+   stays a direct child of the tool's own grid. */
+.dr-sheet { display: contents; }
+
+.dr-sheet__grip,
+.dr-sheet__close,
+.dr-sheet__scrim { display: none; }
+
+@media (max-width: 767px) {
+  .dr-sheet {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 60;
+    max-height: 92dvh;
+    display: flex;
+    flex-direction: column;
+    overscroll-behavior: contain;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    background: #fff;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
+    transform: translateY(100%);
+    transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1),
+                height 240ms cubic-bezier(0.32, 0.72, 0, 1);
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .dr-sheet.is-open { transform: translateY(0); }
+  .dr-sheet.is-dragging { transition: none; }
+
+  /* The body scrolls; the grip stays put. */
+  .dr-sheet__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  /* The sheet takes focus when it opens so a screen reader announces it.
+     That should not paint a ring around the whole panel for a mouse user. */
+  .dr-sheet:focus { outline: none; }
+  .dr-sheet:focus-visible { outline: 2px solid #0A3552; outline-offset: -2px; }
+
+  .dr-sheet__grip {
+    display: block;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 0.625rem 0;
+    background: #fff;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .dr-sheet__grip::before {
+    content: '';
+    display: block;
+    width: 2.25rem;
+    height: 0.25rem;
+    margin: 0 auto;
+    border-radius: 9999px;
+    background: #B0B0B0;
+  }
+
+  .dr-sheet__close {
+    display: flex !important;
+    position: absolute;
+    top: 0.25rem;
+    right: 0.5rem;
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    border: 0;
+    background: transparent !important;
+    color: #5A5A5A !important;
+    font-size: 1.75rem;
+    line-height: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .dr-sheet__scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(0, 0, 0, 0.32);
+  }
+
+  /* The nav pill must not sit on top of an open sheet. */
+  body:has(.dr-sheet.is-open) nav[aria-label="Primary"] { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-sheet { transition: none; }
+}
+
 
 .tooltip {
   position: absolute;
@@ -3839,6 +4038,10 @@ select {
     height: auto;
   }
 
+  .md\:max-h-\[104px\] {
+    max-height: 104px;
+  }
+
   .md\:min-h-\[50vh\] {
     min-height: 50vh;
   }
@@ -4007,6 +4210,11 @@ select {
     padding-bottom: 0.25rem;
   }
 
+  .md\:py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
   .md\:pl-4 {
     padding-left: 1rem;
   }
@@ -4023,9 +4231,19 @@ select {
     font-size: 15px;
   }
 
+  .md\:text-\[2rem\] {
+    font-size: 2rem;
+  }
+
   .md\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+
+  .md\:text-card-title {
+    font-size: 1.375rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
   }
 
   .md\:text-lg {
@@ -4091,6 +4309,9 @@ select {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
+}
+.\[\&\:\:-webkit-scrollbar\]\:hidden::-webkit-scrollbar {
+  display: none;
 }
 .\[\&\>div\:first-child\]\:\!mt-0>div:first-child {
   margin-top: 0px !important;

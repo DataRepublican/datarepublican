@@ -18,27 +18,40 @@
 <aside class="{{ tone_bg }} {{ tone_ink }}" aria-label="{{ b.title | default: 'Announcement' }}">
   <div class="mx-auto flex w-full max-w-wide items-stretch gap-4 pr-gutter sm:gap-5">
 
+    {%- comment -%}
+      Tool pages get a shorter band. Measured at 390x844: the full banner is
+      154px, and every pixel of it pushes the canvas further down a screen that
+      has none to spare. The band still appears on every page — it is just not
+      allowed to cost a graph tool a sixth of the viewport.
+    {%- endcomment -%}
+    {%- if page.compact -%}{%- assign img_h = 'max-h-[72px] md:max-h-[104px]' -%}{%- else -%}{%- assign img_h = 'max-h-[104px]' -%}{%- endif -%}
+
     {%- if b.image -%}
     <a href="{{ b.image_href | default: '#' }}"
        class="block shrink-0 self-stretch no-underline"
        {% if b.image_href contains '//' %}target="_blank" rel="noopener"{% endif %}>
       <img src="{{ b.image | relative_url }}"
            alt="{{ b.image_alt }}"
-           class="h-full max-h-[104px] w-auto object-cover"
+           class="h-full {{ img_h }} w-auto object-cover"
            loading="lazy" decoding="async">
     </a>
     {%- endif -%}
 
-    <div class="flex min-w-0 flex-1 flex-col justify-center gap-2 py-3">
+    <div class="flex min-w-0 flex-1 flex-col justify-center gap-1.5 py-2 md:gap-2 md:py-3">
       <div class="min-w-0">
-        <p class="m-0 text-card-title font-bold leading-none">{{ b.title }}</p>
+        <p class="m-0 text-lede font-bold leading-none md:text-card-title">{{ b.title }}</p>
         {%- if b.body -%}
-        <p class="m-0 mt-1 text-meta font-semibold opacity-90">{{ b.body }}</p>
+        <p class="m-0 mt-1 text-meta font-semibold opacity-90{% if page.compact %} hidden md:block{% endif %}">{{ b.body }}</p>
         {%- endif -%}
       </div>
 
       {%- if b.actions -%}
-      <div class="flex flex-wrap items-center gap-2">
+      {%- comment -%}
+        nowrap with horizontal scroll rather than flex-wrap. Wrapping put the
+        second button on its own line at 390px, which grew the banner to ~200px
+        and pushed every tool page's canvas that much further down.
+      {%- endcomment -%}
+      <div class="flex flex-nowrap items-center gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {%- for a in b.actions -%}
           {%- if a.modal == 'trailer' -%}
         <button type="button"

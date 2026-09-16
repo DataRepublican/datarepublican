@@ -6,10 +6,36 @@ url: "https://datarepublican.com"
 destination: docs
 
 defaults:
+  # `compact` shrinks the masthead to one line and drops the tagline. Tools get
+  # it by default and the five narrative pages opt out, because there are
+  # fifteen tools and five of these — and a tool added later should get the
+  # compact chrome without anyone remembering to ask for it.
   - scope:
       path: ""
     values:
       image: /assets/images/og.png
+      compact: true
+
+  - scope:
+      path: index.html
+    values:
+      compact: false
+  - scope:
+      path: about
+    values:
+      compact: false
+  - scope:
+      path: donate
+    values:
+      compact: false
+  - scope:
+      path: policies
+    values:
+      compact: false
+  - scope:
+      path: christianity
+    values:
+      compact: false
 
 social: 
   name: DataRepublican

@@ -7,6 +7,21 @@
   pages keep their own <h1> and the document outline stays honest.
 {%- endcomment -%}
 
+{%- comment -%}
+  `page.compact` shrinks this to one line and drops the rule and tagline. Tool
+  pages default to it: at 390x844 the full masthead plus the banner consumed
+  about 370px before the tool began, leaving the graph canvas roughly 300px
+  tall. The wordmark still links home, so nothing is lost but height. See the
+  `compact` defaults in _config.yml.
+{%- endcomment -%}
+{%- if page.compact -%}
+<div class="pt-3 pb-1">
+  <p class="m-0 text-[1.5rem] font-bold leading-none tracking-display text-ink-strong md:text-[2rem]">
+    <a href="{{ '/' | relative_url }}" class="!text-ink-strong !no-underline">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</a>
+  </p>
+  <div class="mt-1.5 h-[3px] border-y-2 border-double border-ink-strong" aria-hidden="true"></div>
+</div>
+{%- else -%}
 <div class="pt-5 pb-1">
   {%- if page.url == '/' -%}
   <h1 class="m-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</h1>
@@ -20,3 +35,4 @@
 
   <p class="mt-2 mb-0 text-lede font-semibold tracking-body text-ink-strong">{{ site.tagline | default: 'Mapping the connections they don&rsquo;t want you to know about' }}</p>
 </div>
+{%- endif -%}

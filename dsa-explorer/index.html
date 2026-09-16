@@ -21,7 +21,11 @@ if(_hatueyLogo) window.LOGOS.hatuey = _hatueyLogo; /* canonical Hatuey keeps its
     --center:#111827; --ink:#1A1A1A; --line:#94A3B8; --bg:#F7F7F5; --panel:#FFFFFF;
   }
   *{box-sizing:border-box}
-  #app{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;height:calc(100vh - 110px);min-height:560px;font-family:"Libre Franklin","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* height was calc(100vh - 110px): a hardcoded guess at the site chrome that
+     is wrong on any phone with a collapsing URL bar, and 100vh there is the
+     expanded-bar height, so the bottom of the app sat under it. dvh tracks the
+     real viewport; --nav-clearance is the floating nav pill. */
+  #app{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;height:calc(100dvh - 7rem - var(--nav-clearance));min-height:560px;font-family:"Libre Franklin","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg)}
   header{grid-column:1/3;padding:12px 18px;border-bottom:1px solid #E2E2DD;background:#fff;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
   header h1{font-size:18px;margin:0;font-weight:700}
   header .sub{font-size:12.5px;color:#666}
@@ -92,7 +96,63 @@ if(_hatueyLogo) window.LOGOS.hatuey = _hatueyLogo; /* canonical Hatuey keeps its
   aside .conn .conn-desc{font-size:11.5px;color:#555;line-height:1.4;margin:2px 0 0;font-weight:400;cursor:default}
   aside .conn a.conn-src{display:inline-block;font-size:11px;color:#1155CC;margin-top:3px;word-break:break-all}
   aside .conn a.conn-src:before{content:"› ";color:#999}
-  @media(max-width:820px){#app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}#stage{grid-column:1;grid-row:2}aside{grid-column:1;grid-row:3;border-left:none;border-top:1px solid #E2E2DD;max-height:42vh}}
+  /* ---- Phone -------------------------------------------------------------
+     The old rule here was a single max-width:820px breakpoint that stacked the
+     detail panel under the canvas. That is the failure this pass is about: the
+     panel landed ~700px below the fold, so tapping a node — the entire point of
+     the tool — produced no visible response.
+
+     Now the panel is a bottom sheet (assets/js/sheet.js) that rises over the
+     canvas with the tapped node still visible behind it, and the controls stop
+     covering the graph.
+
+     At 390px the old layout put a 160px control stack at top-left and a 260px
+     search field centred over it. They overlapped by ~125px, and the search
+     field, being later in the DOM with no z-index on either, painted on top —
+     Zoom, Reset view, Re-layout and Export PNG were all unreachable. */
+  @media(max-width:767px){
+    #app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
+    header{padding:10px 14px}
+    header h1{font-size:16px}
+    header .sub{display:none}
+    header .disclaimer{font-size:10.5px;max-height:4.6em;overflow:hidden}
+
+    /* Sized so that once the chrome has scrolled off, the canvas and its
+       control row fill the screen down to just above the nav pill. Trying to
+       fit canvas *and* chrome in one viewport left a 300px graph; letting the
+       header scroll away gives the tool the whole screen. */
+    #stage{grid-column:1;grid-row:2;height:calc(100dvh - var(--nav-clearance) - 2rem);min-height:20rem}
+    /* Cytoscape claims one-finger drag, so the page cannot be scrolled while a
+       finger is on the canvas. Pan the graph with two fingers instead. */
+    #cy{touch-action:pan-y}
+
+    /* Search first: full width across the top, clear of everything else. */
+    #search{position:absolute;top:8px;left:8px;right:8px;transform:none;z-index:6}
+    #search input{width:100%;min-height:2.75rem;font-size:16px}
+
+    /* Controls: one horizontal, scrollable row along the bottom of the canvas,
+       at 44px. Not a 160px column over the graph. */
+    #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:6}
+    #controls::-webkit-scrollbar{display:none}
+    #controls button{min-height:2.75rem;flex:0 0 auto;white-space:nowrap;font-size:13px;padding:0 12px;border-radius:9999px;background:rgba(255,255,255,.95);backdrop-filter:blur(2px)}
+    #controls .grp{display:contents}
+
+    /* The sheet has its own close affordance. */
+    #panelToggle{display:none}
+
+    /* Legend collapses to its toggle; the full key opens upward as before but
+       is capped so it cannot swallow the canvas. */
+    #legend{left:8px;right:8px;bottom:60px;max-width:none}
+    #legend .legbar{display:none}
+    #legend.expanded .legbar{display:flex}
+    #legend .legtoggle{min-height:2.75rem;border-radius:9999px;background:rgba(255,255,255,.95);padding:0 14px}
+    #legend .legfull{max-width:none;max-height:45dvh}
+
+    /* The panel is positioned by .dr-sheet in the site stylesheet; these just
+       undo the grid placement and the desktop border. */
+    aside{grid-column:1;grid-row:auto;border-left:none;padding:0 16px 16px}
+    aside.dr-sheet{max-height:92dvh}
+  }
 </style>
 
 <div id="app">
@@ -854,7 +914,20 @@ function build(nodes, edges, baked){
     requestAnimationFrame(()=>cy.resize());
   }
   panelToggle.onclick = ()=>setPanelCollapsed(!appEl.classList.contains('panel-collapsed'));
-  const reopenPanel = ()=>{ if(appEl.classList.contains('panel-collapsed')) setPanelCollapsed(false); };
+
+  // On a phone the details panel is a bottom sheet rather than a column below
+  // the canvas, so a node tap answers where you can see it. On desktop
+  // DRSheet.attach is inert and this is the old collapse behaviour.
+  const drSheet = (window.DRSheet ? window.DRSheet.attach(panel, {
+    label: 'Node details',
+    detent: 'half',
+    onClose: ()=>{ cy.elements().removeClass('faded nbr sel'); }
+  }) : null);
+
+  const reopenPanel = ()=>{
+    if(appEl.classList.contains('panel-collapsed')) setPanelCollapsed(false);
+    if(drSheet && window.DRSheet.isMobile()) drSheet.open();
+  };
   function fmtUrl(u){
     try{ const x=new URL(u); let p=(x.pathname+x.search).replace(/\/$/,''); if(p.length>34)p=p.slice(0,33)+'…'; return x.hostname.replace(/^www\./,'')+p; }
     catch(_){ return u; }
@@ -1000,7 +1073,7 @@ function build(nodes, edges, baked){
   });
 
   // background tap: in focus mode, re-scope to the current node (re-fit its ring); else clear
-  cy.on('tap',ev=>{ if(ev.target===cy){ if(focusMode){ applyFocus(focusId,{push:false}); } else { cy.elements().removeClass('faded nbr sel'); panel.innerHTML=EMPTY; } }});
+  cy.on('tap',ev=>{ if(ev.target===cy){ if(focusMode){ applyFocus(focusId,{push:false}); } else { cy.elements().removeClass('faded nbr sel'); panel.innerHTML=EMPTY; if(drSheet) drSheet.close(); } }});
 
   /* ---- controls ---- */
   document.getElementById('zin').onclick =()=>cy.zoom({level:cy.zoom()*1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
