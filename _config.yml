@@ -91,6 +91,7 @@ exclude:
   - dsa-explorer/logos/avatars.embed.js
   - dsa-explorer/logos/emblems.embed.js
   - dsa-explorer/logos/afgj_logos.embed.js
+  - noblogs/graph/logos.embed.js
 
 plugins:
   - jekyll-seo-tag

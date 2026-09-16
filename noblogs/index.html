@@ -802,11 +802,12 @@ async function showGraph(){
     await loadStyle('graph/graph.css');
     await loadScript('graph/cytoscape.min.js');
     await loadScript('graph/graph_data.js');
-    await loadScript('graph/logos.embed.js');
+    await loadScript('graph/logos.index.js');
     await loadScript('graph/graph.js');
 
     graphApi=NBGraph.init(document.getElementById('graphwrap'),{
       standalone:false,
+      assetBase:'graph/',        // logo paths are relative to noblogs/graph/
       onOpenHost:openModal        // was {type:'openHost'} over postMessage
     });
     graphReady=true;

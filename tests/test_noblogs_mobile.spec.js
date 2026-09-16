@@ -144,3 +144,55 @@ test.describe('noblogs on a phone', () => {
     expect(small, `tabs under 44px: ${JSON.stringify(small)}`).toEqual([]);
   });
 });
+
+// noblogs/graph/logos.embed.js was 12.58 MB on the wire — the largest single
+// asset on the site once the dsa-explorer blobs were dealt with. Same fix:
+// image files plus a 31 KB manifest.
+test.describe('noblogs graph logo payload', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('no base64 logo blob, and paths resolve from both depths', async ({ page }) => {
+    const blobs = [];
+    const notFound = [];
+    page.on('request', (r) => { if (/logos\.embed\.js/.test(r.url())) blobs.push(r.url()); });
+    page.on('response', (r) => { if (r.status() === 404) notFound.push(r.url()); });
+
+    // The explorer loads graph.js from /noblogs/, the standalone page from
+    // /noblogs/graph/. Logo paths are relative to graph/, so the module is told
+    // its assetBase — get that wrong and every logo 404s from one of the two.
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.click('.tab[data-v="graph"]');
+    await page.waitForFunction(
+      () => typeof graphApi !== 'undefined' && graphApi && graphApi.cy.nodes().length > 0,
+      { timeout: 90000 }
+    );
+    await page.waitForTimeout(3000);
+
+    expect(blobs, `logos.embed.js still loaded: ${blobs.join(', ')}`).toEqual([]);
+
+    const sample = await page.evaluate(
+      () => graphApi.cy.nodes().filter((n) => n.data('hasLogo') === 1).first().data('logoUri')
+    );
+    expect(sample).toMatch(/^graph\/img\//);
+    expect(notFound.filter((u) => u.includes('/img/')), 'logo images 404ing').toEqual([]);
+  });
+
+  test('the standalone graph page resolves its own logo paths', async ({ page }) => {
+    const notFound = [];
+    page.on('response', (r) => { if (r.status() === 404) notFound.push(r.url()); });
+
+    await page.goto(HOST + '/noblogs/graph/', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(
+      () => typeof cy !== 'undefined' && typeof cy.nodes === 'function' && cy.nodes().length > 0,
+      { timeout: 90000 }
+    );
+    await page.waitForTimeout(3000);
+
+    const sample = await page.evaluate(
+      () => cy.nodes().filter((n) => n.data('hasLogo') === 1).first().data('logoUri')
+    );
+    expect(sample).toMatch(/^img\//);
+    expect(notFound.filter((u) => u.includes('/img/')), 'logo images 404ing').toEqual([]);
+  });
+});

@@ -55,6 +55,12 @@
     // Every lookup is scoped to this graph, so nothing reaches the host page.
     var $id = function (id) { return root.querySelector('#' + id); };
 
+    // Logo paths in logos.index.js are relative to noblogs/graph/. This module
+    // is loaded from two depths — /noblogs/graph/ standalone, and /noblogs/ for
+    // the explorer's Graph tab — so the caller says which.
+    var assetBase = options.assetBase || '';
+    var logoSrc = function (u) { return u ? assetBase + u : ''; };
+
   const ICLASS = {
     authority_legal:   {c:'#991B1B', label:'Mainstream authority (SPLC/ADL/Amnesty/HRW/EFF)'},
     watchdog_research: {c:'#DB2777', label:'Antifa/watchdog research (the naming shops)'},
@@ -105,11 +111,11 @@
     if(n.kind==='institution'){
       const col = (ICLASS[n.iclass]||{}).c || '#555';
       const size = Math.max(46, 30 + Math.sqrt(n.total_citations)*4.2);
-      els.push({data:{...n, __terr, col, size, hasLogo:L?1:0, logoUri:L?L.uri:'', tile:L?L.tile:'#fff'}});
+      els.push({data:{...n, __terr, col, size, hasLogo:L?1:0, logoUri:L?logoSrc(L.uri):'', tile:L?L.tile:'#fff'}});
     } else {
       const col = n.dox ? DOX_COL : BLOG_COL;
       const size = Math.max(26, 20 + Math.sqrt(n.impact)*2.6);
-      els.push({data:{...n, __terr, col, size, hasLogo:L?1:0, logoUri:L?L.uri:'', tile:L?L.tile:'#fff'}});
+      els.push({data:{...n, __terr, col, size, hasLogo:L?1:0, logoUri:L?logoSrc(L.uri):'', tile:L?L.tile:'#fff'}});
     }
   });
   G.edges.forEach(e=>{
