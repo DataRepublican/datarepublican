@@ -43,3 +43,8 @@ test-results
 charities.tsv
 grants.pf.tsv
 grants_final.tsv
+
+# Generated at build time by scripts/split-noblogs-data.mjs from noblogs/data.json,
+# which is the artifact the pipeline drops in and stays committed.
+noblogs/data.index.json
+noblogs/data.detail.json

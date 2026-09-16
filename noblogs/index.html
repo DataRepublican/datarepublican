@@ -328,13 +328,44 @@ function norm(s){return (s==null?"":String(s)).toLowerCase().normalize('NFKD')
   .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
 function toks(s){const n=norm(s);return n?n.split(' '):[];}
 
-fetch('data.json').then(r=>r.json()).then(j=>{
+/* data.index.json is everything needed to paint: cards, facets, KPIs, search.
+   data.detail.json is what only the drawer shows — news, inbound/outbound refs,
+   institutions — and is prefetched once the page is on screen, so opening a
+   blog is as instant as it was when one file carried everything.
+   Both are produced by scripts/split-noblogs-data.mjs at build time from the
+   data.json the pipeline drops in; that file is untouched. */
+fetch('data.index.json').then(r=>r.json()).then(j=>{
   DATA=j.blogs;
   DATA.forEach((b,i)=>{b._i=i;BYHOST[b.h]=b;});
   buildSearchIndex(); buildAuthorMap(); rankBlogs();
   document.getElementById('subcount').textContent=`${j.n.toLocaleString()} blogs · ${DATA.filter(b=>b.nq>0).length.toLocaleString()} with verified quotes · ${DATA.filter(b=>ctCount(b.ct)).length.toLocaleString()} with contacts`;
   readURL(); buildFacets(); render();
+  // After the first paint, not before it.
+  requestAnimationFrame(()=>setTimeout(loadDetail,0));
 });
+
+/* ---- deferred detail ---------------------------------------------------- */
+let detailPromise=null, detailReady=false;
+function loadDetail(){
+  if(detailPromise) return detailPromise;
+  detailPromise=fetch('data.detail.json').then(r=>{
+    if(!r.ok) throw new Error('data.detail.json '+r.status);
+    return r.json();
+  }).then(map=>{
+    // Merge into the blog objects the rest of the page already holds, so every
+    // existing `b.ne` / `b.ro` / `b.ri` / `b.inst` / `b.na` read keeps working
+    // unchanged.
+    for(const h in map){const b=BYHOST[h]; if(b) Object.assign(b,map[h]);}
+    detailReady=true;
+    // If the drawer is already open on a blog, re-render it now that its news
+    // and references exist.
+    if(SEL) renderModal(SEL);
+  }).catch(err=>{
+    detailPromise=null;          // let a later tap retry
+    console.error('noblogs: detail payload failed', err);
+  });
+  return detailPromise;
+}
 
 // ---- reverse keyword index (studied ned/index.html) ------------------------
 // A sorted token list + per-token postings (blog indices). Query tokens match by
@@ -389,7 +420,10 @@ function buildAuthorMap(){
 function rankBlogs(){
   const imp=b=>{const ri=(b.ri||[]).reduce((s,x)=>s+(x[1]||1),0);
     return ri*2+(b.nq||0)+ctCount(b.ct)+(b.dxn||0)*3+(b.ro||[]).length+((b.ne||[]).length?1:0);};
-  DATA.forEach(b=>b._imp=imp(b));
+  // `imp` is precomputed by scripts/split-noblogs-data.mjs, because the fields
+  // it reads (ri, ct, dxn, ro, ne) are partly deferred. The local imp() is kept
+  // as the definition of the score and as a fallback; both give the same number.
+  DATA.forEach(b=>b._imp=(typeof b.imp==='number'?b.imp:imp(b)));
   [...DATA].sort((a,b)=>b._imp-a._imp).forEach((b,i)=>b._rImp=i);
   [...DATA].sort((a,b)=>{const ua=a.co==='US'?0:1,ub=b.co==='US'?0:1;
     return ua!==ub?ua-ub:b._imp-a._imp;}).forEach((b,i)=>b._rUS=i);
@@ -521,6 +555,21 @@ function isRedacted(s){return /\[[A-Z]{2,}/.test(s||"");}
 
 // Render the shared detail drawer for a host (opened from cards, map pins, chips, URL).
 function openModal(h){
+  const b=BYHOST[h]; if(!b)return;
+  // Never draw a partially-populated drawer. If the prefetch has not landed
+  // yet — only possible in the first moment after load — show the panel with a
+  // placeholder and fill it in when it does.
+  if(!detailReady){
+    SEL=h;
+    document.getElementById('panel').classList.add('on');
+    document.getElementById('scrim').classList.add('on');
+    document.getElementById('pinner').innerHTML='<div class="pempty">Loading details…</div>';
+    loadDetail().then(()=>{ if(SEL===h) renderModal(h); });
+    return;
+  }
+  renderModal(h);
+}
+function renderModal(h){
   const b=BYHOST[h]; if(!b)return;
   SEL=h;
   history.replaceState(null,'',urlFor(h));

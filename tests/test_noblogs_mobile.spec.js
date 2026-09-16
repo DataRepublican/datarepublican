@@ -196,3 +196,84 @@ test.describe('noblogs graph logo payload', () => {
     expect(notFound.filter((u) => u.includes('/img/')), 'logo images 404ing').toEqual([]);
   });
 });
+
+// data.json is split at build time into an index the page paints from and a
+// detail payload prefetched after first paint. The hard requirement is zero
+// change in what is presented, so these check behaviour rather than bytes.
+test.describe('noblogs deferred detail', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('paints from the index and does not fetch data.json', async ({ page }) => {
+    const seen = [];
+    page.on('request', (r) => {
+      const u = r.url();
+      if (/\/noblogs\/data(\.index|\.detail)?\.json/.test(u)) seen.push(u.split('/').pop());
+    });
+
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 90000 });
+
+    // The index is what paints. The full 16.8 MB data.json must never be
+    // fetched by the page — it stays published as the canonical artifact.
+    expect(seen).toContain('data.index.json');
+    expect(seen).not.toContain('data.json');
+  });
+
+  test('the detail payload arrives on its own and completes every blog', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 90000 });
+
+    // Prefetched without anyone asking.
+    await page.waitForFunction(() => detailReady === true, { timeout: 90000 });
+
+    // Every deferred field is merged back onto the blog objects the rest of the
+    // page already holds, so existing b.ne / b.ro / b.ri / b.inst reads work.
+    const merged = await page.evaluate(() => {
+      const withNews = DATA.filter((b) => Array.isArray(b.ne) && b.ne.length).length;
+      const withRefs = DATA.filter((b) => Array.isArray(b.ri) && b.ri.length).length;
+      return { withNews, withRefs, total: DATA.length };
+    });
+    expect(merged.total).toBe(7673);
+    expect(merged.withNews).toBeGreaterThan(1000);
+    expect(merged.withRefs).toBeGreaterThan(100);
+  });
+
+  test('a doxxing-flagged blog still renders no links', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 90000 });
+    await page.waitForFunction(() => detailReady === true, { timeout: 90000 });
+
+    const host = await page.evaluate(() => {
+      const b = DATA.find((x) => x.dox && (x.ne || []).length);
+      if (b) openModal(b.h);
+      return b && b.h;
+    });
+    expect(host).toBeTruthy();
+    await page.waitForTimeout(600);
+
+    // News titles for flagged blogs render as <span>, never <a> — two of them
+    // carry a URL inside the title text, so linkifying would republish it.
+    const newsAnchors = await page.locator('#pinner .nart a').count();
+    expect(newsAnchors, 'a doxxing-flagged blog must render no news links').toBe(0);
+    await expect(page.locator('#pinner .nart')).not.toHaveCount(0);
+  });
+
+  test('the grid order is driven by the precomputed impact score', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 90000 });
+
+    // rankBlogs() reads fields that are now partly deferred, so the score is
+    // precomputed at build time. If the two ever disagree the grid silently
+    // reshuffles — which is exactly what happened once, for 553 blogs.
+    const ok = await page.evaluate(() => {
+      const ctCount = (ct) => {
+        const s = new Set();
+        for (const g of Object.values(ct || {})) for (const ch of Object.keys(g)) s.add(ch);
+        return s.size;
+      };
+      return DATA.every((b) => typeof b.imp === 'number' && b._imp === b.imp)
+        && DATA.every((b) => b.imp >= ctCount(b.ct));
+    });
+    expect(ok).toBe(true);
+  });
+});

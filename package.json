@@ -1,13 +1,14 @@
 {
   "scripts": {
-    "build": "npm run build:css && JEKYLL_ENV=production bundle exec jekyll build --destination _site",
+    "build": "npm run data:split && npm run build:css && JEKYLL_ENV=production bundle exec jekyll build --destination _site",
     "build:css": "postcss assets/css/main.css -o assets/css/styles.css",
     "watch:css": "postcss assets/css/main.css -o assets/css/styles.css --watch",
-    "start": "run-p watch:css jekyll:serve",
+    "start": "npm run data:split && run-p watch:css jekyll:serve",
     "jekyll:serve": "bundle exec jekyll serve --incremental --livereload",
     "serve:build": "ruby -run -e httpd _site -p 4000",
     "test": "playwright test",
-    "test:routes": "scripts/check-routes.sh"
+    "test:routes": "scripts/check-routes.sh",
+    "data:split": "node scripts/split-noblogs-data.mjs"
   },
   "dependencies": {
     "@tailwindcss/container-queries": "^0.1.1",
