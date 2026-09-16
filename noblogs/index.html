@@ -188,6 +188,9 @@ title: TrumpBlogs formerly known as NoBlogs
     #mapwrap .info.open h4::after{content:" ▴"}
   }
 
+  #graphouter{position:relative;width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
+  #graphwrap{width:100%;height:100%}
+
   /* The filter bar only exists on a phone. */
   #nb-filterbar{display:none;gap:8px;align-items:center;padding:10px 14px 0}
   #nb-filterbar button{min-height:2.75rem;min-width:0;margin:0;border-radius:9999px;
@@ -286,7 +289,16 @@ title: TrumpBlogs formerly known as NoBlogs
   </div>
 </div>
 
-<div id="graphview" style="display:none"><iframe id="graphframe" title="Epistemic-anchor graph" style="width:100%;height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance));border:0;display:block"></iframe></div>
+{%- comment -%}
+  The Graph tab. Was an iframe on graph/index.html; both now share
+  noblogs/graph/graph.js, which builds its own DOM inside #graphwrap.
+{%- endcomment -%}
+<div id="graphview" style="display:none">
+  <div id="graphouter">
+    <div id="graphwrap"></div>
+    <div id="graphloading" class="nb-loading">Loading graph&hellip;</div>
+  </div>
+</div>
 
 <!-- detail drawer + scrim (shared by cards, map pins, and reference chips) -->
 <div id="scrim" onclick="closeModal()"></div>
@@ -682,12 +694,12 @@ function closeModal(){
 }
 function urlFor(h){const p=new URLSearchParams(location.search);p.set('host',h);return '?'+p.toString();}
 
-// ---- map (single canonical map: ../world_hyperlocal_map.html, embedded) ----
-// The rich Leaflet map lives in ONE file/builder; the explorer embeds it and
-// drives it with the live dashboard filter via postMessage (exact host set),
-// and the map posts back pin clicks to open the shared detail drawer.
+// ---- map ------------------------------------------------------------------
+// The Leaflet map lives in one module, noblogs/map.js, shared by this page's
+// Map tab and the standalone world_hyperlocal_map.html. The explorer drives it
+// with the live dashboard filter and takes pin clicks back through onOpenHost.
 // pendingFocus: a node to fly to (a blog host, or an institution domain) once the
-// target frame is ready — set when the user switches tabs with a blog selected, or
+// view is ready — set when the user switches tabs with a blog selected, or
 // clicks an "institutions consulted" chip. instDoms() lets the graph fall back to a
 // consulted institution when the exact blog isn't a graph node.
 let pendingFocus=null;
@@ -695,20 +707,13 @@ function instDoms(h){const b=BYHOST[h];return b&&b.inst?b.inst.map(x=>x[0]):[];}
 function tryFocusMap(){
   if(mapReady&&mapApi&&pendingFocus){ mapApi.focus(pendingFocus); pendingFocus=null; }
 }
-// Robust focus delivery: a single postMessage is lost when the graph iframe is still
-// building its layout (slow devices) — the graph would land on the default view (#2).
-// Retry every 150ms until the graph ACKs {type:'focusDone'}, capped at ~6s.
-let focusTimer=null;
+// The graph focus used to be re-posted every 150ms, up to 40 times (~6s), until
+// the frame ACKed {type:'focusDone'} — a retry loop that existed only because a
+// single postMessage is lost while Cytoscape is still laying out. focus()
+// returns whether it resolved the node, so one call answers the question.
 function tryFocusGraph(){
-  if(!pendingFocus)return;
-  const dom=pendingFocus, f=document.getElementById('graphframe');
-  clearInterval(focusTimer); let tries=0;
-  focusTimer=setInterval(()=>{
-    if(pendingFocus!==dom){clearInterval(focusTimer);return;}   // superseded or acked
-    const w=f&&f.contentWindow;
-    if(w){try{w.postMessage({type:'focus',host:dom,insts:instDoms(dom)},'*');}catch(e){}}
-    if(++tries>40)clearInterval(focusTimer);
-  },150);
+  if(!pendingFocus||!graphReady||!graphApi)return;
+  if(graphApi.focus(pendingFocus,instDoms(pendingFocus))) pendingFocus=null;
 }
 // institution chip -> switch to Graph and focus that institution node. Set pendingFocus
 // FIRST so showGraph()'s onload/else path already sees the target (no ordering race).
@@ -773,31 +778,50 @@ function postFilter(){
   if(!mapReady||!mapApi)return;
   mapApi.setHosts(filtered().map(b=>b.h));
 }
-// The graph is still an iframe, so this listener stays for it. The map no
-// longer posts anything — it calls openModal directly through onOpenHost.
-window.addEventListener('message',ev=>{
-  const m=ev.data||{};
-  if(m.type==='openHost'&&m.host)openModal(m.host);
-  // graph confirmed it focused the requested node -> stop the retry loop (#2)
-  if(m.type==='focusDone'){pendingFocus=null;clearInterval(focusTimer);}
-});
+// Nothing on this page is framed any more, so there is no postMessage listener.
 
-// ---- graph (single canonical graph: ../graph/index.html, embedded) ----------
-// Same pattern as the map: embed the Cytoscape graph, cross-filter it with the
-// live facet host-set via postMessage, and let blog-node clicks post back to open
-// the SAME detail drawer (consistent detail surface across dashboard/map/graph).
-let graphLoaded=false, graphReady=false;
-function showGraph(){
-  const f=document.getElementById('graphframe');
-  if(!graphLoaded){graphLoaded=true;f.onload=()=>{graphReady=true;postFilterGraph();tryFocusGraph();};
-    f.src='graph/index.html';}
-  else {postFilterGraph();tryFocusGraph();}
+
+// ---- graph ----------------------------------------------------------------
+// Same pattern as the map: one module, noblogs/graph/graph.js, shared by this
+// page's Graph tab and the standalone graph/index.html. Cross-filtered with the
+// live facet host-set, and blog-node taps open the SAME detail drawer, so the
+// detail surface is consistent across dashboard, map and graph.
+/* ---- Graph tab ----------------------------------------------------------
+   No iframe. Cytoscape, the graph data, the logos and graph.js load on first
+   activation. quotes.embed.js is deliberately NOT loaded here: this page
+   already loads it for the detail drawer, and the frame boundary is what used
+   to force a second 2.0 MB copy of it inside the graph. */
+let graphLoaded=false, graphReady=false, graphApi=null;
+
+async function showGraph(){
+  if(graphReady){ postFilterGraph(); tryFocusGraph(); graphApi&&graphApi.resize(); return; }
+  if(graphLoaded) return;
+  graphLoaded=true;
+  const loading=document.getElementById('graphloading');
+  try{
+    await loadStyle('graph/graph.css');
+    await loadScript('graph/cytoscape.min.js');
+    await loadScript('graph/graph_data.js');
+    await loadScript('graph/logos.embed.js');
+    await loadScript('graph/graph.js');
+
+    graphApi=NBGraph.init(document.getElementById('graphwrap'),{
+      standalone:false,
+      onOpenHost:openModal        // was {type:'openHost'} over postMessage
+    });
+    graphReady=true;
+    if(loading) loading.hidden=true;
+    postFilterGraph(); tryFocusGraph();
+    graphApi.resize();
+  }catch(err){
+    graphLoaded=false;
+    if(loading) loading.textContent='Could not load the graph. Reload to try again.';
+    console.error(err);
+  }
 }
 function postFilterGraph(){
-  if(!graphReady)return;
-  const f=document.getElementById('graphframe');
-  if(f&&f.contentWindow)
-    f.contentWindow.postMessage({type:'filter',hosts:filtered().map(b=>b.h)},'*');
+  if(!graphReady||!graphApi)return;
+  graphApi.setHosts(filtered().map(b=>b.h));
 }
 
 // ---- tabs / url ----

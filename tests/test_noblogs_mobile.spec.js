@@ -38,11 +38,54 @@ test.describe('noblogs on a phone', () => {
     await page.click('.tab[data-v="map"]');
     await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
 
-    // No iframe for the map any more — it is this document's own DOM.
-    const framesInMapView = await page.locator('#mapview iframe').count();
-    expect(framesInMapView).toBe(0);
-
     await expect(page.locator('#maploading')).toBeHidden();
+  });
+
+  // The whole page, not just one view. /noblogs was a shell driving two iframes
+  // over postMessage; both are gone.
+  test('there are no iframes anywhere on the page', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { timeout: 60000 });
+    expect(await page.locator('iframe').count()).toBe(0);
+
+    for (const view of ['map', 'graph']) {
+      await page.click(`.tab[data-v="${view}"]`);
+      await page.waitForTimeout(1500);
+      expect(await page.locator('iframe').count(), `iframe appeared in ${view}`).toBe(0);
+    }
+  });
+
+  // quotes.embed.js is 2.0 MB. The frame boundary forced a second copy inside
+  // the graph because the two documents could not share a global.
+  test('quotes.embed.js is fetched once, not twice', async ({ page }) => {
+    const hits = [];
+    page.on('request', (r) => { if (r.url().includes('quotes.embed.js')) hits.push(r.url()); });
+
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.click('.tab[data-v="graph"]');
+    await page.waitForSelector('#graphwrap #cy canvas', { timeout: 90000 });
+
+    expect(hits.length, `quotes.embed.js requested ${hits.length} times`).toBe(1);
+  });
+
+  // The graph styles bare `header` and `aside` and owns #panel and #search.
+  // That is why it was framed; scoping under .nbgraph is what replaced the frame.
+  test('the graph does not restyle or collide with the explorer chrome', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.click('.tab[data-v="graph"]');
+    await page.waitForSelector('#graphwrap #cy canvas', { timeout: 90000 });
+
+    // The explorer's sticky header must still be sticky.
+    const pos = await page.evaluate(
+      () => getComputedStyle(document.querySelector('header')).position
+    );
+    expect(pos).toBe('sticky');
+
+    // Both panels exist, under different ids, exactly once each.
+    expect(await page.locator('#panel').count()).toBe(1);
+    expect(await page.locator('#graphwrap #gpanel').count()).toBe(1);
   });
 
   test('the header height is measured, not assumed to be 56px', async ({ page }) => {
