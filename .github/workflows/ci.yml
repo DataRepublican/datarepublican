@@ -1,8 +1,11 @@
 name: CI
 
-# Builds the site and checks it. No deploy — GitHub Pages still serves the
-# committed `docs/` from master. The deploy job arrives in Phase 1, once the
-# build stops being a committed artifact.
+# Builds the site and checks it. No deploy — that lives in deploy.yml and only
+# runs on master.
+#
+# Build and test are one job on purpose. They were split, with the 444 MB build
+# passed between them as an artifact; uploading and re-downloading 9,970 files
+# cost more than the build itself and added a failure mode of its own.
 
 on:
   pull_request:
@@ -15,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +35,7 @@ jobs:
 
       - run: npm ci
 
-      # Tailwind is built by PostCSS and Jekyll does not invoke it, so the
+      # Tailwind is built by PostCSS, which Jekyll does not invoke, so the
       # stylesheet has to be generated before the site build. `npm run build`
       # does both in order.
       - name: Build site
@@ -43,36 +46,12 @@ jobs:
           du -sh _site
           echo "GitHub Pages publishes at most 1 GB."
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: site
-          path: _site
-          retention-days: 5
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-
-      - run: npm ci
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: site
-          path: _site
-
       - name: Install browsers
         run: npx playwright install --with-deps chromium
 
       - name: Serve the build
         run: |
-          npx --yes serve -l 4000 _site &
+          npx --yes serve -l 4000 _site --no-clipboard --single=false &
           npx --yes wait-on http://localhost:4000 --timeout 60000
 
       # The route contract. Every URL the live site serves today must still
