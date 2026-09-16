@@ -1,0 +1,30 @@
+# The site-wide band that sits above the masthead on every page.
+#
+# Set `enabled: false` to remove it everywhere — that is the whole point of it
+# living in one data file rather than being pasted into a layout.
+#
+# tone:
+#   promo  — the yellow band (the Unelected treatment in the mocks)
+#   alert  — red, for outages or corrections
+#   info   — navy, for neutral announcements
+
+enabled: true
+tone: promo
+
+image: /assets/images/unelected-cover.jpg
+image_alt: Unelected by Jennica Pounds — book cover
+image_href: https://www.amazon.com/Unelected-Jennica-Pounds/dp/B0GGYQNWHJ
+
+title: Unelected
+body: By Jennica Pounds. Releases October 13th.
+
+actions:
+  - label: Buy on Amazon
+    href: https://www.amazon.com/Unelected-Jennica-Pounds/dp/B0GGYQNWHJ
+    icon: amazon
+  - label: Watch trailer
+    # `modal: trailer` opens the video overlay instead of navigating. The
+    # <video> uses preload="none", so the 17 MB file is not fetched until a
+    # visitor actually presses play.
+    modal: trailer
+    video: /assets/videos/unelected-trailer.mp4

@@ -1,0 +1,22 @@
+{%- comment -%}
+  The wordmark block: heavy grotesk name, a double rule, then the tagline.
+  Geometry is from the Figma frames — 55px wordmark at 402px wide, tight
+  tracking, the rule sitting directly under the baseline.
+
+  The wordmark is an <h1> on the home page and a <p> everywhere else, so tool
+  pages keep their own <h1> and the document outline stays honest.
+{%- endcomment -%}
+
+<div class="pt-5 pb-1">
+  {%- if page.url == '/' -%}
+  <h1 class="m-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</h1>
+  {%- else -%}
+  <p class="m-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">
+    <a href="{{ '/' | relative_url }}" class="!text-ink-strong !no-underline">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</a>
+  </p>
+  {%- endif -%}
+
+  <div class="mt-2 h-[5px] border-y-[3px] border-double border-ink-strong" aria-hidden="true"></div>
+
+  <p class="mt-2 mb-0 text-lede font-semibold tracking-body text-ink-strong">{{ site.tagline | default: 'Mapping the connections they don&rsquo;t want you to know about' }}</p>
+</div>

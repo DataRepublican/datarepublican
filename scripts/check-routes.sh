@@ -22,6 +22,17 @@ BASE="${1:-http://localhost:4000}"
 BUILD="${2:-_site}"
 BASE="${BASE%/}"
 
+# A server with SPA fallback turned on answers 200 for everything, which makes
+# every assertion below pass while every route is really the home page. Prove
+# the server 404s before trusting anything it says.
+probe=$(curl -s -o /dev/null -w '%{http_code}' -L --max-time 30 "${BASE}/__route-check-probe-$$")
+if [ "$probe" = "200" ]; then
+  echo "FATAL: ${BASE} answers 200 for a path that does not exist."
+  echo "The server has SPA/single-page fallback enabled, so this check cannot"
+  echo "tell a live route from a missing one. Serve the build without it."
+  exit 1
+fi
+
 missing=0
 checked=0
 

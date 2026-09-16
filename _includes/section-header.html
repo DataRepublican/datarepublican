@@ -1,0 +1,19 @@
+{%- comment -%}
+  A blue section label with a rule under it, and an optional control on the
+  right — the `Latest ⌄` slot in the mocks.
+
+  Usage:
+    {% include section-header.html title="Tools" %}
+    {% include section-header.html title="Tools" control=some_html %}
+
+  The label colour is `label` (#0A3552), a deep navy. It is deliberately not
+  the brand blue (#349CE2), which reads too light at this weight.
+{%- endcomment -%}
+
+<div class="mt-8 first:mt-6">
+  <div class="flex items-end justify-between gap-4">
+    <h2 class="m-0 text-title font-bold tracking-title text-label">{{ include.title }}</h2>
+    {%- if include.control %}<div class="shrink-0 pb-0.5">{{ include.control }}</div>{% endif -%}
+  </div>
+  <div class="mt-2 border-t-2 border-ink-strong" aria-hidden="true"></div>
+</div>

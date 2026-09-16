@@ -49,10 +49,22 @@ jobs:
       - name: Install browsers
         run: npx playwright install --with-deps chromium
 
+      # Deliberately python's http.server rather than `npx serve`.
+      #
+      # `serve` applies clean-URL rewriting: it redirects /officers/index.html
+      # to /officers, dropping the trailing slash. Relative asset paths on that
+      # page then resolve against / instead of /officers/, so jquery.min.js,
+      # jszip.min.js and papaparse.min.js all 404 and the tool never runs.
+      # GitHub Pages preserves the trailing slash, so `serve` fails pages that
+      # work in production. `--single` is worse still — it answers 200 for
+      # every path, which makes the route check pass while nothing resolves.
+      #
+      # http.server serves directory index.html, preserves paths, and returns
+      # real 404s, which is what Pages does.
       - name: Serve the build
         run: |
-          npx --yes serve -l 4000 _site --no-clipboard --single=false &
-          npx --yes wait-on http://localhost:4000 --timeout 60000
+          python3 -m http.server 4000 --directory _site &>/dev/null &
+          until curl -sf -o /dev/null http://localhost:4000/; do sleep 0.5; done
 
       # The route contract. Every URL the live site serves today must still
       # resolve. A deliberate removal means updating tests/routes.txt in the

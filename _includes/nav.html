@@ -1,0 +1,55 @@
+{%- comment -%}
+  The three-item pill. Tools is the home page, so there is no Home item.
+
+  One DOM order, two layouts: the pill floats at the bottom of the viewport on
+  a phone (thumb reach) and becomes static directly under the masthead at md,
+  which is where it sits in the desktop reflow.
+
+  Items are 36px tall in the mock. The tap target is padded to 44px without
+  growing the pill, so the visual matches the design and the hit box matches
+  the platform guidance.
+{%- endcomment -%}
+
+{%- assign here = page.url -%}
+{%- capture nav_items -%}
+/|Tools|tools,/about/|About|user,/donate/|Donate|donate
+{%- endcapture -%}
+
+{#- The scrim only exists to keep the pill legible over scrolling content. -#}
+<div class="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-28 bg-gradient-to-b from-transparent to-surface/80 md:hidden" aria-hidden="true"></div>
+
+<nav aria-label="Primary"
+     class="fixed inset-x-0 bottom-4 z-50 flex justify-center px-gutter md:static md:mt-4 md:mb-2 md:block md:px-0">
+  <ul class="m-0 flex list-none items-center gap-1 rounded-pill border border-white/60 bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[3px] md:w-max md:shadow-none">
+    {%- assign items = nav_items | strip | split: ',' -%}
+    {%- for item in items -%}
+      {%- assign parts = item | split: '|' -%}
+      {%- assign href = parts[0] -%}
+      {%- assign label = parts[1] -%}
+      {%- assign icon = parts[2] -%}
+      {%- if href == '/' -%}
+        {%- if here == '/' -%}{%- assign is_current = true -%}{%- else -%}{%- assign is_current = false -%}{%- endif -%}
+      {%- else -%}
+        {%- if here contains href -%}{%- assign is_current = true -%}{%- else -%}{%- assign is_current = false -%}{%- endif -%}
+      {%- endif -%}
+    <li class="m-0">
+      <a href="{{ href | relative_url }}"
+         {% if is_current %}aria-current="page"{% endif %}
+         class="flex min-h-tap items-center gap-2 rounded-pill px-4 text-body font-bold tracking-[-0.03em] !no-underline !text-ink-strong
+                {% if is_current %}bg-gradient-to-b from-[#EDEDED] to-[#CACACA] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]{% endif %}">
+        <span class="shrink-0" aria-hidden="true">
+          {%- case icon -%}
+          {%- when 'tools' -%}
+          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          {%- when 'user' -%}
+          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          {%- when 'donate' -%}
+          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></svg>
+          {%- endcase -%}
+        </span>
+        {{ label }}
+      </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+</nav>
