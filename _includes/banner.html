@@ -76,7 +76,13 @@
 </aside>
 
 {%- comment -%} The trailer overlay, rendered only if some action asks for it. {%- endcomment -%}
-{%- for a in b.actions -%}{%- if a.modal == 'trailer' -%}
+{%- comment -%} Picked, not looped. Emitting this from a loop meant two actions
+  with `modal: trailer` would produce two #trailer-modal elements, and
+  chrome.js's getElementById would play the first for both. (Limiting the loop
+  to one iteration is NOT the fix — the trailer is the second action in
+  banner.yml, so that renders no modal at all.) {%- endcomment -%}
+{%- assign trailer = b.actions | where: 'modal', 'trailer' | first -%}
+{%- if trailer -%}{%- assign a = trailer -%}
 <div id="trailer-modal" hidden
      class="fixed inset-0 z-[100] items-center justify-center bg-black/80 p-4">
   <div class="relative w-full max-w-4xl">
@@ -88,5 +94,5 @@
     </video>
   </div>
 </div>
-{%- endif -%}{%- endfor -%}
+{%- endif -%}
 {%- endif -%}

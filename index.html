@@ -19,10 +19,13 @@ description: Search federal grants, nonprofit filings, officers and funding netw
 {%- endcomment -%}
 
 {%- assign tools = site.data.tools -%}
-{%- assign by_featured = tools | sort: 'rank' -%}
+{%- assign by_featured = tools | sort: 'rank', 'last' -%}   {%- comment -%} 'last': a missing rank sorts to the end, not the top {%- endcomment -%}
 {%- assign by_latest = tools | sort: 'updated' | reverse -%}
 {%- assign by_alpha = tools | sort: 'name' -%}
-{%- assign cats = tools | map: 'category' | uniq | sort -%}
+{%- comment -%} compact drops nils: a tool with no `category` would otherwise
+  put nil in this array and Jekyll's sort raises "comparison of String with
+  nil failed", which fails the build rather than degrading the page. {%- endcomment -%}
+{%- assign cats = tools | map: 'category' | compact | uniq | sort -%}
 
 {%- comment -%} Flatten categories into one ordered sequence, headers included. {%- endcomment -%}
 {%- assign catmap = '' -%}
@@ -79,7 +82,9 @@ description: Search federal grants, nonprofit filings, officers and funding netw
     {%- assign o_alpha = 0 -%}
     {%- for x in by_alpha -%}{%- if x.href == t.href -%}{%- assign o_alpha = forloop.index0 -%}{%- endif -%}{%- endfor -%}
 
-    {%- assign o_cat = 0 -%}
+    {%- comment -%} -1, not 0: 0 is the first category header's real position, so a
+      tool missing from catmap would render stacked on top of it. {%- endcomment -%}
+    {%- assign o_cat = -1 -%}
     {%- for e in catentries -%}
       {%- assign kv = e | split: '=' -%}
       {%- if kv[0] == t.href -%}{%- assign o_cat = kv[1] -%}{%- endif -%}

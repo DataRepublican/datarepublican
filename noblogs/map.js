@@ -86,7 +86,16 @@
           + ' &middot; ' + esc(String(d.cat).replace(/_/g, ' '))
           + (d.militancy && d.militancy !== 'none' ? ' &middot; militancy: ' + esc(d.militancy) : '')
           + '</div><div>' + (d.summary || '') + '</div>'
-          + (d.dox ? '<div style="margin-top:4px;font-size:11px;color:#8A5A1A">Doxxing-flagged &mdash; source links withheld</div>' : '')
+          // Restores master's behaviour exactly: the hostname is shown either way,
+          // as a link for a normal blog and as a withheld notice for a flagged one.
+          // An earlier rewrite dropped both the hostname and the outbound link,
+          // which on this page - where the popup IS the detail view - left no way
+          // to reach the blog at all.
+          + '<div style="margin-top:4px;font-size:11px">'
+          + (d.dox
+              ? '<span style="color:#8a5a5a;font-style:italic" title="Live-link withheld - doxxing blog">' + esc(d.host) + ' &middot; link withheld</span>'
+              : '<a href="https://' + esc(d.host) + '" target="_blank" rel="noopener">' + esc(d.host) + '</a>')
+          + '</div>'
           + (d.contacts || '')
           + '<div style="margin-top:6px;font-size:12px"><a href="#" onclick="window.__nbOpenDetail(\''
           + esc(d.host) + '\');return false" style="color:#2980b9;font-weight:600">full details &#8599;</a></div>';

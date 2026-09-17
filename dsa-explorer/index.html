@@ -12,7 +12,7 @@ title: DSA Explorer
   with `uri` pointing at logos/img/ instead of carrying the bytes. The images
   load lazily as the graph draws them.
 
-  Regenerate with `node scripts/extract-dsa-logos.mjs` after the pipeline drops
+  Regenerate with `node scripts/extract-logo-blobs.mjs` after the pipeline drops
   new .embed.js files in. Those stay in the repo as the pipeline's artifacts and
   are excluded from the build in _config.yml.
 {%- endcomment -%}
@@ -146,8 +146,12 @@ title: DSA Explorer
     /* Legend collapses to its toggle; the full key opens upward as before but
        is capped so it cannot swallow the canvas. */
     #legend{left:8px;right:8px;bottom:60px;max-width:none}
-    #legend .legbar{display:none}
-    #legend.expanded .legbar{display:flex}
+    /* Collapse the chip row, NOT .legbar — .legtoggle lives inside .legbar, so
+       hiding the bar hid the only control that can expand the legend, and the
+       ideology filter became unreachable on a phone. */
+    #legend .legbar{padding:0;background:none;border:0;box-shadow:none}
+    #legend .legchips{display:none}
+    #legend.expanded .legchips{display:flex}
     #legend .legtoggle{min-height:2.75rem;border-radius:9999px;background:rgba(255,255,255,.95);padding:0 14px}
     #legend .legfull{max-width:none;max-height:45dvh}
 

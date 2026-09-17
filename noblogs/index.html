@@ -564,7 +564,10 @@ function openModal(h){
     document.getElementById('panel').classList.add('on');
     document.getElementById('scrim').classList.add('on');
     document.getElementById('pinner').innerHTML='<div class="pempty">Loading details…</div>';
-    loadDetail().then(()=>{ if(SEL===h) renderModal(h); });
+    history.replaceState(null,'',urlFor(h));   // the URL should carry ?host= now, not later
+    // loadDetail() re-renders whatever is open when it lands, so do not also
+    // render here -- that ran renderModal twice for the same host.
+    loadDetail();
     return;
   }
   renderModal(h);
@@ -906,8 +909,17 @@ function readURL(){const p=new URLSearchParams(location.search);
   // and EDGES are inlined into the document — before seeing anything. The map
   // is one tap away and still loads lazily on first activation.
   const v=p.get('view')||'dash'; document.querySelector(`.tab[data-v="${v}"]`)?.click();
-  const host=p.get('host'); if(host)setTimeout(()=>{openModal(host);
-    if(p.get('opennews'))document.querySelector('#pinner details.news')?.setAttribute('open','');},0);}
+  // ?opennews=1 expands the news disclosure. `ne` lives in the deferred payload,
+  // so on a cold load the <details> does not exist yet when openModal returns --
+  // it only paints a placeholder. Wait for the detail to land before reaching
+  // for it. This worked on master because one file carried everything.
+  const host=p.get('host');
+  if(host)setTimeout(()=>{
+    openModal(host);
+    if(!p.get('opennews'))return;
+    const openNews=()=>document.querySelector('#pinner details.news')?.setAttribute('open','');
+    if(detailReady)openNews(); else loadDetail().then(()=>{if(SEL===host)openNews();});
+  },0);}
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 /* ---- mobile shell -------------------------------------------------------

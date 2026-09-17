@@ -106,10 +106,14 @@
 
     function open(detent) {
       if (detent) state.detent = detent;
+      var wasOpen = state.open;
       state.open = true;
       el.classList.add('is-open');
       if (isMobile()) {
-        lastFocused = document.activeElement;
+        // Only on the first open of a run. dsa-explorer calls open() on every
+        // node tap, and after the first the active element is the sheet itself --
+        // so re-capturing here made close() restore focus to a closed sheet.
+        if (!wasOpen) lastFocused = document.activeElement;
         scrim.hidden = false;
         el.setAttribute('aria-modal', 'true');
         applyHeight();
@@ -208,6 +212,10 @@
           el.style.height = '';
           el.style.transform = '';
         } else if (state.open) {
+          // Coming back to mobile with the sheet still open: the scrim was
+          // hidden on the way out and has to come back, or you get a modal
+          // sheet with no backdrop and no way to dismiss it by tapping away.
+          scrim.hidden = false;
           applyHeight();
         }
       }, 120);
