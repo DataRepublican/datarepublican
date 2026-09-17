@@ -67,133 +67,103 @@ bundle install    # Install Ruby dependencies
 yarn install      # Install Node.js dependencies
 ```
 
-## Run the site
-
-1. `yarn start`
-2. Open the site at `http://localhost:4000`
-
-This runs the CSS watcher and the Jekyll dev server together.
-
-> **Before you commit, run `git restore docs/`.**
->
-> `docs/` is the committed build output that GitHub Pages serves today, and the
-> dev server rewrites it in place — a `serve` run repoints canonical links,
-> `og:url` and `og:image` across ~20 pages at `http://localhost:4000`.
->
-> This warning goes away once `docs/` stops being committed. That is the second
-> half of the CI change; see **Deploying** below.
-
-If you only want one piece:
-
-- `bundle exec jekyll serve --livereload` — the server on its own (add
-  `--verbose` for more output)
-- `yarn run watch:css` — the Tailwind watcher, only needed when editing CSS
-
-## Build the site
+## Run the site locally
 
 ```bash
-npm run build
+bundle install     # Ruby deps (once)
+yarn install       # Node deps (once)
+yarn start         # then open http://localhost:4000
 ```
 
-That is PostCSS then Jekyll, in that order, with `JEKYLL_ENV=production` set.
-Both halves matter:
+`yarn start` does three things in order:
 
-- Jekyll does **not** invoke PostCSS, so `assets/css/styles.css` has to be
-  generated before the site build or you ship the previous stylesheet.
-- `JEKYLL_ENV=production` has to be an environment variable. Passed *after* the
-  command, Jekyll reads it as a positional argument and silently ignores it,
-  which is what the old `doIt.sh` did.
+1. **Splits the NoBlogs data** (`scripts/split-noblogs-data.mjs`). `/noblogs`
+   fetches `data.index.json` and `data.detail.json`, which are generated from
+   `data.json` and gitignored. Skip this and `/noblogs` 404s both files.
+2. **Watches the CSS.** Jekyll does not run PostCSS, so without this the
+   Tailwind stylesheet never rebuilds as you edit.
+3. **Serves the site to `_site`** with livereload.
 
-Output goes to `_site/`, which is gitignored. Serve it with
-`npm run serve:build` (stop the dev server first — same port).
+Running a piece on its own:
 
-## Deploying
+| | |
+|---|---|
+| `npm run data:split` | regenerate the NoBlogs index/detail files |
+| `npm run watch:css` | Tailwind watcher only |
+| `npm run jekyll:serve` | server only (assumes the two above have run) |
+| `npm run build` | one-shot production build into `_site/` |
+| `npm run serve:build` | serve what `npm run build` produced |
 
-CI builds and publishes. `.github/workflows/deploy.yml` runs on `master`, builds
-the site and pushes it to GitHub Pages, with two gates before anything uploads:
-
-- **Size.** The build is ~430 MB against a 1 GB Pages ceiling, so it fails with
-  a message naming the cause rather than at upload time with an opaque one.
-- **The route contract.** `tests/routes.txt` lists every published URL. A build
-  whose routes differ from that file never reaches production. Removing a page
-  deliberately means editing that file in the same commit, so it shows up in
-  review.
-
-`.github/workflows/ci.yml` runs the same build plus the test suite on every PR.
-
-### Finishing the cutover
-
-Pages **Source** is already set to *GitHub Actions*. One step remains:
-
-1. Verify a deploy serves the live site correctly.
-2. Then remove `docs/` from git and delete the `git restore docs/` warning above.
-
-Until step 2, `docs/` is dead weight — committed, 632 MB, and not what is being
-served.
-
-> Checking the live site by HTTP status will not work: `datarepublican.com`
-> returns **200 for any path**, including ones that do not exist. Compare
-> content, not status codes.
-
-## Testing
+**The dev server no longer touches `docs/`.** It used to write there — that is
+what the old "run `git restore docs/` before you commit" warning was about — and
+it now builds to `_site` like everything else. If you ever see `docs/` dirty in
+`git status`, something ran a bare `jekyll build`/`jekyll serve` without
+`--destination`; recover with:
 
 ```bash
-npm run build
-npm run serve:build &          # or: python3 -m http.server 4000 --directory _site
-npm test                       # Playwright
-npm run test:routes            # every URL in tests/routes.txt still resolves
+git checkout -- docs/ && git clean -fd docs/
 ```
 
-Serve the build with a plain static server. `npx serve` is **not** equivalent:
-it rewrites `/officers/index.html` to `/officers`, dropping the trailing slash,
-so relative script tags resolve against `/` and the page 404s its own
-dependencies. GitHub Pages keeps the trailing slash.
+> `_config.yml` still says `destination: docs` and that is deliberate — Jekyll
+> excludes whatever that names from the *source scan*, which is what keeps the
+> 632 MB committed tree from being read as source. The `--destination _site` on
+> the command line is what decides where output actually goes. Changing the
+> config value instead makes a build start rewriting `docs/`. It goes away when
+> `docs/` does.
 
-The suite covers the usual page-loads-and-has-a-title checks, plus:
+## Promoting to production
 
-- **Mobile reachability** (`test_dsa_explorer_mobile`, `test_noblogs_mobile`) —
-  controls present, ≥44px, and *not occluded* at 390px. A tool can load fine and
-  return correct data while being unusable with a thumb; these catch that.
-- **The tools index** (`test_tools_index`) — every entry in `_data/tools.yml`
-  resolves, and each sort actually reorders. Read by *visual* order, since the
-  sorting is CSS `order` and DOM order would pass regardless.
-- **Payload regressions** — that no `*.embed.js` logo blob is loaded, and that
-  `quotes.embed.js` is fetched once rather than twice.
+Deployment is automatic: **merge to `master` and GitHub Actions builds and
+publishes.** There is no manual build step and nothing to commit into `docs/`.
 
-Use real clicks in new specs, not dispatched `MouseEvent`s. A synthetic event
-goes straight to its target and cannot be intercepted, so it will pass happily
-while an invisible overlay eats every tap a real thumb makes.
+`.github/workflows/deploy.yml` runs two gates before anything uploads:
 
-## How the site is put together
+- **Size.** The build is ~449 MB against a 1 GB GitHub Pages ceiling. It fails
+  with a message naming the cause rather than at upload time with an opaque one.
+- **The route contract.** `tests/routes.txt` lists every published URL; a build
+  whose routes differ never reaches production. Removing a page deliberately
+  means editing that file in the same commit, so it shows up in review.
 
-- **Chrome** — `_layouts/default.html` is banner → masthead → nav → content →
-  footer. One DOM order for both layouts; the nav pill is `fixed` at the bottom
-  on a phone and `static` under the wordmark at `md`. `_data/banner.yml` drives
-  the site-wide band; `enabled: false` removes it everywhere.
-- **The tools index** — `/` is the tools page, which is why the nav has no Home
-  item. `_data/tools.yml` is the single source of truth for all thirteen tools.
-  `updated` is the last commit touching that tool's directory, so the default
-  "Latest" sort means something; keep it honest.
-- **Compact chrome** — tool pages get a one-line masthead and a shorter banner
-  by default; the five narrative pages opt out in `_config.yml`.
-- **Bottom sheets** — `assets/js/sheet.js`. On a phone, a tool's detail panel
-  becomes a sheet over the canvas instead of a column 700px below the fold.
-  At ≥768px it is `display: contents` and the panel is an ordinary side column.
-  Its styles live *outside* `@layer components` in `assets/css/main.css`,
-  because Tailwind purges layer CSS whose classes never appear in any HTML —
-  and every class there is created at runtime.
+`.github/workflows/ci.yml` runs the same build plus the full test suite on every
+pull request.
 
-## Data and generated assets
+### After a deploy, verify by content — not by status code
 
-The heavy datasets are built by a separate pipeline and dropped into this repo.
-Their on-disk shape and URL contract are an interface — do not change how a tool
-fetches its data without checking the tool still works.
+`datarepublican.com` returns **200 for any path**, including ones that do not
+exist, so "it returns 200" proves nothing. Open the pages and look:
 
-Two generated things do live here, both idempotent and safe to re-run:
+`/` &middot; `/noblogs/` &middot; `/dsa-explorer/` &middot; `/browse/` &middot; `/officers/bulk/` &middot; `/about/`
+
+### Finishing the cutover (one time)
+
+Pages **Source** is already set to *GitHub Actions*. Two steps remain:
+
+1. Merge the redesign branch, then confirm a deploy serves the live site.
+2. Remove `docs/` from git (10,011 files, 632 MB) and set
+   `_config.yml`'s `destination` to `_site`.
+
+Until step 2, `docs/` is dead weight: committed, and no longer what is served.
+Rollback at any point is **Settings &rarr; Pages &rarr; Source &rarr; `master /docs`**.
+
+## What is generated, and when to regenerate it
+
+Most of the site is committed source. Four things are not, and two of them need
+a manual run after the data pipeline drops new files in.
+
+**Generated on every build — never commit these:**
+
+| | |
+|---|---|
+| `_site/` | the built site |
+| `noblogs/data.index.json`, `noblogs/data.detail.json` | split from `data.json` |
+| `assets/css/styles.css` | Tailwind output (committed today, regenerated by the build) |
+
+**Generated by hand, and committed** — re-run after the pipeline drops new
+artifacts, or the site keeps showing the old ones:
 
 ```bash
 node scripts/extract-logo-blobs.mjs   # after new *.embed.js logo blobs land
-node scripts/capture-previews.mjs     # home page card images
+node scripts/capture-previews.mjs     # home page card images (needs a running server)
 ```
 
 `extract-logo-blobs.mjs` turns `dsa-explorer/logos/*.embed.js` and
@@ -201,6 +171,88 @@ node scripts/capture-previews.mjs     # home page card images
 image files plus a small manifest. Base64 does not compress, so those were 21 MB
 and 12.6 MB *on the wire*. The `.embed.js` files stay in the repo as the
 pipeline's artifacts and are excluded from the build in `_config.yml`.
+
+### The data pipeline's side of the contract
+
+The heavy datasets are built elsewhere and dropped into this repo. **Nothing
+about that changes.** `noblogs/data.json` in particular is consumed exactly as
+delivered — the split happens here, at build time, so there is no chunking
+convention for the pipeline to honour. If `data.json` grows a field, it lands in
+the index untouched and the build still passes.
+
+Two gates run on every build and will stop it rather than ship bad data:
+
+- **Redaction.** 291 doxxing-flagged blogs must carry no link fields; baselines
+  are pinned at 291 blogs / 1,926 news entries / 515 quotes, all at zero links.
+- **Reconstruction.** `data.index.json` + `data.detail.json` must reassemble
+  `data.json` exactly.
+
+## Housekeeping
+
+`git status` should be clean after a dev session. If it is not:
+
+| you see | what it is | what to do |
+|---|---|---|
+| `docs/` modified or deleted | something ran a build without `--destination` | `git checkout -- docs/ && git clean -fd docs/` |
+| `_site/`, `test-results/`, `playwright-report/`, `.jekyll-metadata` | build and test output | gitignored; delete freely |
+| `noblogs/data.index.json` / `data.detail.json` | the split output | gitignored; regenerate with `npm run data:split` |
+| `assets/css/styles.css` modified | Tailwind rebuilt it | commit it if you changed CSS, otherwise `git checkout --` it |
+
+Before opening a PR:
+
+```bash
+npm run build                                   # must be warning-free
+python3 -m http.server 4000 --directory _site &  # a plain static server
+npm run test:routes                             # all 34 routes resolve
+npm test                                        # Playwright
+git status                                      # clean, and no docs/ changes
+```
+
+## Testing
+
+Serve the build with a **plain static server**. `npx serve` is not equivalent:
+it rewrites `/officers/index.html` to `/officers`, dropping the trailing slash,
+so relative script tags resolve against `/` and the page 404s its own
+dependencies. GitHub Pages keeps the trailing slash.
+
+The suite covers the usual page-loads-and-has-a-title checks, plus:
+
+- **Mobile reachability** (`test_dsa_explorer_mobile`, `test_noblogs_mobile`) —
+  controls present, &ge;44px, and *not occluded* at 390px. A tool can load fine
+  and return correct data while being unusable with a thumb.
+- **The tools index** (`test_tools_index`) — every entry in `_data/tools.yml`
+  resolves, and each sort actually reorders. Read by *visual* order, since the
+  sorting is CSS `order` and DOM order would pass regardless.
+- **Payload regressions** — no `*.embed.js` logo blob is loaded,
+  `quotes.embed.js` is fetched once rather than twice, `/noblogs` paints from
+  the index without fetching `data.json`.
+- **Controls that a refactor can silently kill** (`test_review_regressions`) —
+  a selector left pointing at a renamed element leaves the page rendering
+  perfectly with a dead control, which nothing else here would catch.
+
+Use real clicks in new specs, not dispatched `MouseEvent`s. A synthetic event
+goes straight to its target and cannot be intercepted, so it passes happily
+while an invisible overlay eats every tap a real thumb makes.
+
+## How the site is put together
+
+- **Chrome** — `_layouts/default.html` is banner &rarr; masthead &rarr; nav
+  &rarr; content &rarr; footer. One DOM order for both layouts; the nav pill is
+  `fixed` at the bottom on a phone and `static` under the wordmark at `md`.
+  `_data/banner.yml` drives the site-wide band; `enabled: false` removes it
+  everywhere.
+- **The tools index** — `/` is the tools page, which is why the nav has no Home
+  item. `_data/tools.yml` is the single source of truth for all thirteen tools.
+  `updated` is the last commit touching that tool's directory, so the default
+  "Latest" sort means something; keep it honest.
+- **Compact chrome** — tool pages get a one-line masthead and a shorter banner
+  by default; the five narrative pages opt out in `_config.yml`.
+- **Bottom sheets** — `assets/js/sheet.js`. On a phone, a tool's detail panel
+  becomes a sheet over the canvas instead of a column 700px below the fold. At
+  &ge;768px it is `display: contents` and the panel is an ordinary side column.
+  Its styles live *outside* `@layer components` in `assets/css/main.css`,
+  because Tailwind purges layer CSS whose classes never appear in any HTML —
+  and every class there is created at runtime.
 
 ## Troubleshooting
 

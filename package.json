@@ -4,7 +4,7 @@
     "build:css": "postcss assets/css/main.css -o assets/css/styles.css",
     "watch:css": "postcss assets/css/main.css -o assets/css/styles.css --watch",
     "start": "npm run data:split && run-p watch:css jekyll:serve",
-    "jekyll:serve": "bundle exec jekyll serve --incremental --livereload",
+    "jekyll:serve": "bundle exec jekyll serve --destination _site --incremental --livereload",
     "serve:build": "ruby -run -e httpd _site -p 4000",
     "test": "playwright test",
     "test:routes": "scripts/check-routes.sh",
