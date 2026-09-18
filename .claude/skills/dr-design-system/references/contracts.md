@@ -38,6 +38,36 @@ the tool's own `.on` onto `sheet.open()` / `sheet.close()`. Calling the sheet
 directly is the improvement, but `openModal`/`closeModal` must stay the single
 entry point either way.
 
+### `onClose` is not a deselect hook
+
+**The sheet is a view of the selection, not the selection itself.** Dismissing it
+must leave the underlying visualization exactly as it was — same fade, same
+selected element, same camera.
+
+dsa-explorer got this wrong and it shipped. Its `onClose` ran
+`cy.elements().removeClass('faded nbr sel')`, which is the focus-OFF branch of
+its background-tap handler, applied unconditionally — including in focus mode,
+which is the default. So on a phone you tapped a node to read it, and closing
+what you were reading snapped the whole network back to full strength and lost
+the walk.
+
+Two things to take from it:
+
+- The tool's real deselect gesture was **conditional** (focus mode re-applies the
+  ring; only focus-off clears) and the close handler borrowed one branch of it.
+  If you find yourself copying a line out of another handler into `onClose`, that
+  is the smell.
+- "Restoring" state on close is also wrong when restoring **moves** something.
+  `applyFocus()` animates the camera over 420ms, so re-applying it on dismiss
+  would shift the view the user had just positioned.
+
+noblogs is fine: its `onClose` calls `closeModal()`, which only clears its own
+`.on` classes and `SEL`, and touches neither the map nor the graph.
+
+Test a dismissal by **both** paths. The close button and a swipe are different
+code paths, and a swipe from `half` steps to `peek` rather than closing — a
+single drag never reaches `close()` at all.
+
 ## noblogs view tabs
 
 `noblogs/index.html` calls `document.querySelector('.tab[data-v="…"]').click()`

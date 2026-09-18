@@ -950,10 +950,25 @@ function build(nodes, edges, baked){
   // On a phone the details panel is a bottom sheet rather than a column below
   // the canvas, so a node tap answers where you can see it. On desktop
   // DRSheet.attach is inert and this is the old collapse behaviour.
+  /* No onClose. Dismissing the sheet must not touch the graph.
+
+     It used to run `cy.elements().removeClass('faded nbr sel')`, which is the
+     focus-OFF branch of the background-tap handler below — applied
+     unconditionally, including in focus mode, which is the default. So closing
+     the detail sheet on a phone threw away the focus ring and snapped the whole
+     network back to full strength, as if you had turned focus off. You tapped a
+     node to look at it, and closing what you were looking at undid the walk.
+
+     The tool's own deselect gesture is a background tap, and it is conditional:
+     in focus mode it re-applies the ring, and only focus-off clears. The sheet
+     is a VIEW of the selection, not the selection itself, so closing it is not
+     a deselect at all — it leaves the fade, the selected node and the camera
+     exactly where they are. Re-applying the focus here would be wrong for a
+     second reason: applyFocus() animates the camera, so "restoring" the state
+     would move the view the user just positioned. */
   const drSheet = (window.DRSheet ? window.DRSheet.attach(panel, {
     label: 'Node details',
-    detent: 'half',
-    onClose: ()=>{ cy.elements().removeClass('faded nbr sel'); }
+    detent: 'half'
   }) : null);
 
   const reopenPanel = ()=>{
