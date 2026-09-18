@@ -247,6 +247,13 @@ git checkout -- docs/ && git clean -fd docs/
 
 ## Promoting to production
 
+> **This section is out of date and is being rewritten.** It describes a
+> GitHub-Pages-only pipeline. As verified on 2026-09-18, `datarepublican.com` is
+> served by **Coolify** (behind Cloudflare) from the committed `docs/`
+> directory, and GitHub Pages is a second parallel deployment that can no longer
+> publish. See "Deploying" in `CLAUDE.md` for what is actually true, and do not
+> delete `docs/` until the pipeline is settled.
+
 Deployment is automatic: **merge to `master` and GitHub Actions builds and
 publishes.** There is no manual build step and nothing to commit into `docs/`.
 

@@ -85,14 +85,40 @@ which blocks and why.
   tap target applies on phones only.
 - `_data/tools.yml` is the single source of truth for the tools index.
 
-## Deploying
+## Deploying — read this before touching `docs/`
 
-Merge to `master`; Actions builds and uploads `_site`. `docs/` is a committed
-445MB build output from before the Pages cutover — **it is not served**, and
-`README.md` has the steps to finish removing it. Do not regenerate it.
+**`docs/` IS production. Do not delete it.** Verified 2026-09-18 by comparing
+bytes and response headers:
 
-After a deploy, verify by content: `datarepublican.com` returns 200 for any
-path, so a status code proves nothing.
+- `datarepublican.com` is Cloudflare in front of **Coolify**, and what Coolify
+  serves is byte-identical to `docs/` on `master`
+  (`assets/css/styles.css` md5 `d2344d57…` on all three). Production responses
+  carry **no** GitHub Pages headers (`etag`, `x-github-request-id`), so Pages is
+  not the origin.
+- `datarepublican.github.io/datarepublican/` is a **second, parallel** Pages
+  deployment of the same content. Its Source is set to "GitHub Actions" but
+  `master` has no workflow, so nothing can ever publish there — it is frozen on
+  a Sep 3 artifact.
+- Coolify also builds per-PR previews at `<PR#>.datarepublican.com`. These are
+  currently failing with Cloudflare **526** (origin certificate), not a build
+  error.
+
+So the live site is a committed build artifact, and it is stale: `docs/` was
+last built 2026-08-31.
+
+Consequences for anything you do here:
+
+- `_config.yml` still says `destination: docs`, so a **bare `jekyll build` or
+  `jekyll serve` with no `--destination` rewrites production's artifact.**
+  Always go through the npm scripts, which pass `--destination _site`.
+- Coolify's build configuration lives in its own UI, not in this repo. There is
+  no Dockerfile, nixpacks config or compose file here. You cannot review or
+  reproduce the deploy from the source tree.
+- `.github/workflows/deploy.yml` exists on `redesign-v2` only. Merging it adds a
+  *third* publishing path. Decide the architecture first.
+
+After a deploy, verify by content: the domain returns 200 for any path, so a
+status code proves nothing.
 
 ## House style
 
