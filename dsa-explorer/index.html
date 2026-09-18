@@ -41,22 +41,22 @@ title: DSA Explorer
   #dsa-header .disclaimer strong{color:#8A5A1A}
   #cy{width:100%;height:100%;background:
      radial-gradient(circle at 50% 42%, #FFFFFF 0%, #F2F2EE 70%)}
-  #stage{position:relative;overflow:hidden;grid-column:1;grid-row:2}
+  #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2}
   /* controls — NB: the site's global button{} rule paints buttons slate-900 bg + white text;
      these #stage overrides restore readable dark-on-light text and drop the forced min-width/margin */
   #stage button{color:#1A1A1A;background:#fff;min-width:0;margin:0;font-weight:500}
-  #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:5}
+  #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
   #controls button, #controls .grp{border:1px solid #D5D5CE;border-radius:6px;font-size:12px;padding:6px 9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
   #controls button:hover{background:#f0f0ea}
-  #search{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5}
+  #search{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:var(--dr-z-canvas-ui,20)}
   #search input{width:260px;padding:7px 11px;border:1px solid #D5D5CE;border-radius:20px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   /* details-panel collapse: widen the map; a node/edge tap (or the toggle) reopens it */
-  #panelToggle{position:absolute;top:12px;right:12px;z-index:6;border:1px solid #D5D5CE;border-radius:6px;font-size:15px;line-height:1;padding:5px 10px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+  #panelToggle{position:absolute;top:12px;right:12px;z-index:calc(var(--dr-z-canvas-ui,20) + 1);border:1px solid #D5D5CE;border-radius:6px;font-size:15px;line-height:1;padding:5px 10px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
   #panelToggle:hover{background:#f0f0ea}
   #app.panel-collapsed{grid-template-columns:1fr 0}
   #app.panel-collapsed aside{display:none}
   /* legend — slim bottom bar (ideology chips); click ⌃ Legend to expand the full key upward */
-  #legend{position:absolute;left:12px;bottom:12px;z-index:5;display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
+  #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
   #legend .legbar{background:rgba(255,255,255,.96);border:1px solid #E2E2DD;border-radius:8px;padding:5px 8px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   #legend .legtoggle{border:1px solid #D5D5CE;border-radius:6px;font-size:11px;padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end}
   #legend .legtoggle:hover{background:#f0f0ea}
@@ -134,12 +134,12 @@ title: DSA Explorer
     #cy{touch-action:pan-y}
 
     /* Search first: full width across the top, clear of everything else. */
-    #search{position:absolute;top:8px;left:8px;right:8px;transform:none;z-index:6}
+    #search{position:absolute;top:8px;left:8px;right:8px;transform:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
     #search input{width:100%;min-height:2.75rem;font-size:16px}
 
     /* Controls: one horizontal, scrollable row along the bottom of the canvas,
        at 44px. Not a 160px column over the graph. */
-    #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:6}
+    #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
     #controls::-webkit-scrollbar{display:none}
     #controls button{min-height:2.75rem;flex:0 0 auto;white-space:nowrap;font-size:13px;padding:0 12px;border-radius:9999px;background:rgba(255,255,255,.95);backdrop-filter:blur(2px)}
     #controls .grp{display:contents}

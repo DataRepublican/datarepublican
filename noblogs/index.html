@@ -36,7 +36,7 @@ title: TrumpBlogs formerly known as NoBlogs
      already set the 20px gutter, so anything this header adds pushes the
      title, the search field and the disclaimer inboard of the map and the
      grid below them. The measure is the content container's, not ours. */
-  #nb-header{position:sticky;top:0;z-index:600;background:var(--bg);border-bottom:1px solid var(--line);
+  #nb-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30);background:var(--bg);border-bottom:1px solid var(--line);
     padding:11px 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
   h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
   h1 .gold{color:var(--gold)}
@@ -104,14 +104,14 @@ title: TrumpBlogs formerly known as NoBlogs
   .loadmore:hover{background:#F2F2EC}
 
   /* ---- detail drawer (dsa-explorer style: docked sidebar, not a modal) ---- */
-  #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:850;
+  #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:var(--dr-z-scrim,55);
     opacity:0;pointer-events:none;transition:opacity .2s}
   #scrim.on{opacity:1;pointer-events:auto}
   #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;width:392px;max-width:94vw;background:var(--bg);
-    border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:900;
+    border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:var(--dr-z-panel,60);
     transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto}
   #panel.on{transform:translateX(0)}
-  .pclose{position:sticky;top:0;float:right;z-index:5;margin:0;border:none;background:transparent;
+  .pclose{position:sticky;top:0;float:right;z-index:var(--dr-z-raised,10);margin:0;border:none;background:transparent;
     font-size:20px;line-height:1;color:var(--dim);cursor:pointer;padding:14px 16px}
   .pclose:hover{color:var(--ink)}
   #pinner .top{display:flex;gap:13px;padding:16px 16px 14px;border-bottom:1px solid var(--line)}
@@ -180,10 +180,33 @@ title: TrumpBlogs formerly known as NoBlogs
      `.info` and `.legend` because it owned its document. Here they are scoped
      under #mapwrap — the reason the iframe existed in the first place was to
      keep three stylesheets that each assumed that from colliding. */
-  #mapwrap{position:relative;width:100%;
+  /* `isolation:isolate` is the load-bearing declaration here, not decoration.
+
+     Leaflet numbers its own panes in the high hundreds — .leaflet-map-pane 400,
+     .leaflet-control 800, .leaflet-top/.leaflet-bottom 1000 — and it is
+     entitled to, because it assumes it owns a stacking context. It did not have
+     one: #mapwrap was position:relative with no z-index and #mapcanvas
+     position:absolute with no z-index, and NEITHER of those creates one. So
+     every Leaflet pane was hoisted into the ROOT stacking context and competed
+     against the site's own layers directly. .leaflet-top at 1000 beat the
+     mobile detail sheet at 60 — the sheet opened UNDERNEATH the map — and beat
+     the desktop drawer at 900, so the zoom control floated over an open drawer
+     that its scrim could not cover.
+
+     The wrong fix is to out-bid it; that is how you get a 1200 and then a 9999,
+     and this file was already running 600/850/900/1000/1100/1150/1200 while the
+     sheet stayed underneath. The right fix is to give the canvas the stacking
+     context Leaflet already assumed it had. Every pane is then scoped to this
+     box, the box itself participates at z-index:auto, and the site scale is the
+     only thing ordering the page.
+
+     #graphouter takes it too. Cytoscape draws to a single <canvas> and does not
+     need it, but the rule is that a tool canvas is always an isolated box, so
+     no vendored stylesheet can reach the page again. */
+  #mapwrap{position:relative;width:100%;isolation:isolate;
     height:calc(100dvh - var(--nb-header-h,56px) - var(--nb-filterbar-h,0px) - var(--nav-clearance))}
   #mapcanvas{position:absolute;inset:0}
-  #mapwrap .info{position:absolute;top:10px;right:10px;z-index:1000;background:#fff;padding:10px 12px;
+  #mapwrap .info{position:absolute;top:10px;right:10px;z-index:var(--dr-z-canvas-ui,20);background:#fff;padding:10px 12px;
     border-radius:6px;box-shadow:0 1px 5px rgba(0,0,0,.4);font:13px/1.4 system-ui;max-width:230px;
     max-height:calc(100% - 20px);overflow-y:auto}
   #mapwrap .info h4{margin:0 0 6px;font-size:14px}
@@ -197,7 +220,7 @@ title: TrumpBlogs formerly known as NoBlogs
   #mapwrap .logopin i{display:block;width:40px;height:40px;border-radius:50%;background:#fff center/cover no-repeat;
     box-shadow:0 0 0 1px #fff}
   .nb-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    color:var(--dim);font-size:13px;background:var(--bg);z-index:1100}
+    color:var(--dim);font-size:13px;background:var(--bg);z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
   .nb-loading[hidden]{display:none}
 
   /* On a phone the 230px info panel covered most of a 390px map. It collapses
@@ -210,7 +233,7 @@ title: TrumpBlogs formerly known as NoBlogs
     #mapwrap .info.open h4::after{content:" ▴"}
   }
 
-  #graphouter{position:relative;width:100%;
+  #graphouter{position:relative;width:100%;isolation:isolate;
     height:calc(100dvh - var(--nb-header-h,56px) - var(--nb-filterbar-h,0px) - var(--nav-clearance))}
   #graphwrap{width:100%;height:100%}
 
@@ -244,12 +267,12 @@ title: TrumpBlogs formerly known as NoBlogs
   body.nb-facets-open #dashview{display:block !important}
   body.nb-facets-open:not([data-view="dash"]) #dashview > main{display:none}
   body.nb-facets-open aside#facets{
-    display:block;position:fixed;z-index:1200;
+    display:block;position:fixed;z-index:var(--dr-z-popover,70);
     top:var(--nb-facet-top,120px);left:var(--nb-facet-left,20px);
     width:min(300px,calc(100vw - 40px));max-height:var(--nb-facet-maxh,60dvh);
     overflow-y:auto;padding:14px;border:1px solid var(--line);border-radius:12px;
     box-shadow:0 12px 32px rgba(0,0,0,.18);background:var(--panel)}
-  #nb-facetscrim{position:fixed;inset:0;z-index:1150;background:transparent}
+  #nb-facetscrim{position:fixed;inset:0;z-index:calc(var(--dr-z-popover,70) - 1);background:transparent}
   #nb-facetscrim[hidden]{display:none}
 
   /* ---- Phone -------------------------------------------------------------

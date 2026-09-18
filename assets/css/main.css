@@ -1,3 +1,12 @@
+/* The design tokens, published to :root so the tools' raw CSS and every
+   runtime-generated class can read the same numbers the utilities do.
+   Inlined by postcss-import — see the note in postcss.config.js about why that
+   plugin has to be listed explicitly. It sits above the @tailwind directives
+   because @import has to precede every other statement in a stylesheet; the
+   theme() calls inside it are still resolved, because Tailwind runs after the
+   import has been inlined. */
+@import "./tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
