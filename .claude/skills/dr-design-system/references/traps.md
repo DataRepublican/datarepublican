@@ -115,15 +115,39 @@ stat -f "%Sm %N" -t "%H:%M:%S" <source> _site/<output>
 
 ## 8. `postcss-import` is present but not applied
 
-It is in `node_modules` only because Tailwind depends on it, and **neither build
-path applies it**: `build:css` runs `postcss` directly, and `watch:css` passes
-`--postcss`, which replaces the CLI's built-in pipeline. Without adding it
-explicitly, `@import` statements pass through as literal at-rules — nine
-stylesheets fetched in series, working in dev, waterfalling in production.
+It was in `node_modules` only because Tailwind depends on it, and **neither
+build path applied it**: `build:css` runs `postcss` directly, and `watch:css`
+passes `--postcss`, which replaces the CLI's built-in pipeline. Now listed
+explicitly in `postcss.config.js` and `package.json`.
 
 ```sh
-curl -s localhost:4000/assets/css/styles.css | grep -c '@import'   # must be 0
+curl -s localhost:4000/assets/css/styles.css | grep -c '^@import'   # must be 0
 ```
+
+## 8b. …and a running watcher keeps the old `postcss.config.js` forever
+
+**This one actually shipped broken for an hour.** The Tailwind watcher reads
+`postcss.config.js` once, at boot. Adding `postcss-import` to it while the
+server was already running changed nothing for that process:
+
+1. a manual `build:css` picked up the new config and inlined the tokens — which
+   is what made it look verified
+2. the stale watcher then rebuilt `styles.css` on the next edit, with the old
+   pipeline, leaving `@import "./tokens.css"` as a literal at-rule
+3. the browser fetched the **raw source** `assets/css/tokens.css`, which is full
+   of unprocessed `theme('colors.accent')` calls
+4. every `--dr-*` token evaluated to nothing, and everything keyed off them —
+   the segmented control's fill, the tinted chips — silently lost its styling
+
+Nothing errored. The page just looked wrong in a way that reads exactly like a
+browser cache.
+
+**Restart with `yarn start` after touching `postcss.config.js`.**
+`tailwind.config.js` does not have this problem; the CLI watches it.
+
+The general lesson, and the reason this is worth its own entry: **verifying a
+build change with a one-off command proves the config, not the running system.**
+Check the served artifact, and check it again after the watcher has rebuilt.
 
 ## 9. Another agent can reset your working tree
 

@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (~76 specs, ~35s).
+Tests need the dev server running: `npx playwright test` (105 specs, ~37s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -79,13 +79,24 @@ code again, work down this list — the source was correct every time.
    config, sees every output file newer than its source, and skips the rebuild.
    `yarn start` clears `_site` and `.jekyll-metadata` first, which is the fix.
    Restart via `yarn start`, not `npm run jekyll:serve`.
-2. **Did you add a new Tailwind class in HTML?** Check the rule exists:
+2. **Did you change `postcss.config.js`?** The Tailwind watcher reads it once,
+   at boot, and a long-running watcher keeps the old pipeline forever. This has
+   already bitten: adding `postcss-import` made a manual `build:css` inline the
+   `@import` correctly, then the stale watcher overwrote `styles.css` with the
+   `@import` left as a literal at-rule. The browser fetched the raw
+   `assets/css/tokens.css`, which is full of unprocessed `theme()` calls, so
+   every `--dr-*` token silently evaluated to nothing and anything keyed off
+   them lost its fill. **Restart with `yarn start`.** Detect it with
+   `curl -s localhost:4000/assets/css/styles.css | grep -c '^@import'` — the
+   answer is 0. `tailwind.config.js` does *not* have this problem; the CLI
+   watches it.
+3. **Did you add a new Tailwind class in HTML?** Check the rule exists:
    `curl -s localhost:4000/assets/css/styles.css | grep -F 'your-class'`.
    If it is missing, see the Liquid trap below.
-3. **Is the output actually newer than the source?**
+4. **Is the output actually newer than the source?**
    `stat -f "%Sm %N" -t "%H:%M:%S" <source> _site/<output>`. A stale `_site`
    file reads exactly like a broken change.
-4. **Is the viewport wide enough?** The shell caps at 1600px. On a narrower
+5. **Is the viewport wide enough?** The shell caps at 1600px. On a narrower
    window content filling the screen is correct, not a bug.
 
 ## Traps
