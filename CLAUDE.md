@@ -230,3 +230,23 @@ rather than changed mid-migration. Worth fixing as its own commit afterwards.
 American English in code comments, commit messages and user-facing copy.
 Comments should say *why*, especially where the obvious thing is wrong —
 match the density already in `_includes/`, `_layouts/` and `assets/css/main.css`.
+
+## Skill routing
+
+When the user's request matches an available skill, invoke it via the Skill
+tool. When in doubt, invoke the skill. These are gstack's `g-`-prefixed names
+(see the global CLAUDE.md for why the prefix exists).
+
+- Product ideas/brainstorming → `/g-office-hours`
+- Strategy/scope → `/g-plan-ceo-review`
+- Architecture → `/g-plan-eng-review`
+- Design system/plan review → `/g-design-consultation` or `/g-plan-design-review`
+- Full review pipeline → `/g-autoplan`
+- Bugs/errors → `/g-investigate`
+- QA/testing site behavior → `/g-qa` or `/g-qa-only`
+- Code review/diff check → `/g-review`
+- Visual polish → `/g-design-review`
+- Ship/deploy/PR → `/g-ship` or `/g-land-and-deploy`
+- Save progress → `/g-context-save`
+- Resume context → `/g-context-restore`
+- Author a backlog-ready spec/issue → `/g-spec`
