@@ -180,6 +180,40 @@ Consequences for anything you do here:
 After a deploy, verify by content: the domain returns 200 for any path, so a
 status code proves nothing.
 
+### Going live: the cutover runbook
+
+The repo side of this is already done and sitting on this branch — `Dockerfile`,
+`.dockerignore` and `deploy/nginx.conf` build the site from source instead of
+serving `docs/`. Both halves are verified on real infrastructure (a throwaway
+Coolify app built from `infra/dockerfile-build`): a production-style deploy and
+a per-PR preview both succeeded and served the v2 chrome.
+
+**Nothing is live until someone changes Coolify.** The order below matters;
+each step is reversible, and step 4 is not.
+
+1. **Merge this branch to `master`.** Production does not change — Coolify is
+   still on `build_pack: static` reading `docs/`, and `docs/` is still there.
+2. **Switch the production app** (`qw4koc0gkcwgs8wwckkcc8cc`) to:
+   `build_pack: dockerfile`, `base_directory: /`, `dockerfile_location:
+   /Dockerfile`. Reversible — set the fields back to `static` and `/docs`.
+   This is the first deploy that publishes what `master` actually contains.
+3. **Verify by content**, not status code. `/`, `/noblogs/`, `/dsa-explorer/`,
+   `/browse/`, `/officers/bulk/`, `/about/`. Compare against the throwaway app
+   if it still exists.
+4. **Only then** `git rm -r docs/`, set `_config.yml`'s `destination` to
+   `_site`, and drop `docs` from `exclude`. 426 MB and 10,011 files, and the
+   "a bare `jekyll build` overwrites production" trap goes with them.
+
+**GitHub Pages reads `master:/docs` too.** Step 4 breaks it. Decide before then
+whether Pages stays; if it does, it needs its own source, and it should get a
+`docs/.nojekyll` (it currently re-runs Jekyll over already-built HTML, which
+Coolify does not).
+
+Known and deliberate: `/nope-xyz/` returns **200**, not 404. `try_files $uri
+$uri/ /index.html` in `deploy/nginx.conf` makes the `error_page 404` block dead
+code. That is exactly what production does today and was reproduced on purpose
+rather than changed mid-migration. Worth fixing as its own commit afterwards.
+
 ## House style
 
 American English in code comments, commit messages and user-facing copy.
