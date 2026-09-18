@@ -77,11 +77,21 @@ test.describe('noblogs on a phone', () => {
     await page.click('.tab[data-v="graph"]');
     await page.waitForSelector('#graphwrap #cy canvas', { timeout: 90000 });
 
-    // The explorer's sticky header must still be sticky.
+    // The explorer's sticky header must still be sticky. By id: the site
+    // masthead is a <header> too and comes first in the DOM, so a bare
+    // querySelector returns that one. This assertion used to pass against the
+    // masthead, because the explorer styled bare `header` and made it sticky
+    // by accident — the same bug that cut the masthead rule short.
     const pos = await page.evaluate(
-      () => getComputedStyle(document.querySelector('header')).position
+      () => getComputedStyle(document.getElementById('nb-header')).position
     );
     expect(pos).toBe('sticky');
+
+    // And the site masthead is NOT dragged into the tool's chrome.
+    const mastheadPos = await page.evaluate(
+      () => getComputedStyle(document.querySelector('header.page-column')).position
+    );
+    expect(mastheadPos).toBe('static');
 
     // Both panels exist, under different ids, exactly once each.
     expect(await page.locator('#panel').count()).toBe(1);
@@ -92,15 +102,23 @@ test.describe('noblogs on a phone', () => {
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.card', { timeout: 60000 });
 
-    const { varH, realH } = await page.evaluate(() => ({
+    // #nb-header, not a bare `header`. Both this assertion and the code it
+    // checks used to say `querySelector('header')`, which returns the site
+    // masthead — so the test compared the masthead's height to itself and
+    // passed while --nb-header-h was measuring entirely the wrong element.
+    const { varH, realH, mastheadH } = await page.evaluate(() => ({
       varH: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nb-header-h'), 10),
-      realH: Math.round(document.querySelector('header').offsetHeight),
+      realH: Math.round(document.getElementById('nb-header').offsetHeight),
+      mastheadH: Math.round(document.querySelector('header.page-column').offsetHeight),
     }));
 
     // The header is flex-wrap with a long disclaimer; at 390px it is taller
     // than the 56px the facet rail, scrim, drawer and both iframes assumed.
     expect(varH).toBe(realH);
     expect(realH).toBeGreaterThan(56);
+
+    // The two headers are different elements, so the tautology cannot come back.
+    expect(varH).not.toBe(mastheadH);
   });
 
   test('filters open from one button and nothing intercepts the tap', async ({ page }) => {

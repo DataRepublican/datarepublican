@@ -4,24 +4,13 @@
   tracking, the rule sitting directly under the baseline.
 
   The wordmark is an <h1> on the home page and a <p> everywhere else, so tool
-  pages keep their own <h1> and the document outline stays honest.
+  pages keep their own <h1> and the document outline stays honest. That is the
+  only difference between pages — every page renders the same masthead at the
+  same size. There used to be a `compact` variant that dropped the rule and the
+  tagline on tool pages to buy back phone height; it made internal pages look
+  like a different site, so it is gone.
 {%- endcomment -%}
 
-{%- comment -%}
-  `page.compact` shrinks this to one line and drops the rule and tagline. Tool
-  pages default to it: at 390x844 the full masthead plus the banner consumed
-  about 370px before the tool began, leaving the graph canvas roughly 300px
-  tall. The wordmark still links home, so nothing is lost but height. See the
-  `compact` defaults in _config.yml.
-{%- endcomment -%}
-{%- if page.compact -%}
-<div class="pt-3 pb-1">
-  <p class="m-0 text-[1.5rem] font-bold leading-none tracking-display text-ink-strong md:text-[2rem]">
-    <a href="{{ '/' | relative_url }}" class="!text-ink-strong !no-underline">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</a>
-  </p>
-  <div class="mt-1.5 h-[3px] border-y-2 border-double border-ink-strong" aria-hidden="true"></div>
-</div>
-{%- else -%}
 <div class="pt-5 pb-1">
   {%- if page.url == '/' -%}
   <h1 class="m-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</h1>
@@ -31,8 +20,20 @@
   </p>
   {%- endif -%}
 
-  <div class="mt-2 h-[5px] border-y-[3px] border-double border-ink-strong" aria-hidden="true"></div>
+  {%- comment -%}
+    The rule from the mock, stated exactly: a 5px bar, a 3px gap, a 2px bar,
+    spanning the container. One element — the two bars are the top and bottom
+    borders and the 3px height is the gap between them.
+
+    This was `border-y-[3px] border-double`, which is not the same shape at all:
+    CSS renders a 3px double border as 1px / 1px / 1px, so it drew four hairlines
+    around a 5px gap instead of two bars of different weights.
+
+    The height is the 10px TOTAL, not the 3px gap: Tailwind's preflight sets
+    `box-sizing: border-box`, so the borders are drawn inside the height. Asking
+    for h-[3px] gives 7px of border and no gap at all — one solid bar.
+  {%- endcomment -%}
+  <div class="mt-2 h-[10px] border-t-[5px] border-b-2 border-ink-strong" aria-hidden="true"></div>
 
   <p class="mt-2 mb-0 text-lede font-semibold tracking-body text-ink-strong">{{ site.tagline | default: 'Mapping the connections they don&rsquo;t want you to know about' }}</p>
 </div>
-{%- endif -%}

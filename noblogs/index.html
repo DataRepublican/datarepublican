@@ -8,14 +8,31 @@ title: TrumpBlogs formerly known as NoBlogs
   /* Cancel the padded wrapper <main> ONLY (direct child); the app's own inner <main> keeps its padding. */
   #main-content > main{padding:0 !important;max-width:none !important;min-height:0 !important}
   :root{
-    --bg:#F7F7F5;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;--line2:#EDEDE8;
+    /* --bg is the site surface (theme colour `surface`, #E5E7EB), not a warm
+       grey of this tool's own. It used to be #F7F7F5, and because this rule
+       block is unlayered it beat the site's `bg-surface` on <body> — so the
+       masthead and nav above the tool sat on a different background from every
+       other page. One ground colour for the whole page now. */
+    --bg:#E5E7EB;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;--line2:#EDEDE8;
     --accent:#C0392B;--hi:#C0392B;--med:#B8860B;--low:#4A6FA5;--news:#1B7F4B;--gold:#B8860B;
     --tile:#F1F1EC;--tile2:#F7F7F3;--link:#1155CC;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font:14px/1.45 "Libre Franklin",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-  header{position:sticky;top:0;z-index:600;background:#fff;border-bottom:1px solid var(--line);
+  /* The tool's own chrome — header, facet rail, detail drawer — sits on the
+     page ground rather than on white panels. All three still need an OPAQUE
+     fill, not `transparent`: the header is sticky and the drawer is fixed, so
+     content scrolls underneath both of them.
+
+     #nb-header, not a bare `header`. The site masthead in _layouts/default.html
+     is also a <header>, so the bare selector styled that too: it turned the
+     masthead into a flex container, which collapsed the wordmark block to its
+     content width and left the 5/3/2 rule stopping a third of the way across
+     the page. It also made the masthead sticky at z-index 600. The JS below
+     had the matching bug — `querySelector('header')` returns the masthead,
+     because it comes first in the DOM. */
+  #nb-header{position:sticky;top:0;z-index:600;background:var(--bg);border-bottom:1px solid var(--line);
     padding:11px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
   h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
   h1 .gold{color:var(--gold)}
@@ -33,7 +50,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .tab.on{background:var(--accent);color:#fff}
   .layout{display:flex;align-items:flex-start}
   aside#facets{width:232px;flex:none;position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
-    border-right:1px solid var(--line);padding:14px 14px 40px;background:#FBFBF9}
+    border-right:1px solid var(--line);padding:14px 14px 40px;background:var(--bg)}
   .fgroup{margin-bottom:16px}
   .fgroup h3{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
   .fitem{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12.5px;color:#4a4e56;cursor:pointer}
@@ -86,7 +103,7 @@ title: TrumpBlogs formerly known as NoBlogs
   #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:850;
     opacity:0;pointer-events:none;transition:opacity .2s}
   #scrim.on{opacity:1;pointer-events:auto}
-  #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;width:392px;max-width:94vw;background:var(--panel);
+  #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;width:392px;max-width:94vw;background:var(--bg);
     border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:900;
     transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto}
   #panel.on{transform:translateX(0)}
@@ -208,7 +225,7 @@ title: TrumpBlogs formerly known as NoBlogs
      the detail drawer becomes a bottom sheet, and the tab strip gets real tap
      targets. --nb-header-h is measured at runtime, because this header wraps. */
   @media(max-width:767px){
-    header{padding:9px 14px;gap:10px}
+    #nb-header{padding:9px 14px;gap:10px}
     h1{font-size:15px}
     h1 .gold{display:none}
     .sub{font-size:11px}
@@ -240,7 +257,7 @@ title: TrumpBlogs formerly known as NoBlogs
 <!-- institutional-citation quotes (byHost/byInst) — same redacted, link-gated layer the
      graph uses; loaded here so the shared drawer can show a blog's citing quotes too (#1) -->
 <script src="graph/quotes.embed.js"></script>
-<header>
+<header id="nb-header">
   <div><h1>TrumpBlogs <span class="gold">formerly known as NoBlogs</span></h1><div class="sub" id="subcount">loading…</div></div>
   <input id="search" placeholder="search name, summary, city, tags, quote text…" autocomplete="off">
   <div class="grow"></div>
@@ -925,9 +942,13 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;'
 /* ---- mobile shell -------------------------------------------------------
    The header is `flex-wrap` with a long disclaimer, so it is 56px tall only on
    a wide screen. The facet rail, the scrim, the drawer and both iframes were
-   all pinned to that literal 56. Measure it instead. */
+   all pinned to that literal 56. Measure it instead.
+
+   By id. `querySelector('header')` matched the SITE masthead, which precedes
+   this one in the DOM, so --nb-header-h was the wordmark block's height and
+   every offset derived from it was wrong. */
 (function(){
-  const header=document.querySelector('header');
+  const header=document.getElementById('nb-header');
   if(!header) return;
   const setH=()=>document.documentElement.style.setProperty('--nb-header-h',header.offsetHeight+'px');
   setH();

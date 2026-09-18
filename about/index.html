@@ -7,7 +7,11 @@ permalink: /about/
 
 {% include section-header.html title="About" %}
 
-<div class="mt-5 max-w-[46rem] text-lede leading-relaxed">
+{%- comment -%}
+  `.text-column` is the shared narrative measure — /donate/ uses the same class.
+  Do not set a width here; change it in assets/css/main.css so both pages move.
+{%- endcomment -%}
+<div class="text-column">
   <p>
     Billions of dollars are spent on government grants, charities, and other
     organizations every year. Have you ever wondered where the money is awarded
@@ -67,6 +71,13 @@ permalink: /about/
 </svg>
 {%- endcapture -%}
 
+{%- comment -%}
+  Centred within the reading measure, not across the whole shell. The shell is
+  far wider than the text; a bare mx-auto here put the quote hundreds of pixels
+  to the right of the text it belongs to. `max-w-prose` is the same token
+  `.text-column` uses, so the two cannot drift.
+{%- endcomment -%}
+<div class="max-w-prose">
 <figure class="mx-auto mt-10 max-w-[34rem] rounded-card bg-black/[0.03] px-6 py-7 text-center">
   <div class="flex items-center justify-center gap-4">
     {{ laurel }}
@@ -80,3 +91,4 @@ permalink: /about/
        class="!font-semibold !text-ink-muted !no-underline hover:!underline">Elon Musk</a>
   </figcaption>
 </figure>
+</div>

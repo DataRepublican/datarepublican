@@ -11,12 +11,18 @@
 {%- comment -%}
   One DOM order for both layouts: banner, masthead, nav, content, footer.
 
-  The nav is fixed to the bottom of the viewport on a phone and static at md,
-  where it lands directly under the wordmark. Because the order is the same
-  either way, there is no duplicate markup and no route-gated rendering — the
-  only difference is `position`.
+  The nav is fixed to the bottom of the viewport on a phone and sticky near the
+  top at md, where it lands directly under the wordmark. Because the order is
+  the same either way, there is no duplicate markup and no route-gated
+  rendering — the only difference is `position`.
 
-  `page.wide: true` in front matter widens the content column for tool pages.
+  It is a sibling of <header>, not a child of it. A sticky element can only
+  travel inside its parent's box, so a nav inside the masthead block would
+  scroll away with the masthead and never stick to anything.
+
+  Every page uses the same shell measure — `.page-column` in main.css. Narrower
+  reading columns are a property of the content (`.text-column`, `.prose`), not
+  of the page, so there is nothing to switch on here.
 {%- endcomment -%}
 
 <body>
@@ -24,13 +30,14 @@
 
   {% include banner.html %}
 
-  <header class="page-column{% if page.wide %} page-column--wide{% endif %}">
+  <header class="page-column">
     {% include masthead.html %}
-    {% include nav.html %}
   </header>
 
+  {% include nav.html %}
+
   <div id="content">
-    <main class="@container page-column{% if page.wide %} page-column--wide{% endif %} min-h-[40vh] pb-10">
+    <main class="@container page-column min-h-[40vh] pb-10">
       {{ content }}
     </main>
   </div>

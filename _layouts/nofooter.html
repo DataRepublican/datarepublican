@@ -23,13 +23,14 @@
 
   {% include banner.html %}
 
-  <header class="page-column{% if page.wide %} page-column--wide{% endif %}">
+  <header class="page-column">
     {% include masthead.html %}
-    {% include nav.html %}
   </header>
 
+  {% include nav.html %}
+
   <div id="content">
-    <main class="@container page-column{% if page.wide %} page-column--wide{% endif %} min-h-[40vh] pb-10">
+    <main class="@container page-column min-h-[40vh] pb-10">
       {{ content }}
     </main>
   </div>

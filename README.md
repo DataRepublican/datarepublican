@@ -75,24 +75,158 @@ yarn install       # Node deps (once)
 yarn start         # then open http://localhost:4000
 ```
 
-`yarn start` does three things in order:
+`yarn start` does five things in order:
 
-1. **Splits the NoBlogs data** (`scripts/split-noblogs-data.mjs`). `/noblogs`
+1. **Clears `_site` and `.jekyll-metadata`** so the run cannot inherit stale
+   output. See "Why `start` cleans first" below — this is not paranoia, it is
+   the fix for a specific way the dev server lies to you.
+2. **Creates `test-results/` and `playwright-report/`** (`dev:watchdirs`). They
+   are in `_config.yml`'s `exclude`, but that alone does not stop the watcher —
+   see "Why the empty directories" below.
+3. **Splits the NoBlogs data** (`scripts/split-noblogs-data.mjs`). `/noblogs`
    fetches `data.index.json` and `data.detail.json`, which are generated from
    `data.json` and gitignored. Skip this and `/noblogs` 404s both files.
-2. **Watches the CSS.** Jekyll does not run PostCSS, so without this the
-   Tailwind stylesheet never rebuilds as you edit.
-3. **Serves the site to `_site`** with livereload.
+4. **Builds the CSS once, then watches it.** Jekyll does not run PostCSS, so
+   without this the Tailwind stylesheet never rebuilds as you edit. The watcher
+   is the Tailwind CLI, not `postcss --watch` — see "Why the Tailwind CLI
+   watches the CSS" below.
+5. **Serves the site to `_site`.** No livereload — refresh by hand; see
+   "Why there is no `--livereload`" below for what it was costing.
 
 Running a piece on its own:
 
 | | |
 |---|---|
+| `npm run clean` | drop `_site` and `.jekyll-metadata` |
+| `npm run dev:watchdirs` | create the directories the watcher must ignore |
 | `npm run data:split` | regenerate the NoBlogs index/detail files |
 | `npm run watch:css` | Tailwind watcher only |
-| `npm run jekyll:serve` | server only (assumes the two above have run) |
+| `npm run build:css` | one-shot CSS build (do NOT run while the watcher is up) |
+| `npm run jekyll:serve` | server only (assumes the above have run) |
 | `npm run build` | one-shot production build into `_site/` |
 | `npm run serve:build` | serve what `npm run build` produced |
+
+### Why `start` cleans first
+
+The server runs `--incremental`, which is what keeps edits fast. It also has one
+sharp edge that cost an afternoon, and `npm run clean` is the guard against it.
+
+Incremental mode decides a page is up to date by comparing the source file's
+mtime against the output already sitting in `_site`. It tracks layouts and
+includes as dependencies. It does **not** track `_config.yml` as a dependency of
+anything. So:
+
+1. Edit `_config.yml` while the server is running. The server has the old config
+   cached in memory — it never re-reads the file — but it *does* pick layout and
+   include edits up off disk. It writes pages that are half new, half old.
+2. Restart the server. It now reads the new config correctly, compares mtimes,
+   finds every output file newer than its source, decides there is nothing to do,
+   and serves you the wrong HTML it wrote in step 1.
+
+Nothing warns you. The page looks stale in a way that reads like your change did
+not work, and restarting — the obvious move — cannot fix it, because the restart
+is what skips the rebuild. The symptom that gave it away: `<body class="">` on
+every page after a `defaults:` change, for hours.
+
+Clearing `_site` and `.jekyll-metadata` on every `start` closes it — there is
+nothing stale left to skip, so a restart always means what you think it means.
+
+### Why there is no `--livereload`
+
+Jekyll's own servlet drops your custom headers on everything except HTML when
+livereload is on (`lib/jekyll/commands/serve/servlet.rb`):
+
+```ruby
+if @jekyll_opts["livereload"]
+  return rtn if SkipAnalyzer.skip_processing?(req, res, @jekyll_opts)  # CSS exits here
+  ...
+end
+res.header.merge!(@headers)   # never reached for static assets
+```
+
+`skip_processing?` short-circuits for non-HTML, so `styles.css` went out with
+only `ETag` and `Last-Modified` and no `Cache-Control`. Browsers then apply
+heuristic caching and reuse the stylesheet without revalidating.
+
+That compounds with something incremental builds do: **a CSS-only change
+regenerates no HTML at all.** `assets/css/styles.css` is a static file, not a
+page dependency, so every page keeps the `?v={{ site.time }}` token it was
+built with. The browser re-requests a URL it already has, and nothing tells it
+to revalidate. Net effect: you edit CSS, the file on disk is correct, the
+server is serving it, and the browser shows you the old one — for as long as
+the heuristic lasts.
+
+Without `--livereload` the header reaches every response, so nothing the dev
+server sends is cacheable and a plain refresh is always current. The cost is
+that the page no longer reloads by itself. If you put the flag back, expect the
+CSS-caching behaviour back with it.
+
+Dropping `--incremental` instead was tried and reverted. Full rebuilds of this
+repo are not the five seconds a cold `jekyll build` suggests; under the watcher
+they measured 7s, 21s and 63s, because every pass recopies the two NoBlogs JSON
+payloads (~18 MB). If you run `npm run jekyll:serve` on its own, you are
+bypassing the clean — run `npm run clean` first if you have touched the config.
+
+### Why the Tailwind CLI watches the CSS
+
+`watch:css` used to be `postcss assets/css/main.css -o ... --watch`. PostCSS
+watches the input stylesheet and its CSS imports. It does **not** watch the
+files Tailwind scans for class names. So adding a utility class in an HTML file
+generated nothing: the markup had `hover:bg-black/[0.06]`, no such rule was ever
+emitted, and the style silently did nothing while everything looked correct.
+
+The Tailwind CLI watches the `content` globs, so a class added in any HTML file
+rebuilds the stylesheet (measured: under 5 seconds). Two details matter:
+
+- **`--watch=always`, not `--watch`.** Tailwind's watch mode exits when stdin is
+  not a TTY, which is exactly how `run-p` starts it. With plain `--watch` the
+  process disappeared without an error and the CSS silently stopped rebuilding.
+- **`--postcss postcss.config.js`** keeps autoprefixer in the chain. Output was
+  verified byte-identical to the old PostCSS build after normalising whitespace,
+  so dev and production CSS do not diverge.
+
+Two things to know while it is running:
+
+- **Do not run `npm run build:css`.** Two processes then write
+  `assets/css/styles.css` at once and a request can catch it mid-write.
+- **Watch rebuilds add classes but do not prune removed ones.** A class you
+  delete leaves its rule behind until a full build. `yarn start` runs
+  `build:css` fresh before the watcher, so restarting clears it, and `npm run
+  build` is always clean — stale rules never ship.
+
+### Tailwind cannot see a class glued to a Liquid tag
+
+Tailwind scans raw file text. A class written immediately after a closing Liquid
+tag, with no space between them, is swallowed into a single candidate along with
+that tag, matches no utility, and is never generated.
+
+Assign the classes to a variable first and interpolate that, so every class sits
+inside a quoted string where a quote or a space delimits it. `_includes/nav.html`
+does this for its current/hover state classes. The failure is silent — the page
+renders, the class is in the HTML, and no rule exists.
+
+### Why the empty directories
+
+Anything written inside the repo while the server runs triggers a rebuild, and
+pages 404 for the second or two it takes. Jekyll does not read `.gitignore`, and
+its watcher does not skip dot-directories, so `.gstack/` and Playwright's
+`test-results/` are both in `_config.yml`'s `exclude`.
+
+For `test-results/` the exclude is necessary but not sufficient. Jekyll's watcher
+builds its ignore list with `next unless absolute_path.exist?` — **an excluded
+path that does not exist when the server boots is watched anyway.** Playwright
+creates the directory on its first run, which is after boot, so it was watched
+and every test write rebuilt the site.
+
+That turned one failing test into a cascade: the failure wrote `error-context.md`,
+the write triggered a rebuild, the rebuild 404'd the next page under test, that
+test failed and wrote another file. It presented as a dozen unrelated flaky
+specs, and it got *worse* with `--workers=1` because retries write more. The
+suite went from 2 failed / 10 flaky in 1.5 minutes to 68 passed in 35 seconds
+once the directories existed at boot.
+
+So `start` mkdirs them. They are empty and gitignored; do not delete them while
+the server is running.
 
 **The dev server no longer touches `docs/`.** It used to write there — that is
 what the old "run `git restore docs/` before you commit" warning was about — and
@@ -237,16 +371,49 @@ while an invisible overlay eats every tap a real thumb makes.
 ## How the site is put together
 
 - **Chrome** — `_layouts/default.html` is banner &rarr; masthead &rarr; nav
-  &rarr; content &rarr; footer. One DOM order for both layouts; the nav pill is
-  `fixed` at the bottom on a phone and `static` under the wordmark at `md`.
-  `_data/banner.yml` drives the site-wide band; `enabled: false` removes it
-  everywhere.
+  &rarr; content &rarr; footer. One DOM order for both layouts, and one masthead
+  for every page — home and internal pages render the same wordmark, rule and
+  tagline. The nav pill is `fixed` at the bottom on a phone and `sticky` near
+  the top at `md`; it is a sibling of `<header>`, not a child, because a sticky
+  element can only travel inside its parent's box. `_data/banner.yml` drives the
+  site-wide band; `enabled: false` removes it everywhere.
+- **One shell, many reading measures** — every page uses the same
+  `.page-column` (1600px, `--column-max` on `:root`), so the banner, masthead,
+  rule and nav never change size between the tools index, a tool and a
+  narrative page. That includes the chrome above and below the content: the
+  announcement band and the footer take `.page-column` too, so nothing runs
+  edge to edge past a centred masthead on a wide window. The only things wider
+  than the shell are `position: fixed` overlays, which are meant to cover the
+  viewport. There is deliberately no per-page width setting: a `width`
+  front-matter key used to switch the shell between the full width and 1024px,
+  and the
+  chrome visibly shrank when you navigated from Tools to About.
+  A narrow column is a property of the CONTENT that needs one — `.text-column`
+  (832px) on `/about/` and `/donate/`, `.prose max-w-column` in the markdown
+  layout. Anything else inside a narrative page that should line up with the
+  text, like the About quote, takes `max-w-prose` — the same token
+  `.text-column` is built from, so the two cannot drift.
+- **The masthead rule** — 5px bar, 3px gap, 2px bar. It is one element whose
+  `height` is the 10px total, because preflight sets `box-sizing: border-box`
+  and the two bars are borders drawn inside that height. Asking for the 3px gap
+  as the height collapses it into one solid 7px bar.
+- **Tools must not style bare `header`** — the site masthead is a `<header>`,
+  and it precedes the tool's own in the DOM. `noblogs` and `dsa-explorer` both
+  styled the bare element: `display:flex` turned the masthead into a flex
+  container, which shrank the wordmark block to its content width and cut the
+  rule short, and noblogs made the masthead sticky at `z-index: 600` as well.
+  Its JS had the matching bug — `querySelector('header')` returned the masthead,
+  so `--nb-header-h` measured the wrong element and every offset built on it
+  (facet rail, scrim, drawer, both canvases) was wrong. Both tools now scope to
+  `#nb-header` / `#dsa-header`; `test_review_regressions.spec.js` guards it.
 - **The tools index** — `/` is the tools page, which is why the nav has no Home
   item. `_data/tools.yml` is the single source of truth for all thirteen tools.
   `updated` is the last commit touching that tool's directory, so the default
   "Latest" sort means something; keep it honest.
-- **Compact chrome** — tool pages get a one-line masthead and a shorter banner
-  by default; the five narrative pages opt out in `_config.yml`.
+- **Nav sizing** — the 16px label is the anchor and the pill is sized in `em`
+  from it, so the chrome follows the type instead of drifting from it. The 44px
+  minimum tap target applies on phones only, where the pill *is* the navigation;
+  above `md` the compact pill applies.
 - **Bottom sheets** — `assets/js/sheet.js`. On a phone, a tool's detail panel
   becomes a sheet over the canvas instead of a column 700px below the fold. At
   &ge;768px it is `display: contents` and the panel is an ordinary side column.

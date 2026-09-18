@@ -1,5 +1,10 @@
+{%- comment -%}
+  Both blocks below take `page-column`, so the footer rule and the callout stop
+  at the same measure as the masthead and the content rather than running the
+  full width of the window.
+{%- endcomment -%}
 {% unless page.url contains 'donate' or page.url contains 'browse' %}
-<div class="flex justify-center">
+<div class="page-column flex justify-center">
   <div
     class="m-4 border-2 border-green p-4 rounded text-sm bg-white text-center"
   >
@@ -11,7 +16,7 @@
 </div>
 {% endunless %}
 <footer
-  class="border-t border-gray-200 mt-4 py-4 flex flex-col items-center justify-center gap-6 mb-6"
+  class="page-column border-t border-gray-200 mt-4 py-4 flex flex-col items-center justify-center gap-6 mb-6"
 >
   <div class="flex items-center text-black/75 gap-2">
     <span class="text-xs">Hosted by</span>

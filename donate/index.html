@@ -5,12 +5,18 @@ redirect_from:
   - /tip
 ---
 
-<div class="max-w-3xl mx-auto">
-  <p class="text-sm text-gray-500 pt-8">Donate</p>
+{%- comment -%}
+  Opens the same way /about/ does — the shared section header, then the shared
+  `.text-column` measure from assets/css/main.css. This page used to carry its
+  own `max-w-3xl mx-auto` and a hand-rolled `text-sm text-gray-500` label, which
+  is how the two narrative pages ended up on different widths and different type.
+{%- endcomment -%}
+{% include section-header.html title="Donate" %}
 
-<h1 class="mt-0">Support our work</h1>
+<div class="text-column">
+<h1 class="mt-0 text-title tracking-title text-ink-strong">Support our work</h1>
 <div class="md:float-right mb-2 md:ml-4">
-<img src="/assets/images/avatar.jpg" alt="DataRepublican" width="200" class="rounded">
+<img src="{{ '/assets/images/avatar.jpg' | relative_url }}" alt="DataRepublican" width="200" height="200" class="rounded-card" loading="lazy" decoding="async">
 </div>
 <p>
   I'm <a href="https://x.com/datarepublican" target="_blank" class="text-blue">@DataRepublican</a>, working hard to bring you the most transparent and insightful data on government spending and contracts.
@@ -25,7 +31,7 @@ redirect_from:
     Thank you for being part of this with me.
   </p>
 
-  <h3 class="border-b border-gray-300 pb-2 mb-4">Send a one-time donation</h3>
+  <h3 class="border-b border-rule pb-2 mb-4 text-card-title tracking-title text-ink-strong">Send a one-time donation</h3>
 <p class="mb-12 leading-9">
   {% include donate-button.html url="https://buy.stripe.com/eVacOd7Rr78l8JW4gh" amount="10" %}
   {% include donate-button.html url="https://buy.stripe.com/00gdSh8VvdwJ0dq7su" amount="25" %}
@@ -38,7 +44,7 @@ redirect_from:
 </p>
   
 
-  <h3 class="border-b border-gray-300 mt-8 pb-2 mb-4">Set up a recurring donation (monthly)</h3>
+  <h3 class="border-b border-rule mt-8 pb-2 mb-4 text-card-title tracking-title text-ink-strong">Set up a recurring donation (monthly)</h3>
   <p class="leading-9">
   {% include donate-button.html url="https://buy.stripe.com/eVa9C18VveAN0dqaEJ" amount="10" recurring=true %}
   {% include donate-button.html url="https://buy.stripe.com/4gw29z8Vv0JX6BOcMS" amount="25" recurring=true %}
@@ -49,7 +55,7 @@ redirect_from:
 </p>
 
 
-<p class="text-[13px] text-gray-500 mt-12 pt-8 border-t border-gray-300">
+<p class="text-meta text-ink-muted mt-12 pt-8 border-t border-rule">
   All payments are securely processed by Stripe. <em>Donations are not tax-deductible.</em>
 </p>
 
