@@ -305,23 +305,37 @@
     const classes = [...new Set(G.nodes.filter(n=>n.kind==='institution').map(n=>n.iclass))];
     const order=['authority_legal','watchdog_research','legal_support','party_foundation','movement_infra'];
     const irows = order.filter(k=>classes.includes(k)).map(k=>
-      `<div class="row" data-nkey="n:${k}"><span class="sw" style="background:${ICLASS[k].c}"></span>${ICLASS[k].label}</div>`).join('');
+      `<button type="button" class="row" data-nkey="n:${k}" aria-pressed="true"><span class="sw" style="background:${ICLASS[k].c}"></span>${ICLASS[k].label}</button>`).join('');
     const erows = ['target','critical','authority','infra'].map(k=>
-      `<div class="row" data-ekey="e:${k}"><span class="ln" style="border-color:${EDGE[k].c}"></span>${EDGE[k].label}</div>`).join('');
+      `<button type="button" class="row" data-ekey="e:${k}" aria-pressed="true"><span class="ln" style="border-color:${EDGE[k].c}"></span>${EDGE[k].label}</button>`).join('');
     const legend=$id('legend');
+    /* A real disclosure and real toggles.
+       The rows show and hide a class or an edge type, so they are buttons with
+       aria-pressed — pressed means SHOWN, which is how the graph loads. They
+       were <div>s with a delegated click: not focusable, no state announced.
+       And the legend had no collapse at all, so on a phone it simply ran down
+       the screen over the graph it was describing. */
     legend.innerHTML =
-      `<h4>Institution class — node color</h4>${irows}`+
-      `<h4>Blogs</h4><div class="row" data-nkey="n:blog"><span class="sw" style="background:${BLOG_COL};border-radius:50%"></span>Blog (round · size = impact)</div>`+
-      `<div class="row" data-nkey="n:dox"><span class="sw" style="background:${DOX_COL};border-radius:50%;box-shadow:0 0 0 2px #DC2626"></span>Doxxing-flagged blog</div>`+
+      `<button type="button" class="legtoggle" aria-expanded="false" aria-controls="glegend-body">Legend</button>`+
+      `<div id="glegend-body" class="legbody">`+
+      `<h4>Institution class — node colour</h4>${irows}`+
+      `<h4>Blogs</h4><button type="button" class="row" data-nkey="n:blog" aria-pressed="true"><span class="sw" style="background:${BLOG_COL};border-radius:50%"></span>Blog (round · size = impact)</button>`+
+      `<button type="button" class="row" data-nkey="n:dox" aria-pressed="true"><span class="sw" style="background:${DOX_COL};border-radius:50%;box-shadow:0 0 0 2px #DC2626"></span>Doxxing-flagged blog</button>`+
       `<h4>Edge — “cited-by”</h4>${erows}`+
-      `<div class="hint">Click a legend row to hide/show that class or edge type. Click any node to walk its ties.</div>`;
+      `<div class="hint">Click a legend row to hide or show that class or edge type. Click any node to walk its ties.</div>`+
+      `</div>`;
     legend.addEventListener('click',ev=>{
+      const t=ev.target.closest('.legtoggle');
+      if(t){ t.setAttribute('aria-expanded', t.getAttribute('aria-expanded')==='true'?'false':'true'); return; }
       const row=ev.target.closest('.row'); if(!row) return;
       const nk=row.dataset.nkey, ek=row.dataset.ekey;
       if(nk){ hiddenN.has(nk)?hiddenN.delete(nk):hiddenN.add(nk); }
       else if(ek){ hiddenE.has(ek)?hiddenE.delete(ek):hiddenE.add(ek); }
       else return;
-      row.classList.toggle('off');
+      const hidden=row.classList.toggle('off');
+      // `off` is the dimming; aria-pressed is the state a screen reader reads.
+      // Pressed means shown, so the two run in opposite directions.
+      row.setAttribute('aria-pressed', String(!hidden));
       applyLegendFilter();
     });
   })();
