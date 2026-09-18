@@ -38,14 +38,18 @@ curl -s localhost:4000/assets/css/styles.css | grep -F 'your-class'
 the DOM; the promo band is an `<aside>`; the layout has a `<main>`. A tool
 styling any of them bare reaches across the page.
 
-**How it showed up.** noblogs styled bare `header`, turned the masthead into a
-flex container and made it sticky at z-index 600; its
+**How it showed up, twice.** noblogs styled bare `header`, turned the masthead
+into a flex container and made it sticky at z-index 600; its
 `querySelector('header')` also returned the masthead, so the measured header
-height was the wrong element's. dsa-explorer still styles bare `aside`, so on
-that page only, the promo band picks up `padding:16px 16px 24px` and a left
-border. It already carries `id="panel"` — the fix is mechanical.
+height was the wrong element's. Then dsa-explorer was found styling bare
+`aside` — 26 rules of it — and the promo band IS an `<aside>`, so on that page
+only it carried `padding:16px 16px 24px` and a left border. Both are fixed.
 
-**Guarded by** `tests/test_review_regressions.spec.js` across five page kinds.
+`main` and `#panel` are the two names left on the list.
+
+**Guarded by** `tests/test_review_regressions.spec.js`, which checks the
+masthead AND the banner across five page kinds. Verify a guard like that by
+restoring the bare selector and watching it fail on exactly the one page.
 
 ## 4. A vendored z-index competes in a stacking context you did not mean to share
 
@@ -70,9 +74,23 @@ desktop, Leaflet's zoom control floated over the open drawer, uncovered by its
 scrim.
 
 **Fix.** `isolation: isolate` on the canvas wrapper, which gives Leaflet the
-context it already assumed it had. Never out-bid — that is how you get a 1200 and
-then a 9999. noblogs was already running 600/850/900/1000/1100/1150/1200 and the
-sheet was *still* underneath.
+context it already assumed it had.
+
+**Isolate the vendor's OWN container too, not just the wrapper.** Doing only the
+wrapper fixes the page but breaks the tool's own chrome, and that shipped:
+`#mapcanvas` is `position:absolute` with `z-index:auto`, so Leaflet's panes were
+hoisted exactly one level and competed *inside* `#mapwrap` against the info card
+at 20. `.leaflet-top` is 1000, so it won, and the card carrying the map's
+category filters stopped receiving clicks — `elementFromPoint` over it returned
+`canvas.leaflet-zoom-animated`. Both `#mapwrap` and `#mapcanvas` carry
+`isolation: isolate` now.
+
+The general rule: **contain at the element the vendor writes into.** One level
+of containment moves the problem rather than solving it.
+
+And never out-bid — that is how you get a 1200 and then a 9999. noblogs was
+already running 600/850/900/1000/1100/1150/1200 and the sheet was *still*
+underneath.
 
 **Test it by what a thumb hits, not by the numbers** — the bug was invisible from
 the numbers, and so was a bad test of it. `tests/test_stacking.spec.js` samples

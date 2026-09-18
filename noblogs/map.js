@@ -140,7 +140,13 @@
     var scope = options.legendScope || document;
     function paintLegend() {
       scope.querySelectorAll('.legend .lgrow').forEach(function (r) {
-        r.classList.toggle('off', legendCats.size > 0 && !legendCats.has(r.dataset.cat));
+        var on = legendCats.has(r.dataset.cat);
+        // Two different states, deliberately. `off` is "some other category is
+        // selected and this one is not", which is a dimming; aria-pressed is
+        // "this one is chosen", which is what a screen reader needs. With no
+        // selection at all nothing is pressed and nothing is dimmed.
+        r.classList.toggle('off', legendCats.size > 0 && !on);
+        r.setAttribute('aria-pressed', String(on));
       });
     }
     scope.querySelectorAll('.legend .lgrow').forEach(function (row) {

@@ -273,15 +273,42 @@ title: TrumpBlogs formerly known as NoBlogs
      no vendored stylesheet can reach the page again. */
   #mapwrap{position:relative;width:100%;isolation:isolate;
     height:calc(100dvh - var(--nb-header-h,56px) - var(--nb-filterbar-h,0px) - var(--nav-clearance))}
-  #mapcanvas{position:absolute;inset:0}
+  /* #mapcanvas gets its own stacking context too, and this is load-bearing.
+     Isolating #mapwrap alone is not enough: #mapcanvas is position:absolute
+     with z-index:auto, so Leaflet's panes — .leaflet-map-pane 400,
+     .leaflet-control 800, .leaflet-top 1000 — were hoisted one level and
+     competed inside #mapwrap against .info at 20. Leaflet won, and the info
+     card with the category filters in it stopped receiving clicks entirely:
+     elementFromPoint over the card returned canvas.leaflet-zoom-animated.
+
+     Contain the vendor at ITS OWN container and its numbers stay private. The
+     card then sits above the map on the site's small scale, which is the point
+     of having one. */
+  #mapcanvas{position:absolute;inset:0;isolation:isolate}
   #mapwrap .info{position:absolute;top:10px;right:10px;z-index:var(--dr-z-canvas-ui,20);background:#fff;padding:10px 12px;
     border-radius:6px;box-shadow:0 1px 5px rgba(0,0,0,.4);font:13px/1.4 system-ui;max-width:230px;
     max-height:calc(100% - 20px);overflow-y:auto}
   #mapwrap .info h4{margin:0 0 6px;font-size:14px}
   #mapwrap .legend div{display:flex;align-items:center;margin:2px 0}
-  #mapwrap .legend .lgrow{cursor:pointer;border-radius:4px;padding:1px 3px;user-select:none}
+  /* The legend rows are category FILTERS, so they are buttons. They were
+     <div>s with click handlers at about 19px tall: not focusable, no state
+     announced, and under half the tap target. Everything before `cursor` is
+     undoing the global button rule. */
+  #mapwrap .legend .lgrow{appearance:none;border:0;margin:0;min-width:0;background:none;
+    display:flex;align-items:center;width:100%;text-align:left;
+    font-family:inherit;font-size:inherit;font-weight:400;color:inherit;
+    cursor:pointer;border-radius:4px;padding:1px 3px;user-select:none}
   #mapwrap .legend .lgrow:hover{background:#f0f0ea}
+  /* .off is "filtered out by another category"; aria-pressed is "I am one of
+     the chosen". They are different states and they look different. */
   #mapwrap .legend .lgrow.off{opacity:.32}
+  #mapwrap .legend .lgrow[aria-pressed="true"]{background:var(--dr-accent-tint,#DEE0E8);font-weight:700}
+  #mapwrap .legend .lgrow:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  /* The card's disclosure. It overlays the h4 so the heading still reads as a
+     heading while the whole row is the hit area. Desktop shows the body
+     unconditionally, so the button is hidden there rather than lying. */
+  #mapwrap .info{position:relative}
+  #mapwrap .info .info-toggle{display:none}
   #mapwrap .legend .lghint{color:#999;font-size:10.5px;margin-top:5px;cursor:default}
   #mapwrap .legend .lghint:hover{background:none}
   #mapwrap .legend span{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;border:1px solid #333}
@@ -295,10 +322,19 @@ title: TrumpBlogs formerly known as NoBlogs
      to its heading, and tapping expands it. */
   @media(max-width:767px){
     #mapwrap .info{max-width:none;left:8px;right:8px;top:8px;padding:8px 10px}
-    #mapwrap .info:not(.open) > *:not(h4){display:none}
-    #mapwrap .info h4{margin:0;font-size:13px;cursor:pointer}
-    #mapwrap .info h4::after{content:" ▾";color:#999}
-    #mapwrap .info.open h4::after{content:" ▴"}
+    #mapwrap .info h4{margin:0;font-size:13px}
+    #mapwrap .info h4::after{content:" \25BE";color:#999}
+    #mapwrap .info .info-toggle[aria-expanded="true"] ~ h4::after{content:" \25B4"}
+    /* The button sits over the heading row: the h4 keeps the outline, the
+       button takes the interaction, and the hit area is the full 44px row. */
+    #mapwrap .info .info-toggle{display:block;position:absolute;inset:0 0 auto 0;
+      height:2.75rem;width:100%;appearance:none;border:0;margin:0;min-width:0;
+      background:none;padding:0;cursor:pointer}
+    #mapwrap .info .info-toggle:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px}
+    #mapwrap .info .info-toggle[aria-expanded="false"] ~ .info-body{display:none}
+    /* A 19px row is not a tap target. */
+    #mapwrap .legend .lgrow{min-height:2.75rem;padding:0 6px;font-size:13px}
+    #mapwrap .legend .lghint{min-height:0}
   }
 
   #graphouter{position:relative;width:100%;isolation:isolate;
@@ -437,13 +473,22 @@ title: TrumpBlogs formerly known as NoBlogs
   <div id="mapwrap">
     <div id="mapcanvas"></div>
     <div class="info" id="mapinfo">
-      <h4>World Hyperlocal TrumpBlogs<br><small style="font-weight:400;opacity:.7">formerly known as NoBlogs</small></h4>
+      <!-- A button, not a heading with a click handler. This <h4> carried
+           cursor:pointer and a delegated click that toggled the card open on a
+           phone, so the control that hides a third of a 390px map was not
+           focusable and announced itself as a heading. The h4 stays for the
+           outline; the button is the control. -->
+      <button type="button" class="info-toggle" aria-expanded="false" aria-controls="mapinfo-body"
+              aria-labelledby="mapinfo-title"></button>
+      <h4 id="mapinfo-title">World Hyperlocal TrumpBlogs<br><small style="font-weight:400;opacity:.7">formerly known as NoBlogs</small></h4>
+      <div id="mapinfo-body" class="info-body">
       <div><span id="shownCount">4620</span> of 4620 blogs &middot; 1105 cities</div>
       <div style="color:#888;font-size:11px">4620 image pins (708 hidden-card) &middot; 383 omitted (no/unresolved city)</div>
       <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;cursor:pointer">
         <input type="checkbox" id="edgeToggle" checked> co-citation edges (2413)</label>
       <div style="color:#888;font-size:11px">cities linked by shared movement sources</div>
-      <div class="legend" style="margin-top:8px"><div class='lgrow' data-cat='antifascist'><span style='background:#2C3E50'></span>antifascist</div><div class='lgrow' data-cat='radical_counterinfo_media'><span style='background:#8E44AD'></span>radical counterinfo media</div><div class='lgrow' data-cat='anarchist'><span style='background:#C0392B'></span>anarchist</div><div class='lgrow' data-cat='prisoner_solidarity'><span style='background:#E74C3C'></span>prisoner solidarity</div><div class='lgrow' data-cat='location_based_group'><span style='background:#2980B9'></span>location based group</div><div class='lgrow' data-cat='protest_mobilization'><span style='background:#E67E22'></span>protest mobilization</div><div class='lgrow' data-cat='revolutionary_militant'><span style='background:#7B241C'></span>revolutionary militant</div><div class='lgrow' data-cat='migrant_border_solidarity'><span style='background:#16A085'></span>migrant border solidarity</div><div class='lgrow' data-cat='housing_squat'><span style='background:#D4AC0D'></span>housing squat</div><div class='lgrow' data-cat='labor_militant'><span style='background:#CA6F1E'></span>labor militant</div><div class='lgrow' data-cat='ecological_militant'><span style='background:#229954'></span>ecological militant</div><div class='lgrow' data-cat='feminist_queer_militant'><span style='background:#C2185B'></span>feminist queer militant</div><div class='lgrow' data-cat='historical_resistance_memory'><span style='background:#5D6D7E'></span>historical resistance memory</div><div class='lgrow' data-cat='__other__'><span style='background:#7F8C8D'></span>other</div><div class="lghint">click a category to filter</div></div>
+      <div class="legend" style="margin-top:8px"><button type="button" class='lgrow' data-cat='antifascist' aria-pressed='false'><span style='background:#2C3E50'></span>antifascist</button><button type="button" class='lgrow' data-cat='radical_counterinfo_media' aria-pressed='false'><span style='background:#8E44AD'></span>radical counterinfo media</button><button type="button" class='lgrow' data-cat='anarchist' aria-pressed='false'><span style='background:#C0392B'></span>anarchist</button><button type="button" class='lgrow' data-cat='prisoner_solidarity' aria-pressed='false'><span style='background:#E74C3C'></span>prisoner solidarity</button><button type="button" class='lgrow' data-cat='location_based_group' aria-pressed='false'><span style='background:#2980B9'></span>location based group</button><button type="button" class='lgrow' data-cat='protest_mobilization' aria-pressed='false'><span style='background:#E67E22'></span>protest mobilization</button><button type="button" class='lgrow' data-cat='revolutionary_militant' aria-pressed='false'><span style='background:#7B241C'></span>revolutionary militant</button><button type="button" class='lgrow' data-cat='migrant_border_solidarity' aria-pressed='false'><span style='background:#16A085'></span>migrant border solidarity</button><button type="button" class='lgrow' data-cat='housing_squat' aria-pressed='false'><span style='background:#D4AC0D'></span>housing squat</button><button type="button" class='lgrow' data-cat='labor_militant' aria-pressed='false'><span style='background:#CA6F1E'></span>labor militant</button><button type="button" class='lgrow' data-cat='ecological_militant' aria-pressed='false'><span style='background:#229954'></span>ecological militant</button><button type="button" class='lgrow' data-cat='feminist_queer_militant' aria-pressed='false'><span style='background:#C2185B'></span>feminist queer militant</button><button type="button" class='lgrow' data-cat='historical_resistance_memory' aria-pressed='false'><span style='background:#5D6D7E'></span>historical resistance memory</button><button type="button" class='lgrow' data-cat='__other__' aria-pressed='false'><span style='background:#7F8C8D'></span>other</button><div class="lghint">click a category to filter</div></div>
+      </div>
     </div>
     <div id="maploading" class="nb-loading">Loading map&hellip;</div>
   </div>
@@ -1181,10 +1226,13 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;'
     obs.observe(panel,{attributes:true,attributeFilter:['class']});
   }
 
-  // The map's info panel is collapsed on a phone; its heading toggles it.
+  // The map's info panel is collapsed on a phone. The control is a button with
+  // aria-expanded now, not the <h4> — a heading with a click handler is not
+  // reachable by keyboard and announces itself as a heading.
   document.addEventListener('click',e=>{
-    const h=e.target.closest('#mapwrap .info h4');
-    if(h) h.parentElement.classList.toggle('open');
+    const b=e.target.closest('#mapwrap .info .info-toggle');
+    if(!b) return;
+    b.setAttribute('aria-expanded', b.getAttribute('aria-expanded')==='true' ? 'false' : 'true');
   });
 
   /* Facets behind one button. On a phone the rail put four scrolling filter

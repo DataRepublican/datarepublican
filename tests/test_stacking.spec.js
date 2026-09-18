@@ -91,6 +91,48 @@ test.describe('the detail surface paints over the map', () => {
   });
 });
 
+/* Chrome INSIDE the canvas must also stay above the vendor.
+ *
+ * The first version of the isolation fix put `isolation: isolate` on #mapwrap
+ * only. That contains Leaflet relative to the rest of the page — the sheet and
+ * the drawer were fixed by it — but #mapcanvas is position:absolute with
+ * z-index:auto, so Leaflet's panes were hoisted exactly one level and competed
+ * inside #mapwrap against the info card at 20. Leaflet's .leaflet-top is 1000,
+ * so it won, and the card carrying the category filters stopped taking clicks:
+ * elementFromPoint over it returned canvas.leaflet-zoom-animated.
+ *
+ * The tests above did not catch it because they all ask about the sheet and the
+ * drawer, which live in the ROOT context. Nothing asked about chrome inside the
+ * isolated box. This does. */
+test.describe('the map chrome is above the map', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('the info card takes the click, not the Leaflet canvas', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
+
+    const hit = await page.evaluate(() => {
+      const row = document.querySelector('#mapwrap .legend .lgrow');
+      const r = row.getBoundingClientRect();
+      const el = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return { onRow: el === row || row.contains(el),
+               got: el && `${el.tagName.toLowerCase()}.${(el.className || '').toString().slice(0, 40)}` };
+    });
+    expect(hit.onRow, `Leaflet is covering the legend; hit ${hit.got}`).toBe(true);
+  });
+
+  test('both the wrapper and the Leaflet container are isolated', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#mapcanvas', { timeout: 60000 });
+    const iso = await page.evaluate(() => ({
+      wrap: getComputedStyle(document.getElementById('mapwrap')).isolation,
+      canvas: getComputedStyle(document.getElementById('mapcanvas')).isolation,
+    }));
+    expect(iso.wrap).toBe('isolate');
+    expect(iso.canvas, 'without this Leaflet escapes one level and covers the chrome').toBe('isolate');
+  });
+});
+
 /* One scale, and nothing this repo authors goes above it. The cap is what stops
    the next vendored stylesheet restarting the arms race: you contain a high
    z-index with `isolation: isolate`, you never out-bid it. */
