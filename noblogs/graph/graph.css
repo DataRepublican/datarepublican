@@ -119,5 +119,8 @@
   .nbgraph #gsearch input{width:100%;min-height:2.75rem;font-size:16px}
   .nbgraph #legend{left:8px;right:8px;bottom:60px;max-height:40dvh;overflow:auto}
   .nbgraph .panelToggle{display:none}
+  /* The panel is a DRSheet on a phone; the sheet wrapper owns the geometry, so
+     the aside only has to stop being a grid column. `.collapsed aside{display:none}`
+     still hides it when nothing is selected. */
   .nbgraph aside{grid-column:1;border-left:0;padding:0 15px 15px}
 }

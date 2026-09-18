@@ -336,6 +336,37 @@
   // deselect → return the graph to full width (empty panel is just wasted whitespace)
   function collapsePanel(){panel.innerHTML=EMPTY;if(!appEl.classList.contains('collapsed'))pt.onclick();}
 
+  /* On a phone the detail panel is a bottom sheet, the same one noblogs and
+     dsa-explorer use.
+
+     Without this the panel still opened — it just opened as a block BELOW a
+     full-viewport canvas, at y≈578 on an 844px screen, so tapping a node looked
+     like nothing happened. The content was there and off the fold.
+
+     DRSheet WRAPS rather than nests, which is required here: every open path
+     below rewrites panel.innerHTML wholesale, so anything inserted as a child
+     would be destroyed on the first tap. On desktop the wrapper is
+     display:contents, so #gpanel stays a direct grid child of the 1fr/370px
+     grid and nothing about that layout changes.
+
+     window.DRSheet is undefined on the standalone /noblogs/graph/ page, which
+     loads no site chrome; the guard keeps that page working as it did. */
+  const gSheet = (window.DRSheet ? window.DRSheet.attach(panel, {
+    label: 'Node details',
+    detent: 'half',
+    /* Closing hides the panel again and does NOT touch the graph. The sheet is
+       a view of the selection, not the selection itself — dsa-explorer cleared
+       cy classes here and dismissing the sheet threw away the focus ring and
+       the walk. Leave the fade, the selected node and the camera alone. */
+    onClose: ()=>{ if(!appEl.classList.contains('collapsed')) pt.onclick(); }
+  }) : null);
+
+  // The one way to reveal the panel, so the two states cannot drift apart.
+  function revealPanel(){
+    if(appEl.classList.contains('collapsed')) pt.onclick();
+    if(gSheet && window.DRSheet.isMobile()) gSheet.open();
+  }
+
   /* ---- shared quote renderer (English leads, foreign source collapsible) ---- */
   const IQ=(window.__IQUOTES__||{byInst:{},byHost:{}});
   function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -456,7 +487,7 @@
       if(options.onOpenHost) options.onOpenHost(n.id());
       return;
     }
-    if(appEl.classList.contains('collapsed'))pt.onclick();
+    revealPanel();
     focusMode?applyFocus(n.id()):goto(n.id());
   });
   cy.on('tap',ev=>{if(ev.target===cy){if(focusMode&&focusId)applyFocus(focusId,false);else{cy.elements().removeClass('faded nbr sel');collapsePanel();}}});
@@ -496,7 +527,7 @@
     function focusNode(host, insts){
       const id=[host,...(insts||[])].filter(Boolean).find(d=>cy.$id(d).nonempty());
       if(!id) return false;
-      if(appEl.classList.contains('collapsed'))pt.onclick();
+      revealPanel();
       applyFocus(id);
       setTimeout(()=>{if(cy.$id(id).nonempty())applyFocus(id);},400); // survive layout settle
       return true;

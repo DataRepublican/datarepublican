@@ -88,6 +88,18 @@ category filters stopped receiving clicks — `elementFromPoint` over it returne
 The general rule: **contain at the element the vendor writes into.** One level
 of containment moves the problem rather than solving it.
 
+**And never isolate a box that contains the sheet.** The same commit added
+`isolation: isolate` to `#graphouter` for consistency, and `#graphouter`
+contains `#gpanel` — which DRSheet turns into a `position: fixed` sheet on a
+phone. That scoped the sheet's z-60 *inside* the box while its scrim, appended
+to `document.body` at z-55, stayed outside it. The scrim then covered its own
+sheet and swallowed every tap on the close button. The map is unaffected because
+its sheet wraps `#panel`, a sibling of `#mapview` rather than a child of
+`#mapwrap`.
+
+So: isolate the canvas, never an ancestor of the detail panel. Before adding
+`isolation` anywhere, ask what `position: fixed` descendants the box has.
+
 And never out-bid — that is how you get a 1200 and then a 9999. noblogs was
 already running 600/850/900/1000/1100/1150/1200 and the sheet was *still*
 underneath.

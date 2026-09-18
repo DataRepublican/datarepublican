@@ -114,6 +114,10 @@ title: TrumpBlogs formerly known as NoBlogs
   .fitem{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12.5px;color:#4a4e56;cursor:pointer}
   .fitem:hover{color:var(--ink)}
   .fitem input{accent-color:var(--accent);cursor:pointer;flex:none}
+  /* Circles, because the map's markers are circles. Shape is the one part of a
+     swatch that stays per-tool: the graph uses squares for the same reason. */
+  .fitem .sw{width:12px;height:12px;border-radius:50%;flex:none;
+    border:1px solid rgba(0,0,0,.25);margin-right:1px}
   /* The ring goes on the row, not the 13px checkbox, so the focused thing and
      the labelled thing are the same shape. */
   .fitem:focus-within{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
@@ -337,7 +341,18 @@ title: TrumpBlogs formerly known as NoBlogs
     #mapwrap .legend .lghint{min-height:0}
   }
 
-  #graphouter{position:relative;width:100%;isolation:isolate;
+  /* NOT isolated, deliberately — unlike #mapwrap.
+     The rule is to contain at the element the vendor writes into, and for the
+     graph that is #cy inside .nbgraph #stage, which carries the isolation.
+     #graphouter is the outer wrapper and it also contains #gpanel, which
+     DRSheet turns into a position:fixed sheet on a phone. Isolating here scoped
+     that sheet's z-60 INSIDE this box, while its scrim — appended to
+     document.body at z-55 — stayed outside it. The scrim then covered its own
+     sheet and swallowed every tap on the close button.
+
+     The map does not have this problem because its sheet wraps #panel, which is
+     a sibling of #mapview rather than a child of #mapwrap. */
+  #graphouter{position:relative;width:100%;
     height:calc(100dvh - var(--nb-header-h,56px) - var(--nb-filterbar-h,0px) - var(--nav-clearance))}
   #graphwrap{width:100%;height:100%}
 
@@ -523,6 +538,25 @@ const COUNTRYNAME={DE:"Germany",IT:"Italy",FR:"France",ES:"Spain",US:"United Sta
   AT:"Austria",CH:"Switzerland",GR:"Greece",GB:"UK",NL:"Netherlands",BE:"Belgium",CL:"Chile",
   MX:"Mexico",CA:"Canada",PL:"Poland",RU:"Russia",AR:"Argentina",SE:"Sweden",FI:"Finland"};
 const THUMB=h=>`thumbs/${h}.webp`;
+/* Category → colour, read from the map legend rather than restated here.
+   The legend markup carries the swatch colours inline, and those same colours
+   are baked into map_data.js as each pin's fill, so they are the encoding. A
+   second copy in JS would be a second thing to keep in step, and the facet list
+   sits directly over the map legend when the filter popover is open — the one
+   place a drift would be most visible and least explicable.
+
+   `__other__` on the legend is `other` in the facet data, and
+   `cultural_art_music` has no swatch of its own and reads as other on the map,
+   so both fall through to that grey. */
+const CATCOLOR=(()=>{
+  const m={};
+  document.querySelectorAll('#mapwrap .legend .lgrow').forEach(r=>{
+    const sw=r.querySelector('span');
+    if(sw) m[r.dataset.cat]=sw.style.background||sw.style.backgroundColor;
+  });
+  if(m.__other__){ m.other=m.other||m.__other__; m.cultural_art_music=m.cultural_art_music||m.__other__; }
+  return m;
+})();
 let DATA=[], BYHOST={}, view="map", PAGE=0, PER=120, SEL=null;
 document.body.dataset.view=view;            // see the tabs handler
 const F={q:"",co:new Set(),cat:new Set(),mil:new Set(),sc:new Set(),flags:new Set()};
@@ -670,7 +704,7 @@ function buildFacets(){
   h+=grp("Scope","sc",order(sc));
   h+=grpFlags();
   h+=grp("Country","co",topco,COUNTRYNAME);
-  h+=grp("Category","cat",order(cat),CATLABEL);
+  h+=grp("Category","cat",order(cat),CATLABEL,CATCOLOR);
   h+=grp("Militancy","mil",order(mil));
   el.innerHTML=h;
 
@@ -696,12 +730,18 @@ function buildFacets(){
   }
   if(typeof nbUpdateFilterCount==='function')nbUpdateFilterCount();
 }
-function grp(title,f,entries,labelmap){
+function grp(title,f,entries,labelmap,colors){
   let h=`<fieldset class="fgroup"><legend>${title}</legend>`;
   for(const [v,c] of entries){
     const on=F[f].has(v); const lab=labelmap&&labelmap[v]?labelmap[v]:(v==="—"?"(none)":v);
+    /* The swatch is how a category filter connects to the map behind it. With
+       the popover open the map legend is covered, so without this there is no
+       way to tell which colour "anarchist" is while you are choosing it.
+       aria-hidden because the label already names the category — the colour is
+       a second encoding of the same thing, not extra information. */
+    const sw=colors&&colors[v]?`<span class="sw" style="background:${colors[v]}" aria-hidden="true"></span>`:'';
     h+=`<label class="fitem ${on?'act':''}" data-f="${esc(f)}" data-v="${esc(v)}">
-      <input type="checkbox" ${on?'checked':''}><span>${esc(lab)}</span><span class="c">${c.toLocaleString()}</span></label>`;
+      <input type="checkbox" ${on?'checked':''}>${sw}<span>${esc(lab)}</span><span class="c">${c.toLocaleString()}</span></label>`;
   }
   return h+`</fieldset>`;
 }
