@@ -20,7 +20,54 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (71 specs, ~35s).
+Tests need the dev server running: `npx playwright test` (~76 specs, ~35s).
+
+## Access — how to reach the tools, so nobody re-derives this
+
+**GitHub → use `gh`, not an MCP server.** It is installed and authenticated
+(`repo`, `workflow`, `read:org`). The hosted GitHub MCP server cannot be
+authorized from here — it fails with "Incompatible auth server: does not support
+dynamic client registration" — so do not spend time on it.
+
+```bash
+gh api repos/DataRepublican/datarepublican/pages       # Pages config
+gh pr view 68 --repo DataRepublican/datarepublican --json statusCheckRollup
+gh run list --workflow=ci.yml
+```
+
+**Coolify → REST API with a token on disk.** Token at
+`~/.config/coolify/token` (mode 600, outside the repo). Never echo it; read it
+inline:
+
+```bash
+CB=https://datarepublican-coolify.americancloud.dev
+T=$(cat ~/.config/coolify/token)
+curl -s -H "Authorization: Bearer $T" "$CB/api/v1/applications"
+```
+
+Endpoints that exist and are worth knowing (Coolify 4.3.21):
+
+| | |
+|---|---|
+| `/api/v1/version` | sanity check the token |
+| `/api/v1/projects`, `/api/v1/applications` | inventory |
+| `/api/v1/applications/{uuid}` | full build config for one app |
+| `/api/v1/deployments/applications/{uuid}?take=40` | deploy history **and full build logs**, `pull_request_id` distinguishes previews |
+| `/api/v1/applications/{uuid}/logs` | live nginx access log |
+
+`/api/v1/deployments` (no app) only lists *in-flight* deployments and is
+normally empty — the per-application endpoint above is the one you want.
+
+The production app is `qw4koc0gkcwgs8wwckkcc8cc`.
+
+⚠️ **The current token is not read-only.** `/api/v1/security/keys` returns
+private SSH keys in plaintext. Treat the token as a full credential, prefer a
+read-only one, and never call that endpoint.
+
+**Cloudflare** sits in front of production. The `cloudflare-api` /
+`cloudflare-observability` MCP servers are configured but unauthenticated, so
+zone settings (SSL mode, DNS records, proxy status) are not readable from here
+yet. Authorize via `/mcp` in an interactive session if that is needed.
 
 ## When a change does not show up
 
@@ -99,12 +146,25 @@ bytes and response headers:
   deployment of the same content. Its Source is set to "GitHub Actions" but
   `master` has no workflow, so nothing can ever publish there — it is frozen on
   a Sep 3 artifact.
-- Coolify also builds per-PR previews at `<PR#>.datarepublican.com`. These are
-  currently failing with Cloudflare **526** (origin certificate), not a build
-  error.
+- Coolify also builds per-PR previews at `<PR#>.datarepublican.com`
+  (`preview_url_template` is `{{pr_id}}.{{domain}}`). **Every preview deploy
+  fails** — 27 of 27 — so the 526 that Cloudflare returns is a symptom: there is
+  no container behind the hostname, not a certificate problem.
 
-So the live site is a committed build artifact, and it is stale: `docs/` was
-last built 2026-08-31.
+  The cause is in the build, and it is a Coolify bug, not a repo problem. The
+  `static` build pack generates a small Dockerfile into the base directory and
+  builds it. On a production deploy that works (`transferring dockerfile: 436B`).
+  On a preview deploy the file is never written (`transferring dockerfile: 2B`,
+  then `failed to read dockerfile: open Dockerfile: no such file or directory`),
+  because `base_directory` is `/docs` rather than `/`. Production deploys are
+  unaffected: all 8 have succeeded, the last on 2026-09-03.
+
+So the live site is a committed build artifact. It is not stale because deploys
+are broken — production deploys work fine and the last one matches `master`
+exactly. It is stale because **nobody has regenerated `docs/` since 2026-08-31**,
+and `master` has not moved since 2026-09-02. Coolify runs no build: its config is
+`build_pack: static`, `base_directory: /docs`, no install/build/start command. It
+copies `docs/` into `nginx:alpine` and serves it.
 
 Consequences for anything you do here:
 
