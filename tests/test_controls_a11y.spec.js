@@ -127,3 +127,38 @@ test.describe('toggles report state with aria-pressed', () => {
     expect(off).not.toBe(on);
   });
 });
+
+/* .dr-btn carries the 44px floor, so a control gets it by being the component
+   rather than by remembering. `.loadmore` was ~39px — a real miss, and the kind
+   that only shows up if something measures it. */
+test.describe('.dr-btn clears the tap target', () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+  test('every .dr-btn on noblogs is at least 44px tall', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { timeout: 60000 });
+    // Reveal the load-more control, which only paints when there is a next page.
+    await page.evaluate(() => { const b = document.getElementById('loadmore'); if (b) b.style.display = 'flex'; });
+
+    const small = await page.locator('.dr-btn').evaluateAll(els =>
+      els.filter(e => e.offsetParent !== null)
+         .map(e => ({ id: e.id || e.className, h: Math.round(e.getBoundingClientRect().height) }))
+         .filter(r => r.h < 44)
+    );
+    expect(small, `.dr-btn under 44px: ${JSON.stringify(small)}`).toEqual([]);
+  });
+
+  test('the reset actually applied — no inherited min-width or margin', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#nb-filters', { timeout: 60000 });
+    // The global button rule sets min-width:65px and a right margin at md.
+    // A component that did not absorb the reset would still carry both.
+    const cs = await page.locator('#nb-filters').evaluate(e => {
+      const s = getComputedStyle(e);
+      return { minWidth: s.minWidth, marginRight: s.marginRight, radius: s.borderTopLeftRadius };
+    });
+    expect(cs.minWidth).toBe('0px');
+    expect(cs.marginRight).toBe('0px');
+    expect(parseFloat(cs.radius)).toBeGreaterThan(100);   // pill
+  });
+});

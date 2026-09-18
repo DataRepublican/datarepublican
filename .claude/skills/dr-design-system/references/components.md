@@ -6,14 +6,39 @@ partial migration stays legible to whoever arrives next.
 
 **The adoption rule: migrate what you touched, and only what you touched.**
 
-## Before anything else
+## The global `button` rule — do NOT de-specify it
 
-`assets/css/main.css:86` paints every bare `<button>` slate-900 with
-`min-width:65px`. Every control on the site fights it — with `!important` in
-`main.css`, with `#stage button` in both tools, with `!` utilities in the banner.
-Change it to `:where(button)` (zero specificity) or scope it to
-`.legacy-tool button` and tag the ~20 old tool pages. Nothing else is clean until
-this is done.
+`assets/css/main.css` paints every bare `<button>` slate-900 at `min-width:65px`
+with a right margin at md, because ~20 older tool pages were built against it.
+
+**`:where(button)` does not work, and this was measured.** A before/after sweep
+of all 146 buttons across all 34 routes says it changes **122 of them on 23
+routes**: `/ned/`'s search button, `/nonprofit/`'s filter and back-to-top and
+`/expose/`'s add-EIN all go transparent, and the banner button loses its padding
+on every page.
+
+The reason: **Tailwind v3 emits no real cascade layers.** `@layer base/components/
+utilities` is a build-time concept and the output is plain concatenated CSS
+(`grep -c '^@layer' assets/css/styles.css` → 0). So at zero specificity the rule
+stops beating *preflight's* own `button { background-color: transparent }`, which
+is (0,0,1) and comes first. An earlier version of this file claimed layer order
+would protect it. It does not.
+
+**The tax was never specificity.** A class is (0,1,0) and already beats an
+element selector — `.dr-btn` needs no `!important`. The tax is that the global
+rule sets properties a component never thinks about (`min-width`, `margin-right`,
+padding, size, weight), so each control had to zero them by hand.
+
+So `.dr-btn` absorbs the reset once, and the global rule is left alone. Scoping
+it to the legacy pages is still the right end state — `.legacy-tool button` plus
+a class on ~20 files — and belongs to whoever is next in them.
+
+**If you touch that rule, sweep first.** Capture computed `backgroundColor`,
+`color`, `minWidth`, `borderRadius`, padding, `marginRight`, `fontSize` and
+`fontWeight` for every button on every route in `tests/routes.txt`, change,
+re-capture, diff. And take the baseline when the server is idle: two routes in
+the first sweep captured *unstyled* buttons because the page loaded during a
+Jekyll rebuild, which reads in the diff exactly like a regression.
 
 ## Primitives
 

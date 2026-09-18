@@ -7,6 +7,14 @@
    import has been inlined. */
 @import "./tokens.css";
 
+/* The component layer. Everything under components/ is OUTSIDE @layer, by
+   convention rather than by memory: Tailwind drops a layered rule whose
+   selector it cannot find in the scanned HTML, and these classes are written
+   onto elements at runtime. That has already cost us once — .dr-canvas and
+   .dr-controls vanished entirely, and .dr-sheet__grip kept its mobile rules
+   while losing its base display:none, so the drag handle showed up on desktop. */
+@import "./components/button.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

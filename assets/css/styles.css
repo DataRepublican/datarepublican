@@ -120,6 +120,162 @@
   --dr-data-veneer: #4A6FA5;
 }
 
+/* The component layer. Everything under components/ is OUTSIDE @layer, by
+   convention rather than by memory: Tailwind drops a layered rule whose
+   selector it cannot find in the scanned HTML, and these classes are written
+   onto elements at runtime. That has already cost us once — .dr-canvas and
+   .dr-controls vanished entirely, and .dr-sheet__grip kept its mobile rules
+   while losing its base display:none, so the drag handle showed up on desktop. */
+
+/* .dr-btn — the one button.
+ *
+ * Drawn on `system-primitives` in Paper. See .claude/skills/dr-design-system.
+ *
+ * WHY THIS EXISTS RATHER THAN A CHANGE TO THE GLOBAL `button` RULE
+ *
+ * main.css paints every bare <button> slate-900 at min-width:65px with a right
+ * margin at md, because ~20 older tool pages were built against that and still
+ * depend on it. The obvious move is to drop its specificity with :where() so a
+ * single class can replace it. That was measured across all 34 routes and it
+ * breaks 122 buttons on 23 of them: Tailwind v3 does not emit real cascade
+ * layers, it concatenates base → components → utilities as plain CSS, so at
+ * zero specificity the rule stops beating PREFLIGHT's own
+ * `button { background-color: transparent }`, which is (0,0,1) and comes first.
+ * /ned/'s search button, /nonprofit/'s filter and back-to-top and /expose/'s
+ * add-EIN all went transparent, and the banner button lost its padding on every
+ * page.
+ *
+ * The real tax was never specificity — a class is (0,1,0) and already wins.
+ * It is that the global rule sets properties a component does not think about,
+ * so each one has to zero min-width, margin and padding by hand. This file does
+ * that once. Scoping the global rule to the legacy pages is still the right end
+ * state; it is ~20 files and belongs to whoever is next in them.
+ *
+ * Outside @layer, like everything in components/: Tailwind drops a layered rule
+ * whose selector it cannot find in the scanned HTML.
+ */
+
+.dr-btn {
+  /* The reset. Everything here is undoing the global `button` rule, and it is
+     the reason a component can now be written in terms of what it IS. */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--dr-line-strong, #878D99);
+  background: var(--dr-panel, #fff);
+  color: var(--dr-ink-strong, #000);
+  /* The shape. A pill at every width — the nav and banner already settled this,
+     and the 6px rectangle in the graph and DSA toolbars only ever existed to be
+     overridden into a pill below 767px anyway. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--dr-tap, 2.75rem);
+  padding: 0 18px;
+  border-radius: var(--dr-radius-pill, 9999px);
+  font-family: var(--dr-font-ui, "Helvetica Neue", Helvetica, Arial, sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--dr-dur-fast, 120ms),
+              border-color var(--dr-dur-fast, 120ms),
+              color var(--dr-dur-fast, 120ms);
+}
+
+.dr-btn:hover {
+  background: var(--dr-fill, #EFF1F4);
+}
+
+/* Pressed is a fill, not a colour. The accent is near-ink on purpose: chrome
+   must not compete with the thirteen categories the data encodes. */
+
+.dr-btn[aria-pressed="true"],
+.dr-btn.is-on,
+.dr-btn--solid {
+  background: var(--dr-accent, #252739);
+  border-color: var(--dr-accent, #252739);
+  color: #fff;
+}
+
+.dr-btn--solid:hover,
+.dr-btn[aria-pressed="true"]:hover {
+  background: var(--dr-accent-hover, #3A3D52);
+}
+
+/* No border, no fill — for a control that sits inside something already bounded. */
+
+.dr-btn--ghost {
+  border-color: transparent;
+  background: none;
+  color: var(--dr-ink-muted, #5A5A5A);
+}
+
+.dr-btn--ghost:hover {
+  background: var(--dr-fill, #EFF1F4);
+  color: var(--dr-ink-strong, #000);
+}
+
+/* Icon only. The <button> carries the aria-label; the <svg> is aria-hidden. */
+
+.dr-btn--icon {
+  width: var(--dr-tap, 2.75rem);
+  padding: 0;
+  gap: 0;
+}
+
+/* 32px. Desktop only, inside a panel or a toolbar — never below md, where the
+   44px target is the floor. */
+
+.dr-btn--sm {
+  min-height: var(--dr-tap-sm, 2rem);
+  padding: 0 14px;
+  font-size: 12px;
+}
+
+.dr-btn:focus-visible {
+  outline: 2px solid var(--dr-accent, #252739);
+  outline-offset: 2px;
+}
+
+.dr-btn:disabled,
+.dr-btn[aria-disabled="true"] {
+  border-color: var(--dr-line, #D3D7DE);
+  background: var(--dr-panel, #fff);
+  color: var(--dr-line-strong, #878D99);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Busy keeps its width so a label swapped for "Rendering…" does not shunt the
+   controls beside it. */
+
+.dr-btn[aria-busy="true"] {
+  color: var(--dr-ink-faint, #6B7280);
+  cursor: progress;
+}
+
+/* The count badge on a filter button. */
+
+.dr-btn .dr-btn__count {
+  border-radius: var(--dr-radius-pill, 9999px);
+  background: var(--dr-accent, #252739);
+  color: #fff;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.dr-btn--solid .dr-btn__count,
+.dr-btn[aria-pressed="true"] .dr-btn__count {
+  background: #fff;
+  color: var(--dr-accent, #252739);
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x:      0;
   --tw-border-spacing-y:      0;

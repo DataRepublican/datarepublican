@@ -162,9 +162,9 @@ title: TrumpBlogs formerly known as NoBlogs
   .ph{color:var(--dim);padding:60px 40px;text-align:center;max-width:560px;margin:0 auto}
   .ph h2{color:var(--ink)}
   .ph code{background:#EEE;padding:1px 5px;border-radius:4px}
-  .loadmore{display:block;margin:22px auto;padding:10px 22px;background:#fff;border:1px solid var(--line);
-    color:var(--ink);border-radius:10px;cursor:pointer;font-size:13px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-  .loadmore:hover{background:#F2F2EC}
+  /* Geometry comes from .dr-btn now; only the centring is local. It used to be
+     a 10px-radius box about 39px tall, which missed the 44px target. */
+  .loadmore{display:flex;margin:22px auto}
 
   /* ---- detail drawer (dsa-explorer style: docked sidebar, not a modal) ---- */
   #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:var(--dr-z-scrim,55);
@@ -315,10 +315,12 @@ title: TrumpBlogs formerly known as NoBlogs
      Map and Graph at any width, and every tab on a phone. */
   #nb-filterbar{display:none;gap:8px;align-items:center;padding:10px 0 0}
   body:not([data-view="dash"]) #nb-filterbar{display:flex}
-  #nb-filterbar button{min-height:2.75rem;min-width:0;margin:0;border-radius:9999px;
-    border:1px solid var(--line);background:#fff;color:var(--ink);font-weight:700;font-size:13px;padding:0 14px}
-  #nb-filterbar button[aria-expanded="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-  #nb-filterbar button[aria-expanded="true"] .nb-count{background:#fff;color:var(--accent)}
+  /* .dr-btn carries the shape and the reset. aria-expanded is the state here,
+     not aria-pressed — it is a disclosure, not a toggle — so it borrows the
+     same fill explicitly. */
+  #nb-filterbar .dr-btn[aria-expanded="true"]{background:var(--dr-accent,#252739);
+    border-color:var(--dr-accent,#252739);color:#fff}
+  #nb-filterbar .dr-btn[aria-expanded="true"] .nb-count{background:#fff;color:var(--dr-accent,#252739)}
   #nb-filterbar .nb-count{background:var(--accent);color:#fff;border-radius:9999px;
     padding:1px 7px;font-size:11px;margin-left:6px}
 
@@ -410,7 +412,7 @@ title: TrumpBlogs formerly known as NoBlogs
 </header>
 
 <div id="nb-filterbar">
-  <button type="button" id="nb-filters" aria-expanded="false" aria-controls="facets">
+  <button type="button" class="dr-btn" id="nb-filters" aria-expanded="false" aria-controls="facets">
     Filters<span class="nb-count" id="nb-filtercount" hidden>0</span>
   </button>
 </div>
@@ -421,7 +423,7 @@ title: TrumpBlogs formerly known as NoBlogs
   <main>
     <div class="kpis" id="kpis"></div>
     <div class="grid" id="grid"></div>
-    <button class="loadmore" id="loadmore" style="display:none">Show more</button>
+    <button type="button" class="dr-btn loadmore" id="loadmore" style="display:none">Show more</button>
   </main>
 </div>
 
