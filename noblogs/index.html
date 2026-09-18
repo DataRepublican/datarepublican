@@ -701,10 +701,13 @@ function buildFacets(){
     ? focused.closest('.fitem').dataset : null;
 
   let h=`<button type="button" class="clearf" onclick="clearAll()">✕ clear all filters</button>`;
+  /* Category first. It is the group that carries the map's colour encoding, so
+     it is the one you reach for while looking at the map — and in the popover
+     on a phone, anything below the first group is behind a scroll. */
+  h+=grp("Category","cat",order(cat),CATLABEL,CATCOLOR);
   h+=grp("Scope","sc",order(sc));
   h+=grpFlags();
   h+=grp("Country","co",topco,COUNTRYNAME);
-  h+=grp("Category","cat",order(cat),CATLABEL,CATCOLOR);
   h+=grp("Militancy","mil",order(mil));
   el.innerHTML=h;
 

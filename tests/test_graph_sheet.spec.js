@@ -126,11 +126,16 @@ test.describe('category facets show the map colours', () => {
         const want = legend[row.dataset.v];
         return want ? getComputedStyle(sw).backgroundColor !== want : false;
       }).map(row => row.dataset.v);
+      const first = document.querySelector('#facets fieldset.fgroup > legend');
       return { total: rows.length, mismatched,
+               firstGroup: first && first.textContent.trim(),
                scopeSwatches: document.querySelectorAll('#facets .fitem[data-f="sc"] .sw').length };
     });
 
     expect(r.total).toBeGreaterThan(10);
+    // Category leads: it is the group tied to the map, and on a phone anything
+    // below the first group is behind a scroll.
+    expect(r.firstGroup).toBe('Category');
     expect(r.mismatched, `category rows missing or mismatching a swatch: ${r.mismatched}`).toEqual([]);
     // Only the category group is colour-coded; the others would be noise.
     expect(r.scopeSwatches).toBe(0);
