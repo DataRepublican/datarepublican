@@ -51,6 +51,12 @@
   --dr-font-content: theme('fontFamily.content');
   --dr-font-ui:      theme('fontFamily.ui');
 
+  /* fontSize entries are [size, { lineHeight }] tuples, so they are indexed.
+   * theme('fontSize.label') on its own would emit the whole tuple. */
+  --dr-text-label:   theme('fontSize.label[0]');     /* 12px every interface label */
+  --dr-text-caption: theme('fontSize.caption[0]');   /* 12px empty states, hints   */
+  --dr-text-body:    theme('fontSize.body[0]');      /* 16px                       */
+
   /* ---- Space and shape --------------------------------------------------- */
   --dr-gutter:       theme('spacing.gutter');       /* 20px */
   --dr-tap:          theme('spacing.tap');          /* 44px */

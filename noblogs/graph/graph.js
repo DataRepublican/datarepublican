@@ -517,8 +517,14 @@
     cy.batch(()=>{cy.edges().forEach(e=>e.style('display',(!tgtOnly||e.data('tgt')>0)?'element':'none'));});};
   $id('export').onclick=function(){const b=this,w=b.textContent;b.textContent='Rendering…';setTimeout(()=>{try{const uri=cy.png({full:false,scale:3,bg:'#fff',maxWidth:12000,maxHeight:12000});const a=document.createElement('a');a.href=uri;a.download='noblogs-graph.png';a.click();}catch(e){alert('Export failed: '+e.message);}b.textContent=w;},60);};
   const q=$id('q');
-  q.oninput=()=>{const v=q.value.trim().toLowerCase();if(!v){if(focusMode&&focusId)applyFocus(focusId,false);else cy.elements().removeClass('faded nbr sel');return;}
-    cy.batch(()=>{cy.elements().addClass('faded').removeClass('nbr sel');const m=cy.nodes().filter(n=>(n.data('label')||'').toLowerCase().includes(v)||n.id().toLowerCase().includes(v));m.removeClass('faded').addClass('nbr');m.connectedEdges().removeClass('faded');});};
+  // Debounced: every keystroke walked all nodes and rewrote classes on the whole
+  // element set inside a cy.batch. Cheap per call, but a fast typist queues one
+  // full restyle per letter and the canvas visibly stutters. 200ms matches the
+  // page search in noblogs/index.html.
+  let qTimer=null;
+  q.oninput=()=>{clearTimeout(qTimer);qTimer=setTimeout(()=>{
+    const v=q.value.trim().toLowerCase();if(!v){if(focusMode&&focusId)applyFocus(focusId,false);else cy.elements().removeClass('faded nbr sel');return;}
+    cy.batch(()=>{cy.elements().addClass('faded').removeClass('nbr sel');const m=cy.nodes().filter(n=>(n.data('label')||'').toLowerCase().includes(v)||n.id().toLowerCase().includes(v));m.removeClass('faded').addClass('nbr');m.connectedEdges().removeClass('faded');});},200);};
   addEventListener('resize',()=>cy.resize());
 
   /* ---- cross-filter from the explorer facets (postMessage host-set) ---- */

@@ -135,7 +135,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 15px;min-width:104px;
     box-shadow:0 1px 2px rgba(0,0,0,.04)}
   .kpi .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
-  .kpi .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+  .kpi .k{margin-top:2px}
   .kpi.a .v{color:var(--gold)} .kpi.b .v{color:var(--news)} .kpi.c .v{color:var(--low)} .kpi.d .v{color:var(--med)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;
@@ -162,7 +162,9 @@ title: TrumpBlogs formerly known as NoBlogs
   .csum{font-size:11.5px;color:#585c64;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
   .cfoot{display:flex;gap:9px;margin-top:auto;font-size:10.5px;color:#9a9ea6;padding-top:4px}
   .cfoot .on{color:var(--news)}
-  .empty{color:var(--dim);padding:40px;text-align:center}
+  /* An empty state is the only thing on screen when it shows, so it reads at
+     body size. 13px on a grey ground was the smallest copy in the tool. */
+  .empty{color:var(--dim);padding:40px;text-align:center;font-size:var(--dr-text-body,16px);line-height:1.5}
   .ph{color:var(--dim);padding:60px 40px;text-align:center;max-width:560px;margin:0 auto}
   .ph h2{color:var(--ink)}
   .ph code{background:#EEE;padding:1px 5px;border-radius:4px}
@@ -191,7 +193,7 @@ title: TrumpBlogs formerly known as NoBlogs
   #pinner .top img{width:78px;height:78px;object-fit:cover;border-radius:10px;background:var(--tile);flex:none;border:1px solid var(--line)}
   #pinner h2{margin:0 0 3px;font-size:17px;line-height:1.25}
   #pinner .body{padding:16px;display:flex;flex-direction:column;gap:15px}
-  .sec h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim)}
+  .sec h4{margin:0 0 6px;font-weight:600}
   .q{border-left:2px solid var(--accent);padding:2px 0 2px 11px;margin-bottom:10px}
   .q .v{font-size:13px;line-height:1.5}
   .q .orig{margin-top:4px}
@@ -204,7 +206,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .qmeta{font-size:10.5px;color:#9a9ea6;margin-top:2px}
   /* institutional citations: scrollable, contained (#1) */
   .iqscroll{max-height:300px;overflow:auto;padding-right:4px;margin-right:-4px}
-  .q .qhd{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#9a9ea6;margin-bottom:2px}
+  .q .qhd{margin-bottom:2px}
   .q .qhd .qinst{color:var(--accent);font-weight:700}
   .q .qhd .qtgt{color:#DC2626;font-weight:700}
   .q .qhd .qcrit{color:#B45309;font-weight:600}
@@ -212,7 +214,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .ct{font-size:12.5px;color:#3a3e46;word-break:break-all;padding:1px 0}
   .ct b{color:var(--dim);font-weight:600;text-transform:capitalize}
   .ctgrp{margin-bottom:9px}
-  .ctlab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--med);margin-bottom:3px}
+  .ctlab{font-weight:600;margin-bottom:3px}
   .warn{font-size:11px;color:#8A6D2A;font-style:italic;line-height:1.4;margin-top:6px}
   .authors{display:flex;flex-wrap:wrap;gap:7px}
   .au{display:flex;align-items:baseline;gap:5px;background:var(--tile2);border:1px solid var(--line);
@@ -231,12 +233,28 @@ title: TrumpBlogs formerly known as NoBlogs
   .chip .tflag{color:var(--accent);font-weight:700;margin-left:1px}
   .xauth{font-size:12px;color:#3a3e46;margin-bottom:10px} .xauth .xnm{font-weight:700;color:var(--ink)}
   details.news{margin:0}
-  details.news>summary{cursor:pointer;list-style:none;font-size:11px;text-transform:uppercase;
-    letter-spacing:.7px;color:var(--dim);user-select:none;display:flex;align-items:center;gap:6px}
+  details.news>summary{cursor:pointer;list-style:none;font-weight:600;
+    user-select:none;display:flex;align-items:center;gap:6px}
   details.news>summary::-webkit-details-marker{display:none}
   details.news>summary::before{content:"▸";color:var(--news);transition:transform .12s}
   details.news[open]>summary::before{transform:rotate(90deg)}
   details.news>summary:hover{color:var(--ink)}
+
+  /* One label recipe, five sites.
+     These were five styles doing one job — 10px and 11px, four different
+     letter-spacings, three different greys, all uppercase. Sentence case is
+     deliberate: see the note on fontSize.label in tailwind.config.js. 10px
+     shouted text on a grey ground was the worst-read copy in the tool.
+     Last, so it beats the five rules above it on source order; each of them
+     keeps only its own margins, weight and display. */
+  .kpi .k, .sec h4, .q .qhd, .ctlab, details.news>summary{
+    font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);
+    line-height:1.25;
+    letter-spacing:normal;
+    text-transform:none;
+    color:var(--dr-ink-faint,#6B7280)}
+
   .nart{border-left:2px solid var(--news);padding:3px 0 3px 11px;margin-top:9px}
   .nart a{color:var(--ink);font-size:12.5px;text-decoration:none;line-height:1.35}
   .nart a:hover{color:var(--news)}
@@ -245,7 +263,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .refcol .lbl{font-size:10.5px;color:var(--dim)} .refcol .lbl b{color:#3a3e46}
   a.live{color:var(--link);text-decoration:none;font-size:12px;white-space:nowrap}
   a.live:hover{text-decoration:underline}
-  .pempty{color:#9a9ea6;font-size:13px;line-height:1.55;padding:24px 18px}
+  .pempty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;padding:24px 18px}
 
   /* ---- Map tab ------------------------------------------------------------
      These rules came from world_hyperlocal_map.html, which could use bare
@@ -319,7 +337,7 @@ title: TrumpBlogs formerly known as NoBlogs
   #mapwrap .logopin i{display:block;width:40px;height:40px;border-radius:50%;background:#fff center/cover no-repeat;
     box-shadow:0 0 0 1px #fff}
   .nb-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    color:var(--dim);font-size:13px;background:var(--bg);z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
+    color:var(--dim);font-size:var(--dr-text-body,16px);background:var(--bg);z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
   .nb-loading[hidden]{display:none}
 
   /* On a phone the 230px info panel covered most of a 390px map. It collapses
@@ -441,7 +459,11 @@ title: TrumpBlogs formerly known as NoBlogs
      graph uses; loaded here so the shared drawer can show a blog's citing quotes too (#1) -->
 <script src="graph/quotes.embed.js"></script>
 <header id="nb-header">
-  <div><h1>TrumpBlogs <span class="gold">formerly known as NoBlogs</span></h1><div class="sub" id="subcount">loading…</div></div>
+  <div><h1>TrumpBlogs <span class="gold">formerly known as NoBlogs</span></h1><!-- The only running commentary the tool gives a screen reader. render() rewrites
+       this on every filter change; aria-atomic so the whole sentence is read, not
+       the one number that changed. The search path is debounced so it is not
+       interrupted mid-count — see the oninput handler. -->
+  <div class="sub" id="subcount" role="status" aria-live="polite" aria-atomic="true">loading…</div></div>
   <input id="search" placeholder="search name, summary, city, tags, quote text…" autocomplete="off">
   <div class="grow"></div>
   {%- comment -%}
@@ -505,7 +527,7 @@ title: TrumpBlogs formerly known as NoBlogs
       <div class="legend" style="margin-top:8px"><button type="button" class='lgrow' data-cat='antifascist' aria-pressed='false'><span style='background:#2C3E50'></span>antifascist</button><button type="button" class='lgrow' data-cat='radical_counterinfo_media' aria-pressed='false'><span style='background:#8E44AD'></span>radical counterinfo media</button><button type="button" class='lgrow' data-cat='anarchist' aria-pressed='false'><span style='background:#C0392B'></span>anarchist</button><button type="button" class='lgrow' data-cat='prisoner_solidarity' aria-pressed='false'><span style='background:#E74C3C'></span>prisoner solidarity</button><button type="button" class='lgrow' data-cat='location_based_group' aria-pressed='false'><span style='background:#2980B9'></span>location based group</button><button type="button" class='lgrow' data-cat='protest_mobilization' aria-pressed='false'><span style='background:#E67E22'></span>protest mobilization</button><button type="button" class='lgrow' data-cat='revolutionary_militant' aria-pressed='false'><span style='background:#7B241C'></span>revolutionary militant</button><button type="button" class='lgrow' data-cat='migrant_border_solidarity' aria-pressed='false'><span style='background:#16A085'></span>migrant border solidarity</button><button type="button" class='lgrow' data-cat='housing_squat' aria-pressed='false'><span style='background:#D4AC0D'></span>housing squat</button><button type="button" class='lgrow' data-cat='labor_militant' aria-pressed='false'><span style='background:#CA6F1E'></span>labor militant</button><button type="button" class='lgrow' data-cat='ecological_militant' aria-pressed='false'><span style='background:#229954'></span>ecological militant</button><button type="button" class='lgrow' data-cat='feminist_queer_militant' aria-pressed='false'><span style='background:#C2185B'></span>feminist queer militant</button><button type="button" class='lgrow' data-cat='historical_resistance_memory' aria-pressed='false'><span style='background:#5D6D7E'></span>historical resistance memory</button><button type="button" class='lgrow' data-cat='__other__' aria-pressed='false'><span style='background:#7F8C8D'></span>other</button><div class="lghint">click a category to filter</div></div>
       </div>
     </div>
-    <div id="maploading" class="nb-loading">Loading map&hellip;</div>
+    <div id="maploading" class="nb-loading" role="status">Loading map&hellip;</div>
   </div>
 </div>
 
@@ -516,7 +538,7 @@ title: TrumpBlogs formerly known as NoBlogs
 <div id="graphview" role="tabpanel" aria-labelledby="tab-graph" style="display:none">
   <div id="graphouter">
     <div id="graphwrap"></div>
-    <div id="graphloading" class="nb-loading">Loading graph&hellip;</div>
+    <div id="graphloading" class="nb-loading" role="status">Loading graph&hellip;</div>
   </div>
 </div>
 
@@ -1181,7 +1203,23 @@ document.getElementById('tabs').onkeydown=e=>{
     :tabs[(i+d+tabs.length)%tabs.length];
   next.focus(); next.click();
 };
-document.getElementById('search').oninput=e=>{F.q=e.target.value;setSearch(F.q);PAGE=0;syncURL();buildFacets();render();};
+/* Debounced, for two reasons that arrived together.
+ *
+ * The work is not small: every keystroke re-scanned all ~5,000 records, rebuilt
+ * #facets.innerHTML wholesale and re-rendered the grid, the map layer and the
+ * graph filter. And #subcount is now an aria-live region, so undebounced it
+ * interrupts a screen reader on every letter and the user never hears a whole
+ * count. 200ms is below the ~250ms an average typist leaves between keys, so a
+ * pause reads as "done typing" without feeling laggy.
+ *
+ * Only this path is debounced. Facet checkboxes, the clear-all and the URL
+ * restore are discrete events and stay immediate. */
+let qTimer=null;
+document.getElementById('search').oninput=e=>{
+  const v=e.target.value;
+  clearTimeout(qTimer);
+  qTimer=setTimeout(()=>{F.q=v;setSearch(F.q);PAGE=0;syncURL();buildFacets();render();},200);
+};
 document.getElementById('loadmore').onclick=()=>{PAGE++;render();};
 document.onkeydown=e=>{if(e.key!=='Escape')return;
   if(document.body.classList.contains('nb-facets-open')&&window.nbSetFacets)nbSetFacets(false);

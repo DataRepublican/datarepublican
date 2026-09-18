@@ -93,7 +93,7 @@ title: DSA Explorer
   #legend .chip .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
   #legend .legfull{background:rgba(255,255,255,.96);border:1px solid #E2E2DD;border-radius:8px;padding:10px 12px;max-width:280px;max-height:calc(100vh - 170px);overflow-y:auto;box-shadow:0 2px 6px rgba(0,0,0,.1)}
   #legend:not(.expanded) .legfull{display:none}
-  #legend h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#888}
+  #legend h4{margin:0 0 6px;font-weight:600}
   #legend .row{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}
   #legend .row.off{opacity:.35}
   #legend .row.active{font-weight:700}
@@ -116,11 +116,15 @@ title: DSA Explorer
      documents under "a tool must not style bare header, aside, main or #panel",
      one element name later. The element already carried id="panel". */
   #panel{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:16px 16px 24px;overflow:auto}
-  #panel .empty{color:#999;font-size:13px;line-height:1.5;margin-top:20px}
-  #panel .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;padding:2px 7px;border-radius:4px;margin:0 5px 5px 0}
+  #panel .empty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;margin-top:20px}
+  /* A tag keeps its white ink — the background is set inline from the data, so
+     it is the one label that does not take --dr-ink-faint. Sentence case and
+     12px like the rest. */
+  #panel .tag{display:inline-block;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);
+    font-weight:600;color:#fff;padding:2px 7px;border-radius:var(--dr-radius-sm,6px);margin:0 5px 5px 0}
   #panel h2{font-size:17px;margin:6px 0 4px;line-height:1.25}
   #panel .kv{font-size:12.5px;margin:9px 0;line-height:1.4}
-  #panel .kv b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin-bottom:1px;font-weight:700}
+  #panel .kv b{display:block;margin-bottom:1px;font-weight:600}
   #panel .notes{font-size:13px;line-height:1.5;margin:12px 0;padding:10px 12px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
   #panel a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
   #panel .srcs a.src{display:block;margin-top:5px;padding-left:12px;position:relative}
@@ -130,7 +134,18 @@ title: DSA Explorer
   #panel .tier{font-size:12px;margin-top:10px}
   #panel .tier.confirmed{color:var(--money)} #panel .tier.inferred{color:#B8860B}
   #panel .conns{margin-top:16px;border-top:1px solid #EEE;padding-top:12px}
-  #panel .conns h3{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin:0 0 6px}
+  #panel .conns h3{margin:0 0 6px;font-weight:600}
+
+  /* One label recipe — same three-property set as noblogs and the graph.
+     Last, so it beats the rules above it on source order. */
+  #legend h4, #panel .kv b, #panel .conns h3{
+    font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);
+    line-height:1.25;
+    letter-spacing:normal;
+    text-transform:none;
+    color:var(--dr-ink-faint,#6B7280)}
+
   #panel .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
   #panel .conn:hover .conn-head{color:#1155CC}
   #panel .conn .conn-head{font-weight:600}
@@ -1181,10 +1196,18 @@ function build(nodes, edges, baked){
     else { cy.elements().removeClass('faded nbr sel'); cy.fit(40); panel.innerHTML=EMPTY; }
   };
   const q=document.getElementById('q');
-  let searchZoomT=null, lastZoomId=null;
+  let searchZoomT=null, lastZoomId=null, qTimer=null;
+  // Only the camera glide was debounced; the filter itself ran on every
+  // keystroke and restyled the whole element set inside a cy.batch each time.
+  // 200ms, matching the page search in noblogs/index.html. The queued glide is
+  // cancelled immediately rather than inside the debounce, so it can never fire
+  // mid-word.
   q.oninput=()=>{
+    clearTimeout(searchZoomT); clearTimeout(qTimer);
+    qTimer=setTimeout(()=>runSearch(),200);
+  };
+  function runSearch(){
     const v=q.value.trim().toLowerCase();
-    clearTimeout(searchZoomT);
     if(!v){ lastZoomId=null; if(focusMode) applyFocus(focusId,{push:false}); else cy.elements().removeClass('faded nbr sel'); return; }
     let sole=null;
     cy.batch(()=>{
@@ -1196,7 +1219,7 @@ function build(nodes, edges, baked){
     // Only glide the camera once typing pauses, and never re-zoom a node we're already on.
     if(sole){ const id=sole.id(); searchZoomT=setTimeout(()=>{ if(id!==lastZoomId){ lastZoomId=id; cy.animate({center:{eles:sole},zoom:1.5},{duration:300}); } },350); }
     else lastZoomId=null;
-  };
+  }
   addEventListener('resize',()=>cy.resize());
 
   /* ---- deep-link: index.html#nodeId walks to that node (default: center) ---- */

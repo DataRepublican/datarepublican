@@ -72,9 +72,11 @@ single drag never reaches `close()` at all.
 
 `noblogs/index.html` calls `document.querySelector('.tab[data-v="…"]').click()`
 internally in two places, and `test_noblogs_mobile.spec.js` clicks
-`.tab[data-v="map"]` directly. If tabs become a Zag tablist: wire the view change
-from `onValueChange`, replace the internal `.click()` calls with `api.setValue()`,
-and **leave the click path working** so no spec needs editing.
+`.tab[data-v="map"]` directly. The tablist is hand-built — `role="tablist"`,
+roving tabindex, arrows/Home/End, `aria-selected`, `aria-controls` — and the
+keyboard handler ends in `next.focus(); next.click()` precisely so the click path
+stays the single way a view changes. **Anything that reworks the tabs must leave
+`.click()` working**, or both internal callers and the spec break at once.
 
 ## noblogs cross-filter
 

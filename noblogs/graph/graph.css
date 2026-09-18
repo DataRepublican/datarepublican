@@ -95,15 +95,18 @@
   .nbgraph #legend .ln{width:20px;height:0;border-top:3px solid;flex:0 0 auto}
   .nbgraph #legend .hint{color:#999;font-size:10.5px;margin-top:7px;line-height:1.35}
   .nbgraph aside{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:15px 15px 24px;overflow:auto}
-  .nbgraph aside .empty{color:#999;font-size:13px;line-height:1.5;margin-top:16px}
-  .nbgraph aside .tag{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;padding:2px 7px;border-radius:4px;margin:0 5px 5px 0}
+  .nbgraph aside .empty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;margin-top:16px}
+  /* A tag keeps its white ink — the background is set inline from the data, so
+     it is the one label that does not take --dr-ink-faint. */
+  .nbgraph aside .tag{display:inline-block;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);
+    font-weight:600;color:#fff;padding:2px 7px;border-radius:var(--dr-radius-sm,6px);margin:0 5px 5px 0}
   .nbgraph aside h2{font-size:16px;margin:6px 0 3px;line-height:1.25;word-break:break-word}
   .nbgraph aside .kv{font-size:12.5px;margin:8px 0;line-height:1.4}
-  .nbgraph aside .kv b{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin-bottom:1px;font-weight:700}
+  .nbgraph aside .kv b{display:block;margin-bottom:1px;font-weight:600}
   .nbgraph aside .notes{font-size:12.5px;line-height:1.5;margin:11px 0;padding:9px 11px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
   .nbgraph aside a.src{display:inline-block;font-size:12px;color:#1155CC;word-break:break-all;margin-top:3px}
   .nbgraph aside .conns{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}
-  .nbgraph aside .conns h3{font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin:0 0 6px}
+  .nbgraph aside .conns h3{margin:0 0 6px;font-weight:600}
   .nbgraph aside .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
   .nbgraph aside .conn:hover .conn-head{color:#1155CC}
   .nbgraph aside .conn .conn-head{font-weight:600}
@@ -117,7 +120,7 @@
   .nbgraph.collapsed{grid-template-columns:1fr 0}.nbgraph.collapsed aside{display:none}
   .nbgraph /* quotes (evidence) — English leads, .nbgraph foreign source collapsible, .nbgraph institutions scroll */
   aside .quotes{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}
-  .nbgraph aside .quotes h3{font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin:0 0 7px}
+  .nbgraph aside .quotes h3{margin:0 0 7px;font-weight:600}
   .nbgraph aside .qscroll{max-height:300px;overflow:auto;padding-right:4px;margin-right:-4px}
   .nbgraph aside .q{border-left:2px solid #C9C9C2;padding:1px 0 3px 10px;margin-bottom:11px}
   .nbgraph aside .q.tgt{border-left-color:#DC2626}
@@ -136,13 +139,26 @@
   .nbgraph aside .q .qsrc a{color:#1155CC;text-decoration:none} .nbgraph aside .q .qsrc .wh{color:#b08}
   .nbgraph /* institution quotes as a click-to-expand dropdown (see all quotes across quoting blogs) */
   aside details.qdrop{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}
+  /* The red stays: this summary flags target-designation quotes, so it is a data
+     signal, not chrome. Only the shouting goes. */
   .nbgraph aside details.qdrop>summary{cursor:pointer;list-style:none;user-select:none;display:flex;align-items:center;gap:7px;
-    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#B91C1C}
+    font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:#B91C1C}
   .nbgraph aside details.qdrop>summary::-webkit-details-marker{display:none}
   .nbgraph aside details.qdrop>summary::before{content:"▸";color:#DC2626;font-weight:700}
   .nbgraph aside details.qdrop[open]>summary::before{content:"▾"}
   .nbgraph aside details.qdrop>summary:hover{color:#7F1D1D}
-  .nbgraph aside details.qdrop>summary .sc{margin-left:auto;color:#999;font-weight:400;text-transform:none;letter-spacing:0}
+  /* .sc used to undo the summary's uppercase and tracking by hand; both are gone. */
+  .nbgraph aside details.qdrop>summary .sc{margin-left:auto;color:var(--dr-ink-faint,#6B7280);font-weight:400}
+
+  /* One label recipe — same three-property set as noblogs and dsa-explorer.
+     Last, so it beats the rules above it on source order. */
+  .nbgraph aside .kv b, .nbgraph aside .conns h3, .nbgraph aside .quotes h3{
+    font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);
+    line-height:1.25;
+    letter-spacing:normal;
+    text-transform:none;
+    color:var(--dr-ink-faint,#6B7280)}
   .nbgraph aside details.qdrop .qscroll{margin-top:10px}
   .nbgraph /* neutral "show N more" expander (connections + spillover quotes) */
   aside details.mdrop{margin-top:7px}

@@ -101,9 +101,19 @@ Each of these has already happened here, or is one edit away.
    `display:contents` desktop-inert mode. Two consumers depend on its exact
    contract and one encodes a focus bug that was already fixed once.
 
-9. **Never author CSS against Zag's part selectors** (`[data-scope][data-part]`).
-   Put your own `.dr-*` class on the element; use Zag only for `data-state`,
-   `aria-*` and `id`. Otherwise a Zag minor version is a visual regression.
+9. **No headless component library, and no JS bundler.** Zag.js was chosen and
+   then dropped, on evidence: four of the five machines planned for it — tabs,
+   collapsible, toggle-group and the independent `aria-pressed` toggles — were
+   built natively in a few dozen lines each and are covered by passing specs, and
+   the filter popover already returns focus to its trigger on Escape. What was
+   left was floating-ui's flip/shift on one popover and a combobox nobody asked
+   for. Against that: ~40KB, a bundler this repo does not have, a committed
+   `dist/`, a CI check that it matches source, and a fifth entry on CLAUDE.md's
+   "when a change does not show up" list — the failure this repo loses afternoons
+   to. **Revisit only for a control that is genuinely hard to hand-roll**: a real
+   combobox with `aria-activedescendant`, a menu with typeahead, a date picker.
+   Native semantics first — `<details>`, `<fieldset>`, `<label>`, `<button
+   aria-pressed>` — every time.
 
 ## Three standing instructions
 

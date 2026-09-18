@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (105 specs, ~37s).
+Tests need the dev server running: `npx playwright test` (148 specs, ~39s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 

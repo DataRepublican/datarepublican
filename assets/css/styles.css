@@ -64,6 +64,14 @@
   /* ---- Type -------------------------------------------------------------- */
   --dr-font-content: "Libre Franklin", ui-sans-serif, system-ui, sans-serif;
   --dr-font-ui:      "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /* fontSize entries are [size, { lineHeight }] tuples, so they are indexed.
+   * theme('fontSize.label') on its own would emit the whole tuple. */
+  --dr-text-label:   0.75rem;
+  /* 12px every interface label */
+  --dr-text-caption: 0.75rem;
+  /* 12px empty states, hints   */
+  --dr-text-body:    1rem;
+  /* 16px                       */
   /* ---- Space and shape --------------------------------------------------- */
   --dr-gutter:       1.25rem;
   /* 20px */

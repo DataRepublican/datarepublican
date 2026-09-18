@@ -77,15 +77,70 @@ means to beat loses on source order.
 | `.dr-legend` | three legends. **dsa's bar + expandable key wins.** Map and graph are converted: rows are `<button aria-pressed>`, the collapse is a `<button aria-expanded>`, both 44px on a phone. Swatch *shape* stays a variable so the map keeps circles and the graph keeps squares. **Polarity differs per tool and that is correct** — on the map pressed means "this category is chosen", on the graph everything is shown at load so pressed means "shown". Bound a floating key by its own container, never `calc(100vh - …)` |
 | `.dr-controls` | two near-identical toolbars, both converted: icon-first `.dr-btn` controls, Lucide glyphs, `.dr-btn--icon` where the action has a conventional icon and no state. **`sm` (32px) applies above md inside a toolbar** — seven stacked 44px buttons make a column taller than the room above the legend, so the thumb floor is a floor for thumbs. The unused `.dr-controls` block in `main.css` is still there and still unadopted; its `!important`s were never needed |
 | `.dr-callout` | three amber disclaimers at 10 / 10.5 / 11px with different line-heights. **Goes up to 13px**, and becomes a real `<details>` with a 44px summary on phones — which also removes one of the two reasons the header is measured at runtime |
-| `.dr-empty` | four empty states at 13px → 16px, and gains the action that resolves them |
-| `.dr-loading` | gains `aria-live="polite"`; today the map veil is silent and its error state has no retry |
+| `.dr-empty` | four empty states at 13px → **16px, done** (`.empty`, `.pempty`, graph `aside .empty`, dsa `#panel .empty`). Still to gain the action that resolves them |
+| `.dr-loading` | `role="status"` on the two noblogs veils, **done**; they read at 16px. The error state still has no retry |
 
 ## Detail panel anatomy — `.dr-detail`
 
-`__label` collapses **eight** uppercase-label styles into one (12px, sentence
-case, UI font, `ink-faint`). `__note` keeps noblogs' left rule and drops dsa's
-fill — a fill *and* a rule *and* a half-radius is three decorations doing one job.
-Also `__header`, `__kv`, `__srclist` (keep dsa's `›` prefix), `__connlist`.
+`__note` keeps noblogs' left rule and drops dsa's fill — a fill *and* a rule
+*and* a half-radius is three decorations doing one job. Also `__header`, `__kv`,
+`__srclist` (keep dsa's `›` prefix), `__connlist`.
+
+### The label recipe — done, and how
+
+**Thirteen** rules across three files did one job: 10, 10.5 and 11px, four
+letter-spacings, three greys, every one of them uppercase. They are now one
+grouped rule per file, all reading `--dr-text-label`, `--dr-font-ui` and
+`--dr-ink-faint`:
+
+| File | Grouped selector |
+|---|---|
+| `noblogs/index.html` | `.kpi .k, .sec h4, .q .qhd, .ctlab, details.news>summary` |
+| `noblogs/graph/graph.css` | `.kv b, .conns h3, .quotes h3` (each under `.nbgraph aside`) |
+| `dsa-explorer/index.html` | `#legend h4, #panel .kv b, #panel .conns h3` |
+
+Two labels stay out of the group, for reasons worth keeping:
+
+- **`.tag`** (both tools) keeps `color:#fff` — its background is set inline from
+  the data, so `ink-faint` would make it unreadable. It takes the size and the
+  sentence case, not the colour.
+- **`details.qdrop>summary`** in the graph keeps `#B91C1C`. It flags
+  target-designation quotes, so the red is a data signal, not chrome.
+
+**This is not a class, and that is deliberate.** Putting `.dr-label` in the
+markup would mean editing three files' JS template strings — the adoption rule
+says migrate what you touched, and CSS was what needed touching. `.dr-label` is
+still the end state for markup that is being rewritten anyway.
+
+**The grouped rule must stay BELOW the rules it overrides.** It carries no extra
+specificity — `.kpi .k` in the group is the same (0,1,1) as `.kpi .k` above it —
+so source order is the entire mechanism. Moving it up a few lines silently
+restores the uppercase, and a grep of the source will not catch it.
+`tests/test_labels_and_status.spec.js` asserts computed `textTransform`,
+`fontSize` and `letterSpacing` on every site, which does.
+
+## The status line — `#subcount`
+
+The tool's only running commentary. `render()` rewrites it on every filter
+change and it said nothing to a screen reader; it is now
+`role="status" aria-live="polite" aria-atomic="true"`. **`aria-atomic` matters as
+much as `aria-live`** — without it the reader announces the one number that
+changed, out of its sentence.
+
+A live region forces a debounce. Undebounced it interrupts the reader on every
+letter and the count is never heard whole. The same 200ms also stops every
+keystroke rebuilding `#facets.innerHTML` and re-rendering the grid, the map layer
+and the graph filter over ~5,000 records. 200ms sits below the ~250ms an average
+typist leaves between keys, so a pause reads as "done typing".
+
+All three search fields are debounced at 200ms — noblogs' page search, the
+graph's node search and dsa's. Only the typing path: facet checkboxes, clear-all
+and the URL restore are discrete events and stay immediate. dsa's camera glide
+keeps its own 350ms *after* the debounce, and its `clearTimeout` fires
+immediately on input so a queued glide can never land mid-word.
+
+**Test that nothing happened yet.** A spec that only checks the count eventually
+updates passes with the debounce removed.
 
 ## Accessibility debt this clears
 
