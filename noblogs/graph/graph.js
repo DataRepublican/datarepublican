@@ -28,13 +28,13 @@
       '<button class="panelToggle" id="panelToggle" title="Show panel">\u2039</button>' +
       '<div id="gsearch"><input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off"></div>' +
       '<div id="controls">' +
-        '<button id="zin">\uFF0B Zoom</button>' +
-        '<button id="zout">\uFF0D Zoom</button>' +
-        '<button id="fit">Reset view</button>' +
-        '<button id="relayout">Re-layout</button>' +
-        '<button type="button" id="focusToggle" aria-pressed="true">Focus mode</button>' +
-        '<button type="button" id="tgtOnly" aria-pressed="false">Target edges only</button>' +
-        '<button id="export">\u2B07 Export PNG</button>' +
+        '<button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>' +
+        '<button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>' +
+        '<button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>' +
+        '<button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" title="Re-layout"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>' +
+        '<button type="button" id="focusToggle" class="dr-btn" aria-pressed="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg>Focus mode</button>' +
+        '<button type="button" id="tgtOnly" class="dr-btn" aria-pressed="false">Target edges only</button>' +
+        '<button type="button" id="export" class="dr-btn" title="Download a high-resolution PNG of the current view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>' +
       '</div>' +
       '<div id="legend"></div>' +
     '</div>' +

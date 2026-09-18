@@ -57,6 +57,14 @@ Jekyll rebuild, which reads in the diff exactly like a regression.
 Button sizes: `md` = 44px at every width. `sm` = 32px, **desktop-only**, inside a
 panel or toolbar. Never `sm` below md.
 
+**Overlay stacks in the same corner share a height budget.** The graph and DSA
+both pin controls top-left and the legend bottom-left, so the legend needs a
+`max-height` that reserves the control column. That number is legitimate where
+`calc(100vh - 150px)` was not: it is derived from the thing directly above it in
+the same box, not from a guess at unrelated page chrome. Watch the ordering —
+a media query adds no specificity, so an override written above the rule it
+means to beat loses on source order.
+
 ## Surfaces
 
 | Class | Replaces / decision |
@@ -67,7 +75,7 @@ panel or toolbar. Never `sm` below md.
 | `.dr-sheet` | keep as-is structurally. Gains a visible title and keyboard detent control |
 | `.dr-popover` | the hand-rolled facet sheet + `#nb-facetscrim` + `place()` |
 | `.dr-legend` | three legends. **dsa's bar + expandable key wins.** Map and graph are converted: rows are `<button aria-pressed>`, the collapse is a `<button aria-expanded>`, both 44px on a phone. Swatch *shape* stays a variable so the map keeps circles and the graph keeps squares. **Polarity differs per tool and that is correct** — on the map pressed means "this category is chosen", on the graph everything is shown at load so pressed means "shown". Bound a floating key by its own container, never `calc(100vh - …)` |
-| `.dr-controls` | two near-identical toolbars in two files. `main.css:274-286` already has this, correct and unused — adopt it, but only when a tool's shell is open for other reasons |
+| `.dr-controls` | two near-identical toolbars, both converted: icon-first `.dr-btn` controls, Lucide glyphs, `.dr-btn--icon` where the action has a conventional icon and no state. **`sm` (32px) applies above md inside a toolbar** — seven stacked 44px buttons make a column taller than the room above the legend, so the thumb floor is a floor for thumbs. The unused `.dr-controls` block in `main.css` is still there and still unadopted; its `!important`s were never needed |
 | `.dr-callout` | three amber disclaimers at 10 / 10.5 / 11px with different line-heights. **Goes up to 13px**, and becomes a real `<details>` with a 44px summary on phones — which also removes one of the two reasons the header is measured at runtime |
 | `.dr-empty` | four empty states at 13px → 16px, and gains the action that resolves them |
 | `.dr-loading` | gains `aria-live="polite"`; today the map veil is silent and its error state has no retry |

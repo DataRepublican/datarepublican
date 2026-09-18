@@ -38,8 +38,19 @@
   .nbgraph #stage button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
   .nbgraph #stage button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   .nbgraph #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
-  .nbgraph #controls button{border:1px solid #D5D5CE;border-radius:6px;font-size:12px;padding:6px 9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-  .nbgraph #controls button:hover{background:#f0f0ea}
+  /* Geometry lives in .dr-btn. These rules used to set a 6px-radius 12px box
+     here and override it into a pill below 767px; both are gone. What stays is
+     the float — a control over a canvas needs a shadow to separate from it. */
+  .nbgraph #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+  /* 32px on desktop. This is the system's `sm` size and the one place it is
+     allowed: a toolbar, above md, where there is a cursor. 44px is the floor
+     for a thumb, not for a mouse, and seven stacked 44px buttons make a column
+     taller than the space between the top inset and the legend. */
+  @media(min-width:768px){
+    .nbgraph #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
+    .nbgraph #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
+  }
   .nbgraph #gsearch{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:var(--dr-z-canvas-ui,20)}
   .nbgraph #gsearch input{width:270px;padding:7px 11px;border:1px solid #D5D5CE;border-radius:20px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   /* max-height is measured against the CANVAS, not the viewport. It was
@@ -53,6 +64,21 @@
     box-shadow:0 2px 8px rgba(0,0,0,.08);max-height:calc(100% - 24px);overflow:auto}
   /* Desktop shows the key unconditionally, so the toggle would be lying. */
   .nbgraph #legend .legtoggle{display:none}
+
+  /* Reserve the control column.
+     The legend is pinned bottom-left and the controls top-left, so they share
+     one edge and the legend has to stop before it reaches them — it was already
+     overlapping by 8px before the buttons grew, just not enough to notice.
+
+     300px is the control column's own height (7 x 32 + gaps + the 12px inset,
+     with headroom), not a guess at page chrome. That is what makes it stable:
+     it is derived from the thing directly above it in the same box.
+
+     Placed AFTER the legend's base rule on purpose. A media query adds no
+     specificity, so an override written above the rule it means to beat simply
+     loses on source order — which is exactly what happened the first time. */
+  @media(min-width:768px){ .nbgraph #legend{max-height:calc(100% - 300px)} }
+
   /* Sentence case. Uppercase micro-labels were the house tic, and 10px mixed
      case fails the 12px floor, so the step went with them. */
   .nbgraph #legend h4{margin:9px 0 4px;font-size:var(--dr-text-label,12px);font-weight:600;
@@ -132,7 +158,8 @@
   .nbgraph #controls{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;left:0;right:0;top:auto;bottom:8px;
     padding:2px 8px;gap:6px;scrollbar-width:none}
   .nbgraph #controls::-webkit-scrollbar{display:none}
-  .nbgraph #controls button{min-height:2.75rem;flex:0 0 auto;white-space:nowrap;border-radius:9999px;padding:0 12px}
+  /* .dr-btn is already 44px and a pill; the rail only has to stop them shrinking. */
+  .nbgraph #controls .dr-btn{flex:0 0 auto}
   .nbgraph #gsearch{left:8px;right:8px;top:8px;transform:none}
   .nbgraph #gsearch input{width:100%;min-height:2.75rem;font-size:16px}
   .nbgraph #legend{left:8px;right:8px;bottom:60px;max-height:45dvh;overflow:auto;padding:0}

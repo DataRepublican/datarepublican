@@ -64,8 +64,16 @@ title: DSA Explorer
   #controls button:focus-visible,#panelToggle:focus-visible,#legend button:focus-visible{
     outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
-  #controls button, #controls .grp{border:1px solid #D5D5CE;border-radius:6px;font-size:12px;padding:6px 9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-  #controls button:hover{background:#f0f0ea}
+  /* Geometry lives in .dr-btn. The .grp wrapper keeps no box of its own — it is
+     a layout row, not a control. */
+  #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+  /* 32px above md — see the note in noblogs/graph/graph.css. Same stacked
+     column, same collision with a bottom-left legend. */
+  @media(min-width:768px){
+    #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
+    #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
+  }
   #search{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:var(--dr-z-canvas-ui,20)}
   #search input{width:260px;padding:7px 11px;border:1px solid #D5D5CE;border-radius:20px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   /* details-panel collapse: widen the map; a node/edge tap (or the toggle) reopens it */
@@ -95,6 +103,9 @@ title: DSA Explorer
   #legend .sw{width:14px;height:14px;border-radius:3px;flex:0 0 auto}
   #legend .shp{font-size:13px;width:16px;text-align:center}
   #legend .divider{height:1px;background:#E2E2DD;margin:8px 0}
+  /* Reserve the control column — see the note in noblogs/graph/graph.css.
+     After the legend's own rules, because a media query adds no specificity. */
+  @media(min-width:768px){ #legend{max-height:calc(100% - 300px)} }
   #legend .hint{color:#999;font-size:11px;margin-top:6px;line-height:1.35}
   /* detail panel */
   /* #panel, not a bare `aside`.
@@ -166,7 +177,8 @@ title: DSA Explorer
        at 44px. Not a 160px column over the graph. */
     #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
     #controls::-webkit-scrollbar{display:none}
-    #controls button{min-height:2.75rem;flex:0 0 auto;white-space:nowrap;font-size:13px;padding:0 12px;border-radius:9999px;background:rgba(255,255,255,.95);backdrop-filter:blur(2px)}
+    /* .dr-btn is already 44px and a pill; the rail only stops them shrinking. */
+    #controls .dr-btn{flex:0 0 auto}
     #controls .grp{display:contents}
 
     /* The sheet has its own close affordance. */
@@ -202,18 +214,18 @@ title: DSA Explorer
     <button id="panelToggle" title="Hide details panel">›</button>
     <div id="search"><input id="q" type="text" placeholder="Search a node…" autocomplete="off"></div>
     <div id="controls">
-      <button id="zin">＋ Zoom</button>
-      <button id="zout">－ Zoom</button>
-      <button id="fit">Reset view</button>
-      <button id="relayout">Re-layout</button>
+      <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
+      <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" title="Re-layout"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>
       <!-- Pressed means the inferred links are SHOWN, which is how the graph
            loads — the state variable behind it is `infHidden`, so the two read
            in opposite directions and the initial value has to say so. -->
-      <button type="button" id="toggleInf" aria-pressed="true">Inferred links</button>
-      <button id="export" title="Download a high-resolution PNG of the current view (print / thread quality)">⬇ Export PNG</button>
+      <button type="button" id="toggleInf" class="dr-btn" aria-pressed="true">Inferred links</button>
+      <button type="button" id="export" class="dr-btn" title="Download a high-resolution PNG of the current view (print / thread quality)"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>
       <div class="grp" style="display:flex;gap:6px;padding:0;border:none;box-shadow:none">
-        <button id="back" style="flex:1" disabled>◀ Back</button>
-        <button type="button" id="focusToggle" style="flex:1" aria-pressed="true">Focus mode</button>
+        <button type="button" id="back" class="dr-btn" style="flex:1" disabled><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Back</button>
+        <button type="button" id="focusToggle" class="dr-btn" style="flex:1" aria-pressed="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg>Focus mode</button>
       </div>
     </div>
     <div id="legend"></div>
