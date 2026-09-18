@@ -47,25 +47,49 @@ border. It already carries `id="panel"` — the fix is mechanical.
 
 **Guarded by** `tests/test_review_regressions.spec.js` across five page kinds.
 
-## 4. Vendored z-index escapes into the root stacking context
+## 4. A vendored z-index competes in a stacking context you did not mean to share
 
 **What happens.** Leaflet numbers its panes 400 / 800 / 1000, assuming it owns a
 stacking context. `#mapwrap` is `position: relative` with no `z-index` and
 `#mapcanvas` is `position: absolute` with no `z-index` — **neither creates one**.
-So every Leaflet pane competes in the root context against the site's layers.
+So the panes are painted in the nearest ancestor that does.
 
-**How it showed up.** The mobile detail sheet (z 60) rendered *under* the map.
-On desktop, Leaflet's zoom control (z 1000) floated over the open drawer (z 900),
-uncovered by its scrim.
+**Where that actually is, measured.** Not the root. `_layouts/default.html` gives
+`<main>` the `@container` class, and `container-type: inline-size` establishes a
+stacking context (and a containing block for fixed-position descendants). So the
+real contest was *inside* `<main>`: Leaflet's map pane at **400** against
+`.dr-sheet` at **60**. The pane won.
 
-**Fix.** `isolation: isolate` on the canvas wrapper. Never out-bid — that is how
-you get a 1200 and then a 9999. noblogs was already running
-600/850/900/1000/1100/1150/1200 and the sheet was *still* underneath.
+> Verified with a DOM walk, after an earlier "they escape to the root" diagnosis
+> turned out to be wrong. The fix is the same either way, but the mechanism is
+> not — and `container-type` creating a stacking context is the kind of thing
+> that will bite again somewhere else in this layout.
+
+**How it showed up.** The mobile detail sheet rendered *under* the map. On
+desktop, Leaflet's zoom control floated over the open drawer, uncovered by its
+scrim.
+
+**Fix.** `isolation: isolate` on the canvas wrapper, which gives Leaflet the
+context it already assumed it had. Never out-bid — that is how you get a 1200 and
+then a 9999. noblogs was already running 600/850/900/1000/1100/1150/1200 and the
+sheet was *still* underneath.
+
+**Test it by what a thumb hits, not by the numbers** — the bug was invisible from
+the numbers, and so was a bad test of it. `tests/test_stacking.spec.js` samples
+inside the **measured intersection** of the sheet and the canvas, and fails if
+there is no intersection:
 
 ```js
-// the real question is what a thumb hits, not what a number says
-document.elementFromPoint(x, y).closest('.dr-sheet')
+const top = Math.max(sheet.top, map.top);
+const bottom = Math.min(sheet.bottom, map.bottom, innerHeight);
+// sampling just below the sheet's top edge is WRONG: at 390px the tool header
+// pushes the map to y≈559 while the half-detent sheet starts at y≈380, so that
+// point lands in the tab strip and the test passes with the fix reverted.
+document.elementFromPoint(x, (top + bottom) / 2).closest('.dr-sheet')
 ```
+
+**Always confirm a regression test fails without the fix.** This one did not, at
+first, and would have shipped green over a live bug.
 
 ## 5. `docs/` is production
 

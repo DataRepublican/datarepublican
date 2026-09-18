@@ -26,7 +26,7 @@ this is done.
 | `.dr-field` | three search inputs (340 / 270 / 260px). **Two of them float over a canvas and duplicate the page-level field — delete those**; it also frees the canvas top edge where dsa's mobile controls collided |
 | `.dr-chip` | six chip and legend-row patterns across three files, 19–25px tall, all `<span>` + onclick |
 | `.dr-tag` | four tag/badge patterns at radius 4/6/12. **Never carries an inline background** — dsa's data colouring becomes `--tag-bg` on a `solid` tone |
-| `.dr-check` | `.fitem`, which sets `pointer-events:none` on the real checkbox and handles the click on the row. Fix natively: `<label>` around `<input>`, inside `<fieldset><legend>` |
+| `.dr-check` | `.fitem`, which set `pointer-events:none` on the real checkbox and handled the click on the row. Fixed natively in noblogs: `<label>` around `<input>` inside `<fieldset><legend>`, handler on the input's `change`. **When a list rebuilds itself, restore focus** — see below |
 | `.dr-link` | five source-link classes, all `#1155CC`. Promote dsa's `fmtUrl()` to a shared helper |
 
 Button sizes: `md` = 44px at every width. `sm` = 32px, **desktop-only**, inside a
@@ -56,11 +56,38 @@ Also `__header`, `__kv`, `__srclist` (keep dsa's `›` prefix), `__connlist`.
 
 ## Accessibility debt this clears
 
-Tabs, chips, facet rows, legend rows and the clear-all control are all
-non-focusable `<div>`/`<span>` with onclick. Focus styling exists on exactly one
-selector site-wide (`.dr-sheet:focus-visible`); `#search:focus` *removes* the
-outline. Tap targets under 44px: `.loadmore` ~39, `.fitem` ~24, `.lgrow` ~19,
-`.chip` ~25, legend `.row` ~19.
+Tabs, chips, legend rows and the clear-all control are non-focusable
+`<div>`/`<span>` with onclick. Focus styling exists on exactly one selector
+site-wide (`.dr-sheet:focus-visible`); `#search:focus` *removes* the outline.
+Tap targets under 44px: `.loadmore` ~39, `.lgrow` ~19, `.chip` ~25, legend
+`.row` ~19. (`.fitem` was ~24 and is done.)
+
+### Rebuild-and-restore: the failure mode worth knowing
+
+`buildFacets()` rewrites `#facets.innerHTML` on every change, and the graph and
+legend do the same thing to their own subtrees. **A list that rewrites itself
+destroys focus**, so a keyboard user gets exactly one keystroke before landing
+back on `<body>`.
+
+This is why "is it focusable?" is the wrong question to audit with. The old
+facet rows *were* reachable by Tab and *did* toggle on Space — `pointer-events:
+none` does not remove an input from the tab order, and Space fired a click that
+bubbled to the row handler. They were unusable anyway, because the second
+keystroke went nowhere.
+
+The pattern: capture the focused row's identity before the rewrite, re-focus its
+replacement after.
+
+```js
+const focused = document.activeElement;
+const keep = (el.contains(focused) && focused.closest('.fitem'))
+  ? focused.closest('.fitem').dataset : null;
+el.innerHTML = h;
+if (keep) el.querySelector(selectorFor(keep))?.focus({ preventScroll: true });
+```
+
+Apply it to any surface that regenerates its own markup — and test it by
+toggling **twice**, since one toggle passes either way.
 
 ## Known dead code, safe to delete on contact
 

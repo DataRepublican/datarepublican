@@ -55,14 +55,50 @@ title: TrumpBlogs formerly known as NoBlogs
   .layout{display:flex;align-items:flex-start}
   aside#facets{width:232px;flex:none;position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
     border-right:1px solid var(--line);padding:14px 14px 40px 0;background:var(--bg)}
-  .fgroup{margin-bottom:16px}
-  .fgroup h3{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
+  /* A <fieldset> per group, so a screen reader announces "Country, checkbox,
+     Germany" rather than reading a loose list. The UA styling has to be reset
+     to nothing first; `min-width:0` is the one that is easy to miss — a
+     fieldset defaults to min-content sizing and will refuse to shrink inside
+     the 232px rail without it. */
+  .fgroup{border:0;margin:0 0 16px;padding:0;min-width:0}
+  .fgroup legend{padding:0;margin:0 0 7px;font-size:var(--dr-text-label,12px);font-weight:600;
+    color:var(--dim);font-family:var(--dr-font-ui,inherit)}
+  /* A real <label> wrapping a real <input>.
+
+     This was a <div> with the click handler on the row and `pointer-events:none`
+     on the checkbox, because a <label> "double-fired": the label forwarded the
+     click to the input, and that click bubbled back to the row handler, so the
+     two toggles cancelled and only a pixel-perfect hit on the checkbox worked.
+     The label was never the problem — the row handler was. Listening to the
+     input's `change` fires exactly once however the control is operated.
+
+     What that arrangement actually broke, measured rather than assumed:
+
+       - the CHECKBOX was the unclickable part. `pointer-events:none` meant a
+         click aimed at the box did nothing and only the row around it worked.
+       - focus did not survive a toggle, because buildFacets() rewrites this
+         whole subtree. You could toggle one facet from the keyboard and then
+         had to Tab back from the top of the document for the next.
+
+     Tab and Space did reach a facet before this — `pointer-events:none` does
+     not take an input out of the tab order, and Space fired a click that
+     bubbled to the row handler. So the rail was not keyboard-dead; it was
+     keyboard-useless after the first keystroke. */
   .fitem{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12.5px;color:#4a4e56;cursor:pointer}
   .fitem:hover{color:var(--ink)}
-  .fitem input{accent-color:var(--accent);cursor:pointer;pointer-events:none}
-  .fitem .c{margin-left:auto;color:#9a9ea6;font-size:11px;font-variant-numeric:tabular-nums}
+  .fitem input{accent-color:var(--accent);cursor:pointer;flex:none}
+  /* The ring goes on the row, not the 13px checkbox, so the focused thing and
+     the labelled thing are the same shape. */
+  .fitem:focus-within{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
+  .fitem input:focus-visible{outline:none}
+  /* Fixed-width slot: the counts form a lane instead of aligning by luck. */
+  .fitem .c{margin-left:auto;padding-left:8px;width:4.5em;flex:none;text-align:right;
+    color:#9a9ea6;font-size:11px;font-variant-numeric:tabular-nums}
   .fitem.act{color:var(--ink);font-weight:600}
-  .clearf{color:var(--low);font-size:11px;cursor:pointer;user-select:none;margin-bottom:10px;display:inline-block}
+  .clearf{appearance:none;border:0;background:none;padding:0;margin:0 0 10px;min-width:0;
+    color:var(--low);font-size:11px;cursor:pointer;display:inline-block;font-family:inherit}
+  .clearf:hover{text-decoration:underline}
+  .clearf:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
   main{flex:1;min-width:0;padding:16px 0 60px 20px}
   .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 15px;min-width:104px;
@@ -302,6 +338,11 @@ title: TrumpBlogs formerly known as NoBlogs
     /* Facets move into the floating sheet above; the rail itself is gone. */
     .layout{display:block}
     aside#facets{display:none}
+    /* The facet rows were ~24px, which is a thumb-sized miss on every tap. The
+       checkbox itself stays its native size; the row grows around it. */
+    .fitem{min-height:2.75rem;padding:0;font-size:13px}
+    .fitem input{width:1.125rem;height:1.125rem}
+    .clearf{min-height:2.75rem;font-size:13px}
     main{padding:12px 0 calc(var(--nav-clearance) + 12px)}
 
     #nb-filterbar{display:flex}
@@ -530,43 +571,62 @@ function buildFacets(){
   const co=counts(b=>b.co||"—"), cat=counts(b=>b.cat), mil=counts(b=>b.mil), sc=counts(b=>b.sc);
   const topco=Object.entries(co).sort((a,b)=>b[1]-a[1]).slice(0,14);
   const order=(o)=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
-  let h=`<span class="clearf" onclick="clearAll()">✕ clear all filters</span>`;
+  /* Every toggle rebuilds this subtree, which throws away whatever had focus.
+     For a mouse that is invisible; for a keyboard it means one Space and you
+     are back at the top of the document, so remember which row was focused and
+     put focus back on its replacement. */
+  const focused=document.activeElement;
+  const keep=(el.contains(focused)&&focused.closest('.fitem'))
+    ? focused.closest('.fitem').dataset : null;
+
+  let h=`<button type="button" class="clearf" onclick="clearAll()">✕ clear all filters</button>`;
   h+=grp("Scope","sc",order(sc));
   h+=grpFlags();
   h+=grp("Country","co",topco,COUNTRYNAME);
   h+=grp("Category","cat",order(cat),CATLABEL);
   h+=grp("Militancy","mil",order(mil));
   el.innerHTML=h;
-  el.querySelectorAll('.fitem[data-f]').forEach(it=>it.onclick=()=>{
-    const f=it.dataset.f,v=it.dataset.v; const S=F[f]; S.has(v)?S.delete(v):S.add(v);
+
+  /* `change`, not a click on the row. See the note by .fitem in the stylesheet:
+     the row handler is what made the old <label> double-fire, and `change`
+     fires once whether the control was clicked, tapped, or toggled with Space. */
+  el.querySelectorAll('.fitem[data-f] input').forEach(inp=>inp.onchange=()=>{
+    const d=inp.closest('.fitem').dataset, S=F[d.f];
+    S.has(d.v)?S.delete(d.v):S.add(d.v);
     PAGE=0; syncURL(); buildFacets(); render();
   });
-  el.querySelectorAll('.fitem[data-flag]').forEach(it=>it.onclick=()=>{
-    const v=it.dataset.flag; F.flags.has(v)?F.flags.delete(v):F.flags.add(v);
+  el.querySelectorAll('.fitem[data-flag] input').forEach(inp=>inp.onchange=()=>{
+    const v=inp.closest('.fitem').dataset.flag;
+    F.flags.has(v)?F.flags.delete(v):F.flags.add(v);
     PAGE=0; syncURL(); buildFacets(); render();
   });
+
+  if(keep){
+    const sel=keep.f
+      ? `.fitem[data-f="${CSS.escape(keep.f)}"][data-v="${CSS.escape(keep.v)}"] input`
+      : `.fitem[data-flag="${CSS.escape(keep.flag)}"] input`;
+    el.querySelector(sel)?.focus({preventScroll:true});
+  }
+  if(typeof nbUpdateFilterCount==='function')nbUpdateFilterCount();
 }
 function grp(title,f,entries,labelmap){
-  let h=`<div class="fgroup"><h3>${title}</h3>`;
+  let h=`<fieldset class="fgroup"><legend>${title}</legend>`;
   for(const [v,c] of entries){
     const on=F[f].has(v); const lab=labelmap&&labelmap[v]?labelmap[v]:(v==="—"?"(none)":v);
-    // a <div> (not <label>): a <label> forwards clicks on its text to the inner
-    // checkbox, which then double-fires the toggle and cancels out — so only a
-    // pixel-perfect click on the tiny checkbox worked. A div fires exactly once.
-    h+=`<div class="fitem ${on?'act':''}" data-f="${f}" data-v="${v}">
-      <input type="checkbox" ${on?'checked':''}><span>${lab}</span><span class="c">${c.toLocaleString()}</span></div>`;
+    h+=`<label class="fitem ${on?'act':''}" data-f="${esc(f)}" data-v="${esc(v)}">
+      <input type="checkbox" ${on?'checked':''}><span>${esc(lab)}</span><span class="c">${c.toLocaleString()}</span></label>`;
   }
-  return h+`</div>`;
+  return h+`</fieldset>`;
 }
 function grpFlags(){
   const opts=[["logo","has logo"],["contact","has contact"],["quotes","has quotes"],["geo","mappable"],["dox","doxxing activity"]];
   const scope=DATA.filter(b=>matchSearch(b));
   const cnt={logo:b=>b.vt==="logo",contact:b=>Object.keys(b.ct).length,
     quotes:b=>b.nq>0,geo:b=>b.lat!=null,dox:b=>b.dox};
-  let h=`<div class="fgroup"><h3>Filters</h3>`;
+  let h=`<fieldset class="fgroup"><legend>Filters</legend>`;
   for(const [v,lab] of opts){const on=F.flags.has(v);const c=scope.filter(cnt[v]).length;
-    h+=`<div class="fitem ${on?'act':''}" data-flag="${v}"><input type="checkbox" ${on?'checked':''}><span>${lab}</span><span class="c">${c.toLocaleString()}</span></div>`;}
-  return h+`</div>`;
+    h+=`<label class="fitem ${on?'act':''}" data-flag="${esc(v)}"><input type="checkbox" ${on?'checked':''}><span>${lab}</span><span class="c">${c.toLocaleString()}</span></label>`;}
+  return h+`</fieldset>`;
 }
 function clearAll(){F.q="";setSearch("");document.getElementById('search').value="";
   F.co.clear();F.cat.clear();F.mil.clear();F.sc.clear();F.flags.clear();PAGE=0;syncURL();buildFacets();render();}
