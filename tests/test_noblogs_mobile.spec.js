@@ -7,32 +7,60 @@ const HOST = process.env.HOST || 'http://localhost:4000';
 // happily pass while a transparent full-screen overlay is eating every tap a
 // real thumb makes — which is exactly the bug this suite caught in the sheet
 // scrim.
+//
+// `state: 'attached'` on the .card waits is load-bearing, not noise. The page
+// lands on the MAP, and #dashview is display:none there — so the cards are in
+// the DOM but not on screen, and Playwright's default `visible` wait times out
+// on all of them. A .card wait means "the index has loaded and rendered", which
+// is what these tests are actually gating on. Only the handful that need to
+// CLICK a card, or that assert dashboard behaviour, ask for it visible — and
+// those navigate to ?view=dash so they are honest about which view they are in.
 
 test.describe('noblogs on a phone', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
-  test('lands on the dashboard and does not fetch the map payload', async ({ page }) => {
+  test('lands on the map', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
+
+    await expect(page.locator('.tab.on')).toHaveAttribute('data-v', 'map');
+    await expect(page.locator('#mapcanvas')).toHaveCount(1);
+  });
+
+  /* The payload contract, scoped to where it is still true.
+
+     This used to assert that the DEFAULT landing view did not fetch the map,
+     on the stated grounds that map_data.js is 3.68 MB. That number is the
+     UNCOMPRESSED size and it made the cost sound decisive. Over the wire the
+     file is 0.8 MB gzipped, and data.index.json — fetched unconditionally at
+     boot on every view — is 3.1 MB gzipped. So the map is the smallest of the
+     three payloads, and landing on it adds about a quarter to a baseline you
+     were always going to pay.
+
+     Map is now the landing view, deliberately: it is what the tool is for. But
+     a deep link that asks for the dashboard must still not pay for the map, and
+     that is a real contract worth keeping — so it is what this test asserts.
+     If you ever make the map payload cheap enough not to care, delete this;
+     until then it is the thing standing between a ?view=dash link and 0.8 MB
+     it has no use for. */
+  test('a dashboard deep link does not fetch the map payload', async ({ page }) => {
     const fetched = [];
     page.on('request', (r) => {
       const u = r.url();
       if (u.includes('map_data.js') || u.includes('/map.js') || u.includes('leaflet')) fetched.push(u);
     });
 
-    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.card', { timeout: 60000 });
 
     await expect(page.locator('.tab.on')).toHaveAttribute('data-v', 'dash');
-
-    // map_data.js is 3.68 MB. The Map tab loads it, Leaflet and map.js on first
-    // activation; landing on the dashboard must not. This replaces the old
-    // check that the iframe had no src — there is no iframe now, so the
-    // question is whether the payload was requested at all.
-    expect(fetched, `map payload fetched on landing: ${fetched.join(', ')}`).toEqual([]);
-    await expect(page.locator('#mapcanvas')).toHaveCount(1);
+    expect(fetched, `map payload fetched on a dashboard link: ${fetched.join(', ')}`).toEqual([]);
   });
 
   test('the Map tab loads the module and renders pins', async ({ page }) => {
-    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    // From the dashboard, so this still exercises first ACTIVATION of the tab
+    // rather than the landing path the test above covers.
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.card', { timeout: 60000 });
 
     await page.click('.tab[data-v="map"]');
@@ -45,7 +73,7 @@ test.describe('noblogs on a phone', () => {
   // over postMessage; both are gone.
   test('there are no iframes anywhere on the page', async ({ page }) => {
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
     expect(await page.locator('iframe').count()).toBe(0);
 
     for (const view of ['map', 'graph']) {
@@ -62,7 +90,7 @@ test.describe('noblogs on a phone', () => {
     page.on('request', (r) => { if (r.url().includes('quotes.embed.js')) hits.push(r.url()); });
 
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
     await page.click('.tab[data-v="graph"]');
     await page.waitForSelector('#graphwrap #cy canvas', { timeout: 90000 });
 
@@ -73,7 +101,7 @@ test.describe('noblogs on a phone', () => {
   // That is why it was framed; scoping under .nbgraph is what replaced the frame.
   test('the graph does not restyle or collide with the explorer chrome', async ({ page }) => {
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
     await page.click('.tab[data-v="graph"]');
     await page.waitForSelector('#graphwrap #cy canvas', { timeout: 90000 });
 
@@ -100,7 +128,7 @@ test.describe('noblogs on a phone', () => {
 
   test('the header height is measured, not assumed to be 56px', async ({ page }) => {
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
 
     // #nb-header, not a bare `header`. Both this assertion and the code it
     // checks used to say `querySelector('header')`, which returns the site
@@ -123,7 +151,7 @@ test.describe('noblogs on a phone', () => {
 
   test('filters open from one button and nothing intercepts the tap', async ({ page }) => {
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
 
     await expect(page.locator('#facets')).toBeHidden();
     await page.click('#nb-filters', { timeout: 10000 });
@@ -132,7 +160,9 @@ test.describe('noblogs on a phone', () => {
   });
 
   test('tapping a card opens the detail sheet on screen', async ({ page }) => {
-    await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
+    // ?view=dash because this one has to click a real card, which means the
+    // card has to be on screen.
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.card', { timeout: 60000 });
 
     await page.click('.card', { timeout: 10000 });
@@ -152,7 +182,7 @@ test.describe('noblogs on a phone', () => {
 
   test('the tab strip is tappable', async ({ page }) => {
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
 
     const small = await page.evaluate(() =>
       [...document.querySelectorAll('.tab')]
@@ -179,7 +209,7 @@ test.describe('noblogs graph logo payload', () => {
     // /noblogs/graph/. Logo paths are relative to graph/, so the module is told
     // its assetBase — get that wrong and every logo 404s from one of the two.
     await page.goto(HOST + '/noblogs/', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('.card', { timeout: 60000 });
+    await page.waitForSelector('.card', { state: 'attached', timeout: 60000 });
     await page.click('.tab[data-v="graph"]');
     await page.waitForFunction(
       () => typeof graphApi !== 'undefined' && graphApi && graphApi.cy.nodes().length > 0,
