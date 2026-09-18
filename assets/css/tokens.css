@@ -55,6 +55,7 @@
    * theme('fontSize.label') on its own would emit the whole tuple. */
   --dr-text-label:   theme('fontSize.label[0]');     /* 12px every interface label */
   --dr-text-caption: theme('fontSize.caption[0]');   /* 12px empty states, hints   */
+  --dr-text-meta:    theme('fontSize.meta[0]');      /* 13px the floor for a sentence */
   --dr-text-body:    theme('fontSize.body[0]');      /* 16px                       */
 
   /* ---- Space and shape --------------------------------------------------- */

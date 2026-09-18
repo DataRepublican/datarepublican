@@ -70,6 +70,8 @@
   /* 12px every interface label */
   --dr-text-caption: 0.75rem;
   /* 12px empty states, hints   */
+  --dr-text-meta:    0.8125rem;
+  /* 13px the floor for a sentence */
   --dr-text-body:    1rem;
   /* 16px                       */
   /* ---- Space and shape --------------------------------------------------- */

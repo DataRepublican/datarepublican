@@ -69,12 +69,12 @@ means to beat loses on source order.
 
 | Class | Replaces / decision |
 |---|---|
-| `.dr-card` | drops the `translateY(-2px)` hover (it makes an auto-fill grid shimmer); becomes an `<a>` — today it is a `<div>` with onclick, so no card is keyboard-reachable or openable in a new tab |
+| `.dr-card` | drops the `translateY(-2px)` hover (it makes an auto-fill grid shimmer). Its type now clears the floors — every line of it was 10–11.5px, which made the library view's main content the smallest text in the tool. **Still a `<div>` with onclick**: not keyboard-reachable, not openable in a new tab, no `href` to copy. Deliberately parked, not overlooked — becoming an `<a>` is the fix when someone is next in that file |
 | `.dr-tile` | KPI values lose their six colours. Two of the six were already identical because `--gold` and `--med` are the same hex |
 | `.dr-panel` | three layouts. **Docked column wins** over noblogs' fixed overlay: an overlay + scrim dims the map you just clicked, the failure the sheet exists to fix. `clamp(320px, 30vw, 392px)` absorbs 340/370/392 and deletes the stray `@media(max-width:820px)` with its 768–820 dead zone |
 | `.dr-sheet` | keep as-is structurally. Gains a visible title and keyboard detent control |
 | `.dr-popover` | the hand-rolled facet sheet + `#nb-facetscrim` + `place()` |
-| `.dr-legend` | three legends. **dsa's bar + expandable key wins.** Map and graph are converted: rows are `<button aria-pressed>`, the collapse is a `<button aria-expanded>`, both 44px on a phone. Swatch *shape* stays a variable so the map keeps circles and the graph keeps squares. **Polarity differs per tool and that is correct** — on the map pressed means "this category is chosen", on the graph everything is shown at load so pressed means "shown". Bound a floating key by its own container, never `calc(100vh - …)` |
+| `.dr-legend` | three legends, **all three now converted.** dsa's bar + expandable key won the design and was, for a while, the only one still built from `<div>`/`<span>` with a delegated click. Rows are `<button aria-pressed>`, the collapse is a `<button aria-expanded aria-controls>`, everything 44px on a phone. Swatch *shape* stays a variable so the map keeps circles and the graph keeps squares. Bound a floating key by its own container, never `calc(100vh - …)`. See the polarity note below |
 | `.dr-controls` | two near-identical toolbars, both converted: icon-first `.dr-btn` controls, Lucide glyphs, `.dr-btn--icon` where the action has a conventional icon and no state. **`sm` (32px) applies above md inside a toolbar** — seven stacked 44px buttons make a column taller than the room above the legend, so the thumb floor is a floor for thumbs. The unused `.dr-controls` block in `main.css` is still there and still unadopted; its `!important`s were never needed |
 | `.dr-callout` | three amber disclaimers at 10 / 10.5 / 11px with different line-heights. **Goes up to 13px**, and becomes a real `<details>` with a 44px summary on phones — which also removes one of the two reasons the header is measured at runtime |
 | `.dr-empty` | four empty states at 13px → **16px, done** (`.empty`, `.pempty`, graph `aside .empty`, dsa `#panel .empty`). Still to gain the action that resolves them |
@@ -119,6 +119,31 @@ restores the uppercase, and a grep of the source will not catch it.
 `tests/test_labels_and_status.spec.js` asserts computed `textTransform`,
 `fontSize` and `letterSpacing` on every site, which does.
 
+## Legend polarity, and why it differs in all three
+
+Not an inconsistency. Each tool's pressed state means what its own legend means:
+
+| Legend | Selection model | `aria-pressed="true"` means |
+|---|---|---|
+| noblogs map | multi-select | this category is **chosen** |
+| noblogs graph | multi-select, all on at load | this class is **shown** |
+| dsa-explorer | single-select **with clear** | this is the current being **isolated** |
+
+dsa is `aria-pressed` and not a `radiogroup` on purpose: one current at a time,
+but re-clicking the active one clears it, and **a radio cannot be unset**.
+Clearing is the common case there.
+
+Two further rules the dsa conversion settled:
+
+- **A button that does something is not a button that is in a state.** The
+  country rows fly the camera to a box; they are buttons with no `aria-pressed`.
+  The shape key is not interactive at all and stays a `<div>` — converting it
+  would have added a focus stop that does nothing.
+- **Where a control is drawn twice, both copies carry the state.** dsa's bar
+  chips and its full-key rows are one control with two presentations; the
+  handler already shared them, and now `setIdeoFilter` writes `aria-pressed` to
+  both in the same loop that writes `.active`.
+
 ## The status line — `#subcount`
 
 The tool's only running commentary. `render()` rewrites it on every filter
@@ -147,8 +172,13 @@ updates passes with the debounce removed.
 Tabs, chips, legend rows and the clear-all control are non-focusable
 `<div>`/`<span>` with onclick. Focus styling exists on exactly one selector
 site-wide (`.dr-sheet:focus-visible`); `#search:focus` *removes* the outline.
-Tap targets under 44px: `.loadmore` ~39, `.lgrow` ~19, `.chip` ~25, legend
-`.row` ~19. (`.fitem` was ~24 and is done.)
+Tap targets: `.loadmore`, `.fitem`, `.lgrow`, the legend `.row`s and `.chip`s in
+all three tools, and `.clearf` (20px, the smallest hit area in the tool) are all
+done. **32px is the mouse floor, 44px the thumb floor** — `.clearf` and toolbar
+buttons take `--dr-tap-sm` above md and `--dr-tap` below it.
+
+Not defects, so do not "fix" them: inline source links measure 15–18px tall
+because they are links inside flowing text, where the 44px floor does not apply.
 
 ### Rebuild-and-restore: the failure mode worth knowing
 

@@ -79,6 +79,60 @@ for (const t of LABELS) {
   });
 }
 
+/* The library card.
+ *
+ * Every line of it was under 12px — 10, 10.5 and 11.5 — which made the main
+ * content of the library view the smallest type in the tool, on a grey ground.
+ * The detail panel got fixed first; the cards that lead to it did not.
+ *
+ * The floors are the scale's: 12px for a label, 13px for anything read as a
+ * sentence. Asserted per element rather than as one number, because .csum is
+ * prose and .chost is not, and they are allowed to differ.
+ */
+test('the library card clears the type floors', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
+  await page.waitForSelector('.card', { timeout: 90000 });
+
+  const bad = await page.evaluate(() => {
+    const floors = {
+      '.cname': 14, '.chost': 12, '.badge': 12, '.cmeta .tag': 12,
+      '.cloc': 13, '.csum': 13, '.cfoot': 12,
+    };
+    const out = [];
+    for (const [sel, floor] of Object.entries(floors)) {
+      const el = document.querySelector('.card ' + sel);
+      if (!el) { out.push({ sel, why: 'absent' }); continue; }
+      const fs = parseFloat(getComputedStyle(el).fontSize);
+      if (fs < floor) out.push({ sel, why: `${fs}px, floor ${floor}px` });
+    }
+    return out;
+  });
+  expect(bad, `card text under its floor: ${JSON.stringify(bad)}`).toEqual([]);
+});
+
+/* Clear-all was a 20px target at 11px — the smallest hit area in the tool, and
+   a real control, not a caption. 32px with a mouse, 44px on a phone. */
+for (const [w, h, floor] of [[1280, 900, 32], [390, 844, 44]]) {
+  test(`clear-all clears ${floor}px at ${w}px`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.clearf', { state: 'attached', timeout: 90000 });
+    // On a phone the facet list lives in the filter popover, so clear-all has no
+    // box until it is open. Measuring it closed reports 0 and passes nothing.
+    if (w < 768) {
+      await page.locator('#nb-filters').click();
+      await expect(page.locator('.clearf').first()).toBeVisible();
+    }
+    const box = await page.locator('.clearf').first().evaluate(e => ({
+      h: Math.round(e.getBoundingClientRect().height),
+      fs: parseFloat(getComputedStyle(e).fontSize),
+    }));
+    expect(box.h, `clear-all is ${box.h}px tall`).toBeGreaterThanOrEqual(floor);
+    expect(box.fs).toBeGreaterThanOrEqual(12);
+  });
+}
+
 /* Empty and loading states read at body size.
  *
  * They are the only thing on screen when they show, and they were the smallest

@@ -124,10 +124,15 @@ title: TrumpBlogs formerly known as NoBlogs
   .fitem input:focus-visible{outline:none}
   /* Fixed-width slot: the counts form a lane instead of aligning by luck. */
   .fitem .c{margin-left:auto;padding-left:8px;width:4.5em;flex:none;text-align:right;
-    color:#9a9ea6;font-size:11px;font-variant-numeric:tabular-nums}
+    color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);font-variant-numeric:tabular-nums}
   .fitem.act{color:var(--ink);font-weight:600}
-  .clearf{appearance:none;border:0;background:none;padding:0;margin:0 0 10px;min-width:0;
-    color:var(--low);font-size:11px;cursor:pointer;display:inline-block;font-family:inherit}
+  /* It is a real control, so it gets a real target: 20px tall at 11px was the
+     smallest hit area in the tool. inline-flex rather than extra padding, so
+     the height is the target and the text stays on the facet list's left edge.
+     The phone rule below takes it the rest of the way to 44px. */
+  .clearf{appearance:none;border:0;background:none;padding:0 4px;margin:0 0 6px -4px;min-width:0;
+    min-height:var(--dr-tap-sm,32px);display:inline-flex;align-items:center;
+    color:var(--low);font-size:var(--dr-text-label,12px);cursor:pointer;font-family:inherit}
   .clearf:hover{text-decoration:underline}
   .clearf:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
   main{flex:1;min-width:0;padding:16px 0 60px 20px}
@@ -145,22 +150,30 @@ title: TrumpBlogs formerly known as NoBlogs
   .card.sel{border-color:var(--accent);box-shadow:0 0 0 2px rgba(192,57,43,.25)}
   .thumbwrap{height:132px;background:var(--tile);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
   .thumbwrap img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-  .thumbwrap .novis{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a8aab0;font-size:11px}
-  .badge{position:absolute;top:7px;left:7px;font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--dim)}
+  /* ---- The card ----------------------------------------------------------
+     Every line of it was under 12px — 10, 10.5 and 11.5 — which made the main
+     content of the library view the smallest type in the tool, on a grey
+     ground. The scale's floors apply here as much as in the detail panel:
+     12px for a label, 13px for anything read as a sentence. .cname goes up
+     with them so the title still leads. */
+  .thumbwrap .novis{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px)}
+  .badge{position:absolute;top:7px;left:7px;font-size:var(--dr-text-label,12px);padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--dim)}
   .badge.logo{color:#8A5A1A;border-color:#E4C9A0;background:#FBF3E4}
   .cbody{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .cname{font-weight:700;font-size:13.5px;line-height:1.25}
-  .chost{color:var(--dim);font-size:10.5px;word-break:break-all}
+  .cname{font-weight:700;font-size:15px;line-height:1.3}
+  .chost{color:var(--dim);font-size:var(--dr-text-label,12px);word-break:break-all}
   .cmeta{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
-  .tag{font-size:10.5px;padding:2px 7px;border-radius:6px;background:var(--tile);border:1px solid var(--line);color:#555}
+  .tag{font-size:var(--dr-text-label,12px);padding:2px 7px;border-radius:6px;background:var(--tile);border:1px solid var(--line);color:#555}
   .tag.cat{color:#333;border-color:#D8D8CF}
   .tag.mil-operational{color:var(--hi);border-color:rgba(192,57,43,.35);background:rgba(192,57,43,.07)}
   .tag.mil-tactical_support{color:var(--med);border-color:rgba(184,134,11,.35);background:rgba(184,134,11,.08)}
   .tag.mil-rhetorical{color:var(--low);border-color:rgba(74,111,165,.35);background:rgba(74,111,165,.08)}
   .tag.dox{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:600}
-  .cloc{font-size:11.5px;color:var(--dim)} .cloc::before{content:"📍 "}
-  .csum{font-size:11.5px;color:#585c64;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-  .cfoot{display:flex;gap:9px;margin-top:auto;font-size:10.5px;color:#9a9ea6;padding-top:4px}
+  .cloc{font-size:var(--dr-text-meta,13px);color:var(--dim)} .cloc::before{content:"📍 "}
+  /* A three-line summary is prose, so it takes the sentence floor, not the label one. */
+  .csum{font-size:var(--dr-text-meta,13px);line-height:1.4;color:#585c64;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  .cfoot{display:flex;gap:9px;margin-top:auto;font-size:var(--dr-text-label,12px);color:var(--dr-ink-faint,#6B7280);padding-top:4px}
   .cfoot .on{color:var(--news)}
   /* An empty state is the only thing on screen when it shows, so it reads at
      body size. 13px on a grey ground was the smallest copy in the tool. */
@@ -443,7 +456,7 @@ title: TrumpBlogs formerly known as NoBlogs
        checkbox itself stays its native size; the row grows around it. */
     .fitem{min-height:2.75rem;padding:0;font-size:13px}
     .fitem input{width:1.125rem;height:1.125rem}
-    .clearf{min-height:2.75rem;font-size:13px}
+    .clearf{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
     main{padding:12px 0 calc(var(--nav-clearance) + 12px)}
 
     #nb-filterbar{display:flex}

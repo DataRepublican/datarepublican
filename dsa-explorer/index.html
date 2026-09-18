@@ -84,29 +84,43 @@ title: DSA Explorer
   /* legend — slim bottom bar (ideology chips); click ⌃ Legend to expand the full key upward */
   #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
   #legend .legbar{background:rgba(255,255,255,.96);border:1px solid #E2E2DD;border-radius:8px;padding:5px 8px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-  #legend .legtoggle{border:1px solid #D5D5CE;border-radius:6px;font-size:11px;padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end}
+  #legend .legtoggle{border:1px solid #D5D5CE;border-radius:6px;font-size:var(--dr-text-label,12px);padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end}
   #legend .legtoggle:hover{background:#f0f0ea}
   #legend .legchips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1 1 auto;min-width:0}
-  #legend .chip{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:12px;cursor:pointer;font-size:11px;white-space:nowrap}
+  /* The bar chips and the full key's rows are the same control drawn twice, and
+     both are now real buttons — so both need the reset that beats main.css's
+     global `button` rule (slate fill, min-width:65px). Same pattern as the map
+     legend's .lgrow and the graph legend's .row. */
+  #legend .chip{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;color:inherit;
+    display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:var(--dr-radius-pill,9999px);
+    cursor:pointer;font-size:var(--dr-text-label,12px);white-space:nowrap}
   #legend .chip:hover{background:#F2F2EC}
-  #legend .chip.active{font-weight:700;background:#ECECE4}
+  #legend .chip.active{font-weight:700;background:var(--dr-accent-tint,#DEE0E8)}
+  #legend .chip:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
   #legend .chip .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
   #legend .legfull{background:rgba(255,255,255,.96);border:1px solid #E2E2DD;border-radius:8px;padding:10px 12px;max-width:280px;max-height:calc(100vh - 170px);overflow-y:auto;box-shadow:0 2px 6px rgba(0,0,0,.1)}
   #legend:not(.expanded) .legfull{display:none}
   #legend h4{margin:0 0 6px;font-weight:600}
-  #legend .row{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}
+  /* A .row is a <button> when it filters or navigates and a <div> when it is
+     only a key (the shape row). The reset is written on the class so both read
+     the same; a <div> ignores the parts that do not apply to it. */
+  #legend .row{appearance:none;border:0;margin:3px 0;min-width:0;background:none;font:inherit;color:inherit;
+    text-align:left;width:100%;padding:2px 4px;display:flex;align-items:center;gap:7px;cursor:pointer}
   #legend .row.off{opacity:.35}
   #legend .row.active{font-weight:700}
   #legend .row.active .sw,#legend .row.active .shp{box-shadow:0 0 0 2px #111,0 0 0 3px #fff;border-radius:3px}
   #legend .row[data-country]:hover,#legend .row[data-ideo]:hover{background:#F2F2EC;border-radius:4px}
-  #legend .allrow{font-size:11px;color:#555;margin:2px 0 4px;cursor:pointer;text-decoration:underline}
+  #legend .row:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px;border-radius:4px}
+  #legend .allrow{appearance:none;border:0;background:none;min-width:0;font:inherit;
+    font-size:var(--dr-text-label,12px);color:#555;margin:2px 0 4px;padding:2px 4px;cursor:pointer;text-decoration:underline}
+  #legend .allrow:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px;border-radius:4px}
   #legend .sw{width:14px;height:14px;border-radius:3px;flex:0 0 auto}
   #legend .shp{font-size:13px;width:16px;text-align:center}
   #legend .divider{height:1px;background:#E2E2DD;margin:8px 0}
   /* Reserve the control column — see the note in noblogs/graph/graph.css.
      After the legend's own rules, because a media query adds no specificity. */
   @media(min-width:768px){ #legend{max-height:calc(100% - 300px)} }
-  #legend .hint{color:#999;font-size:11px;margin-top:6px;line-height:1.35}
+  #legend .hint{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);margin-top:6px;line-height:1.4}
   /* detail panel */
   /* #panel, not a bare `aside`.
      These rules used to say `aside`, and the site promo band is an <aside> that
@@ -208,7 +222,11 @@ title: DSA Explorer
     #legend .legbar{padding:0;background:none;border:0;box-shadow:none}
     #legend .legchips{display:none}
     #legend.expanded .legchips{display:flex}
-    #legend .legtoggle{min-height:2.75rem;border-radius:9999px;background:rgba(255,255,255,.95);padding:0 14px}
+    #legend .legtoggle{min-height:var(--dr-tap,2.75rem);border-radius:9999px;background:rgba(255,255,255,.95);padding:0 14px}
+    /* Now that the rows and chips are real controls, they take the thumb floor
+       like the other two legends do. */
+    #legend .row,#legend .chip,#legend .allrow{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
+    #legend .chip{padding:0 12px}
     #legend .legfull{max-width:none;max-height:45dvh}
 
     /* The panel is positioned by .dr-sheet in the site stylesheet; these just
@@ -863,20 +881,23 @@ function build(nodes, edges, baked){
     const countries=terrs.filter(t=>t.tkind==='country').sort((a,b)=>a.name.localeCompare(b.name));
     const ideoRows=currents.map(k=>{
       const c=IDEOLOGY[k];
-      return `<div class="row" data-ideo="${k}"><span class="sw" style="background:${c.c}"></span>${c.label}</div>`;
+      return `<button type="button" class="row" data-ideo="${k}" aria-pressed="false"><span class="sw" style="background:${c.c}"></span>${c.label}</button>`;
     }).join('');
+    // A country row navigates — it flies to that box. It is not a toggle, so it
+    // carries no aria-pressed; a button that does something is not a button that
+    // is in a state.
     const regionRows=countries.length
-      ? countries.map(t=>`<div class="row" data-country="${t.name}"><span class="sw" style="background:${t.col};opacity:.7"></span>${t.name}</div>`).join('')
+      ? countries.map(t=>`<button type="button" class="row" data-country="${t.name}"><span class="sw" style="background:${t.col};opacity:.7"></span>${t.name}</button>`).join('')
       : '<div class="hint">none in this graph</div>';
     // compact ideology chips for the always-visible bottom bar
-    const barChips=currents.map(k=>`<span class="chip" data-ideo="${k}"><span class="sw" style="background:${IDEOLOGY[k].c}"></span>${IDEOLOGY[k].label}</span>`).join('')
-      + `<span class="chip" data-ideo="__spine"><span class="sw" style="background:${SPINE_COL}"></span>Spine</span>`;
+    const barChips=currents.map(k=>`<button type="button" class="chip" data-ideo="${k}" aria-pressed="false"><span class="sw" style="background:${IDEOLOGY[k].c}"></span>${IDEOLOGY[k].label}</button>`).join('')
+      + `<button type="button" class="chip" data-ideo="__spine" aria-pressed="false"><span class="sw" style="background:${SPINE_COL}"></span>Spine</button>`;
     document.getElementById('legend').innerHTML=`
-      <div class="legfull">
+      <div class="legfull" id="legfull">
         <h4>Ideological current — color</h4>
-        <div class="allrow" id="showAllIdeo">◎ Show all currents</div>
+        <button type="button" class="allrow" id="showAllIdeo" aria-pressed="true">◎ Show all currents</button>
         ${ideoRows}
-        <div class="row" data-ideo="__spine"><span class="sw" style="background:${SPINE_COL}"></span>Anti-imperialist spine (uncolored)</div>
+        <button type="button" class="row" data-ideo="__spine" aria-pressed="false"><span class="sw" style="background:${SPINE_COL}"></span>Anti-imperialist spine (uncolored)</button>
         <div class="hint" style="margin-top:4px">Click a current to isolate it. Grey <b>spine</b> = shared infrastructure, not a current.</div>
         <div class="divider"></div>
         <h4>Kind (shape)</h4>
@@ -889,13 +910,17 @@ function build(nodes, edges, baked){
         <div class="hint"><b>Focus-walk:</b> click a node for its ties. Solid = confirmed · dashed = inferred.</div>
       </div>
       <div class="legbar">
-        <button class="legtoggle" id="legToggle">⌃ Legend</button>
+        <button type="button" class="legtoggle" id="legToggle" aria-expanded="false" aria-controls="legfull">⌃ Legend</button>
         <div class="legchips">${barChips}</div>
       </div>`;
     // expand / collapse the full key (grows upward from the bar)
     const legEl=document.getElementById('legend');
     const legToggle=document.getElementById('legToggle');
-    legToggle.onclick=()=>{ legToggle.textContent=(legEl.classList.toggle('expanded')?'⌄':'⌃')+' Legend'; };
+    legToggle.onclick=()=>{
+      const open=legEl.classList.toggle('expanded');
+      legToggle.textContent=(open?'⌄':'⌃')+' Legend';
+      legToggle.setAttribute('aria-expanded',String(open));
+    };
     // IDEOLOGY FILTER — radio across BOTH the bar chips and the full-key rows: click a current ->
     // show only nodes whose ideoset includes it (orgs proven in it + people/projects that inherit it).
     // "__spine" -> the neutral, un-inherited nodes. Click the active current again, or "Show all", ->
@@ -925,8 +950,25 @@ function build(nodes, edges, baked){
           box.style('display', anyVisible?'element':'none');
         });
       });
-      ideoEls.forEach(r=>r.classList.toggle('active', !!only && r.dataset.ideo===only));
+      /* The filter is single-select-with-clear: one current at a time, and
+         re-clicking the active one (or "Show all") clears it. That is why these
+         are aria-pressed toggles and not a radiogroup — a radio cannot be
+         unset, and clearing is the common case here.
+
+         Note the polarity, which differs from the other two legends and is
+         correct in each: on the map pressed means "this category is chosen", on
+         the graph everything is shown at load so pressed means "shown", and
+         here pressed means "this is the one current being isolated".
+
+         Rows and chips are the same control drawn twice — the bar summary and
+         the full key — so both carry the state. */
+      ideoEls.forEach(r=>{
+        const on=!!only && r.dataset.ideo===only;
+        r.classList.toggle('active', on);
+        r.setAttribute('aria-pressed', String(on));
+      });
       allBtn.classList.toggle('active', !only);
+      allBtn.setAttribute('aria-pressed', String(!only));
     }
     ideoEls.forEach(el=>el.onclick=()=>setIdeoFilter(el.dataset.ideo));
     allBtn.onclick=()=>setIdeoFilter(null);
