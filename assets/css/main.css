@@ -23,16 +23,16 @@
     padding-bottom: var(--nav-clearance);
   }
 
-  /* The page gutter and reading measure from the mocks: 20px either side,
-     content capped so long-form text stays readable. Tool pages opt out with
-     `wide: true` in front matter. */
+  /* The shell. One measure for every page — banner, masthead, nav and content
+     all line up on it, and it does not change between the tools index, a tool
+     and a narrative page. 20px gutters either side, from the mocks.
+
+     Reading measures are NOT set here. A narrow column is a property of the
+     content that needs it: `.text-column` below, and `.prose max-w-column` in
+     the markdown layout. */
   .page-column {
     @apply mx-auto w-full px-gutter;
-    max-width: var(--column-max, theme('maxWidth.column'));
-  }
-
-  .page-column--wide {
-    --column-max: theme('maxWidth.wide');
+    max-width: var(--column-max);
   }
 
   /* Tools index sorting.
@@ -48,6 +48,16 @@
   /* Group headings belong to category mode only. */
   .tool-group-header { display: none; }
   [data-sort="category"] > .tool-group-header { display: block; }
+
+  /* The narrative measure, shared by /about/ and /donate/.
+     One class, because the two pages had set this independently and drifted:
+     About was `max-w-[46rem]` with lede type, Donate was `max-w-3xl` (48rem)
+     with default body type and centred with mx-auto. Change the measure here
+     and both move together. */
+  .text-column {
+    @apply mt-5 text-lede leading-relaxed;
+    max-width: theme('maxWidth.prose');
+  }
 
   .skip-link {
     @apply sr-only;
@@ -185,6 +195,49 @@
 
 
 /* ================================================================
+   The shell measure. One number for the whole site, read by every
+   .page-column and by the banner bar's content column.
+
+   This was a per-page setting, with tools on the wide shell and the narrative
+   pages at 1024px. Navigating from Tools to About visibly shrank the masthead,
+   the rule and the nav, which read as a different site rather than a different
+   page. Content that needs a narrow column now asks for one itself.
+
+   TWO numbers, not one, and the split is by viewport rather than by page. On a
+   1500px window the full 1600px shell never gets to cap anything, so the
+   content ran the whole width of the glass with only the 20px gutters either
+   side — wide lines, and no margin to rest against. Below 1600 the shell is
+   1400, which puts real space back at the edges; from 1600 up, where there is
+   room for it, the measure is the full 1600 as before.
+
+   Stated mobile-first — the narrow measure is the default and the wide one is
+   the exception — so there is no fractional max-width breakpoint to get wrong.
+
+   Outside @layer components: a plain CSS rule inside a layer is dropped unless
+   Tailwind finds its selector in the scanned HTML, and `body` bare is not a
+   class it looks for.
+   ================================================================ */
+
+:root { --column-max: theme('maxWidth.snug'); }
+
+@media (min-width: 100rem) {
+  :root { --column-max: theme('maxWidth.wide'); }
+}
+
+.banner-bar { max-width: var(--column-max); }
+
+/* The band is the book's promo, not the site's voice: it sets its own
+   Helvetica/Arial rather than inheriting Libre Franklin from <body>. Scoped to
+   .banner-bar so nothing else picks it up.
+
+   Outside @layer components for the same reason as the rule above. */
+.banner-bar {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+
+/* ================================================================
    Tool shell — canvas, floating controls, and the bottom sheet.
 
    Deliberately OUTSIDE @layer components. Tailwind scans the HTML and drops
@@ -277,7 +330,7 @@
   /* The sheet takes focus when it opens so a screen reader announces it.
      That should not paint a ring around the whole panel for a mouse user. */
   .dr-sheet:focus { outline: none; }
-  .dr-sheet:focus-visible { outline: 2px solid theme('colors.label'); outline-offset: -2px; }
+  .dr-sheet:focus-visible { outline: 2px solid theme('colors.ink-strong'); outline-offset: -2px; }
 
   .dr-sheet__grip {
     display: block;

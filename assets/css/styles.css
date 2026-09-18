@@ -1185,20 +1185,21 @@ body {
     font-style: normal;
     padding-bottom: var(--nav-clearance);
 }
-/* The page gutter and reading measure from the mocks: 20px either side,
-     content capped so long-form text stays readable. Tool pages opt out with
-     `wide: true` in front matter. */
+/* The shell. One measure for every page — banner, masthead, nav and content
+     all line up on it, and it does not change between the tools index, a tool
+     and a narrative page. 20px gutters either side, from the mocks.
+
+     Reading measures are NOT set here. A narrow column is a property of the
+     content that needs it: `.text-column` below, and `.prose max-w-column` in
+     the markdown layout. */
 .page-column {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
-    max-width: var(--column-max, 64rem);
+    max-width: var(--column-max);
 }
-.page-column--wide {
-    --column-max: 90rem;
-  }
 /* Tools index sorting.
      Jekyll writes each card's position under every sort onto the <li> as a
      custom property; the <select> sets data-sort on the <ul>; `order` does the
@@ -1211,6 +1212,18 @@ body {
 /* Group headings belong to category mode only. */
 .tool-group-header { display: none; }
 [data-sort="category"] > .tool-group-header { display: block; }
+/* The narrative measure, shared by /about/ and /donate/.
+     One class, because the two pages had set this independently and drifted:
+     About was `max-w-[46rem]` with lede type, Donate was `max-w-3xl` (48rem)
+     with default body type and centred with mx-auto. Change the measure here
+     and both move together. */
+.text-column {
+  margin-top: 1.25rem;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  line-height: 1.625;
+    max-width: 52rem;
+}
 .skip-link {
   position: absolute;
   width: 1px;
@@ -1653,8 +1666,8 @@ select {
 .-mb-4 {
   margin-bottom: -1rem;
 }
-.-ml-5 {
-  margin-left: -1.25rem;
+.-ml-\[1\.125em\] {
+  margin-left: -1.125em;
 }
 .-mr-1 {
   margin-right: -0.25rem;
@@ -1721,9 +1734,6 @@ select {
 }
 .mt-1 {
   margin-top: 0.25rem;
-}
-.mt-1\.5 {
-  margin-top: 0.375rem;
 }
 .mt-10 {
   margin-top: 2.5rem;
@@ -1831,6 +1841,10 @@ select {
   width: 1.75rem;
   height: 1.75rem;
 }
+.size-\[0\.875em\] {
+  width: 0.875em;
+  height: 0.875em;
+}
 .size-\[7\.5rem\] {
   width: 7.5rem;
   height: 7.5rem;
@@ -1863,14 +1877,20 @@ select {
 .h-8 {
   height: 2rem;
 }
+.h-\[0\.45em\] {
+  height: 0.45em;
+}
 .h-\[0px\] {
   height: 0px;
 }
+.h-\[10px\] {
+  height: 10px;
+}
+.h-\[136px\] {
+  height: 136px;
+}
 .h-\[3px\] {
   height: 3px;
-}
-.h-\[5px\] {
-  height: 5px;
 }
 .h-auto {
   height: auto;
@@ -1884,9 +1904,6 @@ select {
 .max-h-36 {
   max-height: 9rem;
 }
-.max-h-\[104px\] {
-  max-height: 104px;
-}
 .max-h-\[340px\] {
   max-height: 340px;
 }
@@ -1895,9 +1912,6 @@ select {
 }
 .max-h-\[50vh\] {
   max-height: 50vh;
-}
-.max-h-\[72px\] {
-  max-height: 72px;
 }
 .max-h-\[calc\(100vh-2rem\)\] {
   max-height: calc(100vh - 2rem);
@@ -1950,6 +1964,12 @@ select {
 .w-96 {
   width: 24rem;
 }
+.w-\[1\.55em\] {
+  width: 1.55em;
+}
+.w-\[5\.75rem\] {
+  width: 5.75rem;
+}
 .w-auto {
   width: auto;
 }
@@ -1998,9 +2018,6 @@ select {
 .max-w-\[34rem\] {
   max-width: 34rem;
 }
-.max-w-\[46rem\] {
-  max-width: 46rem;
-}
 .max-w-column {
   max-width: 64rem;
 }
@@ -2014,11 +2031,14 @@ select {
 .max-w-md {
   max-width: 28rem;
 }
+.max-w-none {
+  max-width: none;
+}
+.max-w-prose {
+  max-width: 52rem;
+}
 .max-w-sm {
   max-width: 24rem;
-}
-.max-w-wide {
-  max-width: 90rem;
 }
 .flex-1 {
   flex: 1 1 0%;
@@ -2044,6 +2064,9 @@ select {
 .border-collapse {
   border-collapse: collapse;
 }
+.origin-top-left {
+  transform-origin: top left;
+}
 .-translate-y-1\/2 {
   --tw-translate-y: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -2054,6 +2077,10 @@ select {
 }
 .-rotate-90 {
   --tw-rotate: -90deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.rotate-3 {
+  --tw-rotate: 3deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 .rotate-90 {
@@ -2162,6 +2189,9 @@ select {
 }
 .items-center {
   align-items: center;
+}
+.items-baseline {
+  align-items: baseline;
 }
 .items-stretch {
   align-items: stretch;
@@ -2322,10 +2352,6 @@ select {
   border-top-width: 1px;
   border-bottom-width: 1px;
 }
-.border-y-2 {
-  border-top-width: 2px;
-  border-bottom-width: 2px;
-}
 .border-y-\[3px\] {
   border-top-width: 3px;
   border-bottom-width: 3px;
@@ -2341,6 +2367,9 @@ select {
 }
 .border-t-2 {
   border-top-width: 2px;
+}
+.border-t-\[5px\] {
+  border-top-width: 5px;
 }
 .border-double {
   border-style: double;
@@ -2434,12 +2463,12 @@ select {
 .border-white\/60 {
   border-color: rgb(255 255 255 / 0.6);
 }
+.\!bg-\[\#EDEDED\] {
+  --tw-bg-opacity: 1 !important;
+  background-color: rgb(237 237 237 / var(--tw-bg-opacity)) !important;
+}
 .\!bg-transparent {
   background-color: transparent !important;
-}
-.\!bg-white {
-  --tw-bg-opacity: 1 !important;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity)) !important;
 }
 .\!bg-yellow\/50 {
   background-color: rgb(226 209 52 / 0.5) !important;
@@ -2670,10 +2699,6 @@ select {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
-.px-3\.5 {
-  padding-left: 0.875rem;
-  padding-right: 0.875rem;
-}
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -2717,9 +2742,6 @@ select {
 .\!pr-4 {
   padding-right: 1rem !important;
 }
-.pb-0\.5 {
-  padding-bottom: 0.125rem;
-}
 .pb-1 {
   padding-bottom: 0.25rem;
 }
@@ -2741,14 +2763,17 @@ select {
 .pl-4 {
   padding-left: 1rem;
 }
+.pl-gutter {
+  padding-left: 1.25rem;
+}
+.pr-3 {
+  padding-right: 0.75rem;
+}
 .pr-4 {
   padding-right: 1rem;
 }
-.pr-5 {
-  padding-right: 1.25rem;
-}
-.pr-gutter {
-  padding-right: 1.25rem;
+.pr-\[1\.375em\] {
+  padding-right: 1.375em;
 }
 .pt-10 {
   padding-top: 2.5rem;
@@ -2780,9 +2805,6 @@ select {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
-}
-.text-\[1\.5rem\] {
-  font-size: 1.5rem;
 }
 .text-\[11px\] {
   font-size: 11px;
@@ -2876,11 +2898,11 @@ select {
 .leading-9 {
   line-height: 2.25rem;
 }
+.leading-\[1\.25\] {
+  line-height: 1.25;
+}
 .leading-none {
   line-height: 1;
-}
-.leading-relaxed {
-  line-height: 1.625;
 }
 .leading-tight {
   line-height: 1.25;
@@ -2961,10 +2983,6 @@ select {
 .text-ink-strong {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
-}
-.text-label {
-  --tw-text-opacity: 1;
-  color: rgb(10 53 82 / var(--tw-text-opacity));
 }
 .text-navy {
   --tw-text-opacity: 1;
@@ -3058,9 +3076,19 @@ select {
   --tw-shadow-colored: 0 1px 2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
+.shadow-\[0_2px_10px_rgba\(0\2c 0\2c 0\2c 0\.28\)\] {
+  --tw-shadow: 0 2px 10px rgba(0,0,0,0.28);
+  --tw-shadow-colored: 0 2px 10px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
 .shadow-\[0_2px_12px_rgba\(0\2c 0\2c 0\2c 0\.12\)\] {
   --tw-shadow: 0 2px 12px rgba(0,0,0,0.12);
   --tw-shadow-colored: 0 2px 12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+.shadow-\[inset_0_1px_0_rgba\(255\2c 255\2c 255\2c 0\.7\)\2c 0_1px_2px_rgba\(0\2c 0\2c 0\2c 0\.18\)\] {
+  --tw-shadow: inset 0 1px 0 rgba(255,255,255,0.7),0 1px 2px rgba(0,0,0,0.18);
+  --tw-shadow-colored: inset 0 1px 0 var(--tw-shadow-color), 0 1px 2px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 .shadow-\[inset_0_1px_0_rgba\(255\2c 255\2c 255\2c 0\.7\)\] {
@@ -3156,6 +3184,9 @@ select {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+.duration-150 {
+  transition-duration: 150ms;
+}
 .duration-200 {
   transition-duration: 200ms;
 }
@@ -3193,6 +3224,49 @@ select {
 
 @media (min-width: 768px) {
   :root { --nav-clearance: 0rem; }
+}
+
+
+/* ================================================================
+   The shell measure. One number for the whole site, read by every
+   .page-column and by the banner bar's content column.
+
+   This was a per-page setting, with tools on the wide shell and the narrative
+   pages at 1024px. Navigating from Tools to About visibly shrank the masthead,
+   the rule and the nav, which read as a different site rather than a different
+   page. Content that needs a narrow column now asks for one itself.
+
+   TWO numbers, not one, and the split is by viewport rather than by page. On a
+   1500px window the full 1600px shell never gets to cap anything, so the
+   content ran the whole width of the glass with only the 20px gutters either
+   side — wide lines, and no margin to rest against. Below 1600 the shell is
+   1400, which puts real space back at the edges; from 1600 up, where there is
+   room for it, the measure is the full 1600 as before.
+
+   Stated mobile-first — the narrow measure is the default and the wide one is
+   the exception — so there is no fractional max-width breakpoint to get wrong.
+
+   Outside @layer components: a plain CSS rule inside a layer is dropped unless
+   Tailwind finds its selector in the scanned HTML, and `body` bare is not a
+   class it looks for.
+   ================================================================ */
+
+:root { --column-max: 87.5rem; }
+
+@media (min-width: 100rem) {
+  :root { --column-max: 100rem; }
+}
+
+.banner-bar { max-width: var(--column-max); }
+
+/* The band is the book's promo, not the site's voice: it sets its own
+   Helvetica/Arial rather than inheriting Libre Franklin from <body>. Scoped to
+   .banner-bar so nothing else picks it up.
+
+   Outside @layer components for the same reason as the rule above. */
+.banner-bar {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.01em;
 }
 
 
@@ -3317,7 +3391,7 @@ select {
   /* The sheet takes focus when it opens so a screen reader announces it.
      That should not paint a ring around the whole panel for a mouse user. */
   .dr-sheet:focus { outline: none; }
-  .dr-sheet:focus-visible { outline: 2px solid #0A3552; outline-offset: -2px; }
+  .dr-sheet:focus-visible { outline: 2px solid #000000; outline-offset: -2px; }
 
   .dr-sheet__grip {
     display: block;
@@ -3582,6 +3656,9 @@ select {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
+.hover\:bg-black\/\[0\.06\]:hover {
+  background-color: rgb(0 0 0 / 0.06);
+}
 .hover\:bg-blue\/10:hover {
   background-color: rgb(52 156 226 / 0.1);
 }
@@ -3608,6 +3685,14 @@ select {
 }
 .hover\:bg-white\/10:hover {
   background-color: rgb(255 255 255 / 0.1);
+}
+.hover\:from-\[\#E4E4E4\]:hover {
+  --tw-gradient-from: #E4E4E4 var(--tw-gradient-from-position);
+  --tw-gradient-to: rgb(228 228 228 / 0) var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+}
+.hover\:to-\[\#BEBEBE\]:hover {
+  --tw-gradient-to: #BEBEBE var(--tw-gradient-to-position);
 }
 .hover\:text-blue:hover {
   --tw-text-opacity: 1;
@@ -3674,8 +3759,8 @@ select {
 .focus-visible\:outline-offset-2:focus-visible {
   outline-offset: 2px;
 }
-.focus-visible\:outline-label:focus-visible {
-  outline-color: #0A3552;
+.focus-visible\:outline-ink-strong:focus-visible {
+  outline-color: #000000;
 }
 .group:hover .group-hover\:scale-\[1\.02\] {
   --tw-scale-x: 1.02;
@@ -3910,6 +3995,14 @@ select {
 }
 @media (min-width: 640px) {
 
+  .sm\:h-\[156px\] {
+    height: 156px;
+  }
+
+  .sm\:w-\[6\.5rem\] {
+    width: 6.5rem;
+  }
+
   .sm\:flex-row {
     flex-direction: row;
   }
@@ -3931,6 +4024,10 @@ select {
     padding-right: 1rem;
   }
 
+  .sm\:pr-gutter {
+    padding-right: 1.25rem;
+  }
+
   .sm\:text-body {
     font-size: 1rem;
     line-height: 1.5;
@@ -3947,8 +4044,16 @@ select {
     position: static;
   }
 
+  .md\:sticky {
+    position: sticky;
+  }
+
   .md\:left-\[initial\] {
     left: initial;
+  }
+
+  .md\:top-3 {
+    top: 0.75rem;
   }
 
   .md\:order-1 {
@@ -4014,8 +4119,8 @@ select {
     margin-right: 0.5rem;
   }
 
-  .md\:mt-4 {
-    margin-top: 1rem;
+  .md\:mt-3 {
+    margin-top: 0.75rem;
   }
 
   .md\:mt-6 {
@@ -4038,12 +4143,17 @@ select {
     display: none;
   }
 
+  .md\:size-\[1\.0625em\] {
+    width: 1.0625em;
+    height: 1.0625em;
+  }
+
   .md\:h-auto {
     height: auto;
   }
 
-  .md\:max-h-\[104px\] {
-    max-height: 104px;
+  .md\:min-h-0 {
+    min-height: 0px;
   }
 
   .md\:min-h-\[50vh\] {
@@ -4164,6 +4274,14 @@ select {
     gap: 2rem;
   }
 
+  .md\:gap-\[0\.125em\] {
+    gap: 0.125em;
+  }
+
+  .md\:gap-\[0\.375em\] {
+    gap: 0.375em;
+  }
+
   .md\:gap-y-1\.5 {
     row-gap: 0.375rem;
   }
@@ -4190,8 +4308,16 @@ select {
     border-bottom-width: 0px;
   }
 
+  .md\:bg-white\/90 {
+    background-color: rgb(255 255 255 / 0.9);
+  }
+
   .md\:p-0 {
     padding: 0px;
+  }
+
+  .md\:p-\[0\.125em\] {
+    padding: 0.125em;
   }
 
   .md\:px-0 {
@@ -4202,6 +4328,11 @@ select {
   .md\:px-4 {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  .md\:px-\[0\.6875em\] {
+    padding-left: 0.6875em;
+    padding-right: 0.6875em;
   }
 
   .md\:py-0 {
@@ -4219,6 +4350,11 @@ select {
     padding-bottom: 0.75rem;
   }
 
+  .md\:py-\[0\.25em\] {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+  }
+
   .md\:pl-4 {
     padding-left: 1rem;
   }
@@ -4233,10 +4369,6 @@ select {
 
   .md\:text-\[15px\] {
     font-size: 15px;
-  }
-
-  .md\:text-\[2rem\] {
-    font-size: 2rem;
   }
 
   .md\:text-base {
@@ -4260,10 +4392,8 @@ select {
     line-height: 1.25rem;
   }
 
-  .md\:shadow-none {
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  .md\:leading-\[1\.25\] {
+    line-height: 1.25;
   }
 }
 @media (min-width: 1024px) {

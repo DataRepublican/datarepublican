@@ -2,12 +2,23 @@
   The three-item pill. Tools is the home page, so there is no Home item.
 
   One DOM order, two layouts: the pill floats at the bottom of the viewport on
-  a phone (thumb reach) and becomes static directly under the masthead at md,
-  which is where it sits in the desktop reflow.
+  a phone (thumb reach) and sticks near the top at md, just under the masthead,
+  so it stays reachable down a long tool page.
 
-  Items are 36px tall in the mock. The tap target is padded to 44px without
-  growing the pill, so the visual matches the design and the hit box matches
-  the platform guidance.
+  Sizing is anchored to the 16px label and expressed in em from there, so the
+  pill is a consequence of the type rather than a set of numbers that drift
+  away from it. At md that gives a 32px item in a 36px pill.
+
+  The 44px minimum tap target is kept on phones, where the pill IS the
+  navigation and the finger is the pointer. Above md there is a cursor and the
+  compact pill applies — min-h-tap at every width made the bar half again as
+  tall as the design called for.
+
+  Hover fills the item the way the current item is already filled, so the two
+  states read as the same control rather than two different treatments: an
+  inactive item takes a flat tint, and the current item darkens its gradient
+  instead of being the only item that does not respond. Both are colour-only
+  transitions, so nothing shifts position under the cursor.
 {%- endcomment -%}
 
 {%- assign here = page.url -%}
@@ -19,8 +30,8 @@
 <div class="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-28 bg-gradient-to-b from-transparent to-surface/80 md:hidden" aria-hidden="true"></div>
 
 <nav aria-label="Primary"
-     class="fixed inset-x-0 bottom-4 z-50 flex justify-center px-gutter md:static md:mt-4 md:mb-2 md:block md:px-0">
-  <ul class="m-0 flex list-none items-center gap-1 rounded-pill border border-white/60 bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[3px] md:w-max md:shadow-none">
+     class="page-column fixed inset-x-0 bottom-4 z-50 flex justify-center md:sticky md:top-3 md:mt-3 md:mb-2 md:block">
+  <ul class="m-0 flex list-none items-center gap-1 rounded-pill border border-white/60 bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[3px] md:w-max md:gap-[0.125em] md:bg-white/90 md:p-[0.125em]">
     {%- assign items = nav_items | strip | split: ',' -%}
     {%- for item in items -%}
       {%- assign parts = item | split: '|' -%}
@@ -32,19 +43,38 @@
       {%- else -%}
         {%- if here contains href -%}{%- assign is_current = true -%}{%- else -%}{%- assign is_current = false -%}{%- endif -%}
       {%- endif -%}
+
+      {%- comment -%}
+        The state classes are assigned here rather than written inline in the
+        class attribute. Tailwind scans the raw file, and a class written
+        immediately after a closing Liquid tag, with no space between them, is
+        swallowed into one candidate together with that tag. The candidate
+        matches no utility, so the rule is never generated and the style
+        silently does nothing — it took a "why is hover dead" hunt to find.
+        Inside a quoted Liquid string every class is delimited by a quote or a
+        space, which the extractor handles.
+      {%- endcomment -%}
+      {%- if is_current -%}
+        {%- assign state = 'bg-gradient-to-b from-[#EDEDED] to-[#CACACA] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] hover:from-[#E4E4E4] hover:to-[#BEBEBE]' -%}
+      {%- else -%}
+        {%- assign state = 'hover:bg-black/[0.06]' -%}
+      {%- endif -%}
     <li class="m-0">
       <a href="{{ href | relative_url }}"
          {% if is_current %}aria-current="page"{% endif %}
          class="flex min-h-tap items-center gap-2 rounded-pill px-4 text-body font-bold tracking-[-0.03em] !no-underline !text-ink-strong
-                {% if is_current %}bg-gradient-to-b from-[#EDEDED] to-[#CACACA] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]{% endif %}">
+                md:min-h-0 md:gap-[0.375em] md:px-[0.6875em] md:py-[0.25em] md:leading-[1.25]
+                transition-colors duration-150
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong
+                {{ state }}">
         <span class="shrink-0" aria-hidden="true">
           {%- case icon -%}
           {%- when 'tools' -%}
-          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          <svg viewBox="0 0 24 24" class="size-5 md:size-[1.0625em]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
           {%- when 'user' -%}
-          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <svg viewBox="0 0 24 24" class="size-5 md:size-[1.0625em]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           {%- when 'donate' -%}
-          <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></svg>
+          <svg viewBox="0 0 24 24" class="size-5 md:size-[1.0625em]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></svg>
           {%- endcase -%}
         </span>
         {{ label }}

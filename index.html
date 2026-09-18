@@ -41,17 +41,24 @@ description: Search federal grants, nonprofit filings, officers and funding netw
 {%- endfor -%}
 {%- assign catentries = catmap | split: ';' -%}
 
+{%- comment -%}
+  The sort control. It sits beside the section title but it is not a peer of
+  it — it is a control, so it takes the 16px nav label size rather than the
+  24px heading size it used to share with "Tools". Everything else here is in
+  em off that 16px: the chevron, the room reserved for it, and the negative
+  margin that pulls it back over the select's own (suppressed) arrow.
+{%- endcomment -%}
 {%- capture sort_control -%}
-<label class="flex items-center gap-1.5">
+<label class="flex items-center">
   <span class="sr-only">Sort tools by</span>
   <select id="tool-sort"
-          class="cursor-pointer appearance-none !border-0 !bg-transparent !p-0 pr-5 text-title font-bold tracking-title !text-ink-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-label">
+          class="cursor-pointer appearance-none !border-0 !bg-transparent !p-0 pr-[1.375em] text-body font-bold leading-[1.25] tracking-title !text-ink-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong">
     <option value="latest">Latest</option>
     <option value="featured">Featured</option>
     <option value="category">Category</option>
     <option value="alpha">A&ndash;Z</option>
   </select>
-  <svg viewBox="0 0 24 24" class="pointer-events-none -ml-5 size-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg>
+  <svg viewBox="0 0 24 24" class="pointer-events-none -ml-[1.125em] size-[0.875em] shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg>
 </label>
 {%- endcapture -%}
 
@@ -69,7 +76,7 @@ description: Search federal grants, nonprofit filings, officers and funding netw
       {%- if kv[0] == key -%}{%- assign o_cat = kv[1] -%}{%- endif -%}
     {%- endfor -%}
   <li class="tool-group-header w-full" style="--order-category: {{ o_cat }};">
-    <h3 class="m-0 mt-2 border-b border-rule pb-1 text-lede font-bold tracking-title text-label">{{ c }}</h3>
+    <h3 class="m-0 mt-2 border-b border-rule pb-1 text-lede font-bold tracking-title text-ink-strong">{{ c }}</h3>
   </li>
   {%- endfor -%}
 

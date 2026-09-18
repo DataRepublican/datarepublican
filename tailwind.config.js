@@ -161,7 +161,6 @@ module.exports = {
         ink: '#111111',       // body text
         'ink-strong': '#000000', // wordmark, card titles
         'ink-muted': '#5A5A5A',  // taglines, meta
-        label: '#0A3552',     // section headers. Deep navy, NOT brand blue.
         band: '#E9B408',      // the promo/alert band
       },
 
@@ -192,9 +191,15 @@ module.exports = {
         pill: '9999px',
       },
 
+      // The page measures. The active shell is published as --column-max in
+      // main.css so the banner, masthead, nav and content all line up on the
+      // same number; which of `wide` and `snug` is active depends on the
+      // viewport, not on the page.
       maxWidth: {
-        column: '64rem',  // reading column
-        wide: '90rem',    // tool pages
+        column: '64rem',  // 1024px — reading column for the narrative pages
+        wide: '100rem',   // 1600px — the shell from 1600px up
+        snug: '87.5rem',  // 1400px — the shell below 1600px
+        prose: '52rem',   // 832px — the measure shared by About and Donate
       },
 
       outlineColor: theme => ({
