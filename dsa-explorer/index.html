@@ -97,30 +97,37 @@ title: DSA Explorer
   #legend .divider{height:1px;background:#E2E2DD;margin:8px 0}
   #legend .hint{color:#999;font-size:11px;margin-top:6px;line-height:1.35}
   /* detail panel */
-  aside{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:16px 16px 24px;overflow:auto}
-  aside .empty{color:#999;font-size:13px;line-height:1.5;margin-top:20px}
-  aside .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;padding:2px 7px;border-radius:4px;margin:0 5px 5px 0}
-  aside h2{font-size:17px;margin:6px 0 4px;line-height:1.25}
-  aside .kv{font-size:12.5px;margin:9px 0;line-height:1.4}
-  aside .kv b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin-bottom:1px;font-weight:700}
-  aside .notes{font-size:13px;line-height:1.5;margin:12px 0;padding:10px 12px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
-  aside a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
-  aside .srcs a.src{display:block;margin-top:5px;padding-left:12px;position:relative}
-  aside .srcs a.src:before{content:"›";position:absolute;left:0;color:#999}
-  aside .srcs .nocache{color:#c0392b;font-weight:700}
-  aside .srcs .cached{color:#2e7d32;font-weight:700}
-  aside .tier{font-size:12px;margin-top:10px}
-  aside .tier.confirmed{color:var(--money)} aside .tier.inferred{color:#B8860B}
-  aside .conns{margin-top:16px;border-top:1px solid #EEE;padding-top:12px}
-  aside .conns h3{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin:0 0 6px}
-  aside .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
-  aside .conn:hover .conn-head{color:#1155CC}
-  aside .conn .conn-head{font-weight:600}
-  aside .conn .rel{color:#999;font-style:italic;font-weight:400}
-  aside .conn.inf .rel::after{content:" · inferred";color:#B8860B}
-  aside .conn .conn-desc{font-size:11.5px;color:#555;line-height:1.4;margin:2px 0 0;font-weight:400;cursor:default}
-  aside .conn a.conn-src{display:inline-block;font-size:11px;color:#1155CC;margin-top:3px;word-break:break-all}
-  aside .conn a.conn-src:before{content:"› ";color:#999}
+  /* #panel, not a bare `aside`.
+     These rules used to say `aside`, and the site promo band is an <aside> that
+     renders earlier in the DOM — so on /dsa-explorer only, the band picked up
+     padding:16px 16px 24px and a left border from the detail panel. Measured,
+     not theorised: every other page reported 0. This is the trap CLAUDE.md
+     documents under "a tool must not style bare header, aside, main or #panel",
+     one element name later. The element already carried id="panel". */
+  #panel{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:16px 16px 24px;overflow:auto}
+  #panel .empty{color:#999;font-size:13px;line-height:1.5;margin-top:20px}
+  #panel .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;padding:2px 7px;border-radius:4px;margin:0 5px 5px 0}
+  #panel h2{font-size:17px;margin:6px 0 4px;line-height:1.25}
+  #panel .kv{font-size:12.5px;margin:9px 0;line-height:1.4}
+  #panel .kv b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin-bottom:1px;font-weight:700}
+  #panel .notes{font-size:13px;line-height:1.5;margin:12px 0;padding:10px 12px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
+  #panel a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
+  #panel .srcs a.src{display:block;margin-top:5px;padding-left:12px;position:relative}
+  #panel .srcs a.src:before{content:"›";position:absolute;left:0;color:#999}
+  #panel .srcs .nocache{color:#c0392b;font-weight:700}
+  #panel .srcs .cached{color:#2e7d32;font-weight:700}
+  #panel .tier{font-size:12px;margin-top:10px}
+  #panel .tier.confirmed{color:var(--money)} #panel .tier.inferred{color:#B8860B}
+  #panel .conns{margin-top:16px;border-top:1px solid #EEE;padding-top:12px}
+  #panel .conns h3{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin:0 0 6px}
+  #panel .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
+  #panel .conn:hover .conn-head{color:#1155CC}
+  #panel .conn .conn-head{font-weight:600}
+  #panel .conn .rel{color:#999;font-style:italic;font-weight:400}
+  #panel .conn.inf .rel::after{content:" · inferred";color:#B8860B}
+  #panel .conn .conn-desc{font-size:11.5px;color:#555;line-height:1.4;margin:2px 0 0;font-weight:400;cursor:default}
+  #panel .conn a.conn-src{display:inline-block;font-size:11px;color:#1155CC;margin-top:3px;word-break:break-all}
+  #panel .conn a.conn-src:before{content:"› ";color:#999}
   /* ---- Phone -------------------------------------------------------------
      The old rule here was a single max-width:820px breakpoint that stacked the
      detail panel under the canvas. That is the failure this pass is about: the
@@ -179,8 +186,7 @@ title: DSA Explorer
 
     /* The panel is positioned by .dr-sheet in the site stylesheet; these just
        undo the grid placement and the desktop border. */
-    aside{grid-column:1;grid-row:auto;border-left:none;padding:0 16px 16px}
-    aside.dr-sheet{max-height:92dvh}
+    #panel{grid-column:1;grid-row:auto;border-left:none;padding:0 16px 16px}
   }
 </style>
 

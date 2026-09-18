@@ -105,6 +105,41 @@ test.describe('standalone map popup', () => {
 // width, so the 5/3/2 rule stopped a third of the way across the page, and
 // noblogs additionally made the masthead sticky at z-index 600. Both now scope
 // their rules to an id.
+/* The same guard, for the promo band.
+ *
+ * The masthead check below exists because both tools once styled a bare
+ * `header`. dsa-explorer was still styling a bare `aside` — and the band IS an
+ * <aside>, rendered earlier in the DOM — so on that page only it picked up
+ * padding:16px 16px 24px and a left border from the detail panel. Every other
+ * page reported 0, which is what made it a leak rather than a design.
+ *
+ * `aside` is the second name in CLAUDE.md's list. `main` and `#panel` are the
+ * other two; if one of those starts drifting, this is the shape of the test. */
+test.describe('the promo band is not restyled by a tool', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  for (const path of ['/', '/noblogs/', '/dsa-explorer/', '/browse/', '/about/']) {
+    test(`${path} leaves the band's own box alone`, async ({ page }) => {
+      await page.goto(HOST + path, { waitUntil: 'domcontentloaded' });
+
+      const band = await page.evaluate(() => {
+        const el = document.querySelector('aside.w-full');
+        if (!el) return null;
+        const cs = getComputedStyle(el);
+        return {
+          padding: cs.padding,
+          borderLeftWidth: cs.borderLeftWidth,
+          gridColumn: cs.gridColumn,
+        };
+      });
+
+      if (!band) return;              // banner disabled in _data/banner.yml
+      expect(band.padding, 'a tool is padding the site banner').toBe('0px');
+      expect(band.borderLeftWidth, 'a tool is bordering the site banner').toBe('0px');
+    });
+  }
+});
+
 test.describe('the masthead is not restyled by a tool', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
