@@ -32,9 +32,15 @@ WORKDIR /app
 # minute one.
 #
 # Bundler is pinned: a bare `gem install bundler` installs 4.x, which requires
-# Ruby >= 3.2 and cannot run here. Gemfile.lock lists only arm64-darwin, so
-# bundler resolves Linux platforms at install time — the same thing CI does.
-COPY Gemfile Gemfile.lock ./
+# Ruby >= 3.2 and cannot run here.
+#
+# Gemfile only — `Gemfile.lock` is in .gitignore and tracked by nothing, so it
+# does not exist in a fresh clone and copying it fails the build outright
+# ("/Gemfile.lock": not found). Every build therefore resolves gems from
+# scratch, which is what CI has always done. What keeps that from drifting is
+# the `github-pages` gem, which pins its whole transitive set to the versions
+# GitHub Pages runs.
+COPY Gemfile ./
 RUN gem install bundler -v '~> 2.3' \
  && bundle install --jobs 4 --retry 3
 
