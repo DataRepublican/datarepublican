@@ -23,6 +23,8 @@
   .nbgraph #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2}
   .nbgraph #cy{width:100%;height:100%;background:radial-gradient(circle at 50% 42%,#FFFFFF 0%,#F1F1EC 72%)}
   .nbgraph #stage button{color:#1A1A1A;background:#fff;font-weight:500}
+  .nbgraph #stage button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  .nbgraph #stage button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   .nbgraph #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
   .nbgraph #controls button{border:1px solid #D5D5CE;border-radius:6px;font-size:12px;padding:6px 9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
   .nbgraph #controls button:hover{background:#f0f0ea}

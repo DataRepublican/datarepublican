@@ -32,8 +32,8 @@
         '<button id="zout">\uFF0D Zoom</button>' +
         '<button id="fit">Reset view</button>' +
         '<button id="relayout">Re-layout</button>' +
-        '<button id="focusToggle">Focus: on</button>' +
-        '<button id="tgtOnly">Target edges only</button>' +
+        '<button type="button" id="focusToggle" aria-pressed="true">Focus mode</button>' +
+        '<button type="button" id="tgtOnly" aria-pressed="false">Target edges only</button>' +
         '<button id="export">\u2B07 Export PNG</button>' +
       '</div>' +
       '<div id="legend"></div>' +
@@ -466,9 +466,9 @@
   $id('zout').onclick=()=>cy.zoom({level:cy.zoom()/1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
   $id('fit').onclick=()=>{cy.elements().removeClass('faded nbr sel');focusId=null;collapsePanel();requestAnimationFrame(()=>cy.fit(45));};
   $id('relayout').onclick=()=>{territoryLayout();if(focusMode&&focusId)applyFocus(focusId,false);};
-  $id('focusToggle').onclick=function(){focusMode=!focusMode;this.textContent='Focus: '+(focusMode?'on':'off');cy.elements().removeClass('faded nbr sel');if(!focusMode)collapsePanel();};
+  $id('focusToggle').onclick=function(){focusMode=!focusMode;this.setAttribute('aria-pressed',String(focusMode));cy.elements().removeClass('faded nbr sel');if(!focusMode)collapsePanel();};
   let tgtOnly=false;
-  $id('tgtOnly').onclick=function(){tgtOnly=!tgtOnly;this.textContent=tgtOnly?'Show all edges':'Target edges only';
+  $id('tgtOnly').onclick=function(){tgtOnly=!tgtOnly;this.setAttribute('aria-pressed',String(tgtOnly));
     cy.batch(()=>{cy.edges().forEach(e=>e.style('display',(!tgtOnly||e.data('tgt')>0)?'element':'none'));});};
   $id('export').onclick=function(){const b=this,w=b.textContent;b.textContent='Rendering…';setTimeout(()=>{try{const uri=cy.png({full:false,scale:3,bg:'#fff',maxWidth:12000,maxHeight:12000});const a=document.createElement('a');a.href=uri;a.download='noblogs-graph.png';a.click();}catch(e){alert('Export failed: '+e.message);}b.textContent=w;},60);};
   const q=$id('q');

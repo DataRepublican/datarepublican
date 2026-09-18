@@ -41,17 +41,46 @@ title: TrumpBlogs formerly known as NoBlogs
   h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
   h1 .gold{color:var(--gold)}
   .sub{color:var(--dim);font-size:12px}
-  .disclaimer{flex-basis:100%;margin:7px 0 0;padding:6px 10px;border:1px solid #E4C9A0;
-    background:#FBF3E4;border-radius:4px;font-size:10.5px;line-height:1.42;color:#6B5A3E}
+  /* One callout, and a real <details>.
+     This was a <p> at 10.5px, clipped to 2.9em on a phone with a click handler
+     bolted onto it — on the one piece of text here that has legal consequence,
+     and the smallest type on the page. It is 13px now, the disclosure is
+     native, and the summary is a 44px target.
+
+     Collapsing it also removes one of the two reasons --nb-header-h has to be
+     measured at runtime: expanding the old clip changed the header's height,
+     so the observer had to re-measure. A <details> in its own row does not
+     resize the header around it. */
+  .disclaimer{flex-basis:100%;margin:7px 0 0;padding:0;border:1px solid var(--dr-legal-border,#E4C9A0);
+    background:var(--dr-legal-fill,#FBF3E4);border-radius:var(--dr-radius-sm,6px);
+    font-size:var(--dr-text-meta,13px);line-height:1.5;color:var(--dr-legal-ink,#6B5A3E)}
+  .disclaimer>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+    padding:8px 12px;min-height:2.75rem;font-family:var(--dr-font-ui,inherit);font-weight:600}
+  .disclaimer>summary::-webkit-details-marker{display:none}
+  .disclaimer>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
+  .disclaimer[open]>summary::before{transform:rotate(90deg)}
+  .disclaimer>summary:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px;
+    border-radius:var(--dr-radius-sm,6px)}
+  .disclaimer .disclaimer-body{padding:0 12px 10px}
   .disclaimer strong{color:#8A5A1A}
   .grow{flex:1}
   #search{background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:20px;
     padding:8px 14px;font-size:13.5px;width:340px;max-width:48vw;box-shadow:0 1px 3px rgba(0,0,0,.05)}
   #search::placeholder{color:#9a9ea6}
   #search:focus{outline:none;border-color:#c9c9c0}
-  .tabs{display:flex;gap:4px;background:#F0F0EA;border:1px solid var(--line);border-radius:10px;padding:3px}
-  .tab{padding:6px 15px;border-radius:8px;cursor:pointer;color:var(--dim);font-size:13px;font-weight:600;user-select:none}
-  .tab.on{background:var(--accent);color:#fff}
+  /* The segmented control. The tabs are <button role="tab"> now, so every
+     declaration that looks redundant below is undoing the global `button` rule
+     in main.css, which paints any bare button slate-900 at min-width:65px with
+     a right margin at md. Until that rule is scoped, a control that wants to
+     look like anything else has to say so. */
+  .tabs{display:flex;gap:4px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,var(--line));
+    border-radius:var(--dr-radius-pill,9999px);padding:4px}
+  .tab{appearance:none;border:0;margin:0;min-width:0;background:none;
+    padding:6px 15px;border-radius:var(--dr-radius-pill,9999px);cursor:pointer;
+    color:var(--dim);font-family:var(--dr-font-ui,inherit);font-size:13px;font-weight:700;user-select:none}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--dr-accent,var(--accent));color:#fff}
+  .tab:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   .layout{display:flex;align-items:flex-start}
   aside#facets{width:232px;flex:none;position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
     border-right:1px solid var(--line);padding:14px 14px 40px 0;background:var(--bg)}
@@ -325,11 +354,9 @@ title: TrumpBlogs formerly known as NoBlogs
     h1{font-size:15px}
     h1 .gold{display:none}
     .sub{font-size:11px}
-    /* The disclaimer is four lines of small print above the fold on a phone.
-       Clipped to two with the full text still in the DOM for anyone reading it
-       with a screen reader or expanding it. */
-    .disclaimer{font-size:10px;max-height:2.9em;overflow:hidden;margin-top:5px}
-    .disclaimer.open{max-height:none}
+    /* Nothing to clip: the <details> is closed by default, so the phone gets a
+       44px summary row instead of four lines of 10px small print. */
+    .disclaimer{margin-top:5px}
     #search{width:100%;max-width:none;order:10;font-size:16px;min-height:2.75rem}
 
     .tabs{order:5;gap:2px}
@@ -361,12 +388,22 @@ title: TrumpBlogs formerly known as NoBlogs
   <div><h1>TrumpBlogs <span class="gold">formerly known as NoBlogs</span></h1><div class="sub" id="subcount">loading…</div></div>
   <input id="search" placeholder="search name, summary, city, tags, quote text…" autocomplete="off">
   <div class="grow"></div>
-  <div class="tabs" id="tabs">
-    <div class="tab on" data-v="map">Map</div>
-    <div class="tab" data-v="dash">Dashboard</div>
-    <div class="tab" data-v="graph">Graph</div>
+  {%- comment -%}
+    A real tablist. These were <div>s with a click handler: no role, no focus,
+    no arrow keys — on the tool's primary navigation.
+
+    `.tab` and `data-v` are kept deliberately. readURL() drives the initial view
+    with `.tab[data-v="…"].click()`, openInst() switches to the graph the same
+    way, and three specs click these selectors directly. A <button> answers
+    .click() exactly as a <div> did, so the semantics improve without changing
+    the contract.
+  {%- endcomment -%}
+  <div class="tabs" id="tabs" role="tablist" aria-label="View">
+    <button type="button" id="tab-map" class="tab on" data-v="map" role="tab" aria-selected="true" aria-controls="mapview">Map</button>
+    <button type="button" id="tab-dash" class="tab" data-v="dash" role="tab" aria-selected="false" aria-controls="dashview" tabindex="-1">Dashboard</button>
+    <button type="button" id="tab-graph" class="tab" data-v="graph" role="tab" aria-selected="false" aria-controls="graphview" tabindex="-1">Graph</button>
   </div>
-  <p class="disclaimer"><strong>Disclaimer:</strong> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</p>
+  <details class="disclaimer"><summary><span class="disclaimer-label">Disclaimer</span></summary><div class="disclaimer-body">Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</div></details>
 </header>
 
 <div id="nb-filterbar">
@@ -376,7 +413,7 @@ title: TrumpBlogs formerly known as NoBlogs
 </div>
 <div id="nb-facetscrim" hidden></div>
 
-<div class="layout" id="dashview" style="display:none">
+<div class="layout" id="dashview" role="tabpanel" aria-labelledby="tab-dash" style="display:none">
   <aside id="facets"></aside>
   <main>
     <div class="kpis" id="kpis"></div>
@@ -391,7 +428,7 @@ title: TrumpBlogs formerly known as NoBlogs
   instead of postMessage. The markup below is the .info panel that used to live
   inside that document, moved out so it is part of this page's DOM.
 {%- endcomment -%}
-<div id="mapview" style="display:none">
+<div id="mapview" role="tabpanel" aria-labelledby="tab-map" style="display:none">
   <div id="mapwrap">
     <div id="mapcanvas"></div>
     <div class="info" id="mapinfo">
@@ -411,7 +448,7 @@ title: TrumpBlogs formerly known as NoBlogs
   The Graph tab. Was an iframe on graph/index.html; both now share
   noblogs/graph/graph.js, which builds its own DOM inside #graphwrap.
 {%- endcomment -%}
-<div id="graphview" style="display:none">
+<div id="graphview" role="tabpanel" aria-labelledby="tab-graph" style="display:none">
   <div id="graphouter">
     <div id="graphwrap"></div>
     <div id="graphloading" class="nb-loading">Loading graph&hellip;</div>
@@ -1017,7 +1054,16 @@ function postFilterGraph(){
 
 // ---- tabs / url ----
 document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(!t)return;
-  view=t.dataset.v; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  view=t.dataset.v;
+  // Roving tabindex: the selected tab is the only one in the tab order, so Tab
+  // moves past the whole group and the arrow keys move within it. That is the
+  // tablist pattern, and it is why aria-selected and tabindex change together.
+  document.querySelectorAll('.tab').forEach(x=>{
+    const on=x===t;
+    x.classList.toggle('on',on);
+    x.setAttribute('aria-selected',String(on));
+    x.tabIndex=on?0:-1;
+  });
   // The Filters button only exists where the facet rail does not; this is what
   // the CSS keys that off.
   document.body.dataset.view=view;
@@ -1027,6 +1073,21 @@ document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(
   // switching to Map/Graph with a blog open -> fly to that pin/node (#7)
   if(SEL&&(view==='map'||view==='graph'))pendingFocus=SEL;
   syncURL(); if(view==='map')showMap(); if(view==='graph')showGraph();};
+/* Arrow keys move between tabs and activate as they go, which is the expected
+   behaviour for a tablist whose panels are already in the DOM. Home and End
+   jump to the ends. Space and Enter need no handler — these are <button>s. */
+document.getElementById('tabs').onkeydown=e=>{
+  const keys={ArrowRight:1,ArrowLeft:-1,Home:'first',End:'last'};
+  if(!(e.key in keys))return;
+  const tabs=[...document.querySelectorAll('#tabs .tab')];
+  const i=tabs.indexOf(e.target.closest('.tab'));
+  if(i<0)return;
+  e.preventDefault();
+  const d=keys[e.key];
+  const next=d==='first'?tabs[0]:d==='last'?tabs[tabs.length-1]
+    :tabs[(i+d+tabs.length)%tabs.length];
+  next.focus(); next.click();
+};
 document.getElementById('search').oninput=e=>{F.q=e.target.value;setSearch(F.q);PAGE=0;syncURL();buildFacets();render();};
 document.getElementById('loadmore').onclick=()=>{PAGE++;render();};
 document.onkeydown=e=>{if(e.key!=='Escape')return;
@@ -1089,12 +1150,11 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;'
   if(window.ResizeObserver){const ro=new ResizeObserver(setH);ro.observe(header);if(fbar)ro.observe(fbar);}
   else window.addEventListener('resize',setH);
 
-  // Tapping the clipped disclaimer expands it rather than leaving it truncated.
+  // The disclaimer is a <details> now, so it opens itself. It still has to tell
+  // the shell its height changed, because the header is flex-wrap and the map
+  // is sized against it.
   const disc=document.querySelector('.disclaimer');
-  if(disc){
-    disc.addEventListener('click',()=>{disc.classList.toggle('open');setH();});
-    disc.style.cursor='pointer';
-  }
+  if(disc) disc.addEventListener('toggle',setH);
 
   /* The detail drawer becomes a bottom sheet on a phone. Without this, tapping
      a card or a map pin updated a panel sitting off the right edge of a 390px

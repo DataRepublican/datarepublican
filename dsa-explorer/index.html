@@ -37,7 +37,19 @@ title: DSA Explorer
   #dsa-header h1{font-size:18px;margin:0;font-weight:700}
   #dsa-header .sub{font-size:12.5px;color:#666}
   #dsa-header .counts{margin-left:auto;font-size:12px;color:#888;font-variant-numeric:tabular-nums}
-  #dsa-header .disclaimer{flex-basis:100%;margin-top:8px;padding:7px 10px;border:1px solid #E4C9A0;background:#FBF3E4;border-radius:4px;font-size:11px;line-height:1.45;color:#6B5A3E}
+  /* Same callout as noblogs. See the note there — one implementation, 13px,
+     native disclosure, 44px summary. */
+  #dsa-header .disclaimer{flex-basis:100%;margin-top:8px;padding:0;border:1px solid var(--dr-legal-border,#E4C9A0);
+    background:var(--dr-legal-fill,#FBF3E4);border-radius:var(--dr-radius-sm,6px);
+    font-size:var(--dr-text-meta,13px);line-height:1.5;color:var(--dr-legal-ink,#6B5A3E)}
+  #dsa-header .disclaimer>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+    padding:8px 12px;min-height:2.75rem;font-family:var(--dr-font-ui,inherit);font-weight:600}
+  #dsa-header .disclaimer>summary::-webkit-details-marker{display:none}
+  #dsa-header .disclaimer>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
+  #dsa-header .disclaimer[open]>summary::before{transform:rotate(90deg)}
+  #dsa-header .disclaimer>summary:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px;
+    border-radius:var(--dr-radius-sm,6px)}
+  #dsa-header .disclaimer .disclaimer-body{padding:0 12px 10px}
   #dsa-header .disclaimer strong{color:#8A5A1A}
   #cy{width:100%;height:100%;background:
      radial-gradient(circle at 50% 42%, #FFFFFF 0%, #F2F2EE 70%)}
@@ -45,6 +57,12 @@ title: DSA Explorer
   /* controls — NB: the site's global button{} rule paints buttons slate-900 bg + white text;
      these #stage overrides restore readable dark-on-light text and drop the forced min-width/margin */
   #stage button{color:#1A1A1A;background:#fff;min-width:0;margin:0;font-weight:500}
+  /* A pressed toggle is filled, so the state is visible as well as announced.
+     main.css already has this rule for .dr-controls; these controls are not on
+     that class yet, so it is repeated here until they are. */
+  #stage button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  #controls button:focus-visible,#panelToggle:focus-visible,#legend button:focus-visible{
+    outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
   #controls button, #controls .grp{border:1px solid #D5D5CE;border-radius:6px;font-size:12px;padding:6px 9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
   #controls button:hover{background:#f0f0ea}
@@ -122,7 +140,7 @@ title: DSA Explorer
     #dsa-header{padding:10px 14px}
     #dsa-header h1{font-size:16px}
     #dsa-header .sub{display:none}
-    #dsa-header .disclaimer{font-size:10.5px;max-height:4.6em;overflow:hidden}
+    /* Closed by default; nothing to clip. */
 
     /* Sized so that once the chrome has scrolled off, the canvas and its
        control row fill the screen down to just above the nav pill. Trying to
@@ -171,7 +189,7 @@ title: DSA Explorer
     <h1 id="title">DSA Explorer</h1>
     <span class="sub" id="subtitle">Orgs &amp; people grouped by ideological current, orbiting the anti-imperialist spine · country is a separate patron/host axis</span>
     <span class="counts" id="counts"></span>
-    <p class="disclaimer"><strong>Disclaimer:</strong> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Inferred, ideological, and patron/sphere associations are analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Do not rely on this material without independent verification. The author disclaims all liability for any use of, or reliance on, its contents.</p>
+    <details class="disclaimer"><summary><span class="disclaimer-label">Disclaimer</span></summary><div class="disclaimer-body">Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Inferred, ideological, and patron/sphere associations are analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Do not rely on this material without independent verification. The author disclaims all liability for any use of, or reliance on, its contents.</div></details>
   </header>
   <div id="stage">
     <div id="cy"></div>
@@ -182,11 +200,14 @@ title: DSA Explorer
       <button id="zout">－ Zoom</button>
       <button id="fit">Reset view</button>
       <button id="relayout">Re-layout</button>
-      <button id="toggleInf">Hide inferred</button>
+      <!-- Pressed means the inferred links are SHOWN, which is how the graph
+           loads — the state variable behind it is `infHidden`, so the two read
+           in opposite directions and the initial value has to say so. -->
+      <button type="button" id="toggleInf" aria-pressed="true">Inferred links</button>
       <button id="export" title="Download a high-resolution PNG of the current view (print / thread quality)">⬇ Export PNG</button>
       <div class="grp" style="display:flex;gap:6px;padding:0;border:none;box-shadow:none">
         <button id="back" style="flex:1" disabled>◀ Back</button>
-        <button id="focusToggle" style="flex:1">Focus: on</button>
+        <button type="button" id="focusToggle" style="flex:1" aria-pressed="true">Focus mode</button>
       </div>
     </div>
     <div id="legend"></div>
@@ -1096,7 +1117,10 @@ function build(nodes, edges, baked){
   document.getElementById('toggleInf').onclick=function(){
     infHidden=!infHidden;
     cy.edges('[?inferred]').style('display',infHidden?'none':'element');
-    this.textContent=infHidden?'Show inferred':'Hide inferred';
+    // The label is a noun phrase and does not move; aria-pressed carries the
+    // state. A swapped label tells a sighted user what the NEXT click does and
+    // tells a screen reader nothing at all.
+    this.setAttribute('aria-pressed',String(!infHidden));
   };
   // Export PNG: a high-res still of the CURRENT view — exactly what's on screen, at the live
   // pan/zoom and with the active focus/walk fade preserved. cy.png() (full:false) captures the
@@ -1119,7 +1143,7 @@ function build(nodes, edges, baked){
   // Focus on/off: scoped hop-by-hop walk vs. the whole network at once
   document.getElementById('focusToggle').onclick=function(){
     focusMode=!focusMode;
-    this.textContent='Focus: '+(focusMode?'on':'off');
+    this.setAttribute('aria-pressed',String(focusMode));
     if(focusMode){ hist.length=0; backBtn.disabled=true; applyFocus(focusId,{push:false}); }
     else { cy.elements().removeClass('faded nbr sel'); cy.fit(40); panel.innerHTML=EMPTY; }
   };
