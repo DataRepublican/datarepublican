@@ -5,15 +5,13 @@ title: TrumpBlogs formerly known as NoBlogs
 
 <style>
   /* --- Fit this full-viewport app under the DataRepublican layout chrome --- */
-  /* Cancel the padded wrapper <main> ONLY (direct child); the app's own inner <main> keeps its padding. */
-  #main-content > main{padding:0 !important;max-width:none !important;min-height:0 !important}
   :root{
     /* --bg is the site surface (theme colour `surface`, #E5E7EB), not a warm
        grey of this tool's own. It used to be #F7F7F5, and because this rule
        block is unlayered it beat the site's `bg-surface` on <body> — so the
        masthead and nav above the tool sat on a different background from every
        other page. One ground colour for the whole page now. */
-    --bg:#E5E7EB;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;--line2:#EDEDE8;
+    --bg:#E5E7EB;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;
     --accent:#C0392B;--hi:#C0392B;--med:#B8860B;--low:#4A6FA5;--news:#1B7F4B;--gold:#B8860B;
     --tile:#F1F1EC;--tile2:#F7F7F3;--link:#1155CC;
   }
@@ -172,7 +170,13 @@ title: TrumpBlogs formerly known as NoBlogs
   #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:var(--dr-z-scrim,55);
     opacity:0;pointer-events:none;transition:opacity .2s}
   #scrim.on{opacity:1;pointer-events:auto}
-  #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;width:392px;max-width:94vw;background:var(--bg);
+  #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;
+    /* One clamp instead of a width plus a breakpoint. This was width:392px
+       with @media(max-width:820px){width:340px}, which left 768-820px showing
+       a 340px drawer for no reason — the sheet takes over at 767. The clamp
+       covers 320-392 continuously and absorbs the graph's 370 and DSA's 340
+       when those panels adopt it. */
+    width:clamp(320px, 30vw, 392px);max-width:94vw;background:var(--bg);
     border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:var(--dr-z-panel,60);
     transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto}
   #panel.on{transform:translateX(0)}
@@ -238,7 +242,6 @@ title: TrumpBlogs formerly known as NoBlogs
   a.live{color:var(--link);text-decoration:none;font-size:12px;white-space:nowrap}
   a.live:hover{text-decoration:underline}
   .pempty{color:#9a9ea6;font-size:13px;line-height:1.55;padding:24px 18px}
-  @media(max-width:820px){#panel{width:340px}}
 
   /* ---- Map tab ------------------------------------------------------------
      These rules came from world_hyperlocal_map.html, which could use bare

@@ -17,8 +17,19 @@
  .legend .lghint{color:#999;font-size:10.5px;margin-top:5px;cursor:default}
  .legend .lghint:hover{background:none}
  .legend span{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;border:1px solid #333}
- #disclaimerBar{position:absolute;top:0;left:0;right:0;z-index:1200;background:#FBF3E4;
-   border-bottom:1px solid #E4C9A0;color:#6B5A3E;font:10.5px/1.4 system-ui;padding:6px 12px}
+ /* Same callout as the explorer: 13px, native disclosure, 44px summary. The id
+    stays because the script at the bottom measures this bar to offset the info
+    panel below it. z-index drops to the site scale — it was 1200, out-bidding
+    Leaflet rather than sitting in its own layer. */
+ #disclaimerBar{position:absolute;top:0;left:0;right:0;z-index:20;background:#FBF3E4;
+   border-bottom:1px solid #E4C9A0;color:#6B5A3E;font:13px/1.5 system-ui}
+ #disclaimerBar>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+   padding:8px 12px;min-height:2.75rem;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600}
+ #disclaimerBar>summary::-webkit-details-marker{display:none}
+ #disclaimerBar>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
+ #disclaimerBar[open]>summary::before{transform:rotate(90deg)}
+ #disclaimerBar>summary:focus-visible{outline:2px solid #252739;outline-offset:-2px}
+ #disclaimerBar .disclaimer-body{padding:0 12px 10px}
  #disclaimerBar strong{color:#8A5A1A}
  .leaflet-popup-content{font:13px/1.45 system-ui;max-width:280px}
  .leaflet-popup-content h3{margin:0 0 4px;font-size:15px}
@@ -28,7 +39,7 @@
    box-shadow:0 0 0 1px #fff}
 </style></head>
 <body>
-<div id="disclaimerBar"><strong>Disclaimer:</strong> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</div>
+<details id="disclaimerBar"><summary><span class="disclaimer-label">Disclaimer</span></summary><div class="disclaimer-body">Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</div></details>
 <div id="map"></div>
 <div class="info">
  <h4>World Hyperlocal TrumpBlogs<br><small style="font-weight:400;opacity:.7">formerly known as NoBlogs</small></h4>
