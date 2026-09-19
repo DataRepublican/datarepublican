@@ -51,17 +51,22 @@
     .nbgraph #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
     .nbgraph #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
   }
-  /* The search field expands IN PLACE, out of its own button.
-     #gsearch is the first row of the control column and #gsearchToggle lives
-     inside it, so there is nothing to position: the row simply gets wider. See
-     the note in graph.js for the two earlier versions this replaces.
+  /* The search field expands in place, out of its own button.
 
-     Collapsed, the wrapper is invisible and the button is an ordinary .dr-btn
-     pill. Open, the WRAPPER becomes the pill and the button goes transparent
-     inside it, so the icon ends up sitting in the field it opened rather than
-     next to it. The transition is the site's sheet motion — one easing for
-     everything that grows or arrives. */
-  .nbgraph #gsearch{display:flex;align-items:center;flex:none;
+     #gsearch RESERVES EXACTLY THE BUTTON'S BOX and never grows; the pill that
+     grows is .gsearch__box, positioned absolutely inside it. That split is
+     load-bearing on desktop: #controls is a flex COLUMN, so its width is its
+     widest child and `align-items:stretch` hands that width to every sibling —
+     a field growing in flow dragged all seven buttons wider with it. Out of
+     flow, it cannot.
+
+     Below md #controls is a row, where stretch governs height and the buttons
+     are already content-width, so the box goes back in flow and the rail
+     scrolls instead. */
+  .nbgraph #gsearch{position:relative;flex:none;
+    width:var(--dr-tap,2.75rem);height:var(--dr-tap,2.75rem)}
+  .nbgraph #gsearch .gsearch__box{position:absolute;top:0;left:0;
+    display:flex;align-items:center;
     border:1px solid transparent;border-radius:var(--dr-radius-pill,9999px);
     transition:background-color var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,ease),
                border-color var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,ease)}
@@ -71,15 +76,19 @@
                opacity var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,ease),
                padding var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,ease)}
   .nbgraph #gsearch input:focus{outline:none}
-  .nbgraph #gsearch.is-open{background:var(--dr-panel,#fff);border-color:var(--dr-line-strong,#878D99);
-    box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .nbgraph #gsearch.is-open .gsearch__box{background:var(--dr-panel,#fff);
+    border-color:var(--dr-line-strong,#878D99);box-shadow:0 2px 8px rgba(0,0,0,.12)}
   .nbgraph #gsearch.is-open input{width:14rem;opacity:1;padding:0 14px 0 2px}
-  /* The button stops being its own pill once the wrapper is one. */
+  /* The button stops being its own pill once the box is one. */
   .nbgraph #gsearch.is-open .dr-btn{background:none;border-color:transparent;box-shadow:none}
-  .nbgraph #gsearch:focus-within{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  .nbgraph #gsearch:focus-within .gsearch__box{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+
+  @media(min-width:768px){
+    .nbgraph #gsearch{width:var(--dr-tap-sm,2rem);height:var(--dr-tap-sm,2rem)}
+  }
 
   @media(prefers-reduced-motion:reduce){
-    .nbgraph #gsearch,.nbgraph #gsearch input{transition:none}
+    .nbgraph #gsearch .gsearch__box,.nbgraph #gsearch input{transition:none}
   }
   /* max-height is measured against the CANVAS, not the viewport. It was
      calc(100vh - 150px) — a guess at the chrome above it that is wrong the
@@ -210,13 +219,11 @@
   .nbgraph #controls::-webkit-scrollbar{display:none}
   /* .dr-btn is already 44px and a pill; the rail only has to stop them shrinking. */
   .nbgraph #controls .dr-btn{flex:0 0 auto}
-  /* Same control, same gesture. It expands inside the scrolling rail rather
-     than breaking out to the top of the canvas — "controls should match when
-     used in both places", and a field that jumps to the opposite end of the
-     screen from the button you pressed is the behaviour this replaced.
-     setSearchOpen scrolls the rail so the field lands in view.
-     16px, because iOS zooms the viewport for anything smaller and never
-     zooms back out. */
+  /* Back in flow: a row sizes children by content, so growing here pushes the
+     rail rather than widening anything. setSearchOpen scrolls it into view.
+     16px or iOS zooms the viewport and never zooms back out. */
+  .nbgraph #gsearch{width:auto;height:auto}
+  .nbgraph #gsearch .gsearch__box{position:static}
   .nbgraph #gsearch.is-open input{width:min(14rem,55vw);min-height:2.75rem;font-size:16px}
   .nbgraph #legend{left:8px;right:8px;bottom:60px;max-height:45dvh;overflow:auto;padding:0}
   /* Collapsed to one 44px row by default: the key used to run down the screen

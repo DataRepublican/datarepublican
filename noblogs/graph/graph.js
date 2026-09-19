@@ -75,10 +75,10 @@
          * The input is tabindex=-1 while collapsed: it is zero-width and
          * invisible, and a keyboard user tabbing onto a field they cannot see
          * is worse than not having it. setSearchOpen restores it. */
-        '<div id="gsearch">' +
+        '<div id="gsearch"><div class="gsearch__box">' +
           btn('gsearchToggle', 'search', 'Search the graph', '', 'aria-expanded="false" aria-controls="q"') +
           '<input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off" tabindex="-1">' +
-        '</div>' +
+        '</div></div>' +
         btn('zin', 'zin', 'Zoom in', '') +
         btn('zout', 'zout', 'Zoom out', '') +
         btn('fit', 'fit', 'Reset view', '') +
@@ -643,7 +643,12 @@
   /* ---- cross-filter from the explorer facets (postMessage host-set) ---- */
   let FILTER=null;
   function applyGraphFilter(hosts){
-    FILTER=(hosts&&hosts.length)?new Set(hosts):null;
+    /* `Array.isArray`, not `hosts.length`. An EMPTY array means the filter
+       matched nothing; `null` means there is no filter. Testing length
+       collapsed the two, so a search with no results showed the whole network
+       instead of an empty one. map.js's setHosts already guards it this way —
+       this was the graph diverging from its sibling. */
+    FILTER=Array.isArray(hosts)?new Set(hosts):null;
     cy.batch(()=>{
       cy.nodes('[kind = "blog"]').forEach(n=>n.style('display',(!FILTER||FILTER.has(n.id()))?'element':'none'));
       cy.edges().forEach(e=>{const s=e.source(),t=e.target();

@@ -109,6 +109,46 @@ test.describe('the desktop detail drawer', () => {
   });
 });
 
+test.describe('the graph cross-filter', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('a search with no results empties the graph, it does not fill it', async ({ page }) => {
+    /* applyGraphFilter tested `hosts.length`, which collapses "the filter
+       matched nothing" ([]) into "there is no filter" (null) — so searching
+       for something with no results showed the WHOLE network. map.js guards
+       the same call with Array.isArray and was always correct. */
+    await page.goto(HOST + '/noblogs/?view=graph', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(
+      () => typeof graphApi !== 'undefined' && graphApi && graphApi.cy.nodes().length > 0,
+      { timeout: 90000 });
+
+    const shown = () => page.evaluate(
+      () => cy.nodes('[kind="blog"]').filter(n => n.style('display') !== 'none').length);
+    const type = async (q) => {
+      await page.evaluate((v) => {
+        const s = document.getElementById('search');
+        s.value = v;
+        s.dispatchEvent(new Event('input'));
+      }, q);
+      await page.waitForTimeout(500); // the 200ms debounce, plus a margin
+    };
+
+    const all = await shown();
+    expect(all).toBeGreaterThan(0);
+
+    await type('russia');
+    const some = await shown();
+    expect(some, 'a matching search should narrow the graph').toBeGreaterThan(0);
+    expect(some).toBeLessThan(all);
+
+    await type('zzzzznomatch');
+    expect(await shown(), 'no results rendered as the whole network').toBe(0);
+
+    await type('');
+    expect(await shown(), 'clearing the search should restore every node').toBe(all);
+  });
+});
+
 test.describe('the filter popover reset', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
@@ -119,24 +159,34 @@ test.describe('the filter popover reset', () => {
     await page.waitForSelector('#facets .clearf', { timeout: 30000 });
   };
 
-  test('is disabled and right-aligned until something is selected', async ({ page }) => {
+  test('is titled, and the reset sits opposite the title', async ({ page }) => {
     await openFilters(page);
     const clear = page.locator('#facets .clearf');
 
-    await expect(clear).toBeDisabled();
-    await expect(clear).toHaveText(/Clear all filters/);
+    // The panel says what it is, so the reset does not have to. "✕ clear all
+    // filters" was a lone link above the first group with nothing to anchor
+    // it, and it read as that group's first item.
+    await expect(page.locator('#facets .fhead h2')).toHaveText('Filters');
+    await expect(clear).toHaveText('Clear');
 
-    // Trailing edge of the panel, not the leading one, where it read as the
-    // first item of the first filter group.
-    const aligned = await page.evaluate(() => {
+    // Named region rather than an unlabelled one.
+    await expect(page.locator('#facets'))
+      .toHaveAttribute('aria-labelledby', 'facets-title');
+
+    // Trailing edge of the header row, opposite the title.
+    const laid = await page.evaluate(() => {
       const el = document.querySelector('#facets .clearf');
-      const panel = document.getElementById('facets');
-      const er = el.getBoundingClientRect(), pr = panel.getBoundingClientRect();
-      const pad = parseFloat(getComputedStyle(panel).paddingRight);
-      return Math.abs((pr.right - pad) - er.right) < 2;
+      const h = document.querySelector('#facets .fhead h2');
+      const head = document.querySelector('#facets .fhead');
+      const er = el.getBoundingClientRect();
+      const hr = h.getBoundingClientRect();
+      const fr = head.getBoundingClientRect();
+      return { afterTitle: er.left > hr.right, atEdge: Math.abs(fr.right - er.right) < 6 };
     });
-    expect(aligned, 'the reset is not right-aligned in the panel').toBe(true);
+    expect(laid.afterTitle, 'the reset is not opposite the title').toBe(true);
+    expect(laid.atEdge, 'the reset is not at the trailing edge').toBe(true);
 
+    await expect(clear).toBeDisabled();
     await page.locator('#facets .fitem[data-f="cat"] input').first().check();
     await expect(clear).toBeEnabled();
   });

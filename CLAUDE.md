@@ -238,8 +238,42 @@ rather than changed mid-migration. Worth fixing as its own commit afterwards.
 ## House style
 
 American English in code comments, commit messages and user-facing copy.
-Comments should say *why*, especially where the obvious thing is wrong —
-match the density already in `_includes/`, `_layouts/` and `assets/css/main.css`.
+
+### Comments: mechanics and traps, not design rationale
+
+A comment earns its place when the code would otherwise **look wrong**, or when
+something off-screen will **break it**. Everything else is noise, and noise is
+expensive: it buries the four or five comments in a file that are actually
+load-bearing.
+
+**Write a comment for:**
+
+- a trap with a cost — `:not([hidden])` beating the UA rule, `isolation` over a
+  vendored z-index, a class glued to a Liquid tag, `--nb-header-h` being a
+  height and not an offset
+- a line that looks redundant but is not — "everything before `cursor` undoes
+  the global `button` rule"
+- a constraint from somewhere else in the system — "the standalone page still
+  ships this", "a spec asserts this id", "16px or iOS zooms and never unzooms"
+- a number nobody could re-derive — where `340px` comes from
+
+**Do not write a comment for:**
+
+- why a design decision is good. "A reset next to a title only ever means one
+  thing", "three ragged pills read as an afterthought", "the map is the thing
+  the tool is for." If it argues taste, cut it.
+- the change's own history. "This used to be X, then Y, now Z." Nobody reading
+  the file needs the narrative; that is what `git log` and the commit message
+  are for. The *conclusion* can stay if it is a trap ("do not go back to
+  reading this from the DOM — deleting the legend silently blanks it").
+- what the code plainly says. `display:flex` does not need a sentence.
+
+The test: **delete it and ask whether the next person breaks something.** No →
+it should not be there. Design intent belongs in
+`.claude/skills/dr-design-system/`, not inline — it is written once there and
+read by everyone, instead of once per declaration.
+
+Match the density in `_includes/nav.html` and the top of `assets/css/main.css`.
 
 ## Skill routing
 
