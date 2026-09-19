@@ -9,16 +9,31 @@
   same size. There used to be a `compact` variant that dropped the rule and the
   tagline on tool pages to buy back phone height; it made internal pages look
   like a different site, so it is gone.
+
+  The primary nav is included INSIDE the wordmark row, so at md the links sit
+  across from the wordmark on its baseline. See the long note in nav.html for
+  what that costs (sticky) and why the phone pill is unaffected.
+
+  The flex lives on this inner row, never on <header> itself. The header has to
+  stay `display: block` and `position: static` — tests/test_review_regressions.
+  spec.js asserts both on five routes, because two tools once styled a bare
+  `header` and reshaped the masthead from across the page. Keeping the flex one
+  level in also leaves the rule and the tagline as full-width siblings, so the
+  5/3/2 rule still spans the container rather than stopping at the wordmark.
 {%- endcomment -%}
 
 <div class="pt-5 pb-1">
-  {%- if page.url == '/' -%}
-  <h1 class="m-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</h1>
-  {%- else -%}
-  <p class="m-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">
-    <a href="{{ '/' | relative_url }}" class="!text-ink-strong !no-underline">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</a>
-  </p>
-  {%- endif -%}
+  <div class="flex items-end justify-between gap-6">
+    {%- if page.url == '/' -%}
+    <h1 class="m-0 min-w-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</h1>
+    {%- else -%}
+    <p class="m-0 min-w-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">
+      <a href="{{ '/' | relative_url }}" class="!text-ink-strong !no-underline">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</a>
+    </p>
+    {%- endif -%}
+
+    {% include nav.html %}
+  </div>
 
   {%- comment -%}
     The rule from the mock, stated exactly: a 5px bar, a 3px gap, a 2px bar,
@@ -33,7 +48,15 @@
     `box-sizing: border-box`, so the borders are drawn inside the height. Asking
     for h-[3px] gives 7px of border and no gap at all — one solid bar.
   {%- endcomment -%}
-  <div class="mt-2 h-[10px] border-t-[5px] border-b-2 border-ink-strong" aria-hidden="true"></div>
+  {%- comment -%}
+    `data-masthead-rule` is a test hook, not a style hook. The spec used to find
+    this element with `header div[aria-hidden="true"]` — the first decorative
+    div in the header — which stopped being this one the moment the nav moved
+    inside the masthead and brought its phone scrim with it. The scrim is
+    md:hidden, so the assertion read a width of 0 and the failure pointed at the
+    rule rather than at the selector.
+  {%- endcomment -%}
+  <div class="mt-2 h-[10px] border-t-[5px] border-b-2 border-ink-strong" data-masthead-rule aria-hidden="true"></div>
 
   <p class="mt-2 mb-0 text-lede font-semibold tracking-body text-ink-strong">{{ site.tagline | default: 'Mapping the connections they don&rsquo;t want you to know about' }}</p>
 </div>

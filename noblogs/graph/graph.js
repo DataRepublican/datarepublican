@@ -22,19 +22,56 @@
 (function (global) {
   'use strict';
 
+  /* Every labelled control carries its word inside a <span class="glabel">, not
+   * as a bare text node. Export swaps its label to "Rendering\u2026" while cy.png()
+   * runs, and it used to do that with `b.textContent = \u2026` \u2014 which replaces ALL
+   * children, so the first export silently deleted the button's <svg> and it
+   * never came back. A dedicated label element is the fix; the icon is not the
+   * label's business.
+   *
+   * Tooltips are `title`, on every control including the ones that have a word.
+   * "Focus mode" and "Target edges only" name a mode without saying what it
+   * does, which is the one thing a label cannot do and a tooltip can. No JS
+   * tooltip machinery: `title` is free, works on hover and on keyboard focus,
+   * and is what tests/test_toolbars.spec.js already asserts on icon-only
+   * controls. */
+  var ICON = {
+    search:   '<path d="M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16"/><path d="m21 21-4.3-4.3"/>',
+    zin:      '<path d="M5 12h14"/><path d="M12 5v14"/>',
+    zout:     '<path d="M5 12h14"/>',
+    fit:      '<path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/>',
+    relayout: '<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>',
+    focus:    '<circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/>',
+    target:   '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+    download: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>'
+  };
+  function svg(k) {
+    return '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" ' +
+      'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[k] + '</svg>';
+  }
+  function btn(id, icon, title, label, extra) {
+    return '<button type="button" id="' + id + '" class="dr-btn' + (label ? '' : ' dr-btn--icon') + '" ' +
+      (label ? '' : 'aria-label="' + title + '" ') + 'title="' + title + '" ' + (extra || '') + '>' +
+      svg(icon) + (label ? '<span class="glabel">' + label + '</span>' : '') + '</button>';
+  }
+
   var MARKUP =
     '<div id="stage">' +
       '<div id="cy"></div>' +
-      '<button class="panelToggle" id="panelToggle" title="Show panel">\u2039</button>' +
-      '<div id="gsearch"><input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off"></div>' +
+      /* Hidden until asked for. This was a 270px field parked at the top-centre
+       * of the canvas at all times, permanently covering the densest part of
+       * the European cluster, and duplicating the explorer's own page-level
+       * field two rows above it. It is a control now, not furniture. */
+      '<div id="gsearch" hidden><input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off"></div>' +
       '<div id="controls">' +
-        '<button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>' +
-        '<button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>' +
-        '<button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>' +
-        '<button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" title="Re-layout"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>' +
-        '<button type="button" id="focusToggle" class="dr-btn" aria-pressed="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg>Focus mode</button>' +
-        '<button type="button" id="tgtOnly" class="dr-btn" aria-pressed="false">Target edges only</button>' +
-        '<button type="button" id="export" class="dr-btn" title="Download a high-resolution PNG of the current view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>' +
+        btn('gsearchToggle', 'search', 'Search the graph', '', 'aria-expanded="false" aria-controls="gsearch"') +
+        btn('zin', 'zin', 'Zoom in', '') +
+        btn('zout', 'zout', 'Zoom out', '') +
+        btn('fit', 'fit', 'Reset view', '') +
+        btn('relayout', 'relayout', 'Re-layout', '') +
+        btn('focusToggle', 'focus', 'Focus mode \u2014 clicking a node isolates it and its immediate ties, and walks the network one step at a time. Turn it off to keep the whole graph visible and select nodes without fading the rest.', 'Focus mode', 'aria-pressed="true"') +
+        btn('tgtOnly', 'target', 'Show only the citations that back a target designation, and hide every other edge.', 'Target edges only', 'aria-pressed="false"') +
+        btn('export', 'download', 'Download a high-resolution PNG of the current view', 'Export') +
       '</div>' +
       '<div id="legend"></div>' +
     '</div>' +
@@ -345,10 +382,31 @@
   const EMPTY=panel.innerHTML;
   let focusMode=true, focusId=null;
   // root IS the old #app — the grid container and the .collapsed toggle.
-  const appEl=root, pt=$id('panelToggle');
-  pt.onclick=()=>{appEl.classList.toggle('collapsed');pt.textContent=appEl.classList.contains('collapsed')?'‹':'›';pt.title=appEl.classList.contains('collapsed')?'Show panel':'Hide panel';requestAnimationFrame(()=>cy.resize());};
+  const appEl=root;
+
+  /* The panel opens and closes ITSELF, in response to selection. There is no
+   * user-facing control for it any more.
+   *
+   * There used to be a `‹` / `›` chevron floating at the top-right of the
+   * canvas. It was a control for a state the user never has to manage: the
+   * panel is empty until you click a node, and clicking the background empties
+   * it again. So the button's only honest use was hiding a panel that already
+   * had something in it — and the same click on the background did that plus
+   * the deselect you actually wanted.
+   *
+   * Removing it also removes a worse problem. Three call sites — collapsePanel,
+   * the sheet's onClose and revealPanel — all reached for `pt.onclick()`, a
+   * TOGGLE, to express "close" or "open" specifically. Each had to test the
+   * current state first and skip the call if it was already right; miss that
+   * guard and the call does the exact opposite of what the site wanted. This is
+   * an idempotent setter instead, so the call sites say what they mean. */
+  function setPanel(open){
+    if(appEl.classList.contains('collapsed')===!open) return;
+    appEl.classList.toggle('collapsed',!open);
+    requestAnimationFrame(()=>cy.resize());
+  }
   // deselect → return the graph to full width (empty panel is just wasted whitespace)
-  function collapsePanel(){panel.innerHTML=EMPTY;if(!appEl.classList.contains('collapsed'))pt.onclick();}
+  function collapsePanel(){panel.innerHTML=EMPTY;setPanel(false);}
 
   /* On a phone the detail panel is a bottom sheet, the same one noblogs and
      dsa-explorer use.
@@ -372,12 +430,12 @@
        a view of the selection, not the selection itself — dsa-explorer cleared
        cy classes here and dismissing the sheet threw away the focus ring and
        the walk. Leave the fade, the selected node and the camera alone. */
-    onClose: ()=>{ if(!appEl.classList.contains('collapsed')) pt.onclick(); }
+    onClose: ()=>setPanel(false)
   }) : null);
 
   // The one way to reveal the panel, so the two states cannot drift apart.
   function revealPanel(){
-    if(appEl.classList.contains('collapsed')) pt.onclick();
+    setPanel(true);
     if(gSheet && window.DRSheet.isMobile()) gSheet.open();
   }
 
@@ -515,8 +573,52 @@
   let tgtOnly=false;
   $id('tgtOnly').onclick=function(){tgtOnly=!tgtOnly;this.setAttribute('aria-pressed',String(tgtOnly));
     cy.batch(()=>{cy.edges().forEach(e=>e.style('display',(!tgtOnly||e.data('tgt')>0)?'element':'none'));});};
-  $id('export').onclick=function(){const b=this,w=b.textContent;b.textContent='Rendering…';setTimeout(()=>{try{const uri=cy.png({full:false,scale:3,bg:'#fff',maxWidth:12000,maxHeight:12000});const a=document.createElement('a');a.href=uri;a.download='noblogs-graph.png';a.click();}catch(e){alert('Export failed: '+e.message);}b.textContent=w;},60);};
-  const q=$id('q');
+  /* Only the .glabel is swapped while rendering. Writing button.textContent —
+     which is what this did — replaces every child, so the <svg> was destroyed
+     on the first export and restoring the string never brought it back.
+     aria-busy is what button.css styles and what a screen reader reads. */
+  $id('export').onclick=function(){
+    const b=this,lab=b.querySelector('.glabel'),was=lab.textContent;
+    lab.textContent='Rendering…'; b.setAttribute('aria-busy','true');
+    setTimeout(()=>{
+      try{
+        const uri=cy.png({full:false,scale:3,bg:'#fff',maxWidth:12000,maxHeight:12000});
+        const a=document.createElement('a');a.href=uri;a.download='noblogs-graph.png';a.click();
+      }catch(e){alert('Export failed: '+e.message);}
+      lab.textContent=was; b.removeAttribute('aria-busy');
+    },60);
+  };
+
+  /* Search opens from the toolbar rather than sitting on the canvas.
+     Escape closes it and clears the query, which is the one thing a user wants
+     from a search they opened by accident. stopPropagation matters: the
+     explorer page listens for Escape on `document` to close its detail drawer,
+     and dismissing a search field should not also dismiss what you were
+     reading. */
+  const gsearch=$id('gsearch'), gsToggle=$id('gsearchToggle'), q=$id('q');
+  const controlsEl=$id('controls');
+  function setSearchOpen(open){
+    gsearch.hidden=!open;
+    gsToggle.setAttribute('aria-expanded',String(open));
+    if(open){
+      /* Measure the control column and clear it. Its width is whatever its
+         widest LABEL needs — "Target edges only" — not the icon size, so any
+         constant here is wrong the next time a label changes. The phone rule in
+         graph.css overrides `left` outright, so this only governs desktop. */
+      const w=controlsEl.getBoundingClientRect().width;
+      gsearch.style.setProperty('--gsearch-left',(12+w+8)+'px');
+      q.focus();
+      return;
+    }
+    if(q.value){ q.value=''; q.oninput(); }
+    gsToggle.focus();
+  }
+  gsToggle.onclick=()=>setSearchOpen(gsearch.hidden);
+  q.addEventListener('keydown',e=>{
+    if(e.key!=='Escape') return;
+    e.stopPropagation();
+    setSearchOpen(false);
+  });
   // Debounced: every keystroke walked all nodes and rewrote classes on the whole
   // element set inside a cy.batch. Cheap per call, but a fast typist queues one
   // full restyle per letter and the canvas visibly stutters. 200ms matches the

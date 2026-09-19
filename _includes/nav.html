@@ -1,24 +1,43 @@
 {%- comment -%}
-  The three-item pill. Tools is the home page, so there is no Home item.
+  The three-item nav. Tools is the home page, so there is no Home item.
 
-  One DOM order, two layouts: the pill floats at the bottom of the viewport on
-  a phone (thumb reach) and sticks near the top at md, just under the masthead,
-  so it stays reachable down a long tool page.
+  One DOM order, two layouts, and they are now genuinely different controls
+  rather than one control at two sizes:
+
+    phone  — a floating pill, fixed to the bottom of the viewport, in thumb
+             reach. It IS the navigation, so it keeps 44px targets and the
+             frosted pill chrome that makes it legible over scrolling content.
+    md up  — plain links, right-aligned on the wordmark's baseline. The pill
+             chrome is dropped entirely: border, fill, shadow and blur all go
+             transparent, because at this width the links sit inside the
+             masthead block and a second bounded surface inside it reads as a
+             widget stuck onto the page.
+
+  THIS INCLUDE LIVES INSIDE _includes/masthead.html, not beside <header>.
+  That is a reversal, and the reason the old arrangement existed is worth
+  stating so nobody restores it by halves: the nav used to be a SIBLING of
+  <header> so it could be `position: sticky` at md — a sticky element can only
+  travel inside its parent's box, and inside the masthead the box is ~130px
+  tall, so sticky would do nothing. Desktop deliberately gives up stickiness in
+  exchange for the links sitting across from the wordmark. The phone pill is
+  `position: fixed`, which is viewport-relative and does not care what contains
+  it, so moving the include costs the phone layout nothing.
 
   Sizing is anchored to the 16px label and expressed in em from there, so the
-  pill is a consequence of the type rather than a set of numbers that drift
-  away from it. At md that gives a 32px item in a 36px pill.
+  control is a consequence of the type rather than a set of numbers that drift
+  away from it.
 
-  The 44px minimum tap target is kept on phones, where the pill IS the
-  navigation and the finger is the pointer. Above md there is a cursor and the
-  compact pill applies — min-h-tap at every width made the bar half again as
-  tall as the design called for.
+  The 44px minimum tap target is kept on phones, where the finger is the
+  pointer. Above md there is a cursor and the compact size applies — min-h-tap
+  at every width made the row half again as tall as the design called for.
 
-  Hover fills the item the way the current item is already filled, so the two
-  states read as the same control rather than two different treatments: an
-  inactive item takes a flat tint, and the current item darkens its gradient
-  instead of being the only item that does not respond. Both are colour-only
-  transitions, so nothing shifts position under the cursor.
+  Hover: a white fill at md, a flat tint below it. White is the choice because
+  the page ground is #E5E7EB — a white pill reads as raised against a grey
+  ground, where the phone's translucent white would disappear into it. The
+  current item wears the same white fill, so hovering an inactive item previews
+  exactly what being current looks like rather than introducing a third
+  treatment. Both are colour-only transitions, so nothing shifts under the
+  cursor.
 {%- endcomment -%}
 
 {%- assign here = page.url -%}
@@ -26,12 +45,24 @@
 /|Tools|tools,/about/|About|user,/donate/|Donate|donate
 {%- endcapture -%}
 
-{%- comment -%} The scrim keeps the pill legible over scrolling content. {%- endcomment -%}
+{%- comment -%}
+  The scrim keeps the floating pill legible over scrolling content. Phone only:
+  at md the pill is gone and there is nothing to separate from.
+{%- endcomment -%}
 <div class="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-28 bg-gradient-to-b from-transparent to-surface/80 md:hidden" aria-hidden="true"></div>
 
+{%- comment -%}
+  `page-column` is what centres the fixed pill on a phone. At md the nav is a
+  flex child of the wordmark row, so every part of that shell has to be undone
+  explicitly — the measure, the auto margins, the gutter and the full width.
+  Tailwind's utilities layer is emitted after components, so `md:max-w-none`
+  beats `.page-column`'s own max-width at equal specificity.
+{%- endcomment -%}
 <nav aria-label="Primary"
-     class="page-column fixed inset-x-0 bottom-4 z-50 flex justify-center md:sticky md:top-3 md:mt-3 md:mb-2 md:block">
-  <ul class="m-0 flex list-none items-center gap-1 rounded-pill border border-white/60 bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[3px] md:w-max md:gap-[0.125em] md:bg-white/90 md:p-[0.125em]">
+     class="page-column fixed inset-x-0 bottom-4 z-50 flex justify-center
+            md:static md:z-auto md:mx-0 md:w-auto md:max-w-none md:px-0 md:pb-[0.375em]">
+  <ul class="m-0 flex list-none items-center gap-1 rounded-pill border border-white/60 bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[3px]
+             md:w-max md:gap-[0.125em] md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
     {%- assign items = nav_items | strip | split: ',' -%}
     {%- for item in items -%}
       {%- assign parts = item | split: '|' -%}
@@ -53,17 +84,22 @@
         silently does nothing — it took a "why is hover dead" hunt to find.
         Inside a quoted Liquid string every class is delimited by a quote or a
         space, which the extractor handles.
+
+        `md:bg-none` is not a typo for `md:bg-transparent`: it clears the
+        background-IMAGE the phone gradient sets. The two set different
+        properties, so both are needed to get from a gradient pill to a flat
+        white one.
       {%- endcomment -%}
       {%- if is_current -%}
-        {%- assign state = 'bg-gradient-to-b from-[#EDEDED] to-[#CACACA] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] hover:from-[#E4E4E4] hover:to-[#BEBEBE]' -%}
+        {%- assign state = 'bg-gradient-to-b from-[#EDEDED] to-[#CACACA] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] hover:from-[#E4E4E4] hover:to-[#BEBEBE] md:bg-none md:bg-white md:shadow-none md:hover:bg-white' -%}
       {%- else -%}
-        {%- assign state = 'hover:bg-black/[0.06]' -%}
+        {%- assign state = 'hover:bg-black/[0.06] md:hover:bg-white' -%}
       {%- endif -%}
     <li class="m-0">
       <a href="{{ href | relative_url }}"
          {% if is_current %}aria-current="page"{% endif %}
          class="flex min-h-tap items-center gap-2 rounded-pill px-4 text-body font-bold tracking-[-0.03em] !no-underline !text-ink-strong
-                md:min-h-0 md:gap-[0.375em] md:px-[0.6875em] md:py-[0.25em] md:leading-[1.25]
+                md:min-h-0 md:gap-[0.375em] md:px-[0.6875em] md:py-[0.3125em] md:leading-[1.25]
                 transition-colors duration-150
                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong
                 {{ state }}">

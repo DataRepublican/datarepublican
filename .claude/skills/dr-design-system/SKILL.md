@@ -130,8 +130,37 @@ Each of these has already happened here, or is one edit away.
 
 ## Reference files
 
+- **`references/tool-chrome.md` — how a full-viewport tool arranges the controls
+  around its canvas.** Read this BEFORE laying out a tool header, adding
+  anything on top of a canvas, or building a new tool. It carries the pattern
+  settled on noblogs: one row per question, nothing permanent on the canvas,
+  legal text as a modal, display options kept out of the filter badge, and the
+  six failures that produced each rule. It ends in a checklist.
 - `references/tokens.md` — the palette, scales, and the `theme()` → `:root` direction
 - `references/components.md` — the `.dr-*` catalogue, current → target per component
 - `references/icons.md` — Lucide, and when an icon may replace a word
 - `references/contracts.md` — APIs a refactor must not break
 - `references/traps.md` — each trap with a reproduction and a detection command
+
+## Where the migration stands
+
+`noblogs` is the reference implementation of `tool-chrome.md`. `dsa-explorer`
+has the `.dr-btn` toolbar and the legend conversion but **not** the chrome
+pattern — it still has the amber `<details>` disclaimer, a search field parked
+on the canvas, a `›` panel chevron and a ragged control cluster.
+
+**It is designed but not built.** The boards are `dsa 3/mobile — reorganized`
+and `dsa 3/desktop — reorganized` on page `p-2-0`; `dsa 2/*` are the before.
+What they settle, beyond a straight copy of the noblogs chrome:
+
+- **The search goes in the header row, not on the canvas.** dsa has only one
+  search and it is the page's; noblogs' graph keeps a canvas search only because
+  the page already has a different one two rows above it.
+- **The legend stays on the canvas.** It is dsa's colour key AND its only
+  filter, and unlike the noblogs map there is no facet panel to fold it into.
+  Building a popover to hold one control is worse than leaving it where it
+  doubles as the key. Collapsed to one 44px row on a phone, as it is now.
+- **The control cluster is the noblogs graph's, exactly**: icon-only column for
+  zoom / zoom / fit / re-layout, then icon+label pills for Back, Focus mode,
+  Inferred links, Export. 32px above md, 44px below, pressed = accent fill.
+  A horizontal scrolling rail at the bottom on a phone.

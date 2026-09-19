@@ -51,8 +51,27 @@
     .nbgraph #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
     .nbgraph #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
   }
-  .nbgraph #gsearch{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:var(--dr-z-canvas-ui,20)}
-  .nbgraph #gsearch input{width:270px;padding:7px 11px;border:1px solid #D5D5CE;border-radius:20px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  /* The search field opens BESIDE the control column, not over the graph's
+     centre. It used to be pinned top-centre and always visible, which put a
+     270px white box permanently over the densest part of the map — and
+     duplicated the explorer's own page-level search two rows above it.
+
+     --gsearch-left is MEASURED by graph.js when the field opens, not derived
+     from the button size. The first attempt here computed `12px + --dr-tap-sm +
+     8px` on the assumption the column is one icon wide; it is not. #controls is
+     a flex column and its width is set by its widest child, which is the
+     "Target edges only" button at ~140px — so the field opened directly on top
+     of the labelled controls. The column's width is a function of its labels,
+     and labels change, so the only stable answer is to ask it.
+
+     [hidden] needs saying explicitly because a `display` rule on the same
+     element would otherwise beat the UA's hidden. */
+  .nbgraph #gsearch{position:absolute;top:12px;z-index:var(--dr-z-canvas-ui,20);
+    left:var(--gsearch-left,12px)}
+  .nbgraph #gsearch[hidden]{display:none}
+  .nbgraph #gsearch input{width:270px;padding:7px 11px;border:1px solid var(--dr-line-strong,#878D99);
+    border-radius:var(--dr-radius-pill,9999px);font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .nbgraph #gsearch input:focus{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
   /* max-height is measured against the CANVAS, not the viewport. It was
      calc(100vh - 150px) — a guess at the chrome above it that is wrong the
      moment the header wraps, and wrong by a different amount inside the
@@ -70,14 +89,17 @@
      one edge and the legend has to stop before it reaches them — it was already
      overlapping by 8px before the buttons grew, just not enough to notice.
 
-     300px is the control column's own height (7 x 32 + gaps + the 12px inset,
-     with headroom), not a guess at page chrome. That is what makes it stable:
-     it is derived from the thing directly above it in the same box.
+     The number is the control column's own height, not a guess at page chrome.
+     That is what makes it stable: it is derived from the thing directly above
+     it in the same box. EIGHT buttons now — search joined the column when it
+     came off the canvas — so 8 x 32 + 7 x 6 gaps + the 12px inset + headroom.
+     If you add a control, this number moves with it; test_toolbars.spec.js
+     asserts the legend never reaches the column.
 
      Placed AFTER the legend's base rule on purpose. A media query adds no
      specificity, so an override written above the rule it means to beat simply
      loses on source order — which is exactly what happened the first time. */
-  @media(min-width:768px){ .nbgraph #legend{max-height:calc(100% - 300px)} }
+  @media(min-width:768px){ .nbgraph #legend{max-height:calc(100% - 340px)} }
 
   /* Sentence case. Uppercase micro-labels were the house tic, and 10px mixed
      case fails the 12px floor, so the step went with them. */
@@ -112,11 +134,14 @@
   .nbgraph aside .conn .conn-head{font-weight:600}
   .nbgraph aside .conn .rel{color:#999;font-style:italic;font-weight:400}
   .nbgraph aside .conn .tgtflag{color:#DC2626;font-weight:700;font-style:normal}
-  .nbgraph .panelToggle{position:absolute;top:12px;right:12px;z-index:calc(var(--dr-z-canvas-ui,20) + 1);border:1px solid #D5D5CE;border-radius:6px;font-size:15px;padding:5px 10px;cursor:pointer;background:#fff}
-  /* graph.js puts `collapsed` on the root element itself — there is no #app any
-   more. With `.nbgraph #app.collapsed` this matched nothing and the panel
-   collapse was dead: the graph booted showing an empty 370px aside and
-   #panelToggle did nothing. */
+  /* .panelToggle is gone. It was a `‹`/`›` chevron floating over the canvas,
+     controlling a state that manages itself — the panel fills when you select
+     a node and empties when you click the background. See the note by
+     setPanel() in graph.js.
+
+     graph.js puts `collapsed` on the root element itself — there is no #app any
+     more. With `.nbgraph #app.collapsed` this matched nothing and the panel
+     collapse was dead: the graph booted showing an empty 370px aside. */
   .nbgraph.collapsed{grid-template-columns:1fr 0}.nbgraph.collapsed aside{display:none}
   .nbgraph /* quotes (evidence) — English leads, .nbgraph foreign source collapsible, .nbgraph institutions scroll */
   aside .quotes{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}

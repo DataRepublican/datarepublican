@@ -9,16 +9,17 @@
 </head>
 
 {%- comment -%}
-  One DOM order for both layouts: banner, masthead, nav, content, footer.
+  One DOM order for all three layouts: banner, masthead (which now carries the
+  nav), content, footer.
 
-  The nav is fixed to the bottom of the viewport on a phone and sticky near the
-  top at md, where it lands directly under the wordmark. Because the order is
-  the same either way, there is no duplicate markup and no route-gated
-  rendering — the only difference is `position`.
+  The nav is included by _includes/masthead.html, inside the wordmark row — it
+  is NOT a sibling of <header> any more. On a phone it is `position: fixed` and
+  floats at the bottom of the viewport regardless of what contains it; at md it
+  is a plain row of links across from the wordmark. There is still one piece of
+  nav markup and no route-gated rendering.
 
-  It is a sibling of <header>, not a child of it. A sticky element can only
-  travel inside its parent's box, so a nav inside the masthead block would
-  scroll away with the masthead and never stick to anything.
+  It used to sit here, between <header> and #content, so it could be sticky at
+  md. Desktop gave that up deliberately — see the note at the top of nav.html.
 
   Every page uses the same shell measure — `.page-column` in main.css. Narrower
   reading columns are a property of the content (`.text-column`, `.prose`), not
@@ -33,8 +34,6 @@
   <header class="page-column">
     {% include masthead.html %}
   </header>
-
-  {% include nav.html %}
 
   <div id="content">
     <main class="@container page-column min-h-[40vh] pb-10">

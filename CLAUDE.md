@@ -137,11 +137,21 @@ which blocks and why.
 - **Reading measures belong to the content**, not the page: `.text-column`
   (832px) on `/about/` and `/donate/`, `.prose max-w-column` in the markdown
   layout. Anything that should line up with that text takes `max-w-prose`.
-- **The nav is a sibling of `<header>`, not a child.** A sticky element can only
-  travel inside its parent's box.
+- **The nav is included by `_includes/masthead.html`, inside the wordmark row.**
+  It used to be a sibling of `<header>` so it could be sticky at md — a sticky
+  element can only travel inside its parent's box, and inside the masthead that
+  box is ~130px tall. Desktop gave up stickiness deliberately, in exchange for
+  plain links sitting across from the wordmark. The phone pill is
+  `position: fixed`, so it does not care what contains it and did not change.
+  Do not re-add `{% include nav.html %}` to the layouts; it renders twice.
 - **Nav sizing is anchored to the 16px label** and expressed in `em`. The 44px
   tap target applies on phones only.
 - `_data/tools.yml` is the single source of truth for the tools index.
+- **Tool chrome has a pattern, and it is written down.** One row per question,
+  nothing permanent on the canvas, legal text in a modal. Read
+  `.claude/skills/dr-design-system/references/tool-chrome.md` before laying out
+  a tool header or putting anything on top of a map or a graph. `noblogs` is the
+  reference implementation; `dsa-explorer` has not been through it yet.
 
 ## Deploying — read this before touching `docs/`
 

@@ -34,51 +34,119 @@ title: TrumpBlogs formerly known as NoBlogs
      already set the 20px gutter, so anything this header adds pushes the
      title, the search field and the disclaimer inboard of the map and the
      grid below them. The measure is the content container's, not ours. */
-  #nb-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30);background:var(--bg);border-bottom:1px solid var(--line);
-    padding:11px 0;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
-  h1 .gold{color:var(--gold)}
-  .sub{color:var(--dim);font-size:12px}
-  /* One callout, and a real <details>.
-     This was a <p> at 10.5px, clipped to 2.9em on a phone with a click handler
-     bolted onto it — on the one piece of text here that has legal consequence,
-     and the smallest type on the page. It is 13px now, the disclosure is
-     native, and the summary is a 44px target.
+  /* ---- Tool header -------------------------------------------------------
+     THE ORGANIZING RULE: one row per QUESTION, and the rows are ordered by how
+     often the question is asked.
 
-     Collapsing it also removes one of the two reasons --nb-header-h has to be
-     measured at runtime: expanding the old clip changed the header's height,
-     so the observer had to re-measure. A <details> in its own row does not
-     resize the header around it. */
-  .disclaimer{flex-basis:100%;margin:7px 0 0;padding:0;border:1px solid var(--dr-legal-border,#E4C9A0);
-    background:var(--dr-legal-fill,#FBF3E4);border-radius:var(--dr-radius-sm,6px);
-    font-size:var(--dr-text-meta,13px);line-height:1.5;color:var(--dr-legal-ink,#6B5A3E)}
-  .disclaimer>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
-    padding:8px 12px;min-height:2.75rem;font-family:var(--dr-font-ui,inherit);font-weight:600}
-  .disclaimer>summary::-webkit-details-marker{display:none}
-  .disclaimer>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
-  .disclaimer[open]>summary::before{transform:rotate(90deg)}
-  .disclaimer>summary:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px;
-    border-radius:var(--dr-radius-sm,6px)}
-  .disclaimer .disclaimer-body{padding:0 12px 10px}
-  .disclaimer strong{color:#8A5A1A}
-  .grow{flex:1}
-  #search{background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:20px;
-    padding:8px 14px;font-size:13.5px;width:340px;max-width:48vw;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  #search::placeholder{color:#9a9ea6}
-  #search:focus{outline:none;border-color:#c9c9c0}
+     This used to be a single `flex-wrap` row holding the title, the search
+     field, a spacer, the tab strip and a full-width legal callout, with a
+     Filters button in a second bar underneath. On a phone that wrapped into
+     FIVE stacked bands and the map — the thing the tool is for — started below
+     the fold. Four of the five bands were chrome about the tool rather than
+     controls for it.
+
+     Now:
+
+       row 1  what am I looking at   title + live count, and the legal link
+       row 2  which view             the tab strip
+       row 3  which subset           Filters + search
+
+     At md rows 2 and 3 collapse into one: controls left, views right. That is
+     the conventional reading — you narrow the data on the left, you choose how
+     to draw it on the right — and it is what the Paper board settles.
+
+     flex-direction:column, not flex-wrap. Wrap made the row count a function
+     of the viewport width and the content length, which is exactly why the
+     height had to be measured at runtime and why it kept surprising us. */
+  #nb-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30);background:var(--bg);
+    border-bottom:1px solid var(--dr-line,var(--line));
+    padding:10px 0 12px;display:flex;flex-direction:column;gap:10px}
+
+  /* Row 1. The title and the legal link share a baseline lane. */
+  .nb-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .nb-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+  h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+  /* 13px, the sentence floor. It was 12px, which is the LABEL size — this is a
+     running sentence with three numbers in it, not a label. */
+  .sub{color:var(--dr-ink-faint,var(--dim));font-size:var(--dr-text-meta,13px);line-height:1.35}
+
+  /* Rows 2 and 3 on a phone, one row at md. */
+  .nb-toolbar{display:flex;flex-direction:column;gap:8px}
+  .nb-controls{display:flex;align-items:center;gap:8px;min-width:0}
+
+  /* The search field is a LABEL wrapping the input, so the magnifier is inside
+     the field's border and the whole box is one click target. The border and
+     the focus ring live on the wrapper; the input itself is chromeless.
+
+     Scoped `.nb-search #search`, never a bare `#search`. The id is generic
+     enough that the graph module had to rename its own to #q to stop the two
+     colliding — see the note at the top of graph.js. */
+  .nb-search{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;
+    height:var(--dr-tap,2.75rem);padding:0 14px;background:var(--dr-panel,#fff);
+    border:1px solid var(--dr-line,var(--line));border-radius:var(--dr-radius-pill,9999px)}
+  .nb-search:focus-within{border-color:var(--dr-line-strong,#878D99);
+    outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  .nb-search svg{flex:none;color:var(--dr-ink-faint,#6B7280)}
+  .nb-search #search{flex:1 1 auto;min-width:0;appearance:none;border:0;background:none;
+    padding:0;margin:0;color:var(--ink);font-family:inherit;
+    /* 16px on a phone is not a style choice: iOS zooms the viewport on focus
+       for anything smaller, and it does not zoom back out. */
+    font-size:var(--dr-text-body,16px)}
+  .nb-search #search:focus{outline:none}
+  .nb-search #search::placeholder{color:var(--dr-ink-faint,#6B7280)}
+
+  /* The Filters button. .dr-btn carries the shape and the reset; .dr-btn__count
+     carries the badge. aria-expanded is the state here, not aria-pressed — it
+     is a disclosure, not a toggle — so it borrows the pressed fill explicitly
+     rather than button.css growing a rule for an attribute that means
+     something different everywhere else. */
+  #nb-filters{flex:none}
+  #nb-filters[aria-expanded="true"]{background:var(--dr-accent,#252739);
+    border-color:var(--dr-accent,#252739);color:#fff}
+  #nb-filters[aria-expanded="true"] .dr-btn__count{background:#fff;color:var(--dr-accent,#252739)}
+
   /* The segmented control. The tabs are <button role="tab"> now, so every
      declaration that looks redundant below is undoing the global `button` rule
      in main.css, which paints any bare button slate-900 at min-width:65px with
      a right margin at md. Until that rule is scoped, a control that wants to
-     look like anything else has to say so. */
+     look like anything else has to say so.
+
+     Equal thirds on a phone — it is the widest thing in the header and three
+     ragged pills read as an afterthought. At md it shrinks to its content. */
   .tabs{display:flex;gap:4px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,var(--line));
     border-radius:var(--dr-radius-pill,9999px);padding:4px}
-  .tab{appearance:none;border:0;margin:0;min-width:0;background:none;
-    padding:6px 15px;border-radius:var(--dr-radius-pill,9999px);cursor:pointer;
-    color:var(--dim);font-family:var(--dr-font-ui,inherit);font-size:13px;font-weight:700;user-select:none}
+  .tab{appearance:none;border:0;margin:0;min-width:0;flex:1 1 0;background:none;
+    display:flex;align-items:center;justify-content:center;
+    min-height:var(--dr-tap-sm,2rem);padding:0 15px;border-radius:var(--dr-radius-pill,9999px);cursor:pointer;
+    color:var(--dr-ink-muted,var(--dim));font-family:var(--dr-font-ui,inherit);font-size:13px;font-weight:700;user-select:none}
   .tab:hover{color:var(--ink)}
   .tab.on{background:var(--dr-accent,var(--accent));color:#fff}
   .tab:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
+
+  @media(min-width:768px){
+    #nb-header{padding:12px 0 14px;gap:12px}
+    h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
+    /* Title and count sit on one line once there is room for them. */
+    .nb-id{flex-direction:row;align-items:baseline;gap:12px}
+    .nb-toolbar{flex-direction:row;align-items:center;justify-content:space-between;gap:20px}
+    /* DOM order is views-then-controls, because that is the phone's visual
+       order and the phone is the one that cannot afford a compromise. `order`
+       swaps them here rather than the markup being written for desktop and
+       patched for mobile. */
+    .nb-toolbar .tabs{order:2;flex:none}
+    /* grow, not `0 1 auto`. The toolbar is space-between, so a controls group
+       that only claims its content width leaves the search field at its
+       shrink-to-fit size and the placeholder is clipped mid-word. It takes the
+       free space; the field caps itself at 26rem. */
+    .nb-toolbar .nb-controls{order:1;flex:1 1 auto;min-width:0}
+    .nb-search{flex:0 1 26rem;height:2.25rem}
+    .nb-search #search{font-size:var(--dr-text-dense,14px)}
+    .tabs{padding:3px}
+    .tab{flex:none;padding:0 18px;min-height:1.875rem}
+    /* On the Dashboard the facet rail is on screen, so a button that opens the
+       same facets in a popover is a second door to one room. */
+    body[data-view="dash"] #nb-filters{display:none}
+  }
   .layout{display:flex;align-items:flex-start}
   aside#facets{width:232px;flex:none;position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
     border-right:1px solid var(--line);padding:14px 14px 40px 0;background:var(--bg)}
@@ -126,6 +194,10 @@ title: TrumpBlogs formerly known as NoBlogs
   .fitem .c{margin-left:auto;padding-left:8px;width:4.5em;flex:none;text-align:right;
     color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);font-variant-numeric:tabular-nums}
   .fitem.act{color:var(--ink);font-weight:600}
+  /* A one-line gloss under a facet group, for an option whose label cannot
+     carry its own explanation. 13px, not 11 — it is a sentence. */
+  .fhint{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-meta,13px);
+    line-height:1.4;padding:2px 0 0}
   /* It is a real control, so it gets a real target: 20px tall at 11px was the
      smallest hit area in the tool. inline-flex rather than extra padding, so
      the height is the target and the text stays on the facet list's left edge.
@@ -307,7 +379,7 @@ title: TrumpBlogs formerly known as NoBlogs
      need it, but the rule is that a tool canvas is always an isolated box, so
      no vendored stylesheet can reach the page again. */
   #mapwrap{position:relative;width:100%;isolation:isolate;
-    height:calc(100dvh - var(--nb-header-h,56px) - var(--nb-filterbar-h,0px) - var(--nav-clearance))}
+    height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
   /* #mapcanvas gets its own stacking context too, and this is load-bearing.
      Isolating #mapwrap alone is not enough: #mapcanvas is position:absolute
      with z-index:auto, so Leaflet's panes — .leaflet-map-pane 400,
@@ -320,57 +392,17 @@ title: TrumpBlogs formerly known as NoBlogs
      card then sits above the map on the site's small scale, which is the point
      of having one. */
   #mapcanvas{position:absolute;inset:0;isolation:isolate}
-  #mapwrap .info{position:absolute;top:10px;right:10px;z-index:var(--dr-z-canvas-ui,20);background:#fff;padding:10px 12px;
-    border-radius:6px;box-shadow:0 1px 5px rgba(0,0,0,.4);font:13px/1.4 system-ui;max-width:230px;
-    max-height:calc(100% - 20px);overflow-y:auto}
-  #mapwrap .info h4{margin:0 0 6px;font-size:14px}
-  #mapwrap .legend div{display:flex;align-items:center;margin:2px 0}
-  /* The legend rows are category FILTERS, so they are buttons. They were
-     <div>s with click handlers at about 19px tall: not focusable, no state
-     announced, and under half the tap target. Everything before `cursor` is
-     undoing the global button rule. */
-  #mapwrap .legend .lgrow{appearance:none;border:0;margin:0;min-width:0;background:none;
-    display:flex;align-items:center;width:100%;text-align:left;
-    font-family:inherit;font-size:inherit;font-weight:400;color:inherit;
-    cursor:pointer;border-radius:4px;padding:1px 3px;user-select:none}
-  #mapwrap .legend .lgrow:hover{background:#f0f0ea}
-  /* .off is "filtered out by another category"; aria-pressed is "I am one of
-     the chosen". They are different states and they look different. */
-  #mapwrap .legend .lgrow.off{opacity:.32}
-  #mapwrap .legend .lgrow[aria-pressed="true"]{background:var(--dr-accent-tint,#DEE0E8);font-weight:700}
-  #mapwrap .legend .lgrow:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
-  /* The card's disclosure. It overlays the h4 so the heading still reads as a
-     heading while the whole row is the hit area. Desktop shows the body
-     unconditionally, so the button is hidden there rather than lying. */
-  #mapwrap .info{position:relative}
-  #mapwrap .info .info-toggle{display:none}
-  #mapwrap .legend .lghint{color:#999;font-size:10.5px;margin-top:5px;cursor:default}
-  #mapwrap .legend .lghint:hover{background:none}
-  #mapwrap .legend span{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:6px;border:1px solid #333}
+  /* The .info card's rules lived here — the card itself, its h4, its mobile
+     disclosure, and the .legend rows inside it. All gone with the markup; see
+     the note where the card used to be in #mapwrap.
+
+     `.logopin` below stays: that is the marker Leaflet draws on the map, not
+     chrome sitting on top of it. */
   #mapwrap .logopin i{display:block;width:40px;height:40px;border-radius:50%;background:#fff center/cover no-repeat;
     box-shadow:0 0 0 1px #fff}
   .nb-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     color:var(--dim);font-size:var(--dr-text-body,16px);background:var(--bg);z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
   .nb-loading[hidden]{display:none}
-
-  /* On a phone the 230px info panel covered most of a 390px map. It collapses
-     to its heading, and tapping expands it. */
-  @media(max-width:767px){
-    #mapwrap .info{max-width:none;left:8px;right:8px;top:8px;padding:8px 10px}
-    #mapwrap .info h4{margin:0;font-size:13px}
-    #mapwrap .info h4::after{content:" \25BE";color:#999}
-    #mapwrap .info .info-toggle[aria-expanded="true"] ~ h4::after{content:" \25B4"}
-    /* The button sits over the heading row: the h4 keeps the outline, the
-       button takes the interaction, and the hit area is the full 44px row. */
-    #mapwrap .info .info-toggle{display:block;position:absolute;inset:0 0 auto 0;
-      height:2.75rem;width:100%;appearance:none;border:0;margin:0;min-width:0;
-      background:none;padding:0;cursor:pointer}
-    #mapwrap .info .info-toggle:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px}
-    #mapwrap .info .info-toggle[aria-expanded="false"] ~ .info-body{display:none}
-    /* A 19px row is not a tap target. */
-    #mapwrap .legend .lgrow{min-height:2.75rem;padding:0 6px;font-size:13px}
-    #mapwrap .legend .lghint{min-height:0}
-  }
 
   /* NOT isolated, deliberately — unlike #mapwrap.
      The rule is to contain at the element the vendor writes into, and for the
@@ -384,29 +416,22 @@ title: TrumpBlogs formerly known as NoBlogs
      The map does not have this problem because its sheet wraps #panel, which is
      a sibling of #mapview rather than a child of #mapwrap. */
   #graphouter{position:relative;width:100%;
-    height:calc(100dvh - var(--nb-header-h,56px) - var(--nb-filterbar-h,0px) - var(--nav-clearance))}
+    height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
   #graphwrap{width:100%;height:100%}
 
-  /* ---- Filter bar --------------------------------------------------------
+  /* ---- Filter popover ----------------------------------------------------
      The facets cross-filter all three tabs — `filtered()` feeds the grid, the
      map's setHosts and the graph's host set alike — but the rail itself lives
      inside #dashview, which is display:none on Map and Graph. So the filters
      were unreachable from the two views they were quietly driving.
 
-     This button is that missing door. It appears wherever the rail is not:
-     Map and Graph at any width, and every tab on a phone. */
-  #nb-filterbar{display:none;gap:8px;align-items:center;padding:10px 0 0}
-  body:not([data-view="dash"]) #nb-filterbar{display:flex}
-  /* .dr-btn carries the shape and the reset. aria-expanded is the state here,
-     not aria-pressed — it is a disclosure, not a toggle — so it borrows the
-     same fill explicitly. */
-  #nb-filterbar .dr-btn[aria-expanded="true"]{background:var(--dr-accent,#252739);
-    border-color:var(--dr-accent,#252739);color:#fff}
-  #nb-filterbar .dr-btn[aria-expanded="true"] .nb-count{background:#fff;color:var(--dr-accent,#252739)}
-  #nb-filterbar .nb-count{background:var(--accent);color:#fff;border-radius:9999px;
-    padding:1px 7px;font-size:11px;margin-left:6px}
+     The Filters button is that missing door. It used to live in its own bar
+     below the header, which was a sixth stacked band on a phone; it is now the
+     first control in the header's own controls row, and the separate
+     #nb-filterbar element is gone along with the --nb-filterbar-h term that
+     every canvas height had to subtract.
 
-  /* The opened sheet floats rather than pushing the view down: the map and the
+     The opened sheet floats rather than pushing the view down: the map and the
      graph are a full viewport tall, so a rail inserted above them would shove
      the thing you are filtering off the screen. #dashview has to come back
      from display:none for its child to render at all — on Map and Graph it
@@ -435,19 +460,16 @@ title: TrumpBlogs formerly known as NoBlogs
 
      Three changes: the facet rail becomes a filter sheet behind one button,
      the detail drawer becomes a bottom sheet, and the tab strip gets real tap
-     targets. --nb-header-h is measured at runtime, because this header wraps. */
-  @media(max-width:767px){
-    #nb-header{padding:9px 0;gap:10px}
-    h1{font-size:15px}
-    h1 .gold{display:none}
-    .sub{font-size:11px}
-    /* Nothing to clip: the <details> is closed by default, so the phone gets a
-       44px summary row instead of four lines of 10px small print. */
-    .disclaimer{margin-top:5px}
-    #search{width:100%;max-width:none;order:10;font-size:16px;min-height:2.75rem}
+     targets.
 
-    .tabs{order:5;gap:2px}
-    .tabs .tab{min-height:2.75rem;display:flex;align-items:center;padding:0 14px}
+     The header itself needs far less from this block than it used to. It is a
+     flex COLUMN now with a fixed three-row structure, so the phone does not
+     have to undo a desktop row layout — it inherits the right one. What is left
+     here is tap targets and the rail-to-sheet swap. --nb-header-h is still
+     measured at runtime, but only because the identity row can wrap when the
+     count is long, not because the whole header reflows. */
+  @media(max-width:767px){
+    .tabs .tab{min-height:var(--dr-tap,2.75rem)}
 
     /* Facets move into the floating sheet above; the rail itself is gone. */
     .layout{display:block}
@@ -458,8 +480,6 @@ title: TrumpBlogs formerly known as NoBlogs
     .fitem input{width:1.125rem;height:1.125rem}
     .clearf{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
     main{padding:12px 0 calc(var(--nav-clearance) + 12px)}
-
-    #nb-filterbar{display:flex}
 
     /* The detail drawer is positioned by .dr-sheet from the site stylesheet. */
     #panel{position:static;width:auto;max-width:none;top:auto;right:auto;bottom:auto;
@@ -472,36 +492,93 @@ title: TrumpBlogs formerly known as NoBlogs
      graph uses; loaded here so the shared drawer can show a blog's citing quotes too (#1) -->
 <script src="graph/quotes.embed.js"></script>
 <header id="nb-header">
-  <div><h1>TrumpBlogs <span class="gold">formerly known as NoBlogs</span></h1><!-- The only running commentary the tool gives a screen reader. render() rewrites
-       this on every filter change; aria-atomic so the whole sentence is read, not
-       the one number that changed. The search path is debounced so it is not
-       interrupted mid-count — see the oninput handler. -->
-  <div class="sub" id="subcount" role="status" aria-live="polite" aria-atomic="true">loading…</div></div>
-  <input id="search" placeholder="search name, summary, city, tags, quote text…" autocomplete="off">
-  <div class="grow"></div>
   {%- comment -%}
-    A real tablist. These were <div>s with a click handler: no role, no focus,
-    no arrow keys — on the tool's primary navigation.
+    Row 1 — what am I looking at.
 
-    `.tab` and `data-v` are kept deliberately. readURL() drives the initial view
-    with `.tab[data-v="…"].click()`, openInst() switches to the graph the same
-    way, and three specs click these selectors directly. A <button> answers
-    .click() exactly as a <div> did, so the semantics improve without changing
-    the contract.
+    "formerly known as NoBlogs" moved out of the <h1> and into the count line.
+    It was a <span class="gold"> inside the heading, which made the accessible
+    name of the tool's only h1 "TrumpBlogs formerly known as NoBlogs", and the
+    phone rule hid it outright — so the heading read differently depending on
+    viewport width. It is provenance, not identity; it belongs with the counts.
   {%- endcomment -%}
-  <div class="tabs" id="tabs" role="tablist" aria-label="View">
-    <button type="button" id="tab-map" class="tab on" data-v="map" role="tab" aria-selected="true" aria-controls="mapview">Map</button>
-    <button type="button" id="tab-dash" class="tab" data-v="dash" role="tab" aria-selected="false" aria-controls="dashview" tabindex="-1">Dashboard</button>
-    <button type="button" id="tab-graph" class="tab" data-v="graph" role="tab" aria-selected="false" aria-controls="graphview" tabindex="-1">Graph</button>
+  <div class="nb-idrow">
+    <div class="nb-id">
+      <h1>TrumpBlogs</h1>
+      {%- comment -%}
+        The only running commentary the tool gives a screen reader. render()
+        rewrites this on every filter change; aria-atomic so the whole sentence
+        is read, not the one number that changed. The search path is debounced
+        so it is not interrupted mid-count — see the oninput handler.
+      {%- endcomment -%}
+      <div class="sub" id="subcount" role="status" aria-live="polite" aria-atomic="true">loading…</div>
+    </div>
+    {%- comment -%}
+      The legal notice was a full-width amber callout pinned under the header —
+      a permanent band of chrome, on every view, whose resting state was the
+      word "Disclaimer" and a triangle. It is a link to a modal now. The text
+      is unchanged and still one keystroke away; it just stops charging every
+      visitor a row of vertical space on a 390px screen for a notice that is
+      read once, if ever.
+    {%- endcomment -%}
+    <button type="button" class="dr-dialog-open" id="nb-disclaimer-open" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Disclaimer
+    </button>
   </div>
-  <details class="disclaimer"><summary><span class="disclaimer-label">Disclaimer</span></summary><div class="disclaimer-body">Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</div></details>
+
+  <div class="nb-toolbar">
+    {%- comment -%}
+      Row 2 on a phone, right-hand end of row 3 at md. A real tablist: these
+      were <div>s with a click handler — no role, no focus, no arrow keys — on
+      the tool's primary navigation.
+
+      `.tab` and `data-v` are kept deliberately. readURL() drives the initial
+      view with `.tab[data-v="…"].click()`, openInst() switches to the graph the
+      same way, and three specs click these selectors directly. A <button>
+      answers .click() exactly as a <div> did, so the semantics improve without
+      changing the contract.
+    {%- endcomment -%}
+    <div class="tabs" id="tabs" role="tablist" aria-label="View">
+      <button type="button" id="tab-map" class="tab on" data-v="map" role="tab" aria-selected="true" aria-controls="mapview">Map</button>
+      <button type="button" id="tab-dash" class="tab" data-v="dash" role="tab" aria-selected="false" aria-controls="dashview" tabindex="-1">Dashboard</button>
+      <button type="button" id="tab-graph" class="tab" data-v="graph" role="tab" aria-selected="false" aria-controls="graphview" tabindex="-1">Graph</button>
+    </div>
+
+    {%- comment -%}
+      Row 3 — which subset. Filters first: it is the control that changes the
+      most and the one that was hardest to find before.
+    {%- endcomment -%}
+    <div class="nb-controls">
+      <button type="button" class="dr-btn" id="nb-filters" aria-expanded="false" aria-controls="facets">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+        Filters<span class="dr-btn__count" id="nb-filtercount" hidden>0</span>
+      </button>
+      <label class="nb-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="search" placeholder="Search blogs, cities, quotes…" autocomplete="off" aria-label="Search blogs, cities and quotes">
+      </label>
+    </div>
+  </div>
 </header>
 
-<div id="nb-filterbar">
-  <button type="button" class="dr-btn" id="nb-filters" aria-expanded="false" aria-controls="facets">
-    Filters<span class="nb-count" id="nb-filtercount" hidden>0</span>
-  </button>
-</div>
+{%- comment -%}
+  The legal notice. A native <dialog> driven with showModal(), so the focus
+  trap, Escape, the backdrop and the top layer all come from the platform —
+  see the long note in assets/css/components/dialog.css for why the top layer
+  in particular matters next to Leaflet.
+{%- endcomment -%}
+<dialog class="dr-dialog" id="nb-disclaimer" aria-labelledby="nb-disclaimer-title">
+  <div class="dr-dialog__head">
+    <h2 id="nb-disclaimer-title">Disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="nb-disclaimer-close" aria-label="Close" title="Close">✕</button>
+  </div>
+  <div class="dr-dialog__body">
+    <p>Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate.</p>
+    <p>Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization.</p>
+    <p>Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links.</p>
+    <p>Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</p>
+  </div>
+</dialog>
 <div id="nb-facetscrim" hidden></div>
 
 <div class="layout" id="dashview" role="tabpanel" aria-labelledby="tab-dash" style="display:none">
@@ -522,24 +599,27 @@ title: TrumpBlogs formerly known as NoBlogs
 <div id="mapview" role="tabpanel" aria-labelledby="tab-map" style="display:none">
   <div id="mapwrap">
     <div id="mapcanvas"></div>
-    <div class="info" id="mapinfo">
-      <!-- A button, not a heading with a click handler. This <h4> carried
-           cursor:pointer and a delegated click that toggled the card open on a
-           phone, so the control that hides a third of a 390px map was not
-           focusable and announced itself as a heading. The h4 stays for the
-           outline; the button is the control. -->
-      <button type="button" class="info-toggle" aria-expanded="false" aria-controls="mapinfo-body"
-              aria-labelledby="mapinfo-title"></button>
-      <h4 id="mapinfo-title">World Hyperlocal TrumpBlogs<br><small style="font-weight:400;opacity:.7">formerly known as NoBlogs</small></h4>
-      <div id="mapinfo-body" class="info-body">
-      <div><span id="shownCount">4620</span> of 4620 blogs &middot; 1105 cities</div>
-      <div style="color:#888;font-size:11px">4620 image pins (708 hidden-card) &middot; 383 omitted (no/unresolved city)</div>
-      <label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;cursor:pointer">
-        <input type="checkbox" id="edgeToggle" checked> co-citation edges (2413)</label>
-      <div style="color:#888;font-size:11px">cities linked by shared movement sources</div>
-      <div class="legend" style="margin-top:8px"><button type="button" class='lgrow' data-cat='antifascist' aria-pressed='false'><span style='background:#2C3E50'></span>antifascist</button><button type="button" class='lgrow' data-cat='radical_counterinfo_media' aria-pressed='false'><span style='background:#8E44AD'></span>radical counterinfo media</button><button type="button" class='lgrow' data-cat='anarchist' aria-pressed='false'><span style='background:#C0392B'></span>anarchist</button><button type="button" class='lgrow' data-cat='prisoner_solidarity' aria-pressed='false'><span style='background:#E74C3C'></span>prisoner solidarity</button><button type="button" class='lgrow' data-cat='location_based_group' aria-pressed='false'><span style='background:#2980B9'></span>location based group</button><button type="button" class='lgrow' data-cat='protest_mobilization' aria-pressed='false'><span style='background:#E67E22'></span>protest mobilization</button><button type="button" class='lgrow' data-cat='revolutionary_militant' aria-pressed='false'><span style='background:#7B241C'></span>revolutionary militant</button><button type="button" class='lgrow' data-cat='migrant_border_solidarity' aria-pressed='false'><span style='background:#16A085'></span>migrant border solidarity</button><button type="button" class='lgrow' data-cat='housing_squat' aria-pressed='false'><span style='background:#D4AC0D'></span>housing squat</button><button type="button" class='lgrow' data-cat='labor_militant' aria-pressed='false'><span style='background:#CA6F1E'></span>labor militant</button><button type="button" class='lgrow' data-cat='ecological_militant' aria-pressed='false'><span style='background:#229954'></span>ecological militant</button><button type="button" class='lgrow' data-cat='feminist_queer_militant' aria-pressed='false'><span style='background:#C2185B'></span>feminist queer militant</button><button type="button" class='lgrow' data-cat='historical_resistance_memory' aria-pressed='false'><span style='background:#5D6D7E'></span>historical resistance memory</button><button type="button" class='lgrow' data-cat='__other__' aria-pressed='false'><span style='background:#7F8C8D'></span>other</button><div class="lghint">click a category to filter</div></div>
-      </div>
-    </div>
+    {%- comment -%}
+      The .info card used to live here: a 230px panel pinned to the map's
+      top-left corner, which is exactly where Leaflet puts its zoom control. It
+      covered the zoom buttons at every width and about a third of a 390px map.
+
+      Everything it held has a better home, and each move is a de-duplication
+      rather than a relocation:
+
+        the counts           -> #subcount, the header's live status line, which
+                                was already announcing counts to a screen reader
+        co-citation edges    -> a Map group in the filter popover, via the new
+                                NBMap setEdges() API
+        the category legend  -> the Category facet group, which already lists
+                                all fourteen WITH counts and the same swatches.
+                                The legend was a second category filter running
+                                beside the facet one, ANDed together — two
+                                controls for one question.
+
+      map.js keeps its .legend and #edgeToggle code paths: the standalone
+      world_hyperlocal_map.html still ships both and still drives them that way.
+    {%- endcomment -%}
     <div id="maploading" class="nb-loading" role="status">Loading map&hellip;</div>
   </div>
 </div>
@@ -573,26 +653,38 @@ const COUNTRYNAME={DE:"Germany",IT:"Italy",FR:"France",ES:"Spain",US:"United Sta
   AT:"Austria",CH:"Switzerland",GR:"Greece",GB:"UK",NL:"Netherlands",BE:"Belgium",CL:"Chile",
   MX:"Mexico",CA:"Canada",PL:"Poland",RU:"Russia",AR:"Argentina",SE:"Sweden",FI:"Finland"};
 const THUMB=h=>`thumbs/${h}.webp`;
-/* Category → colour, read from the map legend rather than restated here.
-   The legend markup carries the swatch colours inline, and those same colours
-   are baked into map_data.js as each pin's fill, so they are the encoding. A
-   second copy in JS would be a second thing to keep in step, and the facet list
-   sits directly over the map legend when the filter popover is open — the one
-   place a drift would be most visible and least explicable.
-
-   `__other__` on the legend is `other` in the facet data, and
-   `cultural_art_music` has no swatch of its own and reads as other on the map,
-   so both fall through to that grey. */
-const CATCOLOR=(()=>{
-  const m={};
-  document.querySelectorAll('#mapwrap .legend .lgrow').forEach(r=>{
-    const sw=r.querySelector('span');
-    if(sw) m[r.dataset.cat]=sw.style.background||sw.style.backgroundColor;
-  });
-  if(m.__other__){ m.other=m.other||m.__other__; m.cultural_art_music=m.cultural_art_music||m.__other__; }
-  return m;
-})();
+/* Category → colour.
+ *
+ * This used to be scraped out of the map legend's inline swatch styles at load
+ * time, on the argument that a second copy in JS would be a second thing to
+ * keep in step. That argument was right about the risk and wrong about the
+ * direction: it made a DOM node that exists for HUMANS into a data dependency,
+ * so deleting the legend — which is the correct design change, since the
+ * Category facet does the same job with counts — would have silently blanked
+ * every facet swatch instead of failing loudly.
+ *
+ * So it is stated once, here, and this IS now the only copy in the page. The
+ * authority is still map_data.js, which bakes the same hexes into each pin's
+ * fill; these have to match it or the facet swatches will lie about the map.
+ * They are literals on purpose and must not become theme tokens: they are the
+ * data encoding, which is the one place this design system permits saturated
+ * colour. See the note by --dr-data-* in assets/css/tokens.css.
+ *
+ * `cultural_art_music` has no colour of its own and draws as `other` on the
+ * map, so it takes that grey. */
+const CATCOLOR={
+  antifascist:'#2C3E50', radical_counterinfo_media:'#8E44AD', anarchist:'#C0392B',
+  prisoner_solidarity:'#E74C3C', location_based_group:'#2980B9',
+  protest_mobilization:'#E67E22', revolutionary_militant:'#7B241C',
+  migrant_border_solidarity:'#16A085', housing_squat:'#D4AC0D',
+  labor_militant:'#CA6F1E', ecological_militant:'#229954',
+  feminist_queer_militant:'#C2185B', historical_resistance_memory:'#5D6D7E',
+  other:'#7F8C8D', cultural_art_music:'#7F8C8D'};
 let DATA=[], BYHOST={}, view="map", PAGE=0, PER=120, SEL=null;
+/* Map display state. Not part of F: F is the filter set that decides which
+   blogs exist, and this decides what is drawn over them. Defaults to on,
+   matching what the deleted .info card's checkbox shipped with. */
+let MAPEDGES=true;
 document.body.dataset.view=view;            // see the tabs handler
 const F={q:"",co:new Set(),cat:new Set(),mil:new Set(),sc:new Set(),flags:new Set()};
 const AUTH_UID={};                          // uid -> [hosts]  (authors on >1 blog)
@@ -736,6 +828,7 @@ function buildFacets(){
     ? focused.closest('.fitem').dataset : null;
 
   let h=`<button type="button" class="clearf" onclick="clearAll()">✕ clear all filters</button>`;
+  h+=grpMap();
   /* Category first. It is the group that carries the map's colour encoding, so
      it is the one you reach for while looking at the map — and in the popover
      on a phone, anything below the first group is behind a scroll. */
@@ -759,13 +852,18 @@ function buildFacets(){
     F.flags.has(v)?F.flags.delete(v):F.flags.add(v);
     PAGE=0; syncURL(); buildFacets(); render();
   });
+  /* The Map group is a DISPLAY option, not a filter: it changes what is drawn
+     on top of the pins, not which blogs are in the set. So it does not touch F,
+     does not go in the URL, does not reset PAGE, and deliberately does not
+     count toward the Filters badge — a badge that said "1" when the only thing
+     set was "edges are visible" would be lying about the result count. */
+  el.querySelectorAll('.fitem[data-map] input').forEach(inp=>inp.onchange=()=>{
+    MAPEDGES=inp.checked;
+    if(mapApi&&mapApi.setEdges) mapApi.setEdges(MAPEDGES);
+    buildFacets();
+  });
 
-  if(keep){
-    const sel=keep.f
-      ? `.fitem[data-f="${CSS.escape(keep.f)}"][data-v="${CSS.escape(keep.v)}"] input`
-      : `.fitem[data-flag="${CSS.escape(keep.flag)}"] input`;
-    el.querySelector(sel)?.focus({preventScroll:true});
-  }
+  if(keep) el.querySelector(facetSel(keep))?.focus({preventScroll:true});
   if(typeof nbUpdateFilterCount==='function')nbUpdateFilterCount();
 }
 function grp(title,f,entries,labelmap,colors){
@@ -782,6 +880,33 @@ function grp(title,f,entries,labelmap,colors){
       <input type="checkbox" ${on?'checked':''}>${sw}<span>${esc(lab)}</span><span class="c">${c.toLocaleString()}</span></label>`;
   }
   return h+`</fieldset>`;
+}
+/* Which input to put focus back on after buildFacets() rewrites the subtree.
+   Three row kinds now, so the branch that used to be a ternary inline is a
+   function — see the rebuild-and-restore note in the design system reference. */
+function facetSel(d){
+  if(d.f) return `.fitem[data-f="${CSS.escape(d.f)}"][data-v="${CSS.escape(d.v)}"] input`;
+  if(d.flag) return `.fitem[data-flag="${CSS.escape(d.flag)}"] input`;
+  return `.fitem[data-map="${CSS.escape(d.map)}"] input`;
+}
+/* Map display options. Only on the Map view — on Dashboard and Graph there is
+   no map for them to mean anything about.
+
+   This is where the co-citation edge toggle went when the .info card was
+   deleted. The count comes from window.NB_MAP_EDGES, which map_data.js defines
+   and which only exists once the Map view has been activated — so it is shown
+   when known and left off when not, rather than hardcoded to 2413 the way the
+   card had it. showMap() rebuilds the facets once that file has landed. */
+function grpMap(){
+  if(view!=='map') return '';
+  const n=(window.NB_MAP_EDGES&&window.NB_MAP_EDGES.length)||0;
+  const c=n?`<span class="c">${n.toLocaleString()}</span>`:'';
+  return `<fieldset class="fgroup"><legend>Map</legend>`
+    +`<label class="fitem ${MAPEDGES?'act':''}" data-map="edges">`
+    +`<input type="checkbox" ${MAPEDGES?'checked':''}>`
+    +`<span>Co-citation edges</span>${c}</label>`
+    +`<div class="fhint">Cities linked by shared movement sources.</div>`
+    +`</fieldset>`;
 }
 function grpFlags(){
   const opts=[["logo","has logo"],["contact","has contact"],["quotes","has quotes"],["geo","mappable"],["dox","doxxing activity"]];
@@ -809,7 +934,8 @@ function render(){
   lm.style.display=fl.length>slice.length?"block":"none";
   lm.textContent=`Show more (${(fl.length-slice.length).toLocaleString()} more)`;
   document.getElementById('subcount').textContent=`${fl.length.toLocaleString()} of ${DATA.length.toLocaleString()} blogs match`;
-  if(view==="map")postFilter(); if(view==="graph")postFilterGraph();
+  // postFilter refines that line on the Map view — see the note there.
+  if(view==="map")postFilter(fl); if(view==="graph")postFilterGraph();
 }
 function renderKPIs(fl){
   const logo=fl.filter(b=>b.vt==="logo").length, ct=fl.filter(b=>Object.keys(b.ct).length).length;
@@ -1121,6 +1247,11 @@ async function showMap(){
     });
     mapReady=true;
     if(loading) loading.hidden=true;
+    /* Push the edge state into the freshly-built map, and rebuild the facets so
+       the Map group can now show the edge count — window.EDGES only exists once
+       map_data.js has loaded, which is here. */
+    mapApi.setEdges(MAPEDGES);
+    buildFacets();
     postFilter(); tryFocusMap();
     mapApi.invalidateSize();
   }catch(err){
@@ -1129,9 +1260,36 @@ async function showMap(){
     console.error(err);
   }
 }
-function postFilter(){
+/* setHosts returns how many pins it actually placed, and that is not the same
+   as how many blogs matched: a blog with no resolvable city has no coordinates
+   and cannot be drawn. The deleted .info card carried that gap as a static
+   "383 omitted (no/unresolved city)" line, which was wrong the moment you
+   filtered anything.
+
+   Saying it here makes it live, and puts it in the status line a screen reader
+   is already listening to. Only shown when the two numbers disagree — a
+   parenthetical about zero omissions is noise. */
+function postFilter(fl){
   if(!mapReady||!mapApi)return;
-  mapApi.setHosts(filtered().map(b=>b.h));
+  const list=fl||filtered();
+  const shown=mapApi.setHosts(list.map(b=>b.h));
+  const el=document.getElementById('subcount');
+  if(!el||typeof shown!=='number')return;
+  /* Kept SHORT, and this took two goes. The header is what the map's height is
+     calculated from, so a status line that wraps is a status line that shrinks
+     the thing it describes. At 390px and 13px that is about 38 characters.
+     "… matching blogs on the map · N have no mapped city" was 60-odd and ran to
+     three lines; trimming it to "· N unmapped" still made two.
+     tests/test_disclaimer.spec.js holds the one-line rule.
+
+     The unmapped count is not lost by leaving it out: the Filters panel already
+     carries a `mappable` flag with its own live count, which is both a better
+     place for it — you can act on it there — and one that was already built.
+
+     Worth knowing while you are in here: the deleted .info card hardcoded "383
+     omitted (no/unresolved city)". The real figure is 3,053 of 7,673. It was
+     a stale literal, which is the argument against static counts in chrome. */
+  el.textContent=`${shown.toLocaleString()} of ${list.length.toLocaleString()} mapped`;
 }
 // Nothing on this page is framed any more, so there is no postMessage listener.
 
@@ -1192,12 +1350,15 @@ document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(
     x.setAttribute('aria-selected',String(on));
     x.tabIndex=on?0:-1;
   });
-  // The Filters button only exists where the facet rail does not; this is what
-  // the CSS keys that off.
+  // At md the Filters button is hidden on the Dashboard, where the facet rail
+  // is already on screen; this is what the CSS keys that off.
   document.body.dataset.view=view;
   document.getElementById('dashview').style.display=view==='dash'?'flex':'none';
   document.getElementById('mapview').style.display=view==='map'?'block':'none';
   document.getElementById('graphview').style.display=view==='graph'?'block':'none';
+  // The Map group of facets belongs to the Map view only, so the panel's
+  // contents change with the view, not just its visibility.
+  buildFacets();
   // switching to Map/Graph with a blog open -> fly to that pin/node (#7)
   if(SEL&&(view==='map'||view==='graph'))pendingFocus=SEL;
   syncURL(); if(view==='map')showMap(); if(view==='graph')showGraph();};
@@ -1271,34 +1432,44 @@ function readURL(){const p=new URLSearchParams(location.search);
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
 /* ---- mobile shell -------------------------------------------------------
-   The header is `flex-wrap` with a long disclaimer, so it is 56px tall only on
-   a wide screen. The facet rail, the scrim, the drawer and both iframes were
-   all pinned to that literal 56. Measure it instead.
+   The map and the graph are sized against what is left of the viewport, so the
+   header's real height has to be a number the CSS can read. It is measured
+   rather than assumed: the tool was full of a literal 56px that was only ever
+   right on one screen.
 
    By id. `querySelector('header')` matched the SITE masthead, which precedes
    this one in the DOM, so --nb-header-h was the wordmark block's height and
-   every offset derived from it was wrong. */
+   every offset derived from it was wrong.
+
+   Two things used to make this harder than it is. The separate #nb-filterbar
+   was a second measured band, and the disclaimer <details> changed the header's
+   height when it opened. Both are gone: Filters is a control inside the header,
+   and the disclaimer is a modal that does not touch layout. What is left is one
+   observer on one element. */
 (function(){
   const header=document.getElementById('nb-header');
   if(!header) return;
-  // The filter bar is in the same stack as the header: the map and the graph
-  // are sized off the viewport, so anything above them has to come out of that
-  // height or the page grows a scrollbar it does not need.
-  const fbar=document.getElementById('nb-filterbar');
   const setH=()=>{
-    const s=document.documentElement.style;
-    s.setProperty('--nb-header-h',header.offsetHeight+'px');
-    s.setProperty('--nb-filterbar-h',(fbar?fbar.offsetHeight:0)+'px');
+    document.documentElement.style.setProperty('--nb-header-h',header.offsetHeight+'px');
   };
   setH();
-  if(window.ResizeObserver){const ro=new ResizeObserver(setH);ro.observe(header);if(fbar)ro.observe(fbar);}
+  if(window.ResizeObserver){const ro=new ResizeObserver(setH);ro.observe(header);}
   else window.addEventListener('resize',setH);
 
-  // The disclaimer is a <details> now, so it opens itself. It still has to tell
-  // the shell its height changed, because the header is flex-wrap and the map
-  // is sized against it.
-  const disc=document.querySelector('.disclaimer');
-  if(disc) disc.addEventListener('toggle',setH);
+  /* The disclaimer modal. showModal(), never show() — only the modal form gets
+     the focus trap, the Escape handling, the backdrop and the top layer. The
+     platform also returns focus to the opener on close, so there is nothing to
+     restore by hand. */
+  const dlg=document.getElementById('nb-disclaimer');
+  const dlgOpen=document.getElementById('nb-disclaimer-open');
+  const dlgClose=document.getElementById('nb-disclaimer-close');
+  if(dlg&&dlgOpen){
+    dlgOpen.addEventListener('click',()=>dlg.showModal());
+    if(dlgClose) dlgClose.addEventListener('click',()=>dlg.close());
+    /* Click-outside-to-dismiss. The backdrop is not a child, so a click on it
+       targets the <dialog> itself; anything inside targets a descendant. */
+    dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+  }
 
   /* The detail drawer becomes a bottom sheet on a phone. Without this, tapping
      a card or a map pin updated a panel sitting off the right edge of a 390px
@@ -1319,15 +1490,6 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;'
     });
     obs.observe(panel,{attributes:true,attributeFilter:['class']});
   }
-
-  // The map's info panel is collapsed on a phone. The control is a button with
-  // aria-expanded now, not the <h4> — a heading with a click handler is not
-  // reachable by keyboard and announces itself as a heading.
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('#mapwrap .info .info-toggle');
-    if(!b) return;
-    b.setAttribute('aria-expanded', b.getAttribute('aria-expanded')==='true' ? 'false' : 'true');
-  });
 
   /* Facets behind one button. On a phone the rail put four scrolling filter
      sections between the user and the first result; on Map and Graph there was

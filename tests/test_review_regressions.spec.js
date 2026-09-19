@@ -23,31 +23,57 @@ test.describe('graph chrome survives the extraction', () => {
     await load(page);
     // graph.js puts `collapsed` on the root, but the CSS still said
     // `.nbgraph #app.collapsed` — #app having been deleted by the extraction.
-    // Nothing matched, so the graph booted showing an empty 370px aside and the
-    // toggle did nothing.
+    // Nothing matched, so the graph booted showing an empty 370px aside.
+    //
+    // Driven by SELECTING A NODE, not by a chevron. The #panelToggle button is
+    // gone: the panel opens when there is something to put in it and closes
+    // when there is not, so selection is the only path that still exists. The
+    // property under test is unchanged — `.collapsed` has to really move the
+    // grid column.
     const cols = () => page.evaluate(
       () => getComputedStyle(document.getElementById('graphroot')).gridTemplateColumns
     );
     const collapsed = await cols();
-    await page.click('#panelToggle');
+    expect(collapsed, 'boots collapsed, with nothing selected').not.toMatch(/370px/);
+
+    // 'institution', not 'inst' — graph_data.js spells it out.
+    await page.evaluate(() => cy.nodes('[kind = "institution"]').first().emit('tap'));
     await page.waitForTimeout(300);
     const expanded = await cols();
     expect(collapsed).not.toBe(expanded);
     expect(expanded).toMatch(/370px/);
   });
 
-  test('the search box keeps its overlay positioning', async ({ page }) => {
+  test('the search box keeps its overlay positioning when opened', async ({ page }) => {
     await load(page);
     // #search was renamed #gsearch to stop colliding with the explorer's own
     // #search; only the phone media query was updated, so at desktop width the
     // field fell into #stage's flow and out of view.
+    //
+    // It starts hidden now and opens from the toolbar, so the regression this
+    // guards can only be seen once it is open.
+    const before = await page.evaluate(() => document.getElementById('gsearch').hidden);
+    expect(before, 'the field is furniture again if it boots visible').toBe(true);
+
+    await page.click('#gsearchToggle');
     const s = await page.evaluate(() => {
       const el = document.getElementById('gsearch');
       const r = el.getBoundingClientRect();
-      return { position: getComputedStyle(el).position, width: r.width, top: r.top };
+      const controls = document.getElementById('controls').getBoundingClientRect();
+      return {
+        position: getComputedStyle(el).position,
+        width: r.width,
+        left: r.left,
+        controlsRight: controls.right,
+        focused: document.activeElement && document.activeElement.id,
+      };
     });
     expect(s.position).toBe('absolute');
     expect(s.width).toBeGreaterThan(100);
+    // Beside the control column, never on top of it.
+    expect(s.left).toBeGreaterThanOrEqual(s.controlsRight);
+    // Opening a search field and not landing in it is the whole cost of hiding it.
+    expect(s.focused).toBe('q');
   });
 });
 
@@ -151,7 +177,11 @@ test.describe('the masthead is not restyled by a tool', () => {
 
       const m = await page.evaluate(() => {
         const header = document.querySelector('header.page-column');
-        const rule = header.querySelector('div[aria-hidden="true"]');
+        // By its own hook. This was `div[aria-hidden="true"]` — "the first
+        // decorative div in the header" — which silently became the nav's
+        // phone scrim when the nav moved into the masthead. The scrim is
+        // md:hidden, so the rule's width read as 0 at 1280px.
+        const rule = header.querySelector('[data-masthead-rule]');
         const cs = getComputedStyle(header);
         const rs = getComputedStyle(rule);
         return {

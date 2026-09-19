@@ -107,18 +107,24 @@ test.describe('the detail surface paints over the map', () => {
 test.describe('the map chrome is above the map', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('the info card takes the click, not the Leaflet canvas', async ({ page }) => {
+  /* The info card this used to open on is gone — it was permanent chrome
+     covering Leaflet's own zoom control, and its contents moved into the filter
+     popover. The popover is what sits over the canvas now, so it is what has to
+     win the click. Same property, same failure mode, different element. */
+  test('the filter popover takes the click, not the Leaflet canvas', async ({ page }) => {
     await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
+    await page.click('#nb-filters');
+    await page.waitForSelector('#facets .fitem[data-f="cat"]', { timeout: 30000 });
 
     const hit = await page.evaluate(() => {
-      const row = document.querySelector('#mapwrap .legend .lgrow');
+      const row = document.querySelector('#facets .fitem[data-f="cat"]');
       const r = row.getBoundingClientRect();
       const el = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
       return { onRow: el === row || row.contains(el),
                got: el && `${el.tagName.toLowerCase()}.${(el.className || '').toString().slice(0, 40)}` };
     });
-    expect(hit.onRow, `Leaflet is covering the legend; hit ${hit.got}`).toBe(true);
+    expect(hit.onRow, `Leaflet is covering the filter popover; hit ${hit.got}`).toBe(true);
   });
 
   test('both the wrapper and the Leaflet container are isolated', async ({ page }) => {

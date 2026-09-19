@@ -172,12 +172,28 @@
       }));
     }
 
+    /* Edge visibility is state here, not a DOM read.
+     *
+     * It used to be `edgeToggle.checked` read live inside syncEdges, which tied
+     * the layer to one specific checkbox existing in the page. The explorer no
+     * longer has that checkbox — its map chrome moved into the filter popover,
+     * and that popover rewrites its own innerHTML on every facet change, so any
+     * element inside it is destroyed and recreated with no listener attached.
+     *
+     * So the module owns the boolean and exposes setEdges(). The standalone
+     * world_hyperlocal_map.html still ships an #edgeToggle and still drives it
+     * the same way; it just writes through this variable now. Default is on,
+     * matching the standalone page's `checked` attribute. */
     var edgeToggle = scope.querySelector('#edgeToggle');
+    var edgesOn = edgeToggle ? edgeToggle.checked : true;
     function syncEdges() {
-      if (!edgeToggle || edgeToggle.checked) { edgeLayer.addTo(map); edgeLayer.bringToBack(); }
+      if (edgesOn) { edgeLayer.addTo(map); edgeLayer.bringToBack(); }
       else map.removeLayer(edgeLayer);
     }
-    if (edgeToggle) edgeToggle.addEventListener('change', syncEdges);
+    if (edgeToggle) edgeToggle.addEventListener('change', function () {
+      edgesOn = edgeToggle.checked;
+      syncEdges();
+    });
     syncEdges();
 
     function focus(host) {
@@ -192,6 +208,7 @@
       map: map,
       markers: MARKERS,
       setHosts: setHosts,
+      setEdges: function (on) { edgesOn = !!on; syncEdges(); },
       focus: focus,
       invalidateSize: function () { map.invalidateSize(); },
       destroy: function () { map.remove(); }

@@ -78,6 +78,29 @@ keyboard handler ends in `next.focus(); next.click()` precisely so the click pat
 stays the single way a view changes. **Anything that reworks the tabs must leave
 `.click()` working**, or both internal callers and the spec break at once.
 
+## `NBMap` — `noblogs/map.js`
+
+```js
+NBMap.init(el, {standalone, legendScope, onOpenHost}) -> api
+api = { map, markers, setHosts(hosts) -> shownCount, setEdges(on), focus(host), invalidateSize(), destroy() }
+```
+
+**Two consumers with different chrome.** `noblogs/index.html` has no legend and
+no `#edgeToggle`; `noblogs/world_hyperlocal_map.html` still ships both. The
+module therefore owns edge visibility as a variable and exposes `setEdges()` —
+it must never go back to reading `edgeToggle.checked` live. The explorer's copy
+of that control lives in the filter popover, and `buildFacets()` rewrites that
+subtree wholesale on every change, so any element inside it is destroyed and
+recreated with no listener attached.
+
+**`setHosts` returns the number of pins actually placed**, which is not the
+number of blogs that matched — a blog with no resolvable city has no
+coordinates. The explorer's status line uses that return value. Do not discard
+it.
+
+`legendCats` and the `.lgrow` click wiring are live code, not dead: the
+standalone page depends on them.
+
 ## noblogs cross-filter
 
 `filtered()` feeds three consumers at once — the card grid, the map's `setHosts`,

@@ -14,6 +14,7 @@
    .dr-controls vanished entirely, and .dr-sheet__grip kept its mobile rules
    while losing its base display:none, so the drag handle showed up on desktop. */
 @import "./components/button.css";
+@import "./components/dialog.css";
 
 @tailwind base;
 @tailwind components;
