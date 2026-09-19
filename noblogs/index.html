@@ -5,12 +5,24 @@ title: TrumpBlogs formerly known as NoBlogs
 
 <style>
   /* --- Fit this full-viewport app under the DataRepublican layout chrome --- */
-  :root{
-    /* --bg is the site surface (theme colour `surface`, #E5E7EB), not a warm
-       grey of this tool's own. It used to be #F7F7F5, and because this rule
-       block is unlayered it beat the site's `bg-surface` on <body> — so the
-       masthead and nav above the tool sat on a different background from every
-       other page. One ground colour for the whole page now. */
+  /* `body`, never `:root` — prohibition 3. A tool's variables belong to the
+     tool, not to the document element.
+
+     `body` and NOT `body[data-view]`, which is what the skill used to
+     prescribe: `data-view` is set by JS after parse, so between first paint
+     and that assignment the selector matches nothing and every `var(--…)`
+     below it resolves to its fallback — or, for the many that have none, to
+     nothing at all. A flash of unstyled tool is a worse bug than the one the
+     scoping prevents. Plain `body` has no such coupling and still keeps these
+     off the document element.
+
+     NOTE the substantive half of this: `body{background:var(--bg)}` below is a
+     TOOL styling the document body, and it wins over Tailwind's `bg-surface`
+     because main.css emits that at element specificity and this rule comes
+     later in source order. That is why --bg has to be the site surface and not
+     a warm grey of this tool's own; it was #F7F7F5, and the masthead and nav
+     above the tool sat on a different background from every other page. */
+  body{
     --bg:#E5E7EB;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;
     --accent:#C0392B;--hi:#C0392B;--med:#B8860B;--low:#4A6FA5;--news:#1B7F4B;--gold:#B8860B;
     --tile:#F1F1EC;--tile2:#F7F7F3;--link:#1155CC;

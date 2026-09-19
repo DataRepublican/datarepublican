@@ -116,6 +116,45 @@
   cursor: progress;
 }
 
+/* The value on a toggle.
+ *
+ * A filled pill says "this control is in a state" but not WHICH state, and in a
+ * toolbar where most buttons are plain actions it does not even say that
+ * reliably — filled reads as selected, or hovered, or just emphasised. The
+ * older version of these controls swapped their whole label to "Focus: on" /
+ * "Focus: off", which was legible but moved the text and shifted every button
+ * beside it on each click.
+ *
+ * So the label holds still and the VALUE gets its own slot. `min-width` is what
+ * makes it stable: "On" and "Off" are different widths, and without a floor the
+ * button would still resize on click, which is the problem the label swap had.
+ *
+ * Only for a real two-state toggle. A button that does something — Reset view,
+ * Export — has no value to show.
+ */
+.dr-btn .dr-btn__state:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 2rem;
+  min-height: 1.25rem;
+  padding: 0 0.375rem;
+  border-radius: var(--dr-radius-pill, 9999px);
+  background: var(--dr-fill, #EFF1F4);
+  color: var(--dr-ink-muted, #5A5A5A);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.01em;
+}
+
+/* Inverted on the pressed fill, like the count badge. */
+.dr-btn[aria-pressed="true"] .dr-btn__state {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--dr-accent, #252739);
+}
+
 /* The count badge on a filter button.
  *
  * It is a flex item inside a flex row, so `padding` alone does not give it a

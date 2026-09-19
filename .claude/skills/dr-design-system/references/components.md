@@ -53,6 +53,8 @@ Jekyll rebuild, which reads in the diff exactly like a regression.
 | `.dr-tag` | four tag/badge patterns at radius 4/6/12. **Never carries an inline background** — dsa's data colouring becomes `--tag-bg` on a `solid` tone |
 | `.dr-check` | `.fitem`, which set `pointer-events:none` on the real checkbox and handled the click on the row. Fixed natively in noblogs: `<label>` around `<input>` inside `<fieldset><legend>`, handler on the input's `change`. **When a list rebuilds itself, restore focus** — see below |
 | `.dr-link` | five source-link classes, all `#1155CC`. Promote dsa's `fmtUrl()` to a shared helper |
+| `.dr-tip` | every `title` on a toolbar control. Instant, styled, appended to `<body>` so the canvases' `isolation: isolate` cannot clip it. Driven by `data-tip` / `data-tip-title`, delegated from `document` so runtime-built controls need no binding. **Never alongside `title`** — the native tip stacks under it and the text is read twice |
+| `.dr-btn__state` | the `On` / `Off` value on a two-state toggle. A filled pill alone says "in a state" but not which; a swapped label moved the text. Written by the same function that sets `aria-pressed`, or the two drift |
 
 Button sizes: `md` = 44px at every width. `sm` = 32px, **desktop-only**, inside a
 panel or toolbar. Never `sm` below md.

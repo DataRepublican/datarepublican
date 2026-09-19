@@ -66,6 +66,13 @@ exclude:
   # `start` runs `dev:watchdirs` to mkdir both of these first.
   - test-results
   - playwright-report
+  # The design-system skill and its references live here, and they get edited in
+  # the same sessions that run the suite. Every write was kicking off a rebuild
+  # and 404-ing whatever page a test had just requested — the same cascade as
+  # test-results above, which is why runs "randomly" failed in batches right
+  # after a doc edit. `.claude` is committed, so it exists at boot and the
+  # watcher will actually honour this (see the note above about `exist?`).
+  - .claude
   # `bundle install --path vendor/bundle`, which is what ruby/setup-ruby's
   # bundler-cache does, puts the gems inside the source tree. Jekyll then scans
   # them and chokes on its own gem's site template, whose front matter has a

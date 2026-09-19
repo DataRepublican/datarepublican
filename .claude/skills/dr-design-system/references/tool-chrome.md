@@ -380,17 +380,94 @@ real authority (`map_data.js`).
 
 ---
 
-## 8. Tooltips name what a mode does
+## 8. Tooltips name what a mode does — and a toggle shows its value
 
-`title` on every toolbar control, including the ones that already have a word.
+Two different jobs, and a control that is ambiguous usually needs both.
+
+### The tooltip is `data-tip`, never `title`
+
+```html
+<button data-tip-title="Re-layout" data-tip="Recompute where every node sits.
+        Useful when labels overlap after a lot of panning.">
+```
+
+`assets/js/tooltip.js` + `components/tooltip.css`. **`title` was tried first and
+is not good enough**: the native tooltip waits about a second, and on an
+icon-only control that delay is the whole interaction — you hover a glyph you do
+not recognise, get nothing, and move on. A tooltip that exists to explain an
+ambiguous control has to be instant.
+
+Three things about it that are not obvious:
+
+- **It is appended to `<body>`, not next to its trigger.** Both canvases set
+  `isolation: isolate` to contain Leaflet and Cytoscape, so a tip rendered
+  inside one is trapped in that stacking context and clipped by `#stage`'s
+  `overflow: hidden`. Out at body level it sits on the site's own scale.
+- **It is delegated from `document`.** Both graph toolbars and all three
+  legends rewrite their own markup at runtime; nothing has to re-bind.
+- **Never both.** Leaving `title` on a tipped control stacks the native
+  tooltip underneath ours a second later and reads the text twice to a screen
+  reader. `tests/test_tooltip.spec.js` asserts the absence.
+
+It is a *description*, so the trigger keeps its own accessible name and gets
+`aria-describedby` only while the tip is up.
+
+### Write the sentence for someone who has not used the tool
 
 An icon can name a thing but cannot say whether a mode is on; a label can say
-which mode it is but not **what it does**. "Focus mode" and "Target edges only"
-are the cases that need a sentence, and a tooltip is where it goes.
+which mode it is but not **what it does**. Name the effect and the consequence,
+not the mechanism:
 
-Use `title`. No JS tooltip machinery: it is free, works on hover and on keyboard
-focus, and is what `tests/test_toolbars.spec.js` already asserts on icon-only
-controls.
+| control | tooltip |
+|---|---|
+| Focus mode | "Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest." |
+| Target edges only | "Hide every citation except the ones backing a target designation — the red edges in the key." |
+| Inferred links | "Show the dashed, inferred relationships as well as the solid confirmed ones. Inferred ties are analytical readings, not sourced facts." |
+| Re-layout | "Recompute where every node sits. Useful when labels overlap after a lot of panning." |
+| Reset view | "Back to where you started. In focus mode that is the centre node's ring; otherwise the whole graph, fitted." |
+| Export | "Download a high-resolution PNG of exactly this view — same pan, zoom and fade, at print quality." |
+
+Zoom in / Zoom out get two words. Do not write a sentence for a control nobody
+has ever had to think about.
+
+### A toggle shows its value
+
+```html
+<button aria-pressed="true" data-tip="…">
+  <svg …><span class="glabel">Focus mode</span><span class="dr-btn__state">On</span>
+```
+
+A filled pill says "this control is in a state" but not **which** one, and in a
+toolbar where most buttons are plain actions it barely says that — filled reads
+as selected, or hovered, or just emphasised. The version before that swapped the
+whole label to "Focus: on" / "Focus: off", which was legible but moved the text
+and shifted every button beside it on each click.
+
+So **the label holds still and the value gets its own slot.** `min-width` on
+`.dr-btn__state` is what keeps it stable, since "On" and "Off" are different
+widths.
+
+**Write both from one function**, or the attribute a screen reader hears and the
+chip a sighted user reads will drift:
+
+```js
+function setToggle(btn, on){
+  btn.setAttribute('aria-pressed', String(on));
+  const chip = btn.querySelector('.dr-btn__state');
+  if (chip) chip.textContent = on ? 'On' : 'Off';
+}
+```
+
+Only for a real two-state toggle. A button that *does* something — Reset view,
+Export — has no value to show.
+
+### Icons: pick the verb, not the category
+
+`fit` was a four-corner "expand" glyph and `relayout` a circular arrow, which
+are both generic enough to mean nothing in a toolbar that also has zoom. They
+are **rewind** (go back to the start) and **shuffle** (rearrange) now. Ask what
+the control *does* and find the glyph for that verb; if you cannot, the control
+needs a word, not a better icon.
 
 ### Never swap a button's label with `textContent`
 
@@ -452,5 +529,8 @@ was.
 - [ ] One measured band, observed by id.
 - [ ] Display options separate from filters; out of the badge and the URL.
 - [ ] Cross-module state goes through an API; no data scraped from the DOM.
-- [ ] `title` on every toolbar control; a sentence for anything modal.
+- [ ] `data-tip` on every toolbar control (never `title`); a sentence for
+      anything ambiguous, written for someone who has not used the tool.
+- [ ] Two-state toggles carry a `.dr-btn__state` value, written by the same
+      function that sets `aria-pressed`.
 - [ ] Label swaps target a `.glabel`, never `textContent`.

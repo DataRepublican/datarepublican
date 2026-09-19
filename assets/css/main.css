@@ -15,6 +15,7 @@
    while losing its base display:none, so the drag handle showed up on desktop. */
 @import "./components/button.css";
 @import "./components/dialog.css";
+@import "./components/tooltip.css";
 
 @tailwind base;
 @tailwind components;

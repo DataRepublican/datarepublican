@@ -41,7 +41,10 @@ for (const t of TOOLS) {
           notComponent: btns.filter(b => !b.classList.contains('dr-btn')).map(b => b.id),
           // An icon-only button must carry its own name; the <svg> is aria-hidden.
           unnamed: btns.filter(b => !b.textContent.trim() && !b.getAttribute('aria-label')).map(b => b.id),
-          noTooltip: btns.filter(b => !b.textContent.trim() && !b.title).map(b => b.id),
+          // data-tip, not title: DRTip replaced the native tooltip because a
+          // one-second delay on an icon-only control is not an explanation.
+          noTooltip: btns.filter(b => !b.getAttribute('data-tip')).map(b => b.id),
+          nativeTitle: btns.filter(b => b.title).map(b => b.id),
           exposedSvg: [...document.querySelectorAll(`${scope} button svg`)]
             .filter(s => s.getAttribute('aria-hidden') !== 'true').length,
         };
@@ -50,7 +53,9 @@ for (const t of TOOLS) {
       expect(r.total).toBeGreaterThan(5);
       expect(r.notComponent, `controls not on .dr-btn: ${r.notComponent}`).toEqual([]);
       expect(r.unnamed, `icon-only buttons with no accessible name: ${r.unnamed}`).toEqual([]);
-      expect(r.noTooltip, `icon-only buttons with no tooltip: ${r.noTooltip}`).toEqual([]);
+      expect(r.noTooltip, `controls with no tooltip: ${r.noTooltip}`).toEqual([]);
+      // Both would stack the native tip under ours and read the text twice.
+      expect(r.nativeTitle, `controls still carrying title=: ${r.nativeTitle}`).toEqual([]);
       expect(r.exposedSvg, 'decorative icons must be aria-hidden').toBe(0);
     });
 

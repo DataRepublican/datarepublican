@@ -19,14 +19,24 @@ title: DSA Explorer
 <script src="logos/index.js"></script>
 
 <style>
-  :root{
-    --money:#1B7F4B; --party:#C0392B; --state:#B8860B; --veneer:#4A6FA5;
-    --center:#111827; --ink:#1A1A1A; --line:#94A3B8; --panel:#FFFFFF;
-    /* The site surface, not a warm grey of this tool's own. It was #F7F7F5,
-       which made the tool's header and ground read as a lighter band pasted
-       onto the page — the temperature split the design system exists to close.
-       noblogs made the same change; see the note at the top of its file. */
-    --bg:#E5E7EB;
+  /* #app, never :root — prohibition 3. A tool's variables are the tool's, and
+     an unlayered :root in a tool's <style> reaches the site chrome on that
+     page. Every consumer of these is inside #app; the disclaimer <dialog> and
+     the sheet's scrim both live outside it and read only --dr-* tokens.
+
+     --money / --party / --state / --veneer / --center / --line used to be
+     declared here too and were never read by a single `var()`. Their hexes
+     were hardcoded at each use site instead, which is the worst arrangement
+     available: a palette that looks themeable and is not. They are gone, and
+     the one real consumer points at the canonical data token.
+
+     --ink stays a literal for now. It is #1A1A1A against the system's #111111,
+     so wiring it to --dr-ink is a visible change rather than a rename, and it
+     belongs with the rest of that migration. */
+  #app{
+    --bg:    var(--dr-surface, #E5E7EB);
+    --panel: var(--dr-panel, #FFFFFF);
+    --ink:   #1A1A1A;
   }
   *{box-sizing:border-box}
   /* height was calc(100vh - 110px): a hardcoded guess at the site chrome that
@@ -47,7 +57,11 @@ title: DSA Explorer
      _layouts/default.html is a <header> too, and the bare selector made it a
      flex container — which collapsed the wordmark block to its content width
      and cut the 5/3/2 rule short. */
-  #dsa-header{grid-column:1/3;padding:10px 18px 12px;border-bottom:1px solid var(--dr-line,#D3D7DE);
+  /* No horizontal padding of its own. #app sits inside main.page-column, which
+     has already set the 20px gutter, so anything this header adds pushes the
+     title and the search field inboard of the canvas below them and out of
+     line with the masthead. The measure is the page shell's, not ours. */
+  #dsa-header{grid-column:1/3;padding:10px 0 12px;border-bottom:1px solid var(--dr-line,#D3D7DE);
     background:var(--bg);display:flex;flex-direction:column;gap:10px}
   .dsa-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .dsa-id{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -72,7 +86,7 @@ title: DSA Explorer
   .dsa-search #q::placeholder{color:var(--dr-ink-faint,#6B7280)}
 
   @media(min-width:768px){
-    #dsa-header{padding:12px 18px 14px;gap:12px}
+    #dsa-header{padding:12px 0 14px;gap:12px}
     #dsa-header h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
     .dsa-id{flex-direction:row;align-items:baseline;gap:12px}
     .dsa-search{flex:0 1 26rem;height:2.25rem}
@@ -172,7 +186,8 @@ title: DSA Explorer
   #panel .srcs .nocache{color:#c0392b;font-weight:700}
   #panel .srcs .cached{color:#2e7d32;font-weight:700}
   #panel .tier{font-size:12px;margin-top:10px}
-  #panel .tier.confirmed{color:var(--money)} #panel .tier.inferred{color:#B8860B}
+  /* The data-encoding green, from tokens.css rather than a third copy of it. */
+  #panel .tier.confirmed{color:var(--dr-data-money,#1B7F4B)} #panel .tier.inferred{color:#B8860B}
   #panel .conns{margin-top:16px;border-top:1px solid #EEE;padding-top:12px}
   #panel .conns h3{margin:0 0 6px;font-weight:600}
 
@@ -210,7 +225,7 @@ title: DSA Explorer
      Zoom, Reset view, Re-layout and Export PNG were all unreachable. */
   @media(max-width:767px){
     #app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
-    #dsa-header{padding:10px 14px 12px}
+    #dsa-header{padding:10px 0 12px}
 
     /* The header STICKS and the canvas takes what is left.
        This used to let the header scroll away and size the canvas as
@@ -285,10 +300,10 @@ title: DSA Explorer
   <div id="stage">
     <div id="cy"></div>
     <div id="controls">
-      <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
-      <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
-      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
-      <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" title="Re-layout"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>
+      <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" data-tip="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" data-tip="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" data-tip-title="Reset view" data-tip="Back to where you started. In focus mode that is the centre node’s ring; otherwise the whole graph, fitted."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19 2 12l9-7z"/><path d="M22 19l-9-7 9-7z"/></svg></button>
+      <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" data-tip-title="Re-layout" data-tip="Recompute where every node sits. Useful when labels overlap after a lot of panning."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.97a4 4 0 0 0 3.3-1.75l5.46-8.5A4 4 0 0 1 16.03 6H22"/><path d="M2 6h1.97a4 4 0 0 1 3.3 1.75l.4.6"/><path d="M22 18h-5.97a4 4 0 0 1-3.3-1.75l-.4-.6"/></svg></button>
       <!-- One flat column, matching noblogs' graph: icon-only for the four
            conventional actions, icon + .glabel for anything that names a mode
            or is irreversible. The `.grp` row that used to pair Back and Focus
@@ -303,10 +318,10 @@ title: DSA Explorer
            Pressed on toggleInf means the inferred links are SHOWN, which is how
            the graph loads — the state variable behind it is `infHidden`, so the
            two read in opposite directions. -->
-      <button type="button" id="back" class="dr-btn" title="Step back to the previous node in the focus walk" disabled><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span class="glabel">Back</span></button>
-      <button type="button" id="focusToggle" class="dr-btn" aria-pressed="true" title="Focus mode — clicking a node isolates it and its immediate ties, and walks the network one step at a time. Turn it off to keep the whole graph visible."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg><span class="glabel">Focus mode</span></button>
-      <button type="button" id="toggleInf" class="dr-btn" aria-pressed="true" title="Show the dashed inferred links as well as the solid confirmed ones."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span class="glabel">Inferred links</span></button>
-      <button type="button" id="export" class="dr-btn" title="Download a high-resolution PNG of the current view (print / thread quality)"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg><span class="glabel">Export</span></button>
+      <button type="button" id="back" class="dr-btn" data-tip-title="Back" data-tip="Step back to the node you were on before this one." disabled><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span class="glabel">Back</span></button>
+      <button type="button" id="focusToggle" class="dr-btn" aria-pressed="true" data-tip-title="Focus mode" data-tip="Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg><span class="glabel">Focus mode</span><span class="dr-btn__state" id="focusState">On</span></button>
+      <button type="button" id="toggleInf" class="dr-btn" aria-pressed="true" data-tip-title="Inferred links" data-tip="Show the dashed, inferred relationships as well as the solid confirmed ones. Inferred ties are analytical readings, not sourced facts."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span class="glabel">Inferred links</span><span class="dr-btn__state" id="infState">On</span></button>
+      <button type="button" id="export" class="dr-btn" data-tip-title="Export" data-tip="Download a high-resolution PNG of exactly this view — same pan, zoom and fade, at print quality."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg><span class="glabel">Export</span></button>
     </div>
     <div id="legend"></div>
   </div>
@@ -322,7 +337,7 @@ title: DSA Explorer
 <dialog class="dr-dialog" id="dsa-disclaimer" aria-labelledby="dsa-disclaimer-title">
   <div class="dr-dialog__head">
     <h2 id="dsa-disclaimer-title">Disclaimer</h2>
-    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="dsa-disclaimer-close" aria-label="Close" title="Close">✕</button>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="dsa-disclaimer-close" aria-label="Close" data-tip="Close">✕</button>
   </div>
   <div class="dr-dialog__body">
     <p>Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate.</p>
@@ -1286,6 +1301,14 @@ function build(nodes, edges, baked){
   // background tap: in focus mode, re-scope to the current node (re-fit its ring); else clear
   cy.on('tap',ev=>{ if(ev.target===cy){ if(focusMode){ applyFocus(focusId,{push:false}); } else { cy.elements().removeClass('faded nbr sel'); panel.innerHTML=EMPTY; if(drSheet) drSheet.close(); } }});
 
+  /* One place that writes a toggle's state, so the attribute a screen reader
+     reads and the chip a sighted user reads can never disagree. */
+  function setToggle(btn,on){
+    btn.setAttribute('aria-pressed',String(on));
+    const chip=btn.querySelector('.dr-btn__state');
+    if(chip) chip.textContent = on ? 'On' : 'Off';
+  }
+
   /* ---- controls ---- */
   document.getElementById('zin').onclick =()=>cy.zoom({level:cy.zoom()*1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
   document.getElementById('zout').onclick=()=>cy.zoom({level:cy.zoom()/1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
@@ -1296,10 +1319,12 @@ function build(nodes, edges, baked){
   document.getElementById('toggleInf').onclick=function(){
     infHidden=!infHidden;
     cy.edges('[?inferred]').style('display',infHidden?'none':'element');
-    // The label is a noun phrase and does not move; aria-pressed carries the
-    // state. A swapped label tells a sighted user what the NEXT click does and
-    // tells a screen reader nothing at all.
-    this.setAttribute('aria-pressed',String(!infHidden));
+    /* The LABEL holds still and the VALUE moves. Swapping the whole label to
+       "Inferred: off" shifted every button beside it on each click, and it read
+       as what the next click would do rather than as the current state.
+       aria-pressed is still the state a screen reader hears; the chip is the
+       same fact for everyone else. */
+    setToggle(this,!infHidden);
   };
   // Export PNG: a high-res still of the CURRENT view — exactly what's on screen, at the live
   // pan/zoom and with the active focus/walk fade preserved. cy.png() (full:false) captures the
@@ -1327,7 +1352,7 @@ function build(nodes, edges, baked){
   // Focus on/off: scoped hop-by-hop walk vs. the whole network at once
   document.getElementById('focusToggle').onclick=function(){
     focusMode=!focusMode;
-    this.setAttribute('aria-pressed',String(focusMode));
+    setToggle(this,focusMode);
     if(focusMode){ hist.length=0; backBtn.disabled=true; applyFocus(focusId,{push:false}); }
     else { cy.elements().removeClass('faded nbr sel'); cy.fit(40); panel.innerHTML=EMPTY; }
   };

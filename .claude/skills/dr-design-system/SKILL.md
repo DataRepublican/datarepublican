@@ -69,10 +69,24 @@ Each of these has already happened here, or is one edit away.
    `theme` is the source; `tokens.css` derives `--dr-*` from it with `theme()`;
    tools read `var(--dr-*)`. A literal guarantees a half-finished restyle.
 
-3. **Never add a `:root` block to a tool.** Scope it — `body[data-view]` for
-   noblogs, `#app` for dsa-explorer. An unlayered `:root` inside a tool's
-   `<style>` outranks `bg-surface` on `<body>` and changes the site masthead's
-   background on that page. Documented at `noblogs/index.html:10-14`.
+3. **Never add a `:root` block to a tool.** A tool's variables belong to the
+   tool, not to the document element. Scope to `body` (noblogs) or `#app`
+   (dsa-explorer); `tests/test_scoped_vars.spec.js` asserts the absence on
+   `:root` for both.
+
+   **Not `body[data-view]`**, which this file used to prescribe: `data-view` is
+   set by JS after parse, so between first paint and that assignment the
+   selector matches nothing and every `var(--…)` resolves to its fallback — or,
+   for the many without one, to nothing. A flash of unstyled tool is worse than
+   the leak it prevents.
+
+   The substantive half is separate and still true: a tool's
+   `body{background:var(--bg)}` beats Tailwind's `bg-surface`, because main.css
+   emits that at element specificity and the tool's inline `<style>` comes later
+   in source order. That is why `--bg` must be the site surface — it was
+   `#F7F7F5`, and the masthead and nav sat on a different ground from every
+   other page. Declaring the variable elsewhere does not fix that; matching the
+   colour does.
 
 4. **Never out-bid a vendored z-index. Contain it.** `isolation: isolate` on the
    element wrapping the vendor's DOM. Leaflet numbers its panes 400/800/1000 and

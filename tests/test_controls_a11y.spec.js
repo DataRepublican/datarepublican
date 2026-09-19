@@ -67,21 +67,32 @@ test.describe('the view switcher is a tablist', () => {
 test.describe('toggles report state with aria-pressed', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
+  /* The LABEL holds still and the VALUE moves. Swapping a whole label to
+     "Focus: off" shifted every button beside it on each click and read as what
+     the NEXT click would do; a lone filled pill said "this is in a state" but
+     not which one, and in a toolbar of plain actions barely that. So .glabel is
+     fixed, .dr-btn__state carries On/Off, and aria-pressed must agree with the
+     chip — one setToggle() writes both. */
+  const toggle = async (page, sel, expected) => {
+    const btn = page.locator(sel);
+    const label = await btn.locator('.glabel').textContent();
+    await expect(btn).toHaveAttribute('aria-pressed', String(expected));
+    await expect(btn.locator('.dr-btn__state')).toHaveText(expected ? 'On' : 'Off');
+
+    await btn.click();
+    await expect(btn).toHaveAttribute('aria-pressed', String(!expected));
+    await expect(btn.locator('.dr-btn__state'), 'the chip disagrees with aria-pressed')
+      .toHaveText(!expected ? 'On' : 'Off');
+    expect(await btn.locator('.glabel').textContent(),
+      'the label moved when the state changed').toBe(label);
+  };
+
   test('noblogs graph: Focus mode and Target edges only', async ({ page }) => {
     await page.goto(HOST + '/noblogs/?view=graph', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#graphwrap #cy canvas', { timeout: 90000 });
 
-    const focus = page.locator('#graphwrap #focusToggle');
-    await expect(focus).toHaveAttribute('aria-pressed', 'true');
-    await expect(focus).toHaveText('Focus mode');          // label does not move
-    await focus.click();
-    await expect(focus).toHaveAttribute('aria-pressed', 'false');
-    await expect(focus).toHaveText('Focus mode');
-
-    const tgt = page.locator('#graphwrap #tgtOnly');
-    await expect(tgt).toHaveAttribute('aria-pressed', 'false');
-    await tgt.click();
-    await expect(tgt).toHaveAttribute('aria-pressed', 'true');
+    await toggle(page, '#graphwrap #focusToggle', true);
+    await toggle(page, '#graphwrap #tgtOnly', false);
   });
 
   test('dsa-explorer: Inferred links and Focus mode', async ({ page }) => {
@@ -90,19 +101,22 @@ test.describe('toggles report state with aria-pressed', () => {
 
     // Pressed means the inferred links are SHOWN, which is the load state. The
     // variable behind it is `infHidden`, so the two read in opposite directions.
-    const inf = page.locator('#toggleInf');
-    await expect(inf).toHaveAttribute('aria-pressed', 'true');
-    await expect(inf).toHaveText('Inferred links');
-    await inf.click();
-    await expect(inf).toHaveAttribute('aria-pressed', 'false');
-    await expect(inf).toHaveText('Inferred links');   // the label does not move
-
+    await toggle(page, '#toggleInf', true);
     await expect(page.locator('#focusToggle')).toHaveAttribute('aria-pressed', 'true');
   });
 
   test('a pressed toggle is visibly filled, not only announced', async ({ page }) => {
     await page.goto(HOST + '/dsa-explorer/', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#cy canvas', { timeout: 90000 });
+    /* `#cy canvas` exists as soon as Cytoscape mounts, which is BEFORE the
+       controls below it are wired — so under parallel load the click could
+       land on a button with no handler and both readings came back identical.
+       This test was intermittently red for exactly that reason. Wait for the
+       graph to actually hold nodes, which is the same gate the other
+       dsa-explorer specs use. */
+    await page.waitForFunction(
+      () => typeof cy !== 'undefined' && cy.nodes && cy.nodes().length > 0,
+      { timeout: 90000 });
 
     /* Park the pointer away from the button before every reading. The first
        version of this test clicked and then measured with the cursor still

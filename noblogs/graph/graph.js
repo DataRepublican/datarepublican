@@ -49,14 +49,23 @@
     return '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" ' +
       'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[k] + '</svg>';
   }
-  // `extra` may carry its own aria-label, for a control whose tooltip is a
-  // sentence — a sentence makes a poor accessible name.
-  function btn(id, icon, title, label, extra) {
-    extra = extra || '';
-    var named = !!label || extra.indexOf('aria-label') !== -1;
-    return '<button type="button" id="' + id + '" class="dr-btn' + (label ? '' : ' dr-btn--icon') + '" ' +
-      (named ? '' : 'aria-label="' + title + '" ') + 'title="' + title + '" ' + extra + '>' +
-      svg(icon) + (label ? '<span class="glabel">' + label + '</span>' : '') + '</button>';
+  /* `tip` is the explanation, `name` the accessible name. They are different
+   * strings on purpose: a sentence makes a poor accessible name, and an
+   * icon-only control still needs one.
+   *
+   * data-tip, never `title`. DRTip is instant and styled; the native tooltip is
+   * neither, and leaving both would stack a second one underneath ours a
+   * second later and read the text twice to a screen reader. */
+  function btn(o) {
+    var iconOnly = !o.label;
+    return '<button type="button" id="' + o.id + '" class="dr-btn' + (iconOnly ? ' dr-btn--icon' : '') + '" ' +
+      (iconOnly ? 'aria-label="' + (o.name || o.tipTitle) + '" ' : '') +
+      (o.tipTitle ? 'data-tip-title="' + o.tipTitle + '" ' : '') +
+      'data-tip="' + o.tip + '" ' + (o.extra || '') + '>' +
+      svg(o.icon) +
+      (o.label ? '<span class="glabel">' + o.label + '</span>' : '') +
+      (o.state ? '<span class="dr-btn__state">' + o.state + '</span>' : '') +
+      '</button>';
   }
 
   var MARKUP =
@@ -65,13 +74,23 @@
       '<div id="controls">' +
       /* No search field on the canvas: the explorer's HEADER field is the
        * graph's search on this view. See `find` in the returned API. */
-        btn('zin', 'zin', 'Zoom in', '') +
-        btn('zout', 'zout', 'Zoom out', '') +
-        btn('fit', 'fit', 'Reset view', '') +
-        btn('relayout', 'relayout', 'Re-layout', '') +
-        btn('focusToggle', 'focus', 'Focus mode \u2014 clicking a node isolates it and its immediate ties, and walks the network one step at a time. Turn it off to keep the whole graph visible and select nodes without fading the rest.', 'Focus mode', 'aria-pressed="true"') +
-        btn('tgtOnly', 'target', 'Show only the citations that back a target designation, and hide every other edge.', 'Target edges only', 'aria-pressed="false"') +
-        btn('export', 'download', 'Download a high-resolution PNG of the current view', 'Export') +
+        btn({id:'zin', icon:'zin', tip:'Zoom in'}) +
+        btn({id:'zout', icon:'zout', tip:'Zoom out'}) +
+        btn({id:'fit', icon:'fit', tipTitle:'Reset view', name:'Reset view',
+             tip:'Back to the whole network, fitted to the canvas, with any focus cleared.'}) +
+        btn({id:'relayout', icon:'relayout', tipTitle:'Re-layout', name:'Re-layout',
+             tip:'Recompute where every node sits. Useful when labels overlap after a lot of panning.'}) +
+        btn({id:'focusToggle', icon:'focus', label:'Focus mode', state:'On',
+             tipTitle:'Focus mode',
+             tip:'Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest.',
+             extra:'aria-pressed="true"'}) +
+        btn({id:'tgtOnly', icon:'target', label:'Target edges only', state:'Off',
+             tipTitle:'Target edges only',
+             tip:'Hide every citation except the ones backing a target designation \u2014 the red edges in the key.',
+             extra:'aria-pressed="false"'}) +
+        btn({id:'export', icon:'download', label:'Export',
+             tipTitle:'Export',
+             tip:'Download a high-resolution PNG of exactly this view \u2014 same pan, zoom and fade, at print quality.'}) +
       '</div>' +
       '<div id="legend"></div>' +
     '</div>' +
@@ -569,9 +588,16 @@
   $id('zout').onclick=()=>cy.zoom({level:cy.zoom()/1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
   $id('fit').onclick=()=>{cy.elements().removeClass('faded nbr sel');focusId=null;collapsePanel();requestAnimationFrame(()=>cy.fit(45));};
   $id('relayout').onclick=()=>{territoryLayout();if(focusMode&&focusId)applyFocus(focusId,false);};
-  $id('focusToggle').onclick=function(){focusMode=!focusMode;this.setAttribute('aria-pressed',String(focusMode));cy.elements().removeClass('faded nbr sel');if(!focusMode)collapsePanel();};
+  /* One place that writes a toggle's state, so the attribute a screen reader
+     reads and the chip a sighted user reads can never disagree. */
+  function setToggle(btn,on){
+    btn.setAttribute('aria-pressed',String(on));
+    const chip=btn.querySelector('.dr-btn__state');
+    if(chip) chip.textContent = on ? 'On' : 'Off';
+  }
+  $id('focusToggle').onclick=function(){focusMode=!focusMode;setToggle(this,focusMode);cy.elements().removeClass('faded nbr sel');if(!focusMode)collapsePanel();};
   let tgtOnly=false;
-  $id('tgtOnly').onclick=function(){tgtOnly=!tgtOnly;this.setAttribute('aria-pressed',String(tgtOnly));
+  $id('tgtOnly').onclick=function(){tgtOnly=!tgtOnly;setToggle(this,tgtOnly);
     cy.batch(()=>{cy.edges().forEach(e=>e.style('display',(!tgtOnly||e.data('tgt')>0)?'element':'none'));});};
   /* Only the .glabel is swapped while rendering. Writing button.textContent —
      which is what this did — replaces every child, so the <svg> was destroyed
