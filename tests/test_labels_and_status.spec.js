@@ -195,3 +195,54 @@ test.describe('the result count speaks', () => {
     expect(await count(), 'the count never updated after the debounce').not.toBe(before);
   });
 });
+
+/* The status line answers TWO questions and has to keep them apart:
+ *
+ *   how much of the CORPUS matched   107 of 7,673
+ *   how much of the MATCH is drawn   34 mapped
+ *
+ * The old chrome carried these in two places — the header said "107 of 7,673
+ * blogs match" and the map card said "34 of 4620 blogs". Deleting the card
+ * made this line take over the card's job and silently drop the header's: on
+ * the Map view it read "34 of 107 mapped", which loses the corpus entirely and
+ * reads as though the dataset were 107.
+ *
+ * Short is a requirement, not a preference: the header is what the map's
+ * height is calculated from, so a line that wraps shrinks the thing it
+ * describes. test_disclaimer.spec.js holds the one-line rule at 390px.
+ */
+test.describe('the status line keeps the corpus and the map count apart', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  const read = async (page, query) => {
+    await page.goto(HOST + '/noblogs/' + query, { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(
+      () => !/loading/i.test(document.getElementById('subcount').textContent), { timeout: 90000 });
+    if (query.includes('view=map')) {
+      await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
+      await page.waitForTimeout(400);
+    }
+    return page.locator('#subcount').textContent();
+  };
+
+  test('a filtered map view names the corpus AND the pins', async ({ page }) => {
+    const t = await read(page, '?view=map&q=russia');
+    // The whole corpus has to still be in there. This is the regression.
+    expect(t, `corpus total dropped from the map view: "${t}"`).toMatch(/7,673/);
+    expect(t, `match count missing: "${t}"`).toMatch(/107/);
+    expect(t, `pin count missing: "${t}"`).toMatch(/\b34\b/);
+  });
+
+  test('a filtered list view names the corpus and does not claim pins', async ({ page }) => {
+    const t = await read(page, '?view=dash&q=russia');
+    expect(t).toMatch(/107/);
+    expect(t).toMatch(/7,673/);
+    expect(t, 'the List view has no map to count pins on').not.toMatch(/mapped/);
+  });
+
+  test('an unfiltered view does not print a fraction of itself', async ({ page }) => {
+    const t = await read(page, '?view=dash');
+    expect(t, `"7,673 of 7,673" is a fraction nobody needs: "${t}"`).not.toMatch(/of 7,673/);
+    expect(t).toMatch(/7,673/);
+  });
+});

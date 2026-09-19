@@ -964,8 +964,8 @@ function render(){
   const lm=document.getElementById('loadmore');
   lm.style.display=fl.length>slice.length?"block":"none";
   lm.textContent=`Show more (${(fl.length-slice.length).toLocaleString()} more)`;
-  document.getElementById('subcount').textContent=`${fl.length.toLocaleString()} of ${DATA.length.toLocaleString()} blogs match`;
-  // postFilter refines that line on the Map view — see the note there.
+  document.getElementById('subcount').textContent=statusLine(fl);
+  // postFilter re-writes that line on the Map view to add the pin count.
   if(view==="map")postFilter(fl); if(view==="graph")postFilterGraph();
 }
 function renderKPIs(fl){
@@ -1291,36 +1291,48 @@ async function showMap(){
     console.error(err);
   }
 }
+/* The tool's one status line, for every view.
+ *
+ * It answers two questions and has to keep them apart, because collapsing them
+ * is a regression that already shipped once. They are:
+ *
+ *   how much of the CORPUS matched   107 of 7,673
+ *   how much of the MATCH is drawn   34 mapped
+ *
+ * The old chrome carried these in two separate places — the header said
+ * "107 of 7,673 blogs match" and the map card said "34 of 4620 blogs". When
+ * the card was deleted, this line took over the card's job and lost the
+ * header's: on the Map view it read "34 of 107 mapped", which drops the corpus
+ * entirely and reads as though the dataset were 107. Both numbers, one line.
+ *
+ * The unfiltered case says "7,673 blogs", not "7,673 of 7,673 match" — a
+ * fraction whose halves are equal is a fraction nobody needs to read.
+ *
+ * SHORT IS A REQUIREMENT, not a preference. The header is what the map's
+ * height is calculated from, so a line that wraps is a line that shrinks the
+ * thing it describes. At 390px and 13px that is about 38 characters, and
+ * tests/test_disclaimer.spec.js holds the one-line rule. The longest form here
+ * — "107 of 7,673 match · 34 mapped" — is 30. */
+function statusLine(fl, mapped){
+  const head = fl.length===DATA.length
+    ? `${DATA.length.toLocaleString()} blogs`
+    : `${fl.length.toLocaleString()} of ${DATA.length.toLocaleString()} match`;
+  return mapped==null ? head : `${head} · ${mapped.toLocaleString()} mapped`;
+}
+
 /* setHosts returns how many pins it actually placed, and that is not the same
    as how many blogs matched: a blog with no resolvable city has no coordinates
    and cannot be drawn. The deleted .info card carried that gap as a static
    "383 omitted (no/unresolved city)" line, which was wrong the moment you
-   filtered anything.
-
-   Saying it here makes it live, and puts it in the status line a screen reader
-   is already listening to. Only shown when the two numbers disagree — a
-   parenthetical about zero omissions is noise. */
+   filtered anything — and wrong at rest too, since the real figure is 3,053 of
+   7,673. Live here, and in the line a screen reader is already listening to. */
 function postFilter(fl){
   if(!mapReady||!mapApi)return;
   const list=fl||filtered();
   const shown=mapApi.setHosts(list.map(b=>b.h));
   const el=document.getElementById('subcount');
   if(!el||typeof shown!=='number')return;
-  /* Kept SHORT, and this took two goes. The header is what the map's height is
-     calculated from, so a status line that wraps is a status line that shrinks
-     the thing it describes. At 390px and 13px that is about 38 characters.
-     "… matching blogs on the map · N have no mapped city" was 60-odd and ran to
-     three lines; trimming it to "· N unmapped" still made two.
-     tests/test_disclaimer.spec.js holds the one-line rule.
-
-     The unmapped count is not lost by leaving it out: the Filters panel already
-     carries a `mappable` flag with its own live count, which is both a better
-     place for it — you can act on it there — and one that was already built.
-
-     Worth knowing while you are in here: the deleted .info card hardcoded "383
-     omitted (no/unresolved city)". The real figure is 3,053 of 7,673. It was
-     a stale literal, which is the argument against static counts in chrome. */
-  el.textContent=`${shown.toLocaleString()} of ${list.length.toLocaleString()} mapped`;
+  el.textContent=statusLine(list,shown);
 }
 // Nothing on this page is framed any more, so there is no postMessage listener.
 

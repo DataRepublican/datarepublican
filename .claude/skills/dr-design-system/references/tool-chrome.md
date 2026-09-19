@@ -74,6 +74,20 @@ be a de-duplication rather than a relocation:
 If something has no home, that is a signal the thing itself was not carrying
 its weight.
 
+**Check what the DESTINATION was already saying.** Redistribution is where you
+overwrite, not where you drop, and the overwrite is silent. The status line had
+been answering *how much of the corpus matched* — "107 of 7,673 blogs match" —
+and when the map card was deleted, the pin count moved into that same line and
+took it over: "34 of 107 mapped". Nothing was lost from the card; the
+destination's own job was. It reads as a plausible sentence, the numbers are
+all real, and it looks for all the world like a data regression to anyone
+comparing against production.
+
+So after every move, read the destination out loud in each state it can be in
+— filtered and not, per view — and check it still answers what it answered
+before. A fraction whose halves are equal ("7,673 of 7,673") is the other tell
+that a line is being written by two features that have not been introduced.
+
 ### Corners belong to the vendor
 
 Leaflet puts its zoom control at **top-left**. Cytoscape's fit/zoom conventions
