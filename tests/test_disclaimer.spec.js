@@ -111,6 +111,46 @@ test.describe('noblogs disclaimer (modal dialog)', () => {
     expect(await dlg.evaluate(e => e.open)).toBe(false);
   });
 
+  test('rises from the bottom edge, on the same motion as the sheet', async ({ page }) => {
+    /* It shipped with no transition at all, while the detail sheet eight
+       pixels away slid — two bottom-anchored surfaces, two different physics.
+       There is one bottom-sheet motion on this site and both use it.
+
+       `allow-discrete` on display/overlay is the part that is easy to lose: a
+       <dialog> leaves the top layer the instant close() is called, so without
+       it the OPEN direction animates and the close direction silently does
+       not. Both durations are asserted for that reason. */
+    await open(page);
+    const props = await page.evaluate(() => {
+      const cs = getComputedStyle(document.getElementById('nb-disclaimer'));
+      return {
+        transition: cs.transitionProperty,
+        duration: cs.transitionDuration,
+        transform: cs.transform,
+      };
+    });
+    expect(props.transition).toContain('transform');
+    expect(props.transition, 'a dialog without allow-discrete cannot animate closed')
+      .toContain('display');
+    expect(props.transition).toContain('overlay');
+    // Non-zero, and the same token .dr-sheet uses.
+    expect(props.duration).toMatch(/0\.24s|240ms/);
+
+    /* And it actually moves. The closed state cannot be read from
+       getComputedStyle — a closed <dialog> is display:none, so its transform
+       resolves to "none" no matter what the rule says — so sample the position
+       mid-flight instead. Straight after the click it should still be low on
+       the screen, and settle higher. */
+    const top = () => page.evaluate(
+      () => document.getElementById('nb-disclaimer').getBoundingClientRect().top);
+    await page.locator('#nb-disclaimer-open').click();
+    const mid = await top();
+    await page.waitForTimeout(500);
+    const settled = await top();
+    expect(mid, 'the dialog appears in place instead of rising')
+      .toBeGreaterThan(settled);
+  });
+
   test('returns focus to the opener on close', async ({ page }) => {
     await open(page);
     await page.locator('#nb-disclaimer-open').focus();

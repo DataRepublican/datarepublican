@@ -143,12 +143,15 @@ title: TrumpBlogs formerly known as NoBlogs
     .nb-search #search{font-size:var(--dr-text-dense,14px)}
     .tabs{padding:3px}
     .tab{flex:none;padding:0 18px;min-height:1.875rem}
-    /* On the Dashboard the facet rail is on screen, so a button that opens the
+    /* On the List view the facet rail is on screen, so a button that opens the
        same facets in a popover is a second door to one room. */
     body[data-view="dash"] #nb-filters{display:none}
   }
   .layout{display:flex;align-items:flex-start}
-  aside#facets{width:232px;flex:none;position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
+  /* A flex column, so the reset control can sit at the trailing edge with
+     `align-self`. Everything inside is full-width regardless. */
+  aside#facets{width:232px;flex:none;display:flex;flex-direction:column;align-items:stretch;
+    position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
     border-right:1px solid var(--line);padding:14px 14px 40px 0;background:var(--bg)}
   /* A <fieldset> per group, so a screen reader announces "Country, checkbox,
      Germany" rather than reading a loose list. The UA styling has to be reset
@@ -200,12 +203,23 @@ title: TrumpBlogs formerly known as NoBlogs
     line-height:1.4;padding:2px 0 0}
   /* It is a real control, so it gets a real target: 20px tall at 11px was the
      smallest hit area in the tool. inline-flex rather than extra padding, so
-     the height is the target and the text stays on the facet list's left edge.
-     The phone rule below takes it the rest of the way to 44px. */
-  .clearf{appearance:none;border:0;background:none;padding:0 4px;margin:0 0 6px -4px;min-width:0;
-    min-height:var(--dr-tap-sm,32px);display:inline-flex;align-items:center;
+     the height is the target. The phone rule below takes it to 44px.
+
+     Right-aligned, because it is the panel's RESET and a reset belongs at the
+     trailing edge — on the left it read as the first item of the first filter
+     group. `align-self:flex-end` rather than a float or a margin: the panel is
+     a block, so this is the one declaration that does it.
+
+     Disabled when nothing is selected. It used to sit there at full strength
+     offering to clear an empty set, which is a control that lies about having
+     something to do. `disabled` rather than a faded class, so it is also out
+     of the tab order and announced as unavailable — the fade is the visible
+     half of a state the keyboard and the screen reader get too. */
+  .clearf{appearance:none;border:0;background:none;padding:0 4px;margin:0 0 6px;min-width:0;
+    min-height:var(--dr-tap-sm,32px);display:flex;align-self:flex-end;align-items:center;width:max-content;
     color:var(--low);font-size:var(--dr-text-label,12px);cursor:pointer;font-family:inherit}
-  .clearf:hover{text-decoration:underline}
+  .clearf:hover:not(:disabled){text-decoration:underline}
+  .clearf:disabled{opacity:.4;cursor:default;pointer-events:none}
   .clearf:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
   main{flex:1;min-width:0;padding:16px 0 60px 20px}
   .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
@@ -444,7 +458,7 @@ title: TrumpBlogs formerly known as NoBlogs
   body.nb-facets-open #dashview{display:block !important}
   body.nb-facets-open:not([data-view="dash"]) #dashview > main{display:none}
   body.nb-facets-open aside#facets{
-    display:block;position:fixed;z-index:var(--dr-z-popover,70);
+    display:flex;position:fixed;z-index:var(--dr-z-popover,70);
     top:var(--nb-facet-top,120px);left:var(--nb-facet-left,20px);
     width:min(300px,calc(100vw - 40px));max-height:var(--nb-facet-maxh,60dvh);
     overflow-y:auto;padding:14px;border:1px solid var(--line);border-radius:12px;
@@ -485,6 +499,20 @@ title: TrumpBlogs formerly known as NoBlogs
     #panel{position:static;width:auto;max-width:none;top:auto;right:auto;bottom:auto;
       box-shadow:none;border-left:0;transform:none;height:auto}
     #scrim{display:none}
+
+    /* Tell the sheet what ground this panel sits on.
+       #panel is the PAGE ground, not white — see the note at the top of this
+       file. The sheet defaults to #fff, so stacked they painted a white band
+       above the content and another below it, which read as a header and a
+       footer the sheet does not have. */
+    .dr-sheet:has(> #panel){--dr-sheet-surface:var(--bg)}
+
+    /* One close button, not two. DRSheet puts a 44px close in its wrapper, and
+       .pclose is this tool's own — on a phone they stacked, so the panel had
+       two X's in two different header bars. The sheet's is the one that also
+       dismisses the sheet, so it wins; .pclose stays for the desktop drawer,
+       which has no wrapper chrome of its own. */
+    #panel .pclose{display:none}
   }
 
 </style>
@@ -540,7 +568,7 @@ title: TrumpBlogs formerly known as NoBlogs
     {%- endcomment -%}
     <div class="tabs" id="tabs" role="tablist" aria-label="View">
       <button type="button" id="tab-map" class="tab on" data-v="map" role="tab" aria-selected="true" aria-controls="mapview">Map</button>
-      <button type="button" id="tab-dash" class="tab" data-v="dash" role="tab" aria-selected="false" aria-controls="dashview" tabindex="-1">Dashboard</button>
+      <button type="button" id="tab-dash" class="tab" data-v="dash" role="tab" aria-selected="false" aria-controls="dashview" tabindex="-1">List</button>
       <button type="button" id="tab-graph" class="tab" data-v="graph" role="tab" aria-selected="false" aria-controls="graphview" tabindex="-1">Graph</button>
     </div>
 
@@ -827,7 +855,10 @@ function buildFacets(){
   const keep=(el.contains(focused)&&focused.closest('.fitem'))
     ? focused.closest('.fitem').dataset : null;
 
-  let h=`<button type="button" class="clearf" onclick="clearAll()">✕ clear all filters</button>`;
+  /* The reset offers to clear the SET — facets and the query alike, which is
+     what clearAll() does — so it is live exactly when one of those is set. */
+  const nSet=F.co.size+F.cat.size+F.mil.size+F.sc.size+F.flags.size+(F.q?1:0);
+  let h=`<button type="button" class="clearf" onclick="clearAll()"${nSet?'':' disabled'}>✕ Clear all filters</button>`;
   h+=grpMap();
   /* Category first. It is the group that carries the map's colour encoding, so
      it is the one you reach for while looking at the map — and in the popover
@@ -889,7 +920,7 @@ function facetSel(d){
   if(d.flag) return `.fitem[data-flag="${CSS.escape(d.flag)}"] input`;
   return `.fitem[data-map="${CSS.escape(d.map)}"] input`;
 }
-/* Map display options. Only on the Map view — on Dashboard and Graph there is
+/* Map display options. Only on the Map view — on List and Graph there is
    no map for them to mean anything about.
 
    This is where the co-citation edge toggle went when the .info card was
@@ -1350,7 +1381,7 @@ document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(
     x.setAttribute('aria-selected',String(on));
     x.tabIndex=on?0:-1;
   });
-  // At md the Filters button is hidden on the Dashboard, where the facet rail
+  // At md the Filters button is hidden on the List view, where the facet rail
   // is already on screen; this is what the CSS keys that off.
   document.body.dataset.view=view;
   document.getElementById('dashview').style.display=view==='dash'?'flex':'none';
@@ -1415,7 +1446,7 @@ function readURL(){const p=new URLSearchParams(location.search);
   (p.get('f')||"").split(',').filter(Boolean).forEach(x=>F.flags.add(x));
   // Landing view is the Map: it is what the tool is for, and it is the first
   // tab. That costs every visitor map_data.js (3.85 MB) up front — the reason
-  // the Dashboard held this slot back when the map was an iframe on
+  // the List view held this slot back when the map was an iframe on
   // world_hyperlocal_map.html. It still loads lazily, just immediately.
   const v=p.get('view')||'map'; document.querySelector(`.tab[data-v="${v}"]`)?.click();
   // ?opennews=1 expands the news disclosure. `ne` lives in the deferred payload,

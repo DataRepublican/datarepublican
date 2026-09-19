@@ -50,8 +50,60 @@
   flex-direction: column;
 }
 
+/* ---- Motion ------------------------------------------------------------
+   THE RULE: every surface that arrives from an edge uses --dr-dur-sheet and
+   --dr-ease-sheet. There is one bottom-sheet motion on this site and both
+   .dr-sheet and .dr-dialog are instances of it.
+
+   This file shipped without any transition at all, which is how the
+   divergence was caught: the disclaimer appeared instantly while the detail
+   sheet eight pixels away slid. Two bottom-anchored surfaces, two different
+   physics, one of them wrong.
+
+   `allow-discrete` on `display` and `overlay` is what makes a <dialog>
+   animate rather than pop. Without it the element leaves the top layer the
+   instant close() is called and the exit transition never renders — the open
+   direction appears to work and the close direction silently does not, which
+   is the trap worth knowing here. `@starting-style` supplies the from-state
+   on open, since the element has no previous computed style to animate from. */
+.dr-dialog {
+  transition: opacity var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              overlay var(--dr-dur-sheet, 240ms) allow-discrete,
+              display var(--dr-dur-sheet, 240ms) allow-discrete;
+  opacity: 0;
+  transform: translateY(1rem) scale(0.98);
+}
+
+.dr-dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .dr-dialog[open] {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.98);
+  }
+}
+
 .dr-dialog::backdrop {
   background: rgba(20, 20, 18, 0.45);
+  opacity: 0;
+  transition: opacity var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              overlay var(--dr-dur-sheet, 240ms) allow-discrete,
+              display var(--dr-dur-sheet, 240ms) allow-discrete;
+}
+
+.dr-dialog[open]::backdrop { opacity: 1; }
+
+@starting-style {
+  .dr-dialog[open]::backdrop { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-dialog,
+  .dr-dialog::backdrop { transition: none; }
 }
 
 /* Header stays put; only the body scrolls. A long legal notice is the whole
@@ -100,6 +152,19 @@
     margin: auto auto 0;
     border-width: 1px 0 0;
     border-radius: var(--dr-radius-sheet, 16px) var(--dr-radius-sheet, 16px) 0 0;
+    /* It rises from the bottom edge here, exactly as .dr-sheet does — a pure
+       slide, no fade. The desktop fade-and-lift above is the wrong gesture for
+       a surface pinned to the bottom of the screen, and a sheet that fades in
+       while the detail sheet beside it does not is the same divergence again,
+       one step smaller. `opacity: 1` here is what cancels it. */
+    transform: translateY(100%);
+    opacity: 1;
+  }
+
+  .dr-dialog[open] { transform: translateY(0); }
+
+  @starting-style {
+    .dr-dialog[open] { transform: translateY(100%); opacity: 1; }
   }
 
   .dr-dialog__body {

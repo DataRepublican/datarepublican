@@ -58,13 +58,27 @@
   var MARKUP =
     '<div id="stage">' +
       '<div id="cy"></div>' +
-      /* Hidden until asked for. This was a 270px field parked at the top-centre
-       * of the canvas at all times, permanently covering the densest part of
-       * the European cluster, and duplicating the explorer's own page-level
-       * field two rows above it. It is a control now, not furniture. */
-      '<div id="gsearch" hidden><input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off"></div>' +
       '<div id="controls">' +
-        btn('gsearchToggle', 'search', 'Search the graph', '', 'aria-expanded="false" aria-controls="gsearch"') +
+        /* The search field GROWS OUT OF ITS OWN BUTTON. #gsearch is the first
+         * row of the control column and the toggle lives inside it, so opening
+         * widens that row in place instead of revealing a second element
+         * somewhere else on the canvas.
+         *
+         * Two earlier versions were wrong in the same way. First it was a 270px
+         * field parked top-centre at all times, permanently covering the
+         * densest part of the European cluster and duplicating the explorer's
+         * own page-level field two rows above it. Then it was hidden behind
+         * this button but positioned beside the column, so it appeared detached
+         * from the control that summoned it \u2014 the button stayed a button and a
+         * field materialised next to it.
+         *
+         * The input is tabindex=-1 while collapsed: it is zero-width and
+         * invisible, and a keyboard user tabbing onto a field they cannot see
+         * is worse than not having it. setSearchOpen restores it. */
+        '<div id="gsearch">' +
+          btn('gsearchToggle', 'search', 'Search the graph', '', 'aria-expanded="false" aria-controls="q"') +
+          '<input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off" tabindex="-1">' +
+        '</div>' +
         btn('zin', 'zin', 'Zoom in', '') +
         btn('zout', 'zout', 'Zoom out', '') +
         btn('fit', 'fit', 'Reset view', '') +
@@ -596,24 +610,21 @@
      and dismissing a search field should not also dismiss what you were
      reading. */
   const gsearch=$id('gsearch'), gsToggle=$id('gsearchToggle'), q=$id('q');
-  const controlsEl=$id('controls');
   function setSearchOpen(open){
-    gsearch.hidden=!open;
+    gsearch.classList.toggle('is-open',open);
     gsToggle.setAttribute('aria-expanded',String(open));
+    q.tabIndex=open?0:-1;
     if(open){
-      /* Measure the control column and clear it. Its width is whatever its
-         widest LABEL needs — "Target edges only" — not the icon size, so any
-         constant here is wrong the next time a label changes. The phone rule in
-         graph.css overrides `left` outright, so this only governs desktop. */
-      const w=controlsEl.getBoundingClientRect().width;
-      gsearch.style.setProperty('--gsearch-left',(12+w+8)+'px');
       q.focus();
+      /* On a phone #controls is a horizontal scroller and the row just grew by
+         ~14rem, so the field can open past the right edge of the screen. */
+      if(gsearch.scrollIntoView) gsearch.scrollIntoView({block:'nearest',inline:'start'});
       return;
     }
     if(q.value){ q.value=''; q.oninput(); }
     gsToggle.focus();
   }
-  gsToggle.onclick=()=>setSearchOpen(gsearch.hidden);
+  gsToggle.onclick=()=>setSearchOpen(!gsearch.classList.contains('is-open'));
   q.addEventListener('keydown',e=>{
     if(e.key!=='Escape') return;
     e.stopPropagation();

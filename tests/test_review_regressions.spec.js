@@ -44,36 +44,47 @@ test.describe('graph chrome survives the extraction', () => {
     expect(expanded).toMatch(/370px/);
   });
 
-  test('the search box keeps its overlay positioning when opened', async ({ page }) => {
+  test('the search field expands in place, out of its own button', async ({ page }) => {
     await load(page);
-    // #search was renamed #gsearch to stop colliding with the explorer's own
-    // #search; only the phone media query was updated, so at desktop width the
-    // field fell into #stage's flow and out of view.
-    //
-    // It starts hidden now and opens from the toolbar, so the regression this
-    // guards can only be seen once it is open.
-    const before = await page.evaluate(() => document.getElementById('gsearch').hidden);
-    expect(before, 'the field is furniture again if it boots visible').toBe(true);
-
-    await page.click('#gsearchToggle');
-    const s = await page.evaluate(() => {
-      const el = document.getElementById('gsearch');
-      const r = el.getBoundingClientRect();
-      const controls = document.getElementById('controls').getBoundingClientRect();
+    /* #search was renamed #gsearch to stop colliding with the explorer's own
+       #search; only the phone media query was updated, so at desktop width the
+       field fell into #stage's flow and out of view.
+       Since then it has stopped being furniture twice over: first hidden behind
+       a toolbar button, then — because a field appearing beside the button you
+       pressed still reads as a separate thing — grown out of the button itself.
+       All three of those regressions look the same from here: a field that is
+       visible when it should not be, or somewhere other than its control. */
+    const read = () => page.evaluate(() => {
+      const wrap = document.getElementById('gsearch');
+      const input = document.getElementById('q');
+      const controls = document.getElementById('controls');
       return {
-        position: getComputedStyle(el).position,
-        width: r.width,
-        left: r.left,
-        controlsRight: controls.right,
+        inputWidth: Math.round(input.getBoundingClientRect().width),
+        wrapLeft: Math.round(wrap.getBoundingClientRect().left),
+        controlsLeft: Math.round(controls.getBoundingClientRect().left),
+        inControls: controls.contains(wrap),
+        tabIndex: input.tabIndex,
         focused: document.activeElement && document.activeElement.id,
       };
     });
-    expect(s.position).toBe('absolute');
-    expect(s.width).toBeGreaterThan(100);
-    // Beside the control column, never on top of it.
-    expect(s.left).toBeGreaterThanOrEqual(s.controlsRight);
+
+    const before = await read();
+    expect(before.inControls, 'the field must live inside the control cluster').toBe(true);
+    expect(before.inputWidth, 'the field is furniture again if it boots open').toBe(0);
+    // Zero-width and invisible: tabbing onto it would land on nothing.
+    expect(before.tabIndex).toBe(-1);
+
+    await page.click('#gsearchToggle');
+    await page.waitForTimeout(400); // the width transition
+    const after = await read();
+
+    expect(after.inputWidth).toBeGreaterThan(100);
+    expect(after.tabIndex).toBe(0);
+    // Grew in place: the row's left edge never moved off the column's.
+    expect(after.wrapLeft).toBe(after.controlsLeft);
+    expect(before.wrapLeft).toBe(after.wrapLeft);
     // Opening a search field and not landing in it is the whole cost of hiding it.
-    expect(s.focused).toBe('q');
+    expect(after.focused).toBe('q');
   });
 });
 

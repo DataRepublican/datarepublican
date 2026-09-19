@@ -269,15 +269,37 @@
   cursor: progress;
 }
 
-/* The count badge on a filter button. */
+/* The count badge on a filter button.
+ *
+ * It is a flex item inside a flex row, so `padding` alone does not give it a
+ * shape — the row's align-items stretches or shrinks it to the line box and a
+ * single digit came out vertically squashed, wider than it was tall. The pill
+ * has to state its own box: a min-height, a matching min-width so "1" and "12"
+ * are both round-ish rather than one being a circle and the other a lozenge,
+ * and its own centring. */
 
-.dr-btn .dr-btn__count {
+/* `:not([hidden])` is load-bearing, and this is the second time this exact
+ * trap has been paid for in this repo — see .dr-sheet__scrim in main.css.
+ * `hidden` only sets display:none through the UA stylesheet, so a bare
+ * `display: inline-flex` here beats it on specificity and the badge shows "0"
+ * permanently. Any rule that sets `display` on an element something toggles
+ * with `hidden` has to say this. */
+
+.dr-btn .dr-btn__count:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+  padding: 0 0.375rem;
   border-radius: var(--dr-radius-pill, 9999px);
   background: var(--dr-accent, #252739);
   color: #fff;
-  padding: 1px 8px;
   font-size: 11px;
   font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
 .dr-btn--solid .dr-btn__count,
@@ -338,8 +360,67 @@
   flex-direction: column;
 }
 
+/* ---- Motion ------------------------------------------------------------
+   THE RULE: every surface that arrives from an edge uses --dr-dur-sheet and
+   --dr-ease-sheet. There is one bottom-sheet motion on this site and both
+   .dr-sheet and .dr-dialog are instances of it.
+
+   This file shipped without any transition at all, which is how the
+   divergence was caught: the disclaimer appeared instantly while the detail
+   sheet eight pixels away slid. Two bottom-anchored surfaces, two different
+   physics, one of them wrong.
+
+   `allow-discrete` on `display` and `overlay` is what makes a <dialog>
+   animate rather than pop. Without it the element leaves the top layer the
+   instant close() is called and the exit transition never renders — the open
+   direction appears to work and the close direction silently does not, which
+   is the trap worth knowing here. `@starting-style` supplies the from-state
+   on open, since the element has no previous computed style to animate from. */
+
+.dr-dialog {
+  transition: opacity var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              overlay var(--dr-dur-sheet, 240ms) allow-discrete,
+              display var(--dr-dur-sheet, 240ms) allow-discrete;
+  opacity: 0;
+  transform: translateY(1rem) scale(0.98);
+}
+
+.dr-dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .dr-dialog[open] {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.98);
+  }
+}
+
 .dr-dialog::backdrop {
   background: rgba(20, 20, 18, 0.45);
+  opacity: 0;
+  transition: opacity var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              overlay var(--dr-dur-sheet, 240ms) allow-discrete,
+              display var(--dr-dur-sheet, 240ms) allow-discrete;
+}
+
+.dr-dialog[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .dr-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-dialog,
+  .dr-dialog::backdrop {
+    transition: none;
+  }
 }
 
 /* Header stays put; only the body scrolls. A long legal notice is the whole
@@ -395,6 +476,24 @@
     margin: auto auto 0;
     border-width: 1px 0 0;
     border-radius: var(--dr-radius-sheet, 16px) var(--dr-radius-sheet, 16px) 0 0;
+    /* It rises from the bottom edge here, exactly as .dr-sheet does — a pure
+       slide, no fade. The desktop fade-and-lift above is the wrong gesture for
+       a surface pinned to the bottom of the screen, and a sheet that fades in
+       while the detail sheet beside it does not is the same divergence again,
+       one step smaller. `opacity: 1` here is what cancels it. */
+    transform: translateY(100%);
+    opacity: 1;
+  }
+
+  .dr-dialog[open] {
+    transform: translateY(0);
+  }
+
+  @starting-style {
+    .dr-dialog[open] {
+      transform: translateY(100%);
+      opacity: 1;
+    }
   }
 
   .dr-dialog__body {
@@ -4549,10 +4648,20 @@ select {
 /* ---- Sheet ---------------------------------------------------------- */
 
 /* The wrapper vanishes from layout at desktop width so the panel it wraps
-   stays a direct child of the tool's own grid. */
+   stays a direct child of the tool's own grid.
+
+   --dr-sheet-surface is the sheet's ground, and it is a variable because the
+   sheet and the panel it wraps are two different elements that have to agree.
+   noblogs' #panel sits on the PAGE ground (#E5E7EB) by design — "the tool's
+   own chrome sits on the page ground rather than on white panels" — while the
+   sheet was hardcoded #fff. Stacked, that painted a white strip above the
+   panel's content and another below it, which read as the sheet having a
+   header and a footer it does not have. A consumer overrides this rather than
+   restyling .dr-sheet. */
 
 .dr-sheet {
   display: contents;
+  --dr-sheet-surface: #fff;
 }
 
 .dr-sheet__grip,
@@ -4571,13 +4680,13 @@ select {
     display: flex;
     flex-direction: column;
     overscroll-behavior: contain;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    background: #fff;
+    border-top-left-radius: var(--dr-radius-sheet, 1rem);
+    border-top-right-radius: var(--dr-radius-sheet, 1rem);
+    background: var(--dr-sheet-surface);
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
     transform: translateY(100%);
-    transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1),
-                height 240ms cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+                height var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1));
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 
@@ -4610,13 +4719,25 @@ select {
     outline-offset: -2px;
   }
 
+  /* The grip IS the sheet's header row, and its height is load-bearing.
+     It was 24px of padding around a 4px bar while the close button is a 44px
+     target pinned to the top-right — so the close overhung the body by ~20px
+     and sat on top of whatever the panel rendered first. Every consumer would
+     have had to leave a hole in its own top-right corner.
+
+     44px here reserves that space once, for all of them. The bar stays
+     optically centred because the grip is a flex row rather than padding. */
+
   .dr-sheet__grip {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: sticky;
     top: 0;
     z-index: 1;
-    padding: 0.625rem 0;
-    background: #fff;
+    flex: none;
+    min-height: var(--dr-tap, 2.75rem);
+    background: var(--dr-sheet-surface);
     cursor: grab;
     touch-action: none;
   }
@@ -4626,7 +4747,6 @@ select {
     display: block;
     width: 2.25rem;
     height: 0.25rem;
-    margin: 0 auto;
     border-radius: 9999px;
     background: #B0B0B0;
   }
@@ -4634,7 +4754,7 @@ select {
   .dr-sheet__close {
     display: flex !important;
     position: absolute;
-    top: 0.25rem;
+    top: 0;
     right: 0.5rem;
     z-index: 2;
     align-items: center;

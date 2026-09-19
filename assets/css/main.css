@@ -307,8 +307,20 @@
 /* ---- Sheet ---------------------------------------------------------- */
 
 /* The wrapper vanishes from layout at desktop width so the panel it wraps
-   stays a direct child of the tool's own grid. */
-.dr-sheet { display: contents; }
+   stays a direct child of the tool's own grid.
+
+   --dr-sheet-surface is the sheet's ground, and it is a variable because the
+   sheet and the panel it wraps are two different elements that have to agree.
+   noblogs' #panel sits on the PAGE ground (#E5E7EB) by design — "the tool's
+   own chrome sits on the page ground rather than on white panels" — while the
+   sheet was hardcoded #fff. Stacked, that painted a white strip above the
+   panel's content and another below it, which read as the sheet having a
+   header and a footer it does not have. A consumer overrides this rather than
+   restyling .dr-sheet. */
+.dr-sheet {
+  display: contents;
+  --dr-sheet-surface: #fff;
+}
 
 .dr-sheet__grip,
 .dr-sheet__close,
@@ -324,13 +336,13 @@
     display: flex;
     flex-direction: column;
     overscroll-behavior: contain;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    background: #fff;
+    border-top-left-radius: var(--dr-radius-sheet, 1rem);
+    border-top-right-radius: var(--dr-radius-sheet, 1rem);
+    background: var(--dr-sheet-surface);
     box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
     transform: translateY(100%);
-    transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1),
-                height 240ms cubic-bezier(0.32, 0.72, 0, 1);
+    transition: transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+                height var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1));
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 
@@ -350,13 +362,24 @@
   .dr-sheet:focus { outline: none; }
   .dr-sheet:focus-visible { outline: 2px solid theme('colors.ink-strong'); outline-offset: -2px; }
 
+  /* The grip IS the sheet's header row, and its height is load-bearing.
+     It was 24px of padding around a 4px bar while the close button is a 44px
+     target pinned to the top-right — so the close overhung the body by ~20px
+     and sat on top of whatever the panel rendered first. Every consumer would
+     have had to leave a hole in its own top-right corner.
+
+     44px here reserves that space once, for all of them. The bar stays
+     optically centred because the grip is a flex row rather than padding. */
   .dr-sheet__grip {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: sticky;
     top: 0;
     z-index: 1;
-    padding: 0.625rem 0;
-    background: #fff;
+    flex: none;
+    min-height: var(--dr-tap, 2.75rem);
+    background: var(--dr-sheet-surface);
     cursor: grab;
     touch-action: none;
   }
@@ -366,7 +389,6 @@
     display: block;
     width: 2.25rem;
     height: 0.25rem;
-    margin: 0 auto;
     border-radius: 9999px;
     background: theme('colors.rule');
   }
@@ -374,7 +396,7 @@
   .dr-sheet__close {
     display: flex !important;
     position: absolute;
-    top: 0.25rem;
+    top: 0;
     right: 0.5rem;
     z-index: 2;
     align-items: center;

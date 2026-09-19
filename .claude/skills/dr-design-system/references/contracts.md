@@ -14,6 +14,19 @@ handle  = { el, open(detent?), close(), isOpen(), setDetent(d), isMobile() }
 DETENTS = { peek: 0.32, half: 0.55, full: 0.92 }   // fractions of innerHeight
 ```
 
+**Three things the consumer owes the sheet.** It wraps a panel the tool already
+styles, so both have an opinion and they have to agree:
+
+| | |
+|---|---|
+| **ground** | set `--dr-sheet-surface` on the wrapper if the panel is not white. noblogs' `#panel` is the page ground; the mismatch painted white bands above and below the content that read as a header and footer the sheet does not have. Never restyle `.dr-sheet` directly |
+| **close** | the sheet adds one. Hide the tool's own below md, or the panel gets two X's in two header bars |
+| **top** | `.dr-sheet__grip` is the header row and is `min-height: var(--dr-tap)` so the 44px close fits inside it. Do not render anything into the sheet's top-right corner expecting it to be free |
+
+**Motion is `--dr-dur-sheet` / `--dr-ease-sheet`.** One bottom-sheet motion on
+this site; `.dr-dialog` uses the same two tokens. A new sliding surface takes
+them rather than picking a duration.
+
 **It wraps, it does not nest.** `attach()` inserts a `div.dr-sheet` *around* the
 host element. Both tools do `panel.innerHTML = …` on every interaction, so
 anything inserted as a child is destroyed on the first tap. The grip and close

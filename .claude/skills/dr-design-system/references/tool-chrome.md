@@ -115,6 +115,67 @@ not because they are interchangeable.
 
 ---
 
+## 3a. One bottom-sheet motion, and every sliding surface uses it
+
+**There is exactly one "arrives from an edge" motion on this site:**
+
+```css
+transition: transform var(--dr-dur-sheet) var(--dr-ease-sheet);   /* 240ms, cubic-bezier(.32,.72,0,1) */
+```
+
+`.dr-sheet` and `.dr-dialog` are both instances of it, and so is anything added
+later. **This is the rule that was broken first.** `.dr-dialog` shipped with no
+transition at all, so the disclaimer appeared instantly while the detail sheet
+eight pixels away slid — two bottom-anchored surfaces, two different physics,
+one of them obviously wrong. If you are writing a new surface and reaching for
+a duration, you are already off the path: take the tokens.
+
+On a phone the motion is a **pure slide**, no fade. A fade-and-lift is the
+desktop gesture for a centred card; using it on something pinned to the bottom
+edge is the same divergence one step smaller, which is why `.dr-dialog`'s
+mobile block explicitly re-states `opacity: 1`.
+
+### Animating a `<dialog>` — the part that silently half-works
+
+```css
+transition: transform var(--dr-dur-sheet) var(--dr-ease-sheet),
+            overlay   var(--dr-dur-sheet) allow-discrete,
+            display   var(--dr-dur-sheet) allow-discrete;
+```
+
+`allow-discrete` on `display` and `overlay` is not optional. A modal dialog
+leaves the top layer the instant `close()` is called, so without it **the open
+direction animates and the close direction does not** — and you will test the
+open direction, see it work, and ship. `@starting-style` supplies the
+from-state, because on open the element has no previous computed style to
+animate from.
+
+`getComputedStyle` cannot verify the closed state: a closed `<dialog>` is
+`display: none` and its transform resolves to `none` whatever the rule says.
+Assert the motion by sampling the element's position mid-flight instead.
+
+## 3b. The sheet and its consumer have to agree
+
+`.dr-sheet` wraps a panel the tool already owns, so there are two elements that
+can disagree. Three ways they did:
+
+- **Ground.** The sheet was hardcoded `#fff`; noblogs' `#panel` sits on the
+  page ground by design. Stacked, that painted a white band above the content
+  and another below it, which read as a header and a footer the sheet does not
+  have. The sheet exposes `--dr-sheet-surface` and the consumer overrides it —
+  never restyle `.dr-sheet` itself.
+- **Close buttons.** `DRSheet` adds one; most panels already have their own.
+  On a phone they stacked into two X's in two header bars. **The sheet's wins**
+  (it is the one that also dismisses the sheet); hide the tool's own below md.
+- **Room at the top.** `.dr-sheet__close` is a 44px target pinned to the
+  top-right. The grip is the sheet's header row and **must be at least as tall**,
+  or the close overhangs whatever the panel renders first and every consumer
+  has to leave a hole in its own corner. Reserved once, in the component.
+
+The general rule: when a shared wrapper and its consumer both have an opinion
+about a surface, the wrapper exposes a variable and the consumer sets it. Two
+stylesheets independently deciding what colour something is will drift.
+
 ## 4. A control for a state that manages itself is not a control
 
 The graph had a `‹` / `›` chevron floating over the canvas to collapse the
@@ -157,11 +218,24 @@ duplicated the explorer's page-level field two rows above it.
 
 Search opens from the toolbar:
 
-- **Icon button in the control cluster**, `aria-expanded` + `aria-controls`.
-- The field opens **beside** the cluster on desktop, **across the top** on a
-  phone. Derive its offset from the button size so it tracks:
-  `left: calc(12px + var(--dr-tap-sm) + 8px)`.
-- **Focus the input on open.** Opening a search field and not landing in it is
+- **The field expands out of its own button, in place.** The toggle lives
+  *inside* the search wrapper and the wrapper is a row of the control cluster,
+  so opening widens that row. Collapsed, the wrapper is invisible and the
+  button is an ordinary `.dr-btn` pill; open, the **wrapper** becomes the pill
+  and the button goes transparent inside it, so the icon ends up sitting in the
+  field it opened.
+  Two earlier versions got this wrong in the same way — a field that appears
+  *next to* the button you pressed still reads as a separate thing arriving,
+  not as the control opening. Positioning it beside the cluster also means
+  measuring the cluster, and the cluster's width is whatever its longest
+  **label** needs, so any constant is wrong the next time a label changes.
+- **The same gesture at every width.** On a phone it expands inside the
+  scrolling control rail and the rail scrolls it into view, rather than
+  breaking out to the opposite end of the screen from the button.
+- `aria-expanded` on the toggle, `aria-controls` pointing at the input.
+- **Focus the input on open**, and give it `tabindex="-1"` while collapsed —
+  it is zero-width and invisible, and tabbing onto a field you cannot see is
+  worse than not having one. Opening a search field and not landing in it is
   the entire cost of having hidden it.
 - **Escape closes and clears**, and must `stopPropagation()` — the explorer
   listens for Escape on `document` to close its detail drawer, and dismissing a
@@ -215,6 +289,25 @@ about the result count.
 
 Group display options under their own `<legend>` in the popover (`Map`), and
 render the group **only on the view it applies to**.
+
+### The panel's reset
+
+`Clear all filters` is the panel's reset, so it sits at the **trailing edge**,
+sentence case, and is **`disabled` when there is nothing to clear**. On the
+leading edge it read as the first item of the first filter group; at full
+strength with an empty set it was a control advertising work it cannot do.
+
+Use `disabled`, not a faded class — the fade is the visible half of a state the
+keyboard and the screen reader should also get.
+
+### `hidden` and `display`, for the second time
+
+A count badge that a tool toggles with `hidden` needs
+`.dr-btn__count:not([hidden])` on its `display` rule. `hidden` only sets
+`display: none` through the UA stylesheet, so a bare `display: inline-flex`
+beats it and the badge shows "0" forever. **This repo has now paid for this
+trap twice** — `.dr-sheet__scrim` carries the same note. Any rule that sets
+`display` on an element something toggles with `hidden` has to say `:not([hidden])`.
 
 ### Reach into a module through an API, not its DOM
 
@@ -296,9 +389,16 @@ was.
 - [ ] Header is a flex column, not `flex-wrap`.
 - [ ] Canvas has no permanent overlay. Vendor corners are clear.
 - [ ] Legal text is a `.dr-dialog`, opened with `showModal()`.
+- [ ] Every sliding surface uses `--dr-dur-sheet` / `--dr-ease-sheet`; a
+      `<dialog>` also needs `allow-discrete` + `@starting-style`.
+- [ ] The sheet and its panel agree: `--dr-sheet-surface` set, the tool's own
+      close hidden below md, nothing rendered under the 44px grip row.
 - [ ] No control for a state the selection already manages.
 - [ ] State setters are idempotent (`setX(bool)`), not toggles.
-- [ ] Search opens from the toolbar, focuses on open, Escape clears + stops propagation.
+- [ ] Search expands in place out of its own button; focuses on open,
+      `tabindex="-1"` while collapsed, Escape clears + stops propagation.
+- [ ] The panel reset is trailing-edge, sentence case, `disabled` when empty.
+- [ ] Any `display` rule on a `hidden`-toggled element says `:not([hidden])`.
 - [ ] One measured band, observed by id.
 - [ ] Display options separate from filters; out of the badge and the URL.
 - [ ] Cross-module state goes through an API; no data scraped from the DOM.
