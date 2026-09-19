@@ -8,46 +8,69 @@ permalink: /about/
 {% include section-header.html title="About" %}
 
 {%- comment -%}
-  `.text-column` is the shared narrative measure — /donate/ uses the same class.
-  Do not set a width here; change it in assets/css/main.css so both pages move.
+  Two columns at lg: the narrative on the shared reading measure, the pull
+  quotes in a rail across from it. Below lg the rail is simply the next thing
+  down the page, which is why it carries its own top margin.
+
+  The rail is the FIXED track and the narrative takes what is left, so the
+  rail's right edge lands on the tweet wall's below it. Sizing the narrative
+  instead — at `maxWidth.prose` — left the rail stopping ~170px short of the
+  wall at 1400px, which read as a column that had failed to reach the edge.
+  `.text-column` caps the paragraphs at the shared measure either way, so the
+  narrative is no wider than it is on /donate/.
+
+  `minmax(0,…)` on the flexible track keeps a long unbroken string from
+  widening it, and `items-start` sits the rail at the top of the text rather
+  than centering it against a column several times its height.
 {%- endcomment -%}
-<div class="text-column">
-  <p>
-    Billions of dollars are spent on government grants, charities, and other
-    organizations every year. Have you ever wondered where the money is awarded
-    or where it ends up?
-  </p>
-  <p>
-    We're connecting the dots between government grants, charities, and drawing
-    connections to expose where the money flows.
-  </p>
-  <p>
-    We've found some interesting connections, and we've made the data available
-    for you to explore.
-  </p>
-  <p>
-    See what you can find, and if you find something interesting, please
-    <a href="https://x.com/datarepublican" target="_blank" rel="noopener">let me know on X</a>!
-  </p>
-</div>
-
-<div class="mt-8 flex flex-wrap items-center gap-5">
-  <img
-    src="{{ '/assets/images/avatar.jpg' | relative_url }}"
-    alt="Jennica Pounds"
-    width="160" height="160"
-    class="size-[7.5rem] shrink-0 rounded-full object-cover"
-    loading="lazy" decoding="async"
-    onerror="this.style.display='none'">
+<div class="lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-x-12">
   <div>
-    <p class="m-0 text-card-title font-bold tracking-title text-ink-strong">&ndash; Jennica Pounds</p>
-    <a href="https://x.com/datarepublican" target="_blank" rel="noopener"
-       class="mt-2 inline-flex min-h-tap items-center gap-2 rounded-pill bg-black/[0.07] px-4 text-body font-bold !text-ink-strong !no-underline">
-      <svg viewBox="0 0 24 24" class="size-4 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      DataRepublican
-      <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
-    </a>
+    {%- comment -%}
+      `.text-column` is the shared narrative measure — /donate/ uses the same
+      class. Do not set a width here; change it in assets/css/main.css so both
+      pages move.
+    {%- endcomment -%}
+    <div class="text-column">
+      <p>
+        Billions of dollars are spent on government grants, charities, and other
+        organizations every year. Have you ever wondered where the money is awarded
+        or where it ends up?
+      </p>
+      <p>
+        We're connecting the dots between government grants, charities, and drawing
+        connections to expose where the money flows.
+      </p>
+      <p>
+        We've found some interesting connections, and we've made the data available
+        for you to explore.
+      </p>
+      <p>
+        See what you can find, and if you find something interesting, please
+        <a href="https://x.com/datarepublican" target="_blank" rel="noopener">let me know on X</a>!
+      </p>
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-center gap-5">
+      <img
+        src="{{ '/assets/images/avatar.jpg' | relative_url }}"
+        alt="Jennica Pounds"
+        width="160" height="160"
+        class="size-[7.5rem] shrink-0 rounded-full object-cover"
+        loading="lazy" decoding="async"
+        onerror="this.style.display='none'">
+      <div>
+        <p class="m-0 text-card-title font-bold tracking-title text-ink-strong">&ndash; Jennica Pounds</p>
+        <a href="https://x.com/datarepublican" target="_blank" rel="noopener"
+           class="mt-2 inline-flex min-h-tap items-center gap-2 rounded-pill bg-black/[0.07] px-4 text-body font-bold !text-ink-strong !no-underline">
+          <svg viewBox="0 0 24 24" class="size-4 fill-current" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          DataRepublican
+          <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+    </div>
   </div>
+
+  {% include quotes.html %}
 </div>
 
-{% include quotes.html %}
+{% include testimonials.html %}
