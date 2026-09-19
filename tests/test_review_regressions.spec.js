@@ -44,47 +44,26 @@ test.describe('graph chrome survives the extraction', () => {
     expect(expanded).toMatch(/370px/);
   });
 
-  test('the search field expands in place, out of its own button', async ({ page }) => {
+  test('the canvas carries no search field of its own', async ({ page }) => {
     await load(page);
-    /* #search was renamed #gsearch to stop colliding with the explorer's own
-       #search; only the phone media query was updated, so at desktop width the
-       field fell into #stage's flow and out of view.
-       Since then it has stopped being furniture twice over: first hidden behind
-       a toolbar button, then — because a field appearing beside the button you
-       pressed still reads as a separate thing — grown out of the button itself.
-       All three of those regressions look the same from here: a field that is
-       visible when it should not be, or somewhere other than its control. */
-    const read = () => page.evaluate(() => {
-      const wrap = document.getElementById('gsearch');
-      const input = document.getElementById('q');
-      const controls = document.getElementById('controls');
-      return {
-        inputWidth: Math.round(input.getBoundingClientRect().width),
-        wrapLeft: Math.round(wrap.getBoundingClientRect().left),
-        controlsLeft: Math.round(controls.getBoundingClientRect().left),
-        inControls: controls.contains(wrap),
-        tabIndex: input.tabIndex,
-        focused: document.activeElement && document.activeElement.id,
-      };
-    });
+    /* There were three versions of a canvas search here — a 270px field parked
+       top-centre, then one hidden behind a toolbar button, then one growing out
+       of that button — before the answer turned out to be that the graph should
+       not have its own field at all. The explorer's header field IS the graph's
+       search on this view (NBGraph.find), so a second box is a second place to
+       type the same thing. */
+    const found = await page.evaluate(() => ({
+      gsearch: !!document.getElementById('gsearch'),
+      q: !!document.getElementById('q'),
+      inputsOnCanvas: document.querySelectorAll('#stage input').length,
+    }));
+    expect(found.gsearch).toBe(false);
+    expect(found.q).toBe(false);
+    expect(found.inputsOnCanvas, 'a search field crept back onto the canvas').toBe(0);
 
-    const before = await read();
-    expect(before.inControls, 'the field must live inside the control cluster').toBe(true);
-    expect(before.inputWidth, 'the field is furniture again if it boots open').toBe(0);
-    // Zero-width and invisible: tabbing onto it would land on nothing.
-    expect(before.tabIndex).toBe(-1);
-
-    await page.click('#gsearchToggle');
-    await page.waitForTimeout(400); // the width transition
-    const after = await read();
-
-    expect(after.inputWidth).toBeGreaterThan(100);
-    expect(after.tabIndex).toBe(0);
-    // Grew in place: the row's left edge never moved off the column's.
-    expect(after.wrapLeft).toBe(after.controlsLeft);
-    expect(before.wrapLeft).toBe(after.wrapLeft);
-    // Opening a search field and not landing in it is the whole cost of hiding it.
-    expect(after.focused).toBe('q');
+    // `graphApi` is the EXPLORER's handle and does not exist on this page, so
+    // the module's own export is what to check here.
+    expect(await page.evaluate(() => typeof NBGraph.init)).toBe('function');
   });
 });
 

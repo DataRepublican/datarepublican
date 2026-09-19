@@ -232,25 +232,17 @@ duplicated the explorer's page-level field two rows above it.
 
 Search opens from the toolbar:
 
-- **The field expands out of its own button, in place.** The toggle lives
-  *inside* the search wrapper and the wrapper is a row of the control cluster,
-  so opening widens that row. Collapsed, the wrapper is invisible and the
-  button is an ordinary `.dr-btn` pill; open, the **wrapper** becomes the pill
-  and the button goes transparent inside it, so the icon ends up sitting in the
-  field it opened.
-  Two earlier versions got this wrong in the same way — a field that appears
-  *next to* the button you pressed still reads as a separate thing arriving,
-  not as the control opening. Positioning it beside the cluster also means
-  measuring the cluster, and the cluster's width is whatever its longest
-  **label** needs, so any constant is wrong the next time a label changes.
-- **The same gesture at every width.** On a phone it expands inside the
-  scrolling control rail and the rail scrolls it into view, rather than
-  breaking out to the opposite end of the screen from the button.
-- `aria-expanded` on the toggle, `aria-controls` pointing at the input.
-- **Focus the input on open**, and give it `tabindex="-1"` while collapsed —
-  it is zero-width and invisible, and tabbing onto a field you cannot see is
-  worse than not having one. Opening a search field and not landing in it is
-  the entire cost of having hidden it.
+The header field is the only field. noblogs' graph went through three canvas
+searches — a 270px box parked top-centre, one hidden behind a toolbar button,
+one growing out of that button — before the answer turned out to be that a
+canvas does not need one. If you are positioning a search over a visualization,
+stop and ask what the header field is for.
+
+**If a control cluster must hold an expanding field anyway** (a toolbar with no
+header above it), two things: it expands out of its own button rather than
+appearing beside it, and in a flex **column** the expanded part must not sit in
+flow — the column's width is its widest child and `align-items: stretch` hands
+that width to every sibling, so the field drags all the buttons wider with it.
 - **Escape closes and clears**, and must `stopPropagation()` — the explorer
   listens for Escape on `document` to close its detail drawer, and dismissing a
   search should not also dismiss what you were reading.
@@ -259,6 +251,50 @@ Search opens from the toolbar:
 
 A page-level search and a canvas-level search are different searches. If a tool
 has both, one of them is wrong.
+
+### On a network view, search FINDS. It does not filter.
+
+One search field, in the header, and **what it does is the view's job, not the
+field's**:
+
+| view | the query | |
+|---|---|---|
+| map, list | **narrows** — feeds `filtered()` | the set is the point |
+| graph | **finds** — highlights, frames, never removes | the *structure* is the point |
+
+Filtering a network deletes the thing you opened it to look at. It is also
+arithmetically hopeless: noblogs' graph holds **217 of 7,673** blogs, so a
+corpus query lands in it by luck —
+
+```
+antifa     1,245 corpus →  108 nodes      berlin   349 →  7
+anarchist  2,231       →   71             squat    758 →  9
+adl            3       →    1             amnesty    9 →  1
+```
+
+— and the most natural query of all, naming an institution, **cannot work at
+any scale**: the 77 institutions are nodes on the canvas, not rows in the blog
+index. No filtering search will ever return one.
+
+So `F.q` is view-dependent while the **facets are not**. The facets still
+cross-filter every view (that contract is untouched); only the text query
+changes meaning. Keep the two filter functions separate and named for it —
+`filtered()` is facets AND query, `facetFiltered()` is facets alone.
+
+Three things follow, and each one is a bug if you miss it:
+
+- **Facet counts** must be scoped the same way the view is. Counting with the
+  query applied, on a view where the query does not filter, makes the panel
+  disagree with the canvas.
+- **The status line** counts what the view can show — nodes here, not corpus
+  rows. "1 of 7,673" describes a set the graph cannot display.
+- **Switching views must re-render.** The line and the facet groups are both
+  view-dependent now, so a switch that only toggles `display` leaves the
+  previous view's numbers on screen.
+
+Frame what you found: centre a single hit, fit several, and **leave the camera
+alone on zero** — moving the view to show an empty result is worse than not
+moving it. A miss says so in the status line; it does not empty the canvas.
 
 ---
 
@@ -409,8 +445,8 @@ was.
       close hidden below md, nothing rendered under the 44px grip row.
 - [ ] No control for a state the selection already manages.
 - [ ] State setters are idempotent (`setX(bool)`), not toggles.
-- [ ] Search expands in place out of its own button; focuses on open,
-      `tabindex="-1"` while collapsed, Escape clears + stops propagation.
+- [ ] One search field. On a network view it finds and frames; it never
+      filters. Facet counts, the status line and view switches all follow.
 - [ ] The panel reset is trailing-edge, sentence case, `disabled` when empty.
 - [ ] Any `display` rule on a `hidden`-toggled element says `:not([hidden])`.
 - [ ] One measured band, observed by id.

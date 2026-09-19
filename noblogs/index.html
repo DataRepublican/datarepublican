@@ -760,10 +760,26 @@ function passFacets(b){
   if(F.flags.has("dox")&&!b.dox)return false;
   return true;
 }
-function filtered(){return DATA.filter(b=>matchSearch(b)&&passFacets(b)).sort((a,b)=>a._rank-b._rank);}
+/* Two filter sets, because the text query does not mean the same thing on
+   every view.
 
+   On Map and List it NARROWS: `filtered()` is facets AND query, and feeds the
+   pins and the card grid. On Graph it does not narrow at all — the graph is a
+   217-node network and removing nodes destroys the structure you opened it to
+   look at, so there the query is a FIND (graphApi.find) and only the facets
+   filter. See tool-chrome.md §5.
+
+   The facets still cross-filter all three views. That contract is unchanged;
+   it is only `F.q` that is view-dependent. */
+function facetFiltered(){return DATA.filter(passFacets).sort((a,b)=>a._rank-b._rank);}
+function filtered(){return DATA.filter(b=>matchSearch(b)&&passFacets(b)).sort((a,b)=>a._rank-b._rank);}
+// What the CURRENT view treats as its set.
+function viewSet(){return view==='graph'?facetFiltered():filtered();}
+
+// True where the text query narrows the set. On Graph it finds instead.
+function queryFilters(){return view!=='graph';}
 function counts(field){
-  const m={}; for(const b of DATA){if(!matchSearch(b))continue;
+  const m={}; for(const b of DATA){if(queryFilters()&&!matchSearch(b))continue;
     const v=field(b); if(v==null)continue; m[v]=(m[v]||0)+1;} return m;
 }
 function buildFacets(){
@@ -857,7 +873,7 @@ function grpMap(){
 }
 function grpFlags(){
   const opts=[["logo","has logo"],["contact","has contact"],["quotes","has quotes"],["geo","mappable"],["dox","doxxing activity"]];
-  const scope=DATA.filter(b=>matchSearch(b));
+  const scope=queryFilters()?DATA.filter(matchSearch):DATA;
   const cnt={logo:b=>b.vt==="logo",contact:b=>Object.keys(b.ct).length,
     quotes:b=>b.nq>0,geo:b=>b.lat!=null,dox:b=>b.dox};
   let h=`<fieldset class="fgroup"><legend>Filters</legend>`;
@@ -1275,7 +1291,23 @@ async function showGraph(){
 }
 function postFilterGraph(){
   if(!graphReady||!graphApi)return;
-  graphApi.setHosts(filtered().map(b=>b.h));
+  // Facets only — see the note by viewSet().
+  graphApi.setHosts(facetFiltered().map(b=>b.h));
+  const el=document.getElementById('subcount');
+  // find() is debounced, so show the node count now and the hit count when it
+  // lands; otherwise the line carries a corpus figure for 200ms.
+  if(el&&!F.q) el.textContent=graphStatus(0);
+  graphApi.find(F.q,n=>{ if(el) el.textContent=graphStatus(n); });
+}
+/* The Graph view counts nodes, not corpus rows: the network holds 217 of the
+   7,673 blogs plus 77 institutions, so "N of 7,673" would describe a set the
+   view cannot show. */
+function graphStatus(hits){
+  const cy=graphApi&&graphApi.cy;
+  const shown=cy?cy.nodes().filter(n=>n.style('display')!=='none').length:0;
+  if(!F.q) return `${shown.toLocaleString()} nodes`;
+  return hits?`${hits.toLocaleString()} of ${shown.toLocaleString()} nodes found`
+             :`No nodes match “${F.q}”`;
 }
 
 // ---- tabs / url ----
@@ -1293,12 +1325,23 @@ document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(
   // At md the Filters button is hidden on the List view, where the facet rail
   // is already on screen; this is what the CSS keys that off.
   document.body.dataset.view=view;
+  /* The one search field means what the view means. On Graph it locates a node
+     and reaches the institutions the blog index does not contain; everywhere
+     else it narrows the corpus. */
+  const sf=document.getElementById('search');
+  sf.placeholder=view==='graph'?'Find a blog or institution…':'Search blogs, cities, quotes…';
+  sf.setAttribute('aria-label',view==='graph'
+    ?'Find a blog or institution on the graph'
+    :'Search blogs, cities and quotes');
   document.getElementById('dashview').style.display=view==='dash'?'flex':'none';
   document.getElementById('mapview').style.display=view==='map'?'block':'none';
   document.getElementById('graphview').style.display=view==='graph'?'block':'none';
-  // The Map group of facets belongs to the Map view only, so the panel's
-  // contents change with the view, not just its visibility.
+  /* Both of these are view-dependent now, so a switch has to redo them:
+     the Map group of facets belongs to the Map view only, and the status line
+     counts corpus rows on Map/List but graph nodes on Graph. Without the
+     render() the List view inherited whatever the graph last wrote. */
   buildFacets();
+  render();
   // switching to Map/Graph with a blog open -> fly to that pin/node (#7)
   if(SEL&&(view==='map'||view==='graph'))pendingFocus=SEL;
   syncURL(); if(view==='map')showMap(); if(view==='graph')showGraph();};

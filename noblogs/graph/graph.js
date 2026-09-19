@@ -63,29 +63,8 @@
     '<div id="stage">' +
       '<div id="cy"></div>' +
       '<div id="controls">' +
-        /* The search field GROWS OUT OF ITS OWN BUTTON. #gsearch is the first
-         * row of the control column and the toggle lives inside it, so opening
-         * widens that row in place instead of revealing a second element
-         * somewhere else on the canvas.
-         *
-         * Two earlier versions were wrong in the same way. First it was a 270px
-         * field parked top-centre at all times, permanently covering the
-         * densest part of the European cluster and duplicating the explorer's
-         * own page-level field two rows above it. Then it was hidden behind
-         * this button but positioned beside the column, so it appeared detached
-         * from the control that summoned it \u2014 the button stayed a button and a
-         * field materialised next to it.
-         *
-         * The input is tabindex=-1 while collapsed: it is zero-width and
-         * invisible, and a keyboard user tabbing onto a field they cannot see
-         * is worse than not having it. setSearchOpen restores it. */
-        '<div id="gsearch"><div class="gsearch__box">' +
-          btn('gsearchToggle', 'search',
-              'Find a node by name. It highlights matches and dims the rest \u2014 it does not filter. ' +
-              'Institutions can only be found here: the page search covers blogs only.',
-              '', 'aria-expanded="false" aria-controls="q" aria-label="Find a node on the graph"') +
-          '<input id="q" type="text" placeholder="Find a blog or institution\u2026" autocomplete="off" tabindex="-1">' +
-        '</div></div>' +
+      /* No search field on the canvas: the explorer's HEADER field is the
+       * graph's search on this view. See `find` in the returned API. */
         btn('zin', 'zin', 'Zoom in', '') +
         btn('zout', 'zout', 'Zoom out', '') +
         btn('fit', 'fit', 'Reset view', '') +
@@ -610,50 +589,54 @@
     },60);
   };
 
-  /* Search opens from the toolbar rather than sitting on the canvas.
-     Escape closes it and clears the query, which is the one thing a user wants
-     from a search they opened by accident. stopPropagation matters: the
-     explorer page listens for Escape on `document` to close its detail drawer,
-     and dismissing a search field should not also dismiss what you were
-     reading. */
-  const gsearch=$id('gsearch'), gsToggle=$id('gsearchToggle'), q=$id('q');
-  function setSearchOpen(open){
-    gsearch.classList.toggle('is-open',open);
-    gsToggle.setAttribute('aria-expanded',String(open));
-    q.tabIndex=open?0:-1;
-    if(open){
-      q.focus();
-      /* On a phone #controls is a horizontal scroller and the row just grew by
-         ~14rem, so the field can open past the right edge of the screen. */
-      if(gsearch.scrollIntoView) gsearch.scrollIntoView({block:'nearest',inline:'start'});
-      return;
+  /* findNodes — the explorer's header field drives this on the Graph view.
+     It HIGHLIGHTS; it never filters. Filtering a network removes the structure
+     you opened it to look at, and the corpus index covers blogs only, so the
+     77 institutions would be unreachable by any filtering search.
+
+     Debounced at 200ms to match the page field: undebounced, each keystroke
+     walked every node and rewrote classes over the whole element set inside a
+     cy.batch, and a fast typist queued one full restyle per letter.
+
+     Returns the hit count so the caller can report it. */
+  let qTimer=null, lastQuery='';
+  function paintFind(v){
+    if(!v){
+      if(focusMode&&focusId)applyFocus(focusId,false);
+      else cy.elements().removeClass('faded nbr sel');
+      return 0;
     }
-    if(q.value){ q.value=''; q.oninput(); }
-    gsToggle.focus();
-  }
-  gsToggle.onclick=()=>setSearchOpen(!gsearch.classList.contains('is-open'));
-  q.addEventListener('keydown',e=>{
-    if(e.key!=='Escape') return;
-    e.stopPropagation();
-    setSearchOpen(false);
-  });
-  // Debounced: every keystroke walked all nodes and rewrote classes on the whole
-  // element set inside a cy.batch. Cheap per call, but a fast typist queues one
-  // full restyle per letter and the canvas visibly stutters. 200ms matches the
-  // page search in noblogs/index.html.
-  let qTimer=null;
-  q.oninput=()=>{clearTimeout(qTimer);qTimer=setTimeout(()=>{
-    const v=q.value.trim().toLowerCase();if(!v){if(focusMode&&focusId)applyFocus(focusId,false);else cy.elements().removeClass('faded nbr sel');return;}
+    let n=0;
     cy.batch(()=>{
       cy.elements().addClass('faded').removeClass('nbr sel');
-      /* Visible nodes only. Without the display check this matched nodes the
-         explorer's cross-filter had already hidden, so highlighting one was a
-         silent no-op — the ring went onto something off screen. */
-      const m=cy.nodes().filter(n=>n.style('display')!=='none'&&
-        ((n.data('label')||'').toLowerCase().includes(v)||n.id().toLowerCase().includes(v)));
+      /* Visible nodes only: without the display check this matched nodes the
+         facet cross-filter had already hidden, so the ring went off screen. */
+      const m=cy.nodes().filter(x=>x.style('display')!=='none'&&
+        ((x.data('label')||'').toLowerCase().includes(v)||x.id().toLowerCase().includes(v)));
       m.removeClass('faded').addClass('nbr');
       m.connectedEdges().removeClass('faded');
-    });},200);};
+      n=m.length;
+    });
+    return n;
+  }
+  function findNodes(query,onCount){
+    const v=String(query||'').trim().toLowerCase();
+    lastQuery=v;
+    clearTimeout(qTimer);
+    qTimer=setTimeout(()=>{
+      const n=paintFind(v);
+      /* Frame the hits so a search that matches one node off-screen is not a
+         search that appears to do nothing. One hit gets centred; several get
+         fitted. Nothing matched leaves the camera alone — moving the view to
+         show an empty result is worse than not moving it. */
+      if(n===1) cy.animate({center:{eles:cy.$('.nbr')},zoom:Math.max(cy.zoom(),1.1)},{duration:350});
+      else if(n>1) cy.animate({fit:{eles:cy.$('.nbr'),padding:90}},{duration:350});
+      if(typeof onCount==='function') onCount(n);
+    },200);
+  }
+  // Re-run the current find after the host set changes under it.
+  function refind(){ if(lastQuery) paintFind(lastQuery); }
+
   addEventListener('resize',()=>cy.resize());
 
   /* ---- cross-filter from the explorer facets (postMessage host-set) ---- */
@@ -693,7 +676,8 @@
 
     return {
       cy: cy,
-      setHosts: applyGraphFilter,
+      setHosts: function (hosts) { applyGraphFilter(hosts); refind(); },
+      find: findNodes,
       focus: focusNode,
       resize: function () { cy.resize(); },
       destroy: function () { cy.destroy(); }
