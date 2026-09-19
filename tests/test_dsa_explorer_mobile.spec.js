@@ -61,7 +61,7 @@ test.describe('dsa-explorer on a phone', () => {
     const sheet = page.locator('.dr-sheet');
     await expect(sheet).not.toHaveClass(/is-open/);
 
-    // Drive the canvas centre, where the DSA hub sits.
+    // Drive the canvas center, where the DSA hub sits.
     await page.evaluate(() => {
       const el = document.querySelector('#cy canvas');
       const r = el.getBoundingClientRect();

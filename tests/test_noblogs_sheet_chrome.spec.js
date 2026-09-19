@@ -38,7 +38,7 @@ test.describe('the noblogs detail sheet', () => {
     await openSheet(page);
     // The sheet, its grip and the panel it wraps are three elements painting
     // what has to look like one surface, and each had its own idea of the
-    // colour — so the grip row and the padding below the body read as a header
+    // color — so the grip row and the padding below the body read as a header
     // and a footer the sheet does not have. Whatever the ground is, all three
     // have to name it.
     const c = await page.evaluate(() => {
@@ -200,7 +200,7 @@ test.describe('the canvas-view sidebar', () => {
     expect(g.cats, 'both halves are showing at once').toBe(false);
     expect(g.close).toBe(true);
     // The close is at the trailing edge. As a flex item with a stale
-    // `float:right` it stretched full width and centred its glyph instead.
+    // `float:right` it stretched full width and centered its glyph instead.
     expect(g.right, 'the close button is not on the right').toBeLessThan(20);
 
     await page.click('#panel .pclose');
@@ -411,7 +411,7 @@ test.describe('the filter popover reset', () => {
     await expect(page.locator('#facets .fhead h2')).toHaveText('Filters');
     await expect(clear).toHaveText('Clear');
 
-    // Named region rather than an unlabelled one.
+    // Named region rather than an unlabeled one.
     await expect(page.locator('#facets'))
       .toHaveAttribute('aria-labelledby', 'facets-title');
 

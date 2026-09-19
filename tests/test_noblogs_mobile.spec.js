@@ -13,7 +13,7 @@ const HOST = process.env.HOST || 'http://localhost:4000';
 // the DOM but not on screen, and Playwright's default `visible` wait times out
 // on all of them. A .card wait means "the index has loaded and rendered", which
 // is what these tests are actually gating on. Only the handful that need to
-// CLICK a card, or that assert dashboard behaviour, ask for it visible — and
+// CLICK a card, or that assert dashboard behavior, ask for it visible — and
 // those navigate to ?view=dash so they are honest about which view they are in.
 
 test.describe('noblogs on a phone', () => {
@@ -293,7 +293,7 @@ test.describe('noblogs graph logo payload', () => {
 
 // data.json is split at build time into an index the page paints from and a
 // detail payload prefetched after first paint. The hard requirement is zero
-// change in what is presented, so these check behaviour rather than bytes.
+// change in what is presented, so these check behavior rather than bytes.
 test.describe('noblogs deferred detail', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 

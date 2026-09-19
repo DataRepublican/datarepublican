@@ -20,7 +20,7 @@ title: TrumpBlogs formerly known as NoBlogs
      TOOL styling the document body, and it wins over Tailwind's `bg-surface`
      because main.css emits that at element specificity and this rule comes
      later in source order. That is why --bg has to be the site surface and not
-     a warm grey of this tool's own; it was #F7F7F5, and the masthead and nav
+     a warm gray of this tool's own; it was #F7F7F5, and the masthead and nav
      above the tool sat on a different background from every other page. */
   body{
     /* What the canvas and the sidebar beside it are allowed to be: the window,
@@ -159,7 +159,7 @@ title: TrumpBlogs formerly known as NoBlogs
      This was a <div> with the click handler on the row and `pointer-events:none`
      on the checkbox, because a <label> "double-fired": the label forwarded the
      click to the input, and that click bubbled back to the row handler, so the
-     two toggles cancelled and only a pixel-perfect hit on the checkbox worked.
+     two toggles canceled and only a pixel-perfect hit on the checkbox worked.
      The label was never the problem — the row handler was. Listening to the
      input's `change` fires exactly once however the control is operated.
 
@@ -183,7 +183,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .fitem .sw{width:12px;height:12px;border-radius:50%;flex:none;
     border:1px solid rgba(0,0,0,.25);margin-right:1px}
   /* The ring goes on the row, not the 13px checkbox, so the focused thing and
-     the labelled thing are the same shape. */
+     the labeled thing are the same shape. */
   .fitem:focus-within{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
   .fitem input:focus-visible{outline:none}
   /* Fixed-width slot: the counts form a lane instead of aligning by luck. */
@@ -225,7 +225,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .thumbwrap img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
   /* ---- The card ----------------------------------------------------------
      Every line of it was under 12px — 10, 10.5 and 11.5 — which made the main
-     content of the library view the smallest type in the tool, on a grey
+     content of the library view the smallest type in the tool, on a gray
      ground. The scale's floors apply here as much as in the detail panel:
      12px for a label, 13px for anything read as a sentence. .cname goes up
      with them so the title still leads. */
@@ -249,12 +249,12 @@ title: TrumpBlogs formerly known as NoBlogs
   .cfoot{display:flex;gap:9px;margin-top:auto;font-size:var(--dr-text-label,12px);color:var(--dr-ink-faint,#6B7280);padding-top:4px}
   .cfoot .on{color:var(--news)}
   /* An empty state is the only thing on screen when it shows, so it reads at
-     body size. 13px on a grey ground was the smallest copy in the tool. */
+     body size. 13px on a gray ground was the smallest copy in the tool. */
   .empty{color:var(--dim);padding:40px;text-align:center;font-size:var(--dr-text-body,16px);line-height:1.5}
   .ph{color:var(--dim);padding:60px 40px;text-align:center;max-width:560px;margin:0 auto}
   .ph h2{color:var(--ink)}
   .ph code{background:#EEE;padding:1px 5px;border-radius:4px}
-  /* Geometry comes from .dr-btn now; only the centring is local. It used to be
+  /* Geometry comes from .dr-btn now; only the centering is local. It used to be
      a 10px-radius box about 39px tall, which missed the 44px target. */
   .loadmore{display:flex;margin:22px auto}
 
@@ -287,7 +287,7 @@ title: TrumpBlogs formerly known as NoBlogs
   /* Flex column in every form, so `.pclose` has one way to reach the trailing
      edge. `float:right` only works in the block form; the sidebar form is a
      flex container, where a float is inert and the button stretched full width
-     with its glyph centred. */
+     with its glyph centered. */
   #panel{position:fixed;top:0;right:0;bottom:0;
     width:clamp(320px, 30vw, 392px);max-width:94vw;background:var(--panel);
     border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:var(--dr-z-panel,60);
@@ -390,9 +390,9 @@ title: TrumpBlogs formerly known as NoBlogs
 
   /* One label recipe, five sites.
      These were five styles doing one job — 10px and 11px, four different
-     letter-spacings, three different greys, all uppercase. Sentence case is
+     letter-spacings, three different grays, all uppercase. Sentence case is
      deliberate: see the note on fontSize.label in tailwind.config.js. 10px
-     shouted text on a grey ground was the worst-read copy in the tool.
+     shouted text on a gray ground was the worst-read copy in the tool.
      Last, so it beats the five rules above it on source order; each of them
      keeps only its own margins, weight and display. */
   .kpi .k, .sec h4, .q .qhd, .ctlab, details.news>summary{
@@ -698,7 +698,7 @@ title: TrumpBlogs formerly known as NoBlogs
   <button class="pclose" onclick="closeModal()" data-tip="Close and go back to the categories">✕</button>
   {%- comment -%}
     What the sidebar shows when nothing is selected. Category rather than an
-    empty-state sentence, because on a map it is also the colour key — the one
+    empty-state sentence, because on a map it is also the color key — the one
     filter group you reach for while looking at the pins. buildFacets() fills
     it; the rows are the same control as the ones in the popover, so both
     copies carry the state.
@@ -720,14 +720,14 @@ const COUNTRYNAME={DE:"Germany",IT:"Italy",FR:"France",ES:"Spain",US:"United Sta
   AT:"Austria",CH:"Switzerland",GR:"Greece",GB:"UK",NL:"Netherlands",BE:"Belgium",CL:"Chile",
   MX:"Mexico",CA:"Canada",PL:"Poland",RU:"Russia",AR:"Argentina",SE:"Sweden",FI:"Finland"};
 const THUMB=h=>`thumbs/${h}.webp`;
-/* Category → colour. THE ONLY COPY in this page — do not derive it from the
+/* Category → color. THE ONLY COPY in this page — do not derive it from the
  * DOM again; the legend it used to be scraped from has been deleted.
  *
  * map_data.js bakes the same hexes into each pin's fill, so these must match it
  * or the facet swatches lie about the map. Literals on purpose: this is the
  * data encoding, not theme (see --dr-data-* in tokens.css).
  *
- * `cultural_art_music` has no colour of its own and draws as `other`. */
+ * `cultural_art_music` has no color of its own and draws as `other`. */
 const CATCOLOR={
   antifascist:'#2C3E50', radical_counterinfo_media:'#8E44AD', anarchist:'#C0392B',
   prisoner_solidarity:'#E74C3C', location_based_group:'#2980B9',
@@ -910,7 +910,7 @@ function buildFacets(){
   let h=`<div class="fhead"><h2 id="facets-title">Filters</h2>`
     +`<button type="button" class="clearf" onclick="clearAll()"${nSet?'':' disabled'}>Clear</button></div>`;
   h+=grpMap();
-  /* Category first. It is the group that carries the map's colour encoding, so
+  /* Category first. It is the group that carries the map's color encoding, so
      it is the one you reach for while looking at the map — and in the popover
      on a phone, anything below the first group is behind a scroll. */
   h+=grp("Category","cat",order(cat),CATLABEL,CATCOLOR);
@@ -926,9 +926,9 @@ function buildFacets(){
   bindFacets(el);
 
   /* The sidebar draws Category a SECOND time, beside the canvas, where it also
-     serves as the map's colour key. The popover keeps its copy: once a blog is
+     serves as the map's color key. The popover keeps its copy: once a blog is
      picked the detail takes the sidebar over, and without it there would be no
-     way to recolour the map while reading one.
+     way to recolor the map while reading one.
 
      Two presentations of one control. They cannot drift because neither holds
      state — both are rendered from F here, on every change, and bound the same
@@ -950,8 +950,8 @@ function grp(title,f,entries,labelmap,colors){
     const on=F[f].has(v); const lab=labelmap&&labelmap[v]?labelmap[v]:(v==="—"?"(none)":v);
     /* The swatch is how a category filter connects to the map behind it. With
        the popover open the map legend is covered, so without this there is no
-       way to tell which colour "anarchist" is while you are choosing it.
-       aria-hidden because the label already names the category — the colour is
+       way to tell which color "anarchist" is while you are choosing it.
+       aria-hidden because the label already names the category — the color is
        a second encoding of the same thing, not extra information. */
     const sw=colors&&colors[v]?`<span class="sw" style="background:${colors[v]}" aria-hidden="true"></span>`:'';
     h+=`<label class="fitem ${on?'act':''}" data-f="${esc(f)}" data-v="${esc(v)}">
@@ -1481,7 +1481,7 @@ document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(
   if(SEL&&(view==='map'||view==='graph'))pendingFocus=SEL;
   syncURL(); if(view==='map')showMap(); if(view==='graph')showGraph();};
 /* Arrow keys move between tabs and activate as they go, which is the expected
-   behaviour for a tablist whose panels are already in the DOM. Home and End
+   behavior for a tablist whose panels are already in the DOM. Home and End
    jump to the ends. Space and Enter need no handler — these are <button>s. */
 document.getElementById('tabs').onkeydown=e=>{
   const keys={ArrowRight:1,ArrowLeft:-1,Home:'first',End:'last'};

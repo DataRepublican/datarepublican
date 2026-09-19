@@ -168,15 +168,15 @@ module.exports = {
 
            Two things these encode that are not obvious from the hexes:
 
-           The old tool greys are WARM (#E2E2DD, #F1F1EC, #F7F7F3, #D5D5CE) and
+           The old tool grays are WARM (#E2E2DD, #F1F1EC, #F7F7F3, #D5D5CE) and
            `surface` above is COOL. That split is why the tools read as a
            different site pasted onto the page, so every replacement below is
            cool.
 
            And chrome has no hue. The old accent was #C0392B, which is
            byte-identical to the `anarchist` swatch on the map legend — so
-           "selected" and "anarchist" were the same colour. `accent` is near-ink
-           instead: selected reads as darker, never as a colour, which is the
+           "selected" and "anarchist" were the same color. `accent` is near-ink
+           instead: selected reads as darker, never as a color, which is the
            only way chrome stays out of the way of thirteen encoded categories.
            Red now lives only in the data namespace below. */
         accent: '#252739',            // selected, active, pressed, focus ring

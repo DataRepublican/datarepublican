@@ -27,7 +27,7 @@ permissions:
   pages: write
   id-token: write
 
-# Never run two deploys at once, and never cancel one in flight — a cancelled
+# Never run two deploys at once, and never cancel one in flight — a canceled
 # deploy can leave Pages serving a partial upload.
 concurrency:
   group: pages

@@ -5,7 +5,7 @@ const HOST = process.env.HOST || 'http://localhost:4000';
 /* Interface labels stopped shouting, and the result count started speaking.
  *
  * There were THIRTEEN rules doing one job across three files — 10px, 10.5px and
- * 11px, four different letter-spacings, three different greys, every one of them
+ * 11px, four different letter-spacings, three different grays, every one of them
  * uppercase. They are now one recipe per file, all reading the same tokens.
  *
  * Asserting `textTransform: none` is the point rather than a nicety: it is the
@@ -82,7 +82,7 @@ for (const t of LABELS) {
 /* The library card.
  *
  * Every line of it was under 12px — 10, 10.5 and 11.5 — which made the main
- * content of the library view the smallest type in the tool, on a grey ground.
+ * content of the library view the smallest type in the tool, on a gray ground.
  * The detail panel got fixed first; the cards that lead to it did not.
  *
  * The floors are the scale's: 12px for a label, 13px for anything read as a
@@ -136,7 +136,7 @@ for (const [w, h, floor] of [[1280, 900, 32], [390, 844, 44]]) {
 /* Empty and loading states read at body size.
  *
  * They are the only thing on screen when they show, and they were the smallest
- * copy in the tool — 13px grey on a grey ground. */
+ * copy in the tool — 13px gray on a gray ground. */
 test('the map loading veil reads at body size and announces itself', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });

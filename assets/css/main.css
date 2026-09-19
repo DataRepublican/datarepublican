@@ -73,7 +73,7 @@
   /* The narrative measure, shared by /about/ and /donate/.
      One class, because the two pages had set this independently and drifted:
      About was `max-w-[46rem]` with lede type, Donate was `max-w-3xl` (48rem)
-     with default body type and centred with mx-auto. Change the measure here
+     with default body type and centered with mx-auto. Change the measure here
      and both move together. */
   .text-column {
     @apply mt-5 text-lede leading-relaxed;
@@ -273,7 +273,7 @@
    ================================================================ */
 
 /* ---- Tool shell -----------------------------------------------------
-   Shared behaviour for the graph and map tools. See assets/js/sheet.js for
+   Shared behavior for the graph and map tools. See assets/js/sheet.js for
    why the detail panel becomes a sheet below 768px. */
 
 /* A canvas sized to what is left of the viewport, never taller. The old
@@ -376,7 +376,7 @@
      have had to leave a hole in its own top-right corner.
 
      44px here reserves that space once, for all of them. The bar stays
-     optically centred because the grip is a flex row rather than padding. */
+     optically centered because the grip is a flex row rather than padding. */
   .dr-sheet__grip {
     display: flex;
     align-items: center;

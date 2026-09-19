@@ -32,11 +32,11 @@
   at every width made the row half again as tall as the design called for.
 
   Hover: a white fill at md, a flat tint below it. White is the choice because
-  the page ground is #E5E7EB — a white pill reads as raised against a grey
+  the page ground is #E5E7EB — a white pill reads as raised against a gray
   ground, where the phone's translucent white would disappear into it. The
   current item wears the same white fill, so hovering an inactive item previews
   exactly what being current looks like rather than introducing a third
-  treatment. Both are colour-only transitions, so nothing shifts under the
+  treatment. Both are color-only transitions, so nothing shifts under the
   cursor.
 {%- endcomment -%}
 
@@ -52,7 +52,7 @@
 <div class="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-28 bg-gradient-to-b from-transparent to-surface/80 md:hidden" aria-hidden="true"></div>
 
 {%- comment -%}
-  `page-column` is what centres the fixed pill on a phone. At md the nav is a
+  `page-column` is what centers the fixed pill on a phone. At md the nav is a
   flex child of the wordmark row, so every part of that shell has to be undone
   explicitly — the measure, the auto margins, the gutter and the full width.
   Tailwind's utilities layer is emitted after components, so `md:max-w-none`

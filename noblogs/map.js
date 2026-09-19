@@ -74,7 +74,7 @@
       }
 
       // A pin tap opens the shared drawer directly when embedded — the extra
-      // popup step was a frame artefact. Standalone keeps the popup, which is
+      // popup step was a frame artifact. Standalone keeps the popup, which is
       // the only detail surface that page has.
       if (!standalone) {
         m.on('click', function () { openDetail(d.host); });
@@ -86,7 +86,7 @@
           + ' &middot; ' + esc(String(d.cat).replace(/_/g, ' '))
           + (d.militancy && d.militancy !== 'none' ? ' &middot; militancy: ' + esc(d.militancy) : '')
           + '</div><div>' + (d.summary || '') + '</div>'
-          // Restores master's behaviour exactly: the hostname is shown either way,
+          // Restores master's behavior exactly: the hostname is shown either way,
           // as a link for a normal blog and as a withheld notice for a flagged one.
           // An earlier rewrite dropped both the hostname and the outbound link,
           // which on this page - where the popup IS the detail view - left no way

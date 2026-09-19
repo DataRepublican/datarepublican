@@ -88,7 +88,7 @@ test.describe('the standalone map legend filters from a keyboard', () => {
   });
 });
 
-/* Category is the map's colour key, so on a canvas view at md it lives in the
+/* Category is the map's color key, so on a canvas view at md it lives in the
  * sidebar beside the canvas and NOT in the filter popover — one group rendered
  * in two places at once is the duplication the sidebar removed. Below md, and
  * on the List view, the popover is still where it is, because neither has a
@@ -116,7 +116,7 @@ test.describe('the explorer filters categories from the facet panel', () => {
     await page.waitForSelector('.leaflet-control-zoom', { timeout: 90000 });
 
     // The deleted card sat exactly here. Whatever is on top of the zoom
-    // control's centre must be the zoom control.
+    // control's center must be the zoom control.
     const owns = await page.evaluate(() => {
       const z = document.querySelector('.leaflet-control-zoom').getBoundingClientRect();
       const hit = document.elementFromPoint(z.left + z.width / 2, z.top + z.height / 2);
@@ -130,16 +130,16 @@ test.describe('the explorer filters categories from the facet panel', () => {
     const rows = page.locator('#nb-side-cats .fitem[data-f="cat"]');
     expect(await rows.count()).toBeGreaterThan(10);
 
-    // The colour encoding has to survive the legend's deletion: CATCOLOR used
+    // The color encoding has to survive the legend's deletion: CATCOLOR used
     // to be scraped out of that markup at load time.
     const swatches = await rows.evaluateAll(els => els.map(e => {
       const sw = e.querySelector('.sw');
       return sw ? getComputedStyle(sw).backgroundColor : null;
     }));
     expect(swatches.filter(Boolean).length,
-      'category rows lost their colour swatches').toBe(swatches.length);
+      'category rows lost their color swatches').toBe(swatches.length);
     expect(new Set(swatches).size,
-      'every category is painted the same colour — CATCOLOR is not resolving')
+      'every category is painted the same color — CATCOLOR is not resolving')
       .toBeGreaterThan(5);
 
     // And counts, which the legend never had.
@@ -191,7 +191,7 @@ test.describe('the explorer filters categories from the facet panel', () => {
   /* Category is drawn twice on a canvas view and the two cannot be allowed to
      drift. Neither copy holds state — buildFacets() renders both out of F on
      every change — but that is exactly the kind of invariant that survives
-     until someone optimises one of the two rebuilds away. */
+     until someone optimizes one of the two rebuilds away. */
   test('both copies of Category track the same state', async ({ page }) => {
     const read = () => page.evaluate(() => {
       const of = root => [...document.querySelectorAll(

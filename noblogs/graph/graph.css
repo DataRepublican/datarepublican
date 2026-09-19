@@ -8,7 +8,7 @@
  *
  * Both graph/index.html and the explorer's Graph tab load this file.
  */
-/* One base rule. There were two: the first with literal colours, the second
+/* One base rule. There were two: the first with literal colors, the second
    with var(--ink)/var(--bg) — and the second won on source order. That was
    backwards, because the standalone /noblogs/graph/ page loads no site
    stylesheet at all, so those variables resolved to nothing there and the rule
@@ -103,7 +103,7 @@
      the ON state cannot be the loud one — a whole panel of filled pills reads
      as "all selected" rather than "all shown", and the state stops meaning
      anything. The checkbox is what says "this is a toggle"; the swatch beside
-     it stays the colour key. Same shape as the filter panel's category rows,
+     it stays the color key. Same shape as the filter panel's category rows,
      which do the same job with real <input type=checkbox>.
 
      A box drawn in CSS rather than a real checkbox because the row is already

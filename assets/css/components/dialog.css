@@ -139,11 +139,11 @@
 .dr-dialog__body > p:last-child { margin-bottom: 0; }
 
 /* ---- Phone -------------------------------------------------------------
-   Bottom-anchored, full width, square at the bottom edge. A centred card on a
+   Bottom-anchored, full width, square at the bottom edge. A centered card on a
    390px screen wastes the two safest thumb zones and puts the close button at
    the top of a reach it does not need to be at.
 
-   `margin: auto auto 0` keeps the UA's horizontal centring and drops the
+   `margin: auto auto 0` keeps the UA's horizontal centering and drops the
    vertical, which is what pins it to the bottom. */
 @media (max-width: 767px) {
   .dr-dialog {

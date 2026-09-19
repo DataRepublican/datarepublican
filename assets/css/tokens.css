@@ -31,7 +31,7 @@
   --dr-ink-muted:    theme('colors.ink-muted');     /* #5A5A5A meta            */
   --dr-ink-faint:    theme('colors.ink-faint');     /* #6B7280 counts, hints   */
 
-  /* ---- Lines and fills. Cool, replacing seven near-duplicate warm greys. -- */
+  /* ---- Lines and fills. Cool, replacing seven near-duplicate warm grays. -- */
   --dr-line:         theme('colors.line');          /* decorative hairlines    */
   --dr-line-strong:  theme('colors.line-strong');   /* interactive borders     */
   --dr-fill:         theme('colors.fill');          /* tracks, hover           */
@@ -98,16 +98,16 @@
   --dr-z-skip:       100;   /* the skip link. Must beat everything. */
 }
 
-/* Data-encoding colours.
+/* Data-encoding colors.
  *
- * A restyle must NOT touch these. The map legend, the pin colours and the
+ * A restyle must NOT touch these. The map legend, the pin colors and the
  * LAYER/IDEOLOGY palettes inside noblogs/graph/graph.js and
  * dsa-explorer/index.html all agree on these hexes; changing one here without
  * changing the JS makes the legend lie about the picture it labels.
  *
  * Listed so they are visible and versioned, not so they are themeable. They are
  * literals because they are data, not design — which is also why they are the
- * only saturated colour the system permits on screen. */
+ * only saturated color the system permits on screen. */
 :root {
   --dr-data-money:  #1B7F4B;
   --dr-data-party:  #C0392B;

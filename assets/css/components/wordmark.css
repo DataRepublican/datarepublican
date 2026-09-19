@@ -29,7 +29,7 @@
 }
 
 /* The link is the wordmark, not a link that happens to be in it. Everything
-   the global `a` rule sets — colour, weight, underline — has to come back off,
+   the global `a` rule sets — color, weight, underline — has to come back off,
    and `font: inherit` is what keeps the weight correct if the type above ever
    changes. */
 .dr-wordmark a {

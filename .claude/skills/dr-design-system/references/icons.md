@@ -46,7 +46,7 @@ that appears nowhere else.
 ## Why this matters on a phone
 
 The mobile toolbar is a horizontal scroll rail along the canvas bottom edge.
-Icon-only fits **six controls where three labelled ones did**, inside the same
+Icon-only fits **six controls where three labeled ones did**, inside the same
 thumb reach — which is most of the argument for doing this at all.
 
 ## Current set

@@ -24,7 +24,7 @@ what `theme()` gives free); maintaining both by hand (guaranteed drift).
 
 `tokens.css` is **outside `@layer`** — `:root` is not a class Tailwind scans for.
 
-## Colour
+## Color
 
 ### Chrome — no hue
 
@@ -49,7 +49,7 @@ Two non-negotiables:
 - **`line-strong` must clear 3:1 on white.** WCAG 1.4.11 governs UI component
   boundaries. The old `rule` `#B0B0B0` is ~2.1:1 and fails. Keep `rule` for the
   masthead rule and the sheet grip, where it is decorative.
-- **Every muted grey in the old tools fails 4.5:1** — `#999` is 2.85:1. `#888`,
+- **Every muted gray in the old tools fails 4.5:1** — `#999` is 2.85:1. `#888`,
   `#9a9ea6` and `#a8aab0` likewise. Use `ink-muted` or `ink-faint`.
 
 ### Data — the separate namespace

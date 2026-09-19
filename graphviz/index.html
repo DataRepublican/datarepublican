@@ -540,7 +540,7 @@ async function downloadSVG () {
   const viz = new Viz();
   let svgText = await viz.renderString(currentDot);   // pristine output
 
-  // --- normalise <svg> attributes ----------------------------------------
+  // --- normalize <svg> attributes ----------------------------------------
   const parser = new DOMParser();
   const doc    = parser.parseFromString(svgText, 'image/svg+xml');
   const svgEl  = doc.documentElement;

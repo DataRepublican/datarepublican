@@ -47,7 +47,7 @@ test.describe('graph chrome survives the extraction', () => {
   test('the canvas carries no search field of its own', async ({ page }) => {
     await load(page);
     /* There were three versions of a canvas search here — a 270px field parked
-       top-centre, then one hidden behind a toolbar button, then one growing out
+       top-center, then one hidden behind a toolbar button, then one growing out
        of that button — before the answer turned out to be that the graph should
        not have its own field at all. The explorer's header field IS the graph's
        search on this view (NBGraph.find), so a second box is a second place to
@@ -243,7 +243,7 @@ test.describe('the masthead is not restyled by a tool', () => {
 
 // Every band of site chrome stops at the shell measure. The banner and the
 // footer used to be full-bleed: on a window wider than the shell the yellow
-// band ran edge to edge past a centred masthead, and the footer rule with it.
+// band ran edge to edge past a centered masthead, and the footer rule with it.
 //
 // The banner's COLOR is full-bleed again, deliberately — see the comment in
 // _includes/banner.html. What is measured here is its content column, which is

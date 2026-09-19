@@ -159,7 +159,7 @@ the heuristic lasts.
 Without `--livereload` the header reaches every response, so nothing the dev
 server sends is cacheable and a plain refresh is always current. The cost is
 that the page no longer reloads by itself. If you put the flag back, expect the
-CSS-caching behaviour back with it.
+CSS-caching behavior back with it.
 
 Dropping `--incremental` instead was tried and reverted. Full rebuilds of this
 repo are not the five seconds a cold `jekyll build` suggests; under the watcher
@@ -182,7 +182,7 @@ rebuilds the stylesheet (measured: under 5 seconds). Two details matter:
   not a TTY, which is exactly how `run-p` starts it. With plain `--watch` the
   process disappeared without an error and the CSS silently stopped rebuilding.
 - **`--postcss postcss.config.js`** keeps autoprefixer in the chain. Output was
-  verified byte-identical to the old PostCSS build after normalising whitespace,
+  verified byte-identical to the old PostCSS build after normalizing whitespace,
   so dev and production CSS do not diverge.
 
 Two things to know while it is running:
@@ -389,7 +389,7 @@ while an invisible overlay eats every tap a real thumb makes.
   rule and nav never change size between the tools index, a tool and a
   narrative page. That includes the chrome above and below the content: the
   announcement band and the footer take `.page-column` too, so nothing runs
-  edge to edge past a centred masthead on a wide window. The only things wider
+  edge to edge past a centered masthead on a wide window. The only things wider
   than the shell are `position: fixed` overlays, which are meant to cover the
   viewport. There is deliberately no per-page width setting: a `width`
   front-matter key used to switch the shell between the full width and 1024px,

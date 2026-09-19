@@ -39,18 +39,18 @@ current values from them.
 ## The direction, in one line
 
 A cool, near-monochrome instrument — fog ground, near-black chrome, white data
-surfaces — so the only saturated colour on screen is the data itself.
+surfaces — so the only saturated color on screen is the data itself.
 
 Two findings hold it up, and both are measurable:
 
-1. The page ground `#E5E7EB` is **cool**; every grey inside the tools is **warm**
+1. The page ground `#E5E7EB` is **cool**; every gray inside the tools is **warm**
    (`#E2E2DD`, `#F1F1EC`, `#F7F7F3`, `#F0F0EA`, `#D5D5CE`, …). That temperature
    split is why the tools read as a different site pasted onto the page.
 2. The old chrome accent `#C0392B` is **byte-identical to the `anarchist`
    category swatch**. Chrome was colliding with data.
 
 Hence: **chrome has no hue.** `--color-accent` is `#252739`, a near-ink navy.
-Selected reads as *darker*, never as *a colour*. Red survives only as a data
+Selected reads as *darker*, never as *a color*. Red survives only as a data
 value — doxxing flags, target edges, the anarchist swatch — never as chrome.
 
 ## The nine prohibitions
@@ -86,7 +86,7 @@ Each of these has already happened here, or is one edit away.
    in source order. That is why `--bg` must be the site surface — it was
    `#F7F7F5`, and the masthead and nav sat on a different ground from every
    other page. Declaring the variable elsewhere does not fix that; matching the
-   colour does.
+   color does.
 
 4. **Never out-bid a vendored z-index. Contain it.** `isolation: isolate` on the
    element wrapping the vendor's DOM. Leaflet numbers its panes 400/800/1000 and
@@ -151,7 +151,7 @@ Each of these has already happened here, or is one edit away.
   legal text as a modal, display options kept out of the filter badge, and the
   six failures that produced each rule. It ends in a checklist.
 - `references/tokens.md` — the palette, scales, and the `theme()` → `:root` direction
-- `references/components.md` — the `.dr-*` catalogue, current → target per component
+- `references/components.md` — the `.dr-*` catalog, current → target per component
 - `references/icons.md` — Lucide, and when an icon may replace a word
 - `references/contracts.md` — APIs a refactor must not break
 - `references/traps.md` — each trap with a reproduction and a detection command
@@ -167,7 +167,7 @@ Where dsa differs, and why — these are not omissions:
 - **No view toggle.** It has one view, so row 2 of the header is just search.
 - **The search is in the header** and nowhere else: it is the tool's only
   search, so there is no page/canvas split to make. It finds, never filters.
-- **The legend stays on the canvas.** It is dsa's colour key AND its only
+- **The legend stays on the canvas.** It is dsa's color key AND its only
   filter, and unlike the noblogs map there is no facet panel to fold it into.
   Building a popover to hold one control is worse than leaving it where it
   doubles as the key.
