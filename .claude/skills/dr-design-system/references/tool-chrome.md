@@ -141,15 +141,24 @@ from four columns to two. Below md both forms become the same bottom sheet.
 toggle a class; the placement is CSS keyed on `body[data-view]`. If the
 placement rules reach into the open/close path, you have two mechanisms.
 
-**The band is rounded, and only on its outer corners.** `--dr-radius-lg`, with
-`overflow: hidden` — that second part is what makes the corners real, because
-Leaflet's tiles and Cytoscape's canvas are opaque children that square them off
-otherwise. Where the tool has a wrapper around the whole band (noblogs'
-`#nb-stage`) one rule does it. Where the canvas and the panel are separate grid
-children (dsa-explorer, whose header shares the grid so there is nothing to
-wrap) each takes the two corners on its own side and the seam between them
-stays square. `position: fixed` chrome — the overlay drawer, the phone sheet —
-is not clipped by any of this: its containing block is the viewport.
+**The band is a closed box**: a 1px rule all the way around, `--dr-radius-lg`
+on its outer corners, and `overflow: hidden`. That last part is what makes the
+corners real — Leaflet's tiles and Cytoscape's canvas are opaque children that
+square them off otherwise.
+
+**The header draws no rule above it.** Both tools had a `border-bottom` on the
+tool header, which runs the page's full width and cuts straight across the
+corner the radius has just drawn. One box's edge, not two lines meeting at a
+tangent. A view with no band — noblogs' List — keeps the header rule, because
+there is nothing else there to separate it from.
+
+Where the tool has a wrapper around the whole band (noblogs' `#nb-stage`) one
+rule does it. Where the canvas and the panel are separate grid children
+(dsa-explorer, whose header shares the grid so there is nothing to wrap) the
+box is drawn in halves: each takes the border and the two corners on its own
+side, and the seam between them is the panel's `border-left`. `position: fixed`
+chrome — the overlay drawer, the phone sheet — is not clipped by any of this:
+its containing block is the viewport.
 
 ### Drawing one control in two places
 
@@ -607,7 +616,8 @@ was.
 - [ ] The detail is a column of the canvas, not a drawer over the page; it is
       never empty, the close only exists with a selection, and there is no
       scrim. A view with no canvas keeps the overlay.
-- [ ] The canvas band is rounded on its outer corners with `overflow: hidden`.
+- [ ] The canvas band is a closed box: 1px rule all the way around, rounded on
+      its outer corners, `overflow: hidden`. The header draws no rule above it.
 - [ ] A control drawn in two places holds no state: both rendered from the one
       source on every change, both bound by the same binder, and anything
       reading the DOM back names which container it means.

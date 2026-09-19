@@ -188,11 +188,33 @@ test.describe('the canvas-view sidebar', () => {
       await page.waitForSelector(sel, { timeout: 90000 });
       const cs = await page.locator(sel).evaluate(e => {
         const s = getComputedStyle(e);
-        return { tl: parseFloat(s.borderTopLeftRadius), oflow: s.overflow };
+        return {
+          tl: parseFloat(s.borderTopLeftRadius), oflow: s.overflow,
+          top: parseFloat(s.borderTopWidth), left: parseFloat(s.borderLeftWidth),
+          bottom: parseFloat(s.borderBottomWidth),
+        };
       });
       expect(cs.tl, 'the band is not rounded').toBeGreaterThan(6);
       expect(cs.oflow, 'the radius is decorative — the canvas paints over it')
         .toBe('hidden');
+      // The rule goes around the box, not across the page above it — a
+      // full-width border-bottom on the header cut straight through the
+      // corner the radius had just drawn.
+      expect([cs.top, cs.left, cs.bottom], 'the box is not closed')
+        .toEqual([1, 1, 1]);
+    });
+  }
+
+  for (const [name, url, sel] of [
+    ['noblogs', '/noblogs/?view=map', '#nb-header'],
+    ['dsa-explorer', '/dsa-explorer/', '#dsa-header'],
+  ]) {
+    test(`${name}: the header draws no rule above the band`, async ({ page }) => {
+      await page.goto(HOST + url, { waitUntil: 'domcontentloaded' });
+      await page.waitForSelector(sel, { timeout: 90000 });
+      const w = await page.locator(sel).evaluate(
+        e => parseFloat(getComputedStyle(e).borderBottomWidth));
+      expect(w, 'the rule runs the page width across the band’s corners').toBe(0);
     });
   }
 });

@@ -55,8 +55,12 @@ title: TrumpBlogs formerly known as NoBlogs
      viewport width and content length, so --nb-header-h moved unpredictably —
      and the map's height is calculated from it. */
   #nb-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30);background:var(--bg);
-    border-bottom:1px solid var(--dr-line,var(--line));
     padding:10px 0 12px;display:flex;flex-direction:column;gap:10px}
+
+  /* The canvas views draw their own box, so the rule would run the page's full
+     width straight across its rounded corners. The List view has no box and
+     still needs the separator. */
+  body[data-view="dash"] #nb-header{border-bottom:1px solid var(--dr-line,var(--line))}
 
   .nb-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
   .nb-id{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -249,7 +253,11 @@ title: TrumpBlogs formerly known as NoBlogs
      Cytoscape's canvas are opaque children that would otherwise square them
      off. It does not touch #panel in its overlay form or the phone sheet —
      both are position:fixed, whose containing block is the viewport. */
-  #nb-stage{border-radius:var(--dr-radius-lg,.75rem);overflow:hidden}
+  /* On the List view #nb-stage still holds the hidden canvases and the overlay
+     #panel, so a border there would draw a 2px-tall box under the header. */
+  body[data-view="map"] #nb-stage,
+  body[data-view="graph"] #nb-stage{border:1px solid var(--dr-line,var(--line));
+    border-radius:var(--dr-radius-lg,.75rem);overflow:hidden}
 
   /* ---- Detail panel ------------------------------------------------------
      ONE panel, two placements. On the canvas views at md it is a COLUMN beside
