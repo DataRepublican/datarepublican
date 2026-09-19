@@ -5,49 +5,215 @@ title: TrumpBlogs formerly known as NoBlogs
 
 <style>
   /* --- Fit this full-viewport app under the DataRepublican layout chrome --- */
-  /* Cancel the padded wrapper <main> ONLY (direct child); the app's own inner <main> keeps its padding. */
-  #main-content > main{padding:0 !important;max-width:none !important;min-height:0 !important}
-  :root{
-    --bg:#F7F7F5;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;--line2:#EDEDE8;
+  /* `body`, never `:root` — prohibition 3. A tool's variables belong to the
+     tool, not to the document element.
+
+     `body` and NOT `body[data-view]`, which is what the skill used to
+     prescribe: `data-view` is set by JS after parse, so between first paint
+     and that assignment the selector matches nothing and every `var(--…)`
+     below it resolves to its fallback — or, for the many that have none, to
+     nothing at all. A flash of unstyled tool is a worse bug than the one the
+     scoping prevents. Plain `body` has no such coupling and still keeps these
+     off the document element.
+
+     NOTE the substantive half of this: `body{background:var(--bg)}` below is a
+     TOOL styling the document body, and it wins over Tailwind's `bg-surface`
+     because main.css emits that at element specificity and this rule comes
+     later in source order. That is why --bg has to be the site surface and not
+     a warm gray of this tool's own; it was #F7F7F5, and the masthead and nav
+     above the tool sat on a different background from every other page. */
+  body{
+    /* What the canvas and the sidebar beside it are allowed to be: the window,
+       less the distance from the document top down to the band, less the fixed
+       phone nav, less the band's own two border lines — the height goes on the
+       children and the border is on #nb-stage around them, so it is not in
+       their box.
+
+       --nb-stage-top is measured; the 7rem fallback only has to be sane before
+       the script runs. */
+    --nb-band-line:1px;
+    --nb-band-h:calc(100dvh - var(--nb-stage-top,7rem) - var(--nav-clearance) - var(--nb-band-line) * 2);
+
+    --bg:#E5E7EB;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;
     --accent:#C0392B;--hi:#C0392B;--med:#B8860B;--low:#4A6FA5;--news:#1B7F4B;--gold:#B8860B;
     --tile:#F1F1EC;--tile2:#F7F7F3;--link:#1155CC;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
     font:14px/1.45 "Libre Franklin",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-  header{position:sticky;top:0;z-index:600;background:#fff;border-bottom:1px solid var(--line);
-    padding:11px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  h1{margin:0;font-size:18px;font-weight:700;letter-spacing:.2px}
-  h1 .gold{color:var(--gold)}
-  .sub{color:var(--dim);font-size:12px}
-  .disclaimer{flex-basis:100%;margin:7px 0 0;padding:6px 10px;border:1px solid #E4C9A0;
-    background:#FBF3E4;border-radius:4px;font-size:10.5px;line-height:1.42;color:#6B5A3E}
-  .disclaimer strong{color:#8A5A1A}
-  .grow{flex:1}
-  #search{background:#fff;border:1px solid var(--line);color:var(--ink);border-radius:20px;
-    padding:8px 14px;font-size:13.5px;width:340px;max-width:48vw;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-  #search::placeholder{color:#9a9ea6}
-  #search:focus{outline:none;border-color:#c9c9c0}
-  .tabs{display:flex;gap:4px;background:#F0F0EA;border:1px solid var(--line);border-radius:10px;padding:3px}
-  .tab{padding:6px 15px;border-radius:8px;cursor:pointer;color:var(--dim);font-size:13px;font-weight:600;user-select:none}
-  .tab.on{background:var(--accent);color:#fff}
+  /* The tool's own chrome — header, facet rail, detail drawer — sits on the
+     page ground rather than on white panels. All three still need an OPAQUE
+     fill, not `transparent`: the header is sticky and the drawer is fixed, so
+     content scrolls underneath both of them.
+
+     #nb-header, not a bare `header`. The site masthead in _layouts/default.html
+     is also a <header>, so the bare selector styled that too: it turned the
+     masthead into a flex container, which collapsed the wordmark block to its
+     content width and left the 5/3/2 rule stopping a third of the way across
+     the page. It also made the masthead sticky at z-index 600. The JS below
+     had the matching bug — `querySelector('header')` returns the masthead,
+     because it comes first in the DOM. */
+  /* No horizontal padding of its own. The page shell (`main.page-column`) has
+     already set the 20px gutter, so anything this header adds pushes the
+     title, the search field and the disclaimer inboard of the map and the
+     grid below them. The measure is the content container's, not ours. */
+  /* ---- Tool header -------------------------------------------------------
+     Three rows on a phone (identity+legal / views / Filters+search), two at md.
+     The pattern and the reasoning are in
+     .claude/skills/dr-design-system/references/tool-chrome.md §1.
+
+     flex-direction:column, NOT flex-wrap. Wrap made the row count a function of
+     viewport width and content length, so --nb-header-h moved unpredictably —
+     and the map's height is calculated from it. */
+  #nb-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30);background:var(--bg);
+    padding:10px 0 12px;display:flex;flex-direction:column;gap:10px}
+
+  /* The canvas views draw their own box, so the rule would run the page's full
+     width straight across its rounded corners. The List view has no box and
+     still needs the separator. */
+  body[data-view="dash"] #nb-header{border-bottom:1px solid var(--dr-line,var(--line))}
+
+  .nb-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .nb-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+  h1{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+  /* 13px is the sentence floor; 12px is the label size. This is a sentence. */
+  .sub{color:var(--dr-ink-faint,var(--dim));font-size:var(--dr-text-meta,13px);line-height:1.35}
+
+  /* Rows 2 and 3 on a phone, one row at md. */
+  .nb-toolbar{display:flex;flex-direction:column;gap:8px}
+  .nb-controls{display:flex;align-items:center;gap:8px;min-width:0}
+
+  /* Scoped `.nb-search #search`, never a bare `#search`: the id is generic
+     enough that the graph module had to rename its own to #q to stop the two
+     colliding. The border and focus ring are on the wrapper, so the input is
+     chromeless. */
+  .nb-search{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;
+    height:var(--dr-tap,2.75rem);padding:0 14px;background:var(--dr-panel,#fff);
+    border:1px solid var(--dr-line,var(--line));border-radius:var(--dr-radius-pill,9999px)}
+  .nb-search:focus-within{border-color:var(--dr-line-strong,#878D99);
+    outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  .nb-search svg{flex:none;color:var(--dr-ink-faint,#6B7280)}
+  .nb-search #search{flex:1 1 auto;min-width:0;appearance:none;border:0;background:none;
+    padding:0;margin:0;color:var(--ink);font-family:inherit;
+    /* 16px on a phone is not a style choice: iOS zooms the viewport on focus
+       for anything smaller, and it does not zoom back out. */
+    font-size:var(--dr-text-body,16px)}
+  .nb-search #search:focus{outline:none}
+  .nb-search #search::placeholder{color:var(--dr-ink-faint,#6B7280)}
+
+  /* aria-expanded, not aria-pressed: this is a disclosure. It borrows the
+     pressed fill explicitly — button.css styles only aria-pressed. */
+  #nb-filters{flex:none}
+  #nb-filters[aria-expanded="true"]{background:var(--dr-accent,#252739);
+    border-color:var(--dr-accent,#252739);color:#fff}
+  #nb-filters[aria-expanded="true"] .dr-btn__count{background:#fff;color:var(--dr-accent,#252739)}
+
+  /* Every declaration below that looks redundant is undoing the global
+     `button` rule in main.css, which paints any bare button slate-900 at
+     min-width:65px with a right margin at md. */
+  .tabs{display:flex;gap:4px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,var(--line));
+    border-radius:var(--dr-radius-pill,9999px);padding:4px}
+  .tab{appearance:none;border:0;margin:0;min-width:0;flex:1 1 0;background:none;
+    display:flex;align-items:center;justify-content:center;
+    min-height:var(--dr-tap-sm,2rem);padding:0 15px;border-radius:var(--dr-radius-pill,9999px);cursor:pointer;
+    color:var(--dr-ink-muted,var(--dim));font-family:var(--dr-font-ui,inherit);font-size:13px;font-weight:700;user-select:none}
+  .tab:hover{color:var(--ink)}
+  .tab.on{background:var(--dr-accent,var(--accent));color:#fff}
+  .tab:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
+
+  @media(min-width:768px){
+    #nb-header{padding:12px 0 14px;gap:12px}
+    h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
+    /* Title and count sit on one line once there is room for them. */
+    .nb-id{flex-direction:row;align-items:baseline;gap:12px}
+    .nb-toolbar{flex-direction:row;align-items:center;justify-content:space-between;gap:20px}
+    /* DOM order is the phone's visual order; `order` swaps them here. */
+    .nb-toolbar .tabs{order:2;flex:none}
+    /* grow, not `0 1 auto` — space-between otherwise leaves the search field
+       at shrink-to-fit and the placeholder clips mid-word. */
+    .nb-toolbar .nb-controls{order:1;flex:1 1 auto;min-width:0}
+    .nb-search{flex:0 1 26rem;height:2.25rem}
+    .nb-search #search{font-size:var(--dr-text-dense,14px)}
+    .tabs{padding:3px}
+    .tab{flex:none;padding:0 18px;min-height:1.875rem}
+    /* On the List view the facet rail is on screen, so a button that opens the
+       same facets in a popover is a second door to one room. */
+    body[data-view="dash"] #nb-filters{display:none}
+  }
   .layout{display:flex;align-items:flex-start}
-  aside#facets{width:232px;flex:none;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;
-    border-right:1px solid var(--line);padding:14px 14px 40px;background:#FBFBF9}
-  .fgroup{margin-bottom:16px}
-  .fgroup h3{margin:0 0 7px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim)}
+  /* A flex column. The popover form below re-states `display:flex` rather than
+     `block` for the same reason, so the two shapes stay one layout. */
+  aside#facets{width:232px;flex:none;display:flex;flex-direction:column;align-items:stretch;
+    position:sticky;top:var(--nb-header-h,56px);height:calc(100dvh - var(--nb-header-h,56px));overflow-y:auto;
+    border-right:1px solid var(--line);padding:14px 14px 40px 0;background:var(--bg)}
+  /* A <fieldset> per group, so a screen reader announces "Country, checkbox,
+     Germany" rather than reading a loose list. The UA styling has to be reset
+     to nothing first; `min-width:0` is the one that is easy to miss — a
+     fieldset defaults to min-content sizing and will refuse to shrink inside
+     the 232px rail without it. */
+  .fgroup{border:0;margin:0 0 16px;padding:0;min-width:0}
+  .fgroup legend{padding:0;margin:0 0 7px;font-size:var(--dr-text-label,12px);font-weight:600;
+    color:var(--dim);font-family:var(--dr-font-ui,inherit)}
+  /* A real <label> wrapping a real <input>.
+
+     This was a <div> with the click handler on the row and `pointer-events:none`
+     on the checkbox, because a <label> "double-fired": the label forwarded the
+     click to the input, and that click bubbled back to the row handler, so the
+     two toggles canceled and only a pixel-perfect hit on the checkbox worked.
+     The label was never the problem — the row handler was. Listening to the
+     input's `change` fires exactly once however the control is operated.
+
+     What that arrangement actually broke, measured rather than assumed:
+
+       - the CHECKBOX was the unclickable part. `pointer-events:none` meant a
+         click aimed at the box did nothing and only the row around it worked.
+       - focus did not survive a toggle, because buildFacets() rewrites this
+         whole subtree. You could toggle one facet from the keyboard and then
+         had to Tab back from the top of the document for the next.
+
+     Tab and Space did reach a facet before this — `pointer-events:none` does
+     not take an input out of the tab order, and Space fired a click that
+     bubbled to the row handler. So the rail was not keyboard-dead; it was
+     keyboard-useless after the first keystroke. */
   .fitem{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:12.5px;color:#4a4e56;cursor:pointer}
   .fitem:hover{color:var(--ink)}
-  .fitem input{accent-color:var(--accent);cursor:pointer;pointer-events:none}
-  .fitem .c{margin-left:auto;color:#9a9ea6;font-size:11px;font-variant-numeric:tabular-nums}
+  .fitem input{accent-color:var(--accent);cursor:pointer;flex:none}
+  /* Circles, because the map's markers are circles. Shape is the one part of a
+     swatch that stays per-tool: the graph uses squares for the same reason. */
+  .fitem .sw{width:12px;height:12px;border-radius:50%;flex:none;
+    border:1px solid rgba(0,0,0,.25);margin-right:1px}
+  /* The ring goes on the row, not the 13px checkbox, so the focused thing and
+     the labeled thing are the same shape. */
+  .fitem:focus-within{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
+  .fitem input:focus-visible{outline:none}
+  /* Fixed-width slot: the counts form a lane instead of aligning by luck. */
+  .fitem .c{margin-left:auto;padding-left:8px;width:4.5em;flex:none;text-align:right;
+    color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);font-variant-numeric:tabular-nums}
   .fitem.act{color:var(--ink);font-weight:600}
-  .clearf{color:var(--low);font-size:11px;cursor:pointer;user-select:none;margin-bottom:10px;display:inline-block}
-  main{flex:1;min-width:0;padding:16px 20px 60px}
+  /* A one-line gloss under a facet group, for an option whose label cannot
+     carry its own explanation. 13px, not 11 — it is a sentence. */
+  .fhint{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-meta,13px);
+    line-height:1.4;padding:2px 0 0}
+  .fhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 14px}
+  /* Explicit, because main.css paints every h2 at text-xl with mt-6. */
+  .fhead h2{margin:0;font-size:var(--dr-text-section,18px);font-weight:700;line-height:1.2;
+    letter-spacing:-.01em;color:var(--dr-ink-strong,#000)}
+
+  /* `disabled` rather than a faded class: it also leaves the tab order and is
+     announced as unavailable. Everything before `color` undoes the global
+     `button` rule in main.css. */
+  .clearf{appearance:none;border:0;background:none;padding:0 4px;margin:0 -4px 0 0;min-width:0;
+    min-height:var(--dr-tap-sm,32px);display:inline-flex;align-items:center;flex:none;
+    color:var(--low);font-size:var(--dr-text-meta,13px);font-weight:600;cursor:pointer;font-family:inherit}
+  .clearf:hover:not(:disabled){text-decoration:underline}
+  .clearf:disabled{opacity:.4;cursor:default;pointer-events:none}
+  .clearf:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px;border-radius:4px}
+  main{flex:1;min-width:0;padding:16px 0 60px 20px}
   .kpis{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
   .kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 15px;min-width:104px;
     box-shadow:0 1px 2px rgba(0,0,0,.04)}
   .kpi .v{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
-  .kpi .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+  .kpi .k{margin-top:2px}
   .kpi.a .v{color:var(--gold)} .kpi.b .v{color:var(--news)} .kpi.c .v{color:var(--low)} .kpi.d .v{color:var(--med)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:14px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;
@@ -57,47 +223,125 @@ title: TrumpBlogs formerly known as NoBlogs
   .card.sel{border-color:var(--accent);box-shadow:0 0 0 2px rgba(192,57,43,.25)}
   .thumbwrap{height:132px;background:var(--tile);border-bottom:1px solid var(--line);position:relative;overflow:hidden}
   .thumbwrap img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-  .thumbwrap .novis{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a8aab0;font-size:11px}
-  .badge{position:absolute;top:7px;left:7px;font-size:10px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--dim)}
+  /* ---- The card ----------------------------------------------------------
+     Every line of it was under 12px — 10, 10.5 and 11.5 — which made the main
+     content of the library view the smallest type in the tool, on a gray
+     ground. The scale's floors apply here as much as in the detail panel:
+     12px for a label, 13px for anything read as a sentence. .cname goes up
+     with them so the title still leads. */
+  .thumbwrap .novis{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px)}
+  .badge{position:absolute;top:7px;left:7px;font-size:var(--dr-text-label,12px);padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.9);border:1px solid var(--line);color:var(--dim)}
   .badge.logo{color:#8A5A1A;border-color:#E4C9A0;background:#FBF3E4}
   .cbody{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px;flex:1}
-  .cname{font-weight:700;font-size:13.5px;line-height:1.25}
-  .chost{color:var(--dim);font-size:10.5px;word-break:break-all}
+  .cname{font-weight:700;font-size:15px;line-height:1.3}
+  .chost{color:var(--dim);font-size:var(--dr-text-label,12px);word-break:break-all}
   .cmeta{display:flex;flex-wrap:wrap;gap:5px;margin-top:2px}
-  .tag{font-size:10.5px;padding:2px 7px;border-radius:6px;background:var(--tile);border:1px solid var(--line);color:#555}
+  .tag{font-size:var(--dr-text-label,12px);padding:2px 7px;border-radius:6px;background:var(--tile);border:1px solid var(--line);color:#555}
   .tag.cat{color:#333;border-color:#D8D8CF}
   .tag.mil-operational{color:var(--hi);border-color:rgba(192,57,43,.35);background:rgba(192,57,43,.07)}
   .tag.mil-tactical_support{color:var(--med);border-color:rgba(184,134,11,.35);background:rgba(184,134,11,.08)}
   .tag.mil-rhetorical{color:var(--low);border-color:rgba(74,111,165,.35);background:rgba(74,111,165,.08)}
   .tag.dox{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:600}
-  .cloc{font-size:11.5px;color:var(--dim)} .cloc::before{content:"📍 "}
-  .csum{font-size:11.5px;color:#585c64;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-  .cfoot{display:flex;gap:9px;margin-top:auto;font-size:10.5px;color:#9a9ea6;padding-top:4px}
+  .cloc{font-size:var(--dr-text-meta,13px);color:var(--dim)} .cloc::before{content:"📍 "}
+  /* A three-line summary is prose, so it takes the sentence floor, not the label one. */
+  .csum{font-size:var(--dr-text-meta,13px);line-height:1.4;color:#585c64;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+  .cfoot{display:flex;gap:9px;margin-top:auto;font-size:var(--dr-text-label,12px);color:var(--dr-ink-faint,#6B7280);padding-top:4px}
   .cfoot .on{color:var(--news)}
-  .empty{color:var(--dim);padding:40px;text-align:center}
+  /* An empty state is the only thing on screen when it shows, so it reads at
+     body size. 13px on a gray ground was the smallest copy in the tool. */
+  .empty{color:var(--dim);padding:40px;text-align:center;font-size:var(--dr-text-body,16px);line-height:1.5}
   .ph{color:var(--dim);padding:60px 40px;text-align:center;max-width:560px;margin:0 auto}
   .ph h2{color:var(--ink)}
   .ph code{background:#EEE;padding:1px 5px;border-radius:4px}
-  .loadmore{display:block;margin:22px auto;padding:10px 22px;background:#fff;border:1px solid var(--line);
-    color:var(--ink);border-radius:10px;cursor:pointer;font-size:13px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-  .loadmore:hover{background:#F2F2EC}
+  /* Geometry comes from .dr-btn now; only the centering is local. It used to be
+     a 10px-radius box about 39px tall, which missed the 44px target. */
+  .loadmore{display:flex;margin:22px auto}
 
-  /* ---- detail drawer (dsa-explorer style: docked sidebar, not a modal) ---- */
-  #scrim{position:fixed;inset:56px 0 0 0;background:rgba(20,20,18,.20);z-index:850;
-    opacity:0;pointer-events:none;transition:opacity .2s}
+  /* The canvas band — map or graph, plus the sidebar docked to it — is one
+     surface, so it is rounded and clipped once here rather than on each piece.
+     `overflow:hidden` is what makes the corners real: Leaflet's tiles and
+     Cytoscape's canvas are opaque children that would otherwise square them
+     off. It does not touch #panel in its overlay form or the phone sheet —
+     both are position:fixed, whose containing block is the viewport. */
+  /* On the List view #nb-stage still holds the hidden canvases and the overlay
+     #panel, so a border there would draw a 2px-tall box under the header. */
+  body[data-view="map"] #nb-stage,
+  body[data-view="graph"] #nb-stage{border:var(--nb-band-line) solid var(--dr-line,var(--line));
+    border-radius:var(--dr-radius-lg,.75rem);overflow:hidden}
+
+  /* ---- Detail panel ------------------------------------------------------
+     ONE panel, two placements. On the canvas views at md it is a COLUMN beside
+     the map or the graph — dsa-explorer has always worked that way and this is
+     noblogs adopting it. On the List view it stays a fixed overlay, because
+     that view already spends a column on the facet rail and a third would cost
+     half the card grid. Below md both become the same bottom sheet.
+
+     openModal / closeModal do not know about any of this. They toggle `.on`
+     and `SEL`; the placement is CSS keyed on body[data-view]. */
+
+  /* The overlay form — List view at md, and the default. */
+  #scrim{position:fixed;inset:0;background:rgba(20,20,18,.20);z-index:var(--dr-z-scrim,55);
+    opacity:0;pointer-events:none;transition:opacity var(--dr-dur-fast,120ms) var(--dr-ease-sheet,ease)}
   #scrim.on{opacity:1;pointer-events:auto}
-  #panel{position:fixed;top:56px;right:0;bottom:0;width:392px;max-width:94vw;background:var(--panel);
-    border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:900;
-    transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+  /* Flex column in every form, so `.pclose` has one way to reach the trailing
+     edge. `float:right` only works in the block form; the sidebar form is a
+     flex container, where a float is inert and the button stretched full width
+     with its glyph centered. */
+  #panel{position:fixed;top:0;right:0;bottom:0;
+    width:clamp(320px, 30vw, 392px);max-width:94vw;background:var(--panel);
+    border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:var(--dr-z-panel,60);
+    transform:translateX(100%);
+    transition:transform var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,cubic-bezier(.32,.72,0,1));
+    display:flex;flex-direction:column;overflow-y:auto}
   #panel.on{transform:translateX(0)}
-  .pclose{position:sticky;top:0;float:right;z-index:5;margin:0;border:none;background:transparent;
+
+  /* Nothing to show until a canvas view at md asks for it. */
+  #nb-side-cats{display:none}
+
+  /* ---- The sidebar form: canvas views, md and up ------------------------- */
+  @media(min-width:768px){
+    body[data-view="map"] #nb-stage,
+    body[data-view="graph"] #nb-stage{display:grid;grid-template-columns:minmax(0,1fr) var(--nb-side,21rem)}
+
+    /* Static, in flow, no overlay chrome and no scrim. The canvas is a sibling
+       column, so its width is constant and Leaflet never needs re-measuring on
+       open or close — the panel is always there. */
+    body[data-view="map"] #panel,
+    body[data-view="graph"] #panel{position:static;width:auto;max-width:none;
+      transform:none;box-shadow:none;z-index:auto;overflow:hidden;
+      height:var(--nb-band-h);min-height:22rem}
+    body[data-view="map"] #scrim,
+    body[data-view="graph"] #scrim{display:none}
+
+    /* Categories when nothing is selected, details when something is.
+       `.pclose` is the way back, so it only exists while there is something to
+       go back FROM. */
+    body[data-view="map"] #nb-side-cats,
+    body[data-view="graph"] #nb-side-cats{display:block;overflow-y:auto;padding:14px 14px 24px}
+    body[data-view="map"]:not(.nb-has-sel) #pinner,
+    body[data-view="graph"]:not(.nb-has-sel) #pinner{display:none}
+    body[data-view="map"].nb-has-sel #nb-side-cats,
+    body[data-view="graph"].nb-has-sel #nb-side-cats{display:none}
+    body[data-view="map"]:not(.nb-has-sel) .pclose,
+    body[data-view="graph"]:not(.nb-has-sel) .pclose{display:none}
+    body[data-view="map"] #pinner,
+    body[data-view="graph"] #pinner{overflow-y:auto}
+
+    /* The group's <legend> is the column's heading, so it is sized as one
+       rather than as the 12px label it is inside the popover. */
+    #nb-side-cats .fgroup{margin-bottom:0}
+    #nb-side-cats .fgroup legend{font-size:var(--dr-text-section,18px);font-weight:700;
+      line-height:1.2;letter-spacing:-.01em;color:var(--dr-ink-strong,#000);margin-bottom:12px}
+  }
+  .pclose{position:sticky;top:0;align-self:flex-end;flex:none;z-index:var(--dr-z-raised,10);margin:0;border:none;background:transparent;
     font-size:20px;line-height:1;color:var(--dim);cursor:pointer;padding:14px 16px}
   .pclose:hover{color:var(--ink)}
   #pinner .top{display:flex;gap:13px;padding:16px 16px 14px;border-bottom:1px solid var(--line)}
   #pinner .top img{width:78px;height:78px;object-fit:cover;border-radius:10px;background:var(--tile);flex:none;border:1px solid var(--line)}
   #pinner h2{margin:0 0 3px;font-size:17px;line-height:1.25}
   #pinner .body{padding:16px;display:flex;flex-direction:column;gap:15px}
-  .sec h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim)}
+  .sec h4{margin:0 0 6px;font-weight:600}
   .q{border-left:2px solid var(--accent);padding:2px 0 2px 11px;margin-bottom:10px}
   .q .v{font-size:13px;line-height:1.5}
   .q .orig{margin-top:4px}
@@ -110,7 +354,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .qmeta{font-size:10.5px;color:#9a9ea6;margin-top:2px}
   /* institutional citations: scrollable, contained (#1) */
   .iqscroll{max-height:300px;overflow:auto;padding-right:4px;margin-right:-4px}
-  .q .qhd{font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#9a9ea6;margin-bottom:2px}
+  .q .qhd{margin-bottom:2px}
   .q .qhd .qinst{color:var(--accent);font-weight:700}
   .q .qhd .qtgt{color:#DC2626;font-weight:700}
   .q .qhd .qcrit{color:#B45309;font-weight:600}
@@ -118,7 +362,7 @@ title: TrumpBlogs formerly known as NoBlogs
   .ct{font-size:12.5px;color:#3a3e46;word-break:break-all;padding:1px 0}
   .ct b{color:var(--dim);font-weight:600;text-transform:capitalize}
   .ctgrp{margin-bottom:9px}
-  .ctlab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--med);margin-bottom:3px}
+  .ctlab{font-weight:600;margin-bottom:3px}
   .warn{font-size:11px;color:#8A6D2A;font-style:italic;line-height:1.4;margin-top:6px}
   .authors{display:flex;flex-wrap:wrap;gap:7px}
   .au{display:flex;align-items:baseline;gap:5px;background:var(--tile2);border:1px solid var(--line);
@@ -137,12 +381,28 @@ title: TrumpBlogs formerly known as NoBlogs
   .chip .tflag{color:var(--accent);font-weight:700;margin-left:1px}
   .xauth{font-size:12px;color:#3a3e46;margin-bottom:10px} .xauth .xnm{font-weight:700;color:var(--ink)}
   details.news{margin:0}
-  details.news>summary{cursor:pointer;list-style:none;font-size:11px;text-transform:uppercase;
-    letter-spacing:.7px;color:var(--dim);user-select:none;display:flex;align-items:center;gap:6px}
+  details.news>summary{cursor:pointer;list-style:none;font-weight:600;
+    user-select:none;display:flex;align-items:center;gap:6px}
   details.news>summary::-webkit-details-marker{display:none}
   details.news>summary::before{content:"▸";color:var(--news);transition:transform .12s}
   details.news[open]>summary::before{transform:rotate(90deg)}
   details.news>summary:hover{color:var(--ink)}
+
+  /* One label recipe, five sites.
+     These were five styles doing one job — 10px and 11px, four different
+     letter-spacings, three different grays, all uppercase. Sentence case is
+     deliberate: see the note on fontSize.label in tailwind.config.js. 10px
+     shouted text on a gray ground was the worst-read copy in the tool.
+     Last, so it beats the five rules above it on source order; each of them
+     keeps only its own margins, weight and display. */
+  .kpi .k, .sec h4, .q .qhd, .ctlab, details.news>summary{
+    font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);
+    line-height:1.25;
+    letter-spacing:normal;
+    text-transform:none;
+    color:var(--dr-ink-faint,#6B7280)}
+
   .nart{border-left:2px solid var(--news);padding:3px 0 3px 11px;margin-top:9px}
   .nart a{color:var(--ink);font-size:12.5px;text-decoration:none;line-height:1.35}
   .nart a:hover{color:var(--news)}
@@ -151,43 +411,303 @@ title: TrumpBlogs formerly known as NoBlogs
   .refcol .lbl{font-size:10.5px;color:var(--dim)} .refcol .lbl b{color:#3a3e46}
   a.live{color:var(--link);text-decoration:none;font-size:12px;white-space:nowrap}
   a.live:hover{text-decoration:underline}
-  .pempty{color:#9a9ea6;font-size:13px;line-height:1.55;padding:24px 18px}
-  @media(max-width:820px){#panel{width:340px}}
+  .pempty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;padding:24px 18px}
+
+  /* ---- Map tab ------------------------------------------------------------
+     These rules came from world_hyperlocal_map.html, which could use bare
+     `.info` and `.legend` because it owned its document. Here they are scoped
+     under #mapwrap — the reason the iframe existed in the first place was to
+     keep three stylesheets that each assumed that from colliding. */
+  /* `isolation:isolate` is the load-bearing declaration here, not decoration.
+
+     Leaflet numbers its own panes in the high hundreds — .leaflet-map-pane 400,
+     .leaflet-control 800, .leaflet-top/.leaflet-bottom 1000 — and it is
+     entitled to, because it assumes it owns a stacking context. It did not have
+     one: #mapwrap was position:relative with no z-index and #mapcanvas
+     position:absolute with no z-index, and NEITHER of those creates one. So
+     every Leaflet pane was hoisted into the ROOT stacking context and competed
+     against the site's own layers directly. .leaflet-top at 1000 beat the
+     mobile detail sheet at 60 — the sheet opened UNDERNEATH the map — and beat
+     the desktop drawer at 900, so the zoom control floated over an open drawer
+     that its scrim could not cover.
+
+     The wrong fix is to out-bid it; that is how you get a 1200 and then a 9999,
+     and this file was already running 600/850/900/1000/1100/1150/1200 while the
+     sheet stayed underneath. The right fix is to give the canvas the stacking
+     context Leaflet already assumed it had. Every pane is then scoped to this
+     box, the box itself participates at z-index:auto, and the site scale is the
+     only thing ordering the page.
+
+     #graphouter takes it too. Cytoscape draws to a single <canvas> and does not
+     need it, but the rule is that a tool canvas is always an isolated box, so
+     no vendored stylesheet can reach the page again. */
+  #mapwrap{position:relative;width:100%;isolation:isolate;
+    height:var(--nb-band-h);min-height:22rem}
+  /* #mapcanvas gets its own stacking context too, and this is load-bearing.
+     Isolating #mapwrap alone is not enough: #mapcanvas is position:absolute
+     with z-index:auto, so Leaflet's panes — .leaflet-map-pane 400,
+     .leaflet-control 800, .leaflet-top 1000 — were hoisted one level and
+     competed inside #mapwrap against .info at 20. Leaflet won, and the info
+     card with the category filters in it stopped receiving clicks entirely:
+     elementFromPoint over the card returned canvas.leaflet-zoom-animated.
+
+     Contain the vendor at ITS OWN container and its numbers stay private. The
+     card then sits above the map on the site's small scale, which is the point
+     of having one. */
+  #mapcanvas{position:absolute;inset:0;isolation:isolate}
+  /* The .info card's rules lived here — the card itself, its h4, its mobile
+     disclosure, and the .legend rows inside it. All gone with the markup; see
+     the note where the card used to be in #mapwrap.
+
+     `.logopin` below stays: that is the marker Leaflet draws on the map, not
+     chrome sitting on top of it. */
+  #mapwrap .logopin i{display:block;width:40px;height:40px;border-radius:50%;background:#fff center/cover no-repeat;
+    box-shadow:0 0 0 1px #fff}
+  .nb-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--dim);font-size:var(--dr-text-body,16px);background:var(--bg);z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
+  .nb-loading[hidden]{display:none}
+
+  /* NOT isolated, deliberately — unlike #mapwrap.
+     The rule is to contain at the element the vendor writes into, and for the
+     graph that is #cy inside .nbgraph #stage, which carries the isolation.
+     #graphouter is the outer wrapper and it also contains #gpanel, which
+     DRSheet turns into a position:fixed sheet on a phone. Isolating here scoped
+     that sheet's z-60 INSIDE this box, while its scrim — appended to
+     document.body at z-55 — stayed outside it. The scrim then covered its own
+     sheet and swallowed every tap on the close button.
+
+     The map does not have this problem because its sheet wraps #panel, which is
+     a sibling of #mapview rather than a child of #mapwrap. */
+  #graphouter{position:relative;width:100%;
+    height:var(--nb-band-h);min-height:22rem}
+  #graphwrap{width:100%;height:100%}
+
+  /* ---- Filter popover ----------------------------------------------------
+     The facets cross-filter all three tabs — `filtered()` feeds the grid, the
+     map's setHosts and the graph's host set alike — but the rail itself lives
+     inside #dashview, which is display:none on Map and Graph. So the filters
+     were unreachable from the two views they were quietly driving.
+
+     The Filters button is that missing door. It used to live in its own bar
+     below the header, which was a sixth stacked band on a phone; it is now the
+     first control in the header's own controls row, and the separate
+     #nb-filterbar element is gone along with the --nb-filterbar-h term that
+     every canvas height had to subtract.
+
+     The opened sheet floats rather than pushing the view down: the map and the
+     graph are a full viewport tall, so a rail inserted above them would shove
+     the thing you are filtering off the screen. #dashview has to come back
+     from display:none for its child to render at all — on Map and Graph it
+     returns as a filters-only shell with the results grid still hidden.
+
+     Anchored to the button by script rather than by a column calculation: the
+     sheet sits inside #dashview, so there is no positioned ancestor to hang it
+     off, and measuring the button is the one thing that stays right at every
+     width. */
+  body.nb-facets-open #dashview{display:block !important}
+  body.nb-facets-open:not([data-view="dash"]) #dashview > main{display:none}
+  body.nb-facets-open aside#facets{
+    display:flex;position:fixed;z-index:var(--dr-z-popover,70);
+    top:var(--nb-facet-top,120px);left:var(--nb-facet-left,20px);
+    width:min(300px,calc(100vw - 40px));max-height:var(--nb-facet-maxh,60dvh);
+    overflow-y:auto;padding:14px;border:1px solid var(--line);border-radius:12px;
+    box-shadow:0 12px 32px rgba(0,0,0,.18);background:var(--panel)}
+  #nb-facetscrim{position:fixed;inset:0;z-index:calc(var(--dr-z-popover,70) - 1);background:transparent}
+  #nb-facetscrim[hidden]{display:none}
+
+  /* ---- Phone -------------------------------------------------------------
+     The only mobile rule here used to be `#panel{width:340px}`. Everything
+     else — a 232px facet rail, a sticky header assumed to be 56px tall, a
+     drawer pinned to that number — was desktop geometry that a phone inherited
+     whole.
+
+     Three changes: the facet rail becomes a filter sheet behind one button,
+     the detail drawer becomes a bottom sheet, and the tab strip gets real tap
+     targets.
+
+     The header inherits the right layout from the column above, so what is
+     left here is tap targets and the rail-to-sheet swap. */
+  @media(max-width:767px){
+    .tabs .tab{min-height:var(--dr-tap,2.75rem)}
+
+    /* Facets move into the floating sheet above; the rail itself is gone. */
+    .layout{display:block}
+    aside#facets{display:none}
+    /* The facet rows were ~24px, which is a thumb-sized miss on every tap. The
+       checkbox itself stays its native size; the row grows around it. */
+    .fitem{min-height:2.75rem;padding:0;font-size:13px}
+    .fitem input{width:1.125rem;height:1.125rem}
+    .clearf{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
+    main{padding:12px 0 calc(var(--nav-clearance) + 12px)}
+
+    /* The detail drawer is positioned by .dr-sheet from the site stylesheet.
+
+       Do NOT set `overflow` here, and do not restore `overflow:visible`.
+       #panel IS .dr-sheet__body — sheet.js adds the class to this element
+       rather than wrapping it in one — so they are not two nested scrollers,
+       and `#panel` at 1-0-0 outranks `.dr-sheet__body` at 0-1-0. Declaring
+       `overflow:visible` therefore removed the sheet's ONLY scroller: nothing
+       moved inside the drawer and the touch chained straight through to the
+       page behind it.
+
+       The drag-to-dismiss that was protecting is bound to the grip alone
+       (sheet.js), never to the body, so scrolling the content has never been
+       able to compete with it. Leaving overflow unset lets the desktop rule's
+       `overflow-y:auto` carry through, which is what .dr-sheet__body expects. */
+    #panel{position:static;width:auto;max-width:none;top:auto;right:auto;bottom:auto;
+      box-shadow:none;border-left:0;transform:none;height:auto}
+    #scrim{display:none}
+
+    /* One close button, not two. DRSheet puts a 44px close in its wrapper, and
+       .pclose is this tool's own — on a phone they stacked, so the panel had
+       two X's in two different header bars. The sheet's is the one that also
+       dismisses the sheet, so it wins; .pclose stays for the desktop drawer,
+       which has no wrapper chrome of its own. */
+    #panel .pclose{display:none}
+  }
+
 </style>
 <!-- institutional-citation quotes (byHost/byInst) — same redacted, link-gated layer the
      graph uses; loaded here so the shared drawer can show a blog's citing quotes too (#1) -->
 <script src="graph/quotes.embed.js"></script>
-<header>
-  <div><h1>TrumpBlogs <span class="gold">formerly known as NoBlogs</span></h1><div class="sub" id="subcount">loading…</div></div>
-  <input id="search" placeholder="search name, summary, city, tags, quote text…" autocomplete="off">
-  <div class="grow"></div>
-  <div class="tabs" id="tabs">
-    <div class="tab" data-v="dash">Dashboard</div>
-    <div class="tab on" data-v="map">Map</div>
-    <div class="tab" data-v="graph">Graph</div>
+<header id="nb-header">
+  {%- comment -%}
+    "formerly known as NoBlogs" is not in the <h1>: as a child span it became
+    part of the accessible name, and the phone rule hid it — so the heading
+    read differently per viewport width.
+  {%- endcomment -%}
+  <div class="nb-idrow">
+    <div class="nb-id">
+      <h1>TrumpBlogs</h1>
+      {%- comment -%}
+        The only running commentary the tool gives a screen reader. render()
+        rewrites this on every filter change; aria-atomic so the whole sentence
+        is read, not the one number that changed. The search path is debounced
+        so it is not interrupted mid-count — see the oninput handler.
+      {%- endcomment -%}
+      <div class="sub" id="subcount" role="status" aria-live="polite" aria-atomic="true">loading…</div>
+    </div>
+    <button type="button" class="dr-dialog-open" id="nb-disclaimer-open" aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Disclaimer
+    </button>
   </div>
-  <p class="disclaimer"><strong>Disclaimer:</strong> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links. Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</p>
+
+  <div class="nb-toolbar">
+    {%- comment -%}
+      `.tab` and `data-v` are contracts: readURL() drives the initial view with
+      `.tab[data-v="…"].click()`, openInst() switches to the graph the same way,
+      and three specs click these selectors directly.
+    {%- endcomment -%}
+    <div class="tabs" id="tabs" role="tablist" aria-label="View">
+      <button type="button" id="tab-map" class="tab on" data-v="map" role="tab" aria-selected="true" aria-controls="mapview">Map</button>
+      <button type="button" id="tab-dash" class="tab" data-v="dash" role="tab" aria-selected="false" aria-controls="dashview" tabindex="-1">List</button>
+      <button type="button" id="tab-graph" class="tab" data-v="graph" role="tab" aria-selected="false" aria-controls="graphview" tabindex="-1">Graph</button>
+    </div>
+
+    <div class="nb-controls">
+      <button type="button" class="dr-btn" id="nb-filters" aria-expanded="false" aria-controls="facets">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+        Filters<span class="dr-btn__count" id="nb-filtercount" hidden>0</span>
+      </button>
+      <label class="nb-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="search" placeholder="Search blogs, cities, quotes…" autocomplete="off" aria-label="Search blogs, cities and quotes">
+      </label>
+    </div>
+  </div>
 </header>
 
-<div class="layout" id="dashview" style="display:none">
-  <aside id="facets"></aside>
+{%- comment -%}
+  showModal(), never show() — see assets/css/components/dialog.css.
+{%- endcomment -%}
+<dialog class="dr-dialog" id="nb-disclaimer" aria-labelledby="nb-disclaimer-title">
+  <div class="dr-dialog__head">
+    <h2 id="nb-disclaimer-title">Disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="nb-disclaimer-close" aria-label="Close" title="Close">✕</button>
+  </div>
+  <div class="dr-dialog__body">
+    <p>Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate.</p>
+    <p>Classifications, ownership labels, and associations are automated analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization.</p>
+    <p>Contacts shown are verified own &amp; allied-movement channels only — doxxing-target, third-party &amp; personal contacts are removed and PII-swept. Doxxing-flagged blogs carry no outbound links.</p>
+    <p>Do not rely on this material without independent verification; the author disclaims all liability for any use of, or reliance on, its contents.</p>
+  </div>
+</dialog>
+<div id="nb-facetscrim" hidden></div>
+
+<div class="layout" id="dashview" role="tabpanel" aria-labelledby="tab-dash" style="display:none">
+  {%- comment -%}
+    buildFacets() writes the <h2 id="facets-title"> this points at. The id is
+    stable across rebuilds even though the element is not, so the reference
+    holds — and the panel stops being an unnamed region to a screen reader.
+  {%- endcomment -%}
+  <aside id="facets" aria-labelledby="facets-title"></aside>
   <main>
     <div class="kpis" id="kpis"></div>
     <div class="grid" id="grid"></div>
-    <button class="loadmore" id="loadmore" style="display:none">Show more</button>
+    <button type="button" class="dr-btn loadmore" id="loadmore" style="display:none">Show more</button>
   </main>
 </div>
 
-<div id="mapview" style="display:none"><iframe id="mapframe" title="World hyperlocal map" style="width:100%;height:calc(100vh - 56px);border:0;display:block"></iframe></div>
+{%- comment -%}
+  The Map tab. This was an iframe pointing at world_hyperlocal_map.html; both
+  now share noblogs/map.js, and the explorer drives it with direct calls
+  instead of postMessage. The markup below is the .info panel that used to live
+  inside that document, moved out so it is part of this page's DOM.
+{%- endcomment -%}
+{%- comment -%}
+  The canvas views and the detail panel share one grid, so at md the panel is a
+  COLUMN BESIDE the map or the graph rather than a fixed overlay across the
+  whole window. dsa-explorer has always worked this way; this is noblogs
+  adopting it. See tool-chrome.md §9.
 
-<div id="graphview" style="display:none"><iframe id="graphframe" title="Epistemic-anchor graph" style="width:100%;height:calc(100vh - 56px);border:0;display:block"></iframe></div>
+  The List view stays outside: it has a facet rail and a card grid already, and
+  a third column there costs half the grid. It keeps the overlay form.
 
-<!-- detail drawer + scrim (shared by cards, map pins, and reference chips) -->
-<div id="scrim" onclick="closeModal()"></div>
+  DRSheet wraps #panel on a phone and its wrapper lands inside this grid — that
+  is fine and is why `display: contents` on .dr-sheet is load-bearing. At md the
+  wrapper vanishes from layout and #panel stays a direct grid child.
+{%- endcomment -%}
+<div id="nb-stage">
+<div id="mapview" role="tabpanel" aria-labelledby="tab-map" style="display:none">
+  <div id="mapwrap">
+    <div id="mapcanvas"></div>
+    {%- comment -%}
+      The .info card is gone; its contents moved to #subcount, the filter
+      popover's Map group and the Category facet. map.js keeps its .legend and
+      #edgeToggle paths — world_hyperlocal_map.html still ships both.
+    {%- endcomment -%}
+    <div id="maploading" class="nb-loading" role="status">Loading map&hellip;</div>
+  </div>
+</div>
+
+{%- comment -%}
+  The Graph tab. Was an iframe on graph/index.html; both now share
+  noblogs/graph/graph.js, which builds its own DOM inside #graphwrap.
+{%- endcomment -%}
+<div id="graphview" role="tabpanel" aria-labelledby="tab-graph" style="display:none">
+  <div id="graphouter">
+    <div id="graphwrap"></div>
+    <div id="graphloading" class="nb-loading" role="status">Loading graph&hellip;</div>
+  </div>
+</div>
+
+<!-- ONE panel, shared by cards, map pins, nodes and reference chips. Its
+     PLACEMENT changes with the view; openModal/closeModal do not. -->
 <aside id="panel">
-  <button class="pclose" onclick="closeModal()" title="Close">✕</button>
+  <button class="pclose" onclick="closeModal()" data-tip="Close and go back to the categories">✕</button>
+  {%- comment -%}
+    What the sidebar shows when nothing is selected. Category rather than an
+    empty-state sentence, because on a map it is also the color key — the one
+    filter group you reach for while looking at the pins. buildFacets() fills
+    it; the rows are the same control as the ones in the popover, so both
+    copies carry the state.
+  {%- endcomment -%}
+  <div id="nb-side-cats"></div>
   <div id="pinner"><div class="pempty">Click a card, a map pin, or a reference chip to see full details here — authors, verified quotes, references, and contacts.</div></div>
 </aside>
+</div>
+<div id="scrim" onclick="closeModal()"></div>
 
 <script>
 const CATLABEL={location_based_group:"local group",antifascist:"antifascist",ecological_militant:"ecological",
@@ -200,7 +720,27 @@ const COUNTRYNAME={DE:"Germany",IT:"Italy",FR:"France",ES:"Spain",US:"United Sta
   AT:"Austria",CH:"Switzerland",GR:"Greece",GB:"UK",NL:"Netherlands",BE:"Belgium",CL:"Chile",
   MX:"Mexico",CA:"Canada",PL:"Poland",RU:"Russia",AR:"Argentina",SE:"Sweden",FI:"Finland"};
 const THUMB=h=>`thumbs/${h}.webp`;
+/* Category → color. THE ONLY COPY in this page — do not derive it from the
+ * DOM again; the legend it used to be scraped from has been deleted.
+ *
+ * map_data.js bakes the same hexes into each pin's fill, so these must match it
+ * or the facet swatches lie about the map. Literals on purpose: this is the
+ * data encoding, not theme (see --dr-data-* in tokens.css).
+ *
+ * `cultural_art_music` has no color of its own and draws as `other`. */
+const CATCOLOR={
+  antifascist:'#2C3E50', radical_counterinfo_media:'#8E44AD', anarchist:'#C0392B',
+  prisoner_solidarity:'#E74C3C', location_based_group:'#2980B9',
+  protest_mobilization:'#E67E22', revolutionary_militant:'#7B241C',
+  migrant_border_solidarity:'#16A085', housing_squat:'#D4AC0D',
+  labor_militant:'#CA6F1E', ecological_militant:'#229954',
+  feminist_queer_militant:'#C2185B', historical_resistance_memory:'#5D6D7E',
+  other:'#7F8C8D', cultural_art_music:'#7F8C8D'};
 let DATA=[], BYHOST={}, view="map", PAGE=0, PER=120, SEL=null;
+/* Not part of F — F decides which blogs exist, this decides what is drawn
+   over them. */
+let MAPEDGES=true;
+document.body.dataset.view=view;            // see the tabs handler
 const F={q:"",co:new Set(),cat:new Set(),mil:new Set(),sc:new Set(),flags:new Set()};
 const AUTH_UID={};                          // uid -> [hosts]  (authors on >1 blog)
 let IDX=new Map(), IDX_KEYS=[], SEARCHSET=null;   // ned-style reverse keyword index
@@ -210,13 +750,44 @@ function norm(s){return (s==null?"":String(s)).toLowerCase().normalize('NFKD')
   .replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
 function toks(s){const n=norm(s);return n?n.split(' '):[];}
 
-fetch('data.json').then(r=>r.json()).then(j=>{
+/* data.index.json is everything needed to paint: cards, facets, KPIs, search.
+   data.detail.json is what only the drawer shows — news, inbound/outbound refs,
+   institutions — and is prefetched once the page is on screen, so opening a
+   blog is as instant as it was when one file carried everything.
+   Both are produced by scripts/split-noblogs-data.mjs at build time from the
+   data.json the pipeline drops in; that file is untouched. */
+fetch('data.index.json').then(r=>r.json()).then(j=>{
   DATA=j.blogs;
   DATA.forEach((b,i)=>{b._i=i;BYHOST[b.h]=b;});
   buildSearchIndex(); buildAuthorMap(); rankBlogs();
   document.getElementById('subcount').textContent=`${j.n.toLocaleString()} blogs · ${DATA.filter(b=>b.nq>0).length.toLocaleString()} with verified quotes · ${DATA.filter(b=>ctCount(b.ct)).length.toLocaleString()} with contacts`;
   readURL(); buildFacets(); render();
+  // After the first paint, not before it.
+  requestAnimationFrame(()=>setTimeout(loadDetail,0));
 });
+
+/* ---- deferred detail ---------------------------------------------------- */
+let detailPromise=null, detailReady=false;
+function loadDetail(){
+  if(detailPromise) return detailPromise;
+  detailPromise=fetch('data.detail.json').then(r=>{
+    if(!r.ok) throw new Error('data.detail.json '+r.status);
+    return r.json();
+  }).then(map=>{
+    // Merge into the blog objects the rest of the page already holds, so every
+    // existing `b.ne` / `b.ro` / `b.ri` / `b.inst` / `b.na` read keeps working
+    // unchanged.
+    for(const h in map){const b=BYHOST[h]; if(b) Object.assign(b,map[h]);}
+    detailReady=true;
+    // If the drawer is already open on a blog, re-render it now that its news
+    // and references exist.
+    if(SEL) renderModal(SEL);
+  }).catch(err=>{
+    detailPromise=null;          // let a later tap retry
+    console.error('noblogs: detail payload failed', err);
+  });
+  return detailPromise;
+}
 
 // ---- reverse keyword index (studied ned/index.html) ------------------------
 // A sorted token list + per-token postings (blog indices). Query tokens match by
@@ -271,7 +842,10 @@ function buildAuthorMap(){
 function rankBlogs(){
   const imp=b=>{const ri=(b.ri||[]).reduce((s,x)=>s+(x[1]||1),0);
     return ri*2+(b.nq||0)+ctCount(b.ct)+(b.dxn||0)*3+(b.ro||[]).length+((b.ne||[]).length?1:0);};
-  DATA.forEach(b=>b._imp=imp(b));
+  // `imp` is precomputed by scripts/split-noblogs-data.mjs, because the fields
+  // it reads (ri, ct, dxn, ro, ne) are partly deferred. The local imp() is kept
+  // as the definition of the score and as a fallback; both give the same number.
+  DATA.forEach(b=>b._imp=(typeof b.imp==='number'?b.imp:imp(b)));
   [...DATA].sort((a,b)=>b._imp-a._imp).forEach((b,i)=>b._rImp=i);
   [...DATA].sort((a,b)=>{const ua=a.co==='US'?0:1,ub=b.co==='US'?0:1;
     return ua!==ub?ua-ub:b._imp-a._imp;}).forEach((b,i)=>b._rUS=i);
@@ -289,10 +863,26 @@ function passFacets(b){
   if(F.flags.has("dox")&&!b.dox)return false;
   return true;
 }
-function filtered(){return DATA.filter(b=>matchSearch(b)&&passFacets(b)).sort((a,b)=>a._rank-b._rank);}
+/* Two filter sets, because the text query does not mean the same thing on
+   every view.
 
+   On Map and List it NARROWS: `filtered()` is facets AND query, and feeds the
+   pins and the card grid. On Graph it does not narrow at all — the graph is a
+   217-node network and removing nodes destroys the structure you opened it to
+   look at, so there the query is a FIND (graphApi.find) and only the facets
+   filter. See tool-chrome.md §5.
+
+   The facets still cross-filter all three views. That contract is unchanged;
+   it is only `F.q` that is view-dependent. */
+function facetFiltered(){return DATA.filter(passFacets).sort((a,b)=>a._rank-b._rank);}
+function filtered(){return DATA.filter(b=>matchSearch(b)&&passFacets(b)).sort((a,b)=>a._rank-b._rank);}
+// What the CURRENT view treats as its set.
+function viewSet(){return view==='graph'?facetFiltered():filtered();}
+
+// True where the text query narrows the set. On Graph it finds instead.
+function queryFilters(){return view!=='graph';}
 function counts(field){
-  const m={}; for(const b of DATA){if(!matchSearch(b))continue;
+  const m={}; for(const b of DATA){if(queryFilters()&&!matchSearch(b))continue;
     const v=field(b); if(v==null)continue; m[v]=(m[v]||0)+1;} return m;
 }
 function buildFacets(){
@@ -300,43 +890,128 @@ function buildFacets(){
   const co=counts(b=>b.co||"—"), cat=counts(b=>b.cat), mil=counts(b=>b.mil), sc=counts(b=>b.sc);
   const topco=Object.entries(co).sort((a,b)=>b[1]-a[1]).slice(0,14);
   const order=(o)=>Object.entries(o).sort((a,b)=>b[1]-a[1]);
-  let h=`<span class="clearf" onclick="clearAll()">✕ clear all filters</span>`;
+  /* Every toggle rebuilds this subtree, which throws away whatever had focus.
+     For a mouse that is invisible; for a keyboard it means one Space and you
+     are back at the top of the document, so remember which row was focused and
+     put focus back on its replacement. */
+  /* Both containers rebuild, so remember WHICH one held the row as well as
+     which row it was: Category is drawn in each, and a plain
+     document.querySelector puts focus back on the popover's copy in document
+     order — which on a canvas view is display:none, where focus() is a no-op
+     and the keyboard lands back at the top of the page. */
+  const focused=document.activeElement;
+  const row=focused&&focused.closest&&focused.closest('.fitem');
+  const keep=row?row.dataset:null;
+  const keepIn=row&&row.closest('#facets, #nb-side-cats');
+
+  /* The reset offers to clear the SET — facets and the query alike, which is
+     what clearAll() does — so it is live exactly when one of those is set. */
+  const nSet=F.co.size+F.cat.size+F.mil.size+F.sc.size+F.flags.size+(F.q?1:0);
+  let h=`<div class="fhead"><h2 id="facets-title">Filters</h2>`
+    +`<button type="button" class="clearf" onclick="clearAll()"${nSet?'':' disabled'}>Clear</button></div>`;
+  h+=grpMap();
+  /* Category first. It is the group that carries the map's color encoding, so
+     it is the one you reach for while looking at the map — and in the popover
+     on a phone, anything below the first group is behind a scroll. */
+  h+=grp("Category","cat",order(cat),CATLABEL,CATCOLOR);
   h+=grp("Scope","sc",order(sc));
   h+=grpFlags();
   h+=grp("Country","co",topco,COUNTRYNAME);
-  h+=grp("Category","cat",order(cat),CATLABEL);
   h+=grp("Militancy","mil",order(mil));
   el.innerHTML=h;
-  el.querySelectorAll('.fitem[data-f]').forEach(it=>it.onclick=()=>{
-    const f=it.dataset.f,v=it.dataset.v; const S=F[f]; S.has(v)?S.delete(v):S.add(v);
-    PAGE=0; syncURL(); buildFacets(); render();
-  });
-  el.querySelectorAll('.fitem[data-flag]').forEach(it=>it.onclick=()=>{
-    const v=it.dataset.flag; F.flags.has(v)?F.flags.delete(v):F.flags.add(v);
-    PAGE=0; syncURL(); buildFacets(); render();
-  });
+
+  /* `change`, not a click on the row. See the note by .fitem in the stylesheet:
+     the row handler is what made the old <label> double-fire, and `change`
+     fires once whether the control was clicked, tapped, or toggled with Space. */
+  bindFacets(el);
+
+  /* The sidebar draws Category a SECOND time, beside the canvas, where it also
+     serves as the map's color key. The popover keeps its copy: once a blog is
+     picked the detail takes the sidebar over, and without it there would be no
+     way to recolor the map while reading one.
+
+     Two presentations of one control. They cannot drift because neither holds
+     state — both are rendered from F here, on every change, and bound the same
+     way. See the note on drawing a control twice in components.md. */
+  const side=document.getElementById('nb-side-cats');
+  if(side){
+    // The fieldset's own <legend> is the heading here — a separate <h2> above
+    // it just said "Categories" over "Category".
+    side.innerHTML=grp("Category","cat",order(cat),CATLABEL,CATCOLOR);
+    bindFacets(side);
+  }
+  if(keep) (keepIn?document.getElementById(keepIn.id):document)
+    .querySelector(facetSel(keep))?.focus({preventScroll:true});
+  if(typeof nbUpdateFilterCount==='function')nbUpdateFilterCount();
 }
-function grp(title,f,entries,labelmap){
-  let h=`<div class="fgroup"><h3>${title}</h3>`;
+function grp(title,f,entries,labelmap,colors){
+  let h=`<fieldset class="fgroup fgroup--${esc(f)}"><legend>${title}</legend>`;
   for(const [v,c] of entries){
     const on=F[f].has(v); const lab=labelmap&&labelmap[v]?labelmap[v]:(v==="—"?"(none)":v);
-    // a <div> (not <label>): a <label> forwards clicks on its text to the inner
-    // checkbox, which then double-fires the toggle and cancels out — so only a
-    // pixel-perfect click on the tiny checkbox worked. A div fires exactly once.
-    h+=`<div class="fitem ${on?'act':''}" data-f="${f}" data-v="${v}">
-      <input type="checkbox" ${on?'checked':''}><span>${lab}</span><span class="c">${c.toLocaleString()}</span></div>`;
+    /* The swatch is how a category filter connects to the map behind it. With
+       the popover open the map legend is covered, so without this there is no
+       way to tell which color "anarchist" is while you are choosing it.
+       aria-hidden because the label already names the category — the color is
+       a second encoding of the same thing, not extra information. */
+    const sw=colors&&colors[v]?`<span class="sw" style="background:${colors[v]}" aria-hidden="true"></span>`:'';
+    h+=`<label class="fitem ${on?'act':''}" data-f="${esc(f)}" data-v="${esc(v)}">
+      <input type="checkbox" ${on?'checked':''}>${sw}<span>${esc(lab)}</span><span class="c">${c.toLocaleString()}</span></label>`;
   }
-  return h+`</div>`;
+  return h+`</fieldset>`;
+}
+/* Every facet row, wherever it is drawn. Called once per container, because
+   Category appears twice at md: in the popover on the List view and in the
+   sidebar on the canvas views. */
+function bindFacets(el){
+  el.querySelectorAll('.fitem[data-f] input').forEach(inp=>inp.onchange=()=>{
+    const d=inp.closest('.fitem').dataset, S=F[d.f];
+    S.has(d.v)?S.delete(d.v):S.add(d.v);
+    PAGE=0; syncURL(); buildFacets(); render();
+  });
+  el.querySelectorAll('.fitem[data-flag] input').forEach(inp=>inp.onchange=()=>{
+    const v=inp.closest('.fitem').dataset.flag;
+    F.flags.has(v)?F.flags.delete(v):F.flags.add(v);
+    PAGE=0; syncURL(); buildFacets(); render();
+  });
+  /* A DISPLAY option, not a filter: it changes what is drawn over the pins,
+     not which blogs are in the set. So it touches neither F, the URL, PAGE nor
+     the Filters badge. */
+  el.querySelectorAll('.fitem[data-map] input').forEach(inp=>inp.onchange=()=>{
+    MAPEDGES=inp.checked;
+    if(mapApi&&mapApi.setEdges) mapApi.setEdges(MAPEDGES);
+    buildFacets();
+  });
+}
+
+/* Which input to re-focus after buildFacets() rewrites the subtree. */
+function facetSel(d){
+  if(d.f) return `.fitem[data-f="${CSS.escape(d.f)}"][data-v="${CSS.escape(d.v)}"] input`;
+  if(d.flag) return `.fitem[data-flag="${CSS.escape(d.flag)}"] input`;
+  return `.fitem[data-map="${CSS.escape(d.map)}"] input`;
+}
+/* Map view only. The count comes from window.NB_MAP_EDGES, which exists only
+   once map_data.js has loaded — shown when known rather than hardcoded.
+   showMap() rebuilds the facets once that file has landed. */
+function grpMap(){
+  if(view!=='map') return '';
+  const n=(window.NB_MAP_EDGES&&window.NB_MAP_EDGES.length)||0;
+  const c=n?`<span class="c">${n.toLocaleString()}</span>`:'';
+  return `<fieldset class="fgroup"><legend>Map</legend>`
+    +`<label class="fitem ${MAPEDGES?'act':''}" data-map="edges">`
+    +`<input type="checkbox" ${MAPEDGES?'checked':''}>`
+    +`<span>Co-citation edges</span>${c}</label>`
+    +`<div class="fhint">Cities linked by shared movement sources.</div>`
+    +`</fieldset>`;
 }
 function grpFlags(){
   const opts=[["logo","has logo"],["contact","has contact"],["quotes","has quotes"],["geo","mappable"],["dox","doxxing activity"]];
-  const scope=DATA.filter(b=>matchSearch(b));
+  const scope=queryFilters()?DATA.filter(matchSearch):DATA;
   const cnt={logo:b=>b.vt==="logo",contact:b=>Object.keys(b.ct).length,
     quotes:b=>b.nq>0,geo:b=>b.lat!=null,dox:b=>b.dox};
-  let h=`<div class="fgroup"><h3>Filters</h3>`;
+  let h=`<fieldset class="fgroup"><legend>Filters</legend>`;
   for(const [v,lab] of opts){const on=F.flags.has(v);const c=scope.filter(cnt[v]).length;
-    h+=`<div class="fitem ${on?'act':''}" data-flag="${v}"><input type="checkbox" ${on?'checked':''}><span>${lab}</span><span class="c">${c.toLocaleString()}</span></div>`;}
-  return h+`</div>`;
+    h+=`<label class="fitem ${on?'act':''}" data-flag="${esc(v)}"><input type="checkbox" ${on?'checked':''}><span>${lab}</span><span class="c">${c.toLocaleString()}</span></label>`;}
+  return h+`</fieldset>`;
 }
 function clearAll(){F.q="";setSearch("");document.getElementById('search').value="";
   F.co.clear();F.cat.clear();F.mil.clear();F.sc.clear();F.flags.clear();PAGE=0;syncURL();buildFacets();render();}
@@ -344,6 +1019,7 @@ function clearAll(){F.q="";setSearch("");document.getElementById('search').value
 function render(){
   const fl=filtered();
   renderKPIs(fl);
+  if(window.nbUpdateFilterCount) window.nbUpdateFilterCount();
   const grid=document.getElementById('grid');
   const slice=fl.slice(0,(PAGE+1)*PER);
   if(!slice.length){grid.innerHTML=`<div class="empty">No blogs match these filters.</div>`;}
@@ -352,8 +1028,9 @@ function render(){
   const lm=document.getElementById('loadmore');
   lm.style.display=fl.length>slice.length?"block":"none";
   lm.textContent=`Show more (${(fl.length-slice.length).toLocaleString()} more)`;
-  document.getElementById('subcount').textContent=`${fl.length.toLocaleString()} of ${DATA.length.toLocaleString()} blogs match`;
-  if(view==="map")postFilter(); if(view==="graph")postFilterGraph();
+  document.getElementById('subcount').textContent=statusLine(fl);
+  // postFilter re-writes that line on the Map view to add the pin count.
+  if(view==="map")postFilter(fl); if(view==="graph")postFilterGraph();
 }
 function renderKPIs(fl){
   const logo=fl.filter(b=>b.vt==="logo").length, ct=fl.filter(b=>Object.keys(b.ct).length).length;
@@ -402,6 +1079,25 @@ function isRedacted(s){return /\[[A-Z]{2,}/.test(s||"");}
 
 // Render the shared detail drawer for a host (opened from cards, map pins, chips, URL).
 function openModal(h){
+  const b=BYHOST[h]; if(!b)return;
+  // Never draw a partially-populated drawer. If the prefetch has not landed
+  // yet — only possible in the first moment after load — show the panel with a
+  // placeholder and fill it in when it does.
+  if(!detailReady){
+    SEL=h;
+    document.body.classList.add('nb-has-sel');
+    document.getElementById('panel').classList.add('on');
+    document.getElementById('scrim').classList.add('on');
+    document.getElementById('pinner').innerHTML='<div class="pempty">Loading details…</div>';
+    history.replaceState(null,'',urlFor(h));   // the URL should carry ?host= now, not later
+    // loadDetail() re-renders whatever is open when it lands, so do not also
+    // render here -- that ran renderModal twice for the same host.
+    loadDetail();
+    return;
+  }
+  renderModal(h);
+}
+function renderModal(h){
   const b=BYHOST[h]; if(!b)return;
   SEL=h;
   history.replaceState(null,'',urlFor(h));
@@ -559,6 +1255,7 @@ function openModal(h){
   // institution chip -> open that institution's node (with all citing quotes) in the Graph
   document.getElementById('pinner').querySelectorAll('.chip[data-inst]').forEach(c=>
     c.onclick=()=>gotoInstitution(c.dataset.inst));
+  document.body.classList.add('nb-has-sel');
   document.getElementById('panel').classList.add('on');
   document.getElementById('scrim').classList.add('on');
   document.getElementById('pinner').scrollTop=0;
@@ -568,6 +1265,7 @@ function openModal(h){
 }
 function closeModal(){
   SEL=null;
+  document.body.classList.remove('nb-has-sel');
   document.getElementById('panel').classList.remove('on');
   document.getElementById('scrim').classList.remove('on');
   document.querySelectorAll('.card.sel').forEach(c=>c.classList.remove('sel'));
@@ -575,88 +1273,249 @@ function closeModal(){
 }
 function urlFor(h){const p=new URLSearchParams(location.search);p.set('host',h);return '?'+p.toString();}
 
-// ---- map (single canonical map: ../world_hyperlocal_map.html, embedded) ----
-// The rich Leaflet map lives in ONE file/builder; the explorer embeds it and
-// drives it with the live dashboard filter via postMessage (exact host set),
-// and the map posts back pin clicks to open the shared detail drawer.
+// ---- map ------------------------------------------------------------------
+// The Leaflet map lives in one module, noblogs/map.js, shared by this page's
+// Map tab and the standalone world_hyperlocal_map.html. The explorer drives it
+// with the live dashboard filter and takes pin clicks back through onOpenHost.
 // pendingFocus: a node to fly to (a blog host, or an institution domain) once the
-// target frame is ready — set when the user switches tabs with a blog selected, or
+// view is ready — set when the user switches tabs with a blog selected, or
 // clicks an "institutions consulted" chip. instDoms() lets the graph fall back to a
 // consulted institution when the exact blog isn't a graph node.
 let pendingFocus=null;
 function instDoms(h){const b=BYHOST[h];return b&&b.inst?b.inst.map(x=>x[0]):[];}
-function tryFocusMap(){if(mapReady&&pendingFocus){const f=document.getElementById('mapframe');
-  f.contentWindow&&f.contentWindow.postMessage({type:'focus',host:pendingFocus},'*');pendingFocus=null;}}
-// Robust focus delivery: a single postMessage is lost when the graph iframe is still
-// building its layout (slow devices) — the graph would land on the default view (#2).
-// Retry every 150ms until the graph ACKs {type:'focusDone'}, capped at ~6s.
-let focusTimer=null;
+function tryFocusMap(){
+  if(mapReady&&mapApi&&pendingFocus){ mapApi.focus(pendingFocus); pendingFocus=null; }
+}
+// The graph focus used to be re-posted every 150ms, up to 40 times (~6s), until
+// the frame ACKed {type:'focusDone'} — a retry loop that existed only because a
+// single postMessage is lost while Cytoscape is still laying out. focus()
+// returns whether it resolved the node, so one call answers the question.
 function tryFocusGraph(){
-  if(!pendingFocus)return;
-  const dom=pendingFocus, f=document.getElementById('graphframe');
-  clearInterval(focusTimer); let tries=0;
-  focusTimer=setInterval(()=>{
-    if(pendingFocus!==dom){clearInterval(focusTimer);return;}   // superseded or acked
-    const w=f&&f.contentWindow;
-    if(w){try{w.postMessage({type:'focus',host:dom,insts:instDoms(dom)},'*');}catch(e){}}
-    if(++tries>40)clearInterval(focusTimer);
-  },150);
+  if(!pendingFocus||!graphReady||!graphApi)return;
+  if(graphApi.focus(pendingFocus,instDoms(pendingFocus))) pendingFocus=null;
 }
 // institution chip -> switch to Graph and focus that institution node. Set pendingFocus
 // FIRST so showGraph()'s onload/else path already sees the target (no ordering race).
 function gotoInstitution(dom){pendingFocus=dom; closeModal();
   document.querySelector('.tab[data-v="graph"]').click(); tryFocusGraph();}
 
-let mapLoaded=false, mapReady=false;
-function showMap(){
-  const f=document.getElementById('mapframe');
-  if(!mapLoaded){mapLoaded=true;f.onload=()=>{mapReady=true;postFilter();tryFocusMap();};
-    f.src='world_hyperlocal_map.html';}
-  else {postFilter();tryFocusMap();}
-}
-function postFilter(){
-  if(!mapReady)return;
-  const f=document.getElementById('mapframe');
-  if(f&&f.contentWindow)
-    f.contentWindow.postMessage({type:'filter',hosts:filtered().map(b=>b.h)},'*');
-}
-window.addEventListener('message',ev=>{
-  const m=ev.data||{};
-  if(m.type==='openHost'&&m.host)openModal(m.host);
-  // graph confirmed it focused the requested node -> stop the retry loop (#2)
-  if(m.type==='focusDone'){pendingFocus=null;clearInterval(focusTimer);}
-});
+/* ---- Map tab ------------------------------------------------------------
+   No iframe. Leaflet, the map payload and noblogs/map.js load on first
+   activation — the same laziness the iframe's deferred `src` gave us — and
+   after that the explorer calls the module directly. postFilter used to be a
+   postMessage that was dropped whenever the frame had not finished loading;
+   setHosts is a function call that either exists or does not. */
+let mapLoaded=false, mapReady=false, mapApi=null;
 
-// ---- graph (single canonical graph: ../graph/index.html, embedded) ----------
-// Same pattern as the map: embed the Cytoscape graph, cross-filter it with the
-// live facet host-set via postMessage, and let blog-node clicks post back to open
-// the SAME detail drawer (consistent detail surface across dashboard/map/graph).
-let graphLoaded=false, graphReady=false;
-function showGraph(){
-  const f=document.getElementById('graphframe');
-  if(!graphLoaded){graphLoaded=true;f.onload=()=>{graphReady=true;postFilterGraph();tryFocusGraph();};
-    f.src='graph/index.html';}
-  else {postFilterGraph();tryFocusGraph();}
+function loadScript(src){
+  return new Promise((res,rej)=>{
+    const s=document.createElement('script');
+    s.src=src; s.onload=res; s.onerror=()=>rej(new Error('failed to load '+src));
+    document.head.appendChild(s);
+  });
+}
+function loadStyle(href){
+  return new Promise(res=>{
+    const l=document.createElement('link');
+    l.rel='stylesheet'; l.href=href; l.onload=res; l.onerror=res;
+    document.head.appendChild(l);
+  });
+}
+
+async function showMap(){
+  if(mapReady){ postFilter(); tryFocusMap(); mapApi&&mapApi.invalidateSize(); return; }
+  if(mapLoaded) return;                      // load already in flight
+  mapLoaded=true;
+  const loading=document.getElementById('maploading');
+  try{
+    await Promise.all([
+      loadStyle('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'),
+      loadStyle('https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css'),
+      loadStyle('https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css')
+    ]);
+    await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');
+    await loadScript('https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js');
+    await loadScript('map_data.js');
+    await loadScript('map.js');
+
+    mapApi=NBMap.init(document.getElementById('mapcanvas'),{
+      standalone:false,
+      legendScope:document.getElementById('mapwrap'),
+      onOpenHost:openModal          // was {type:'openHost'} over postMessage
+    });
+    mapReady=true;
+    if(loading) loading.hidden=true;
+    /* Push the edge state into the freshly-built map, and rebuild the facets so
+       the Map group can now show the edge count — window.EDGES only exists once
+       map_data.js has loaded, which is here. */
+    mapApi.setEdges(MAPEDGES);
+    buildFacets();
+    postFilter(); tryFocusMap();
+    mapApi.invalidateSize();
+  }catch(err){
+    mapLoaded=false;
+    if(loading) loading.textContent='Could not load the map. Reload to try again.';
+    console.error(err);
+  }
+}
+/* Two different numbers, and they must both survive: how much of the CORPUS
+ * matched, and how much of that match is DRAWN. Collapsing them to one has
+ * already shipped once as an apparent data regression.
+ *
+ * MUST FIT ONE LINE at 390px (~38 chars) — the map's height is calculated from
+ * this header, so a line that wraps shrinks the map.
+ * tests/test_disclaimer.spec.js holds that. */
+function statusLine(fl, mapped){
+  const head = fl.length===DATA.length
+    ? `${DATA.length.toLocaleString()} blogs`
+    : `${fl.length.toLocaleString()} of ${DATA.length.toLocaleString()} match`;
+  return mapped==null ? head : `${head} · ${mapped.toLocaleString()} mapped`;
+}
+
+/* setHosts returns pins PLACED, which is not the number that matched: a blog
+   with no resolvable city has no coordinates. */
+function postFilter(fl){
+  if(!mapReady||!mapApi)return;
+  const list=fl||filtered();
+  const shown=mapApi.setHosts(list.map(b=>b.h));
+  const el=document.getElementById('subcount');
+  if(!el||typeof shown!=='number')return;
+  el.textContent=statusLine(list,shown);
+}
+// Nothing on this page is framed any more, so there is no postMessage listener.
+
+
+// ---- graph ----------------------------------------------------------------
+// Same pattern as the map: one module, noblogs/graph/graph.js, shared by this
+// page's Graph tab and the standalone graph/index.html. Cross-filtered with the
+// live facet host-set, and blog-node taps open the SAME detail drawer, so the
+// detail surface is consistent across dashboard, map and graph.
+/* ---- Graph tab ----------------------------------------------------------
+   No iframe. Cytoscape, the graph data, the logos and graph.js load on first
+   activation. quotes.embed.js is deliberately NOT loaded here: this page
+   already loads it for the detail drawer, and the frame boundary is what used
+   to force a second 2.0 MB copy of it inside the graph. */
+let graphLoaded=false, graphReady=false, graphApi=null;
+
+async function showGraph(){
+  if(graphReady){ postFilterGraph(); tryFocusGraph(); graphApi&&graphApi.resize(); return; }
+  if(graphLoaded) return;
+  graphLoaded=true;
+  const loading=document.getElementById('graphloading');
+  try{
+    await loadStyle('graph/graph.css');
+    await loadScript('graph/cytoscape.min.js');
+    await loadScript('graph/graph_data.js');
+    await loadScript('graph/logos.index.js');
+    await loadScript('graph/graph.js');
+
+    graphApi=NBGraph.init(document.getElementById('graphwrap'),{
+      standalone:false,
+      assetBase:'graph/',        // logo paths are relative to noblogs/graph/
+      onOpenHost:openModal        // was {type:'openHost'} over postMessage
+    });
+    graphReady=true;
+    if(loading) loading.hidden=true;
+    postFilterGraph(); tryFocusGraph();
+    graphApi.resize();
+  }catch(err){
+    graphLoaded=false;
+    if(loading) loading.textContent='Could not load the graph. Reload to try again.';
+    console.error(err);
+  }
 }
 function postFilterGraph(){
-  if(!graphReady)return;
-  const f=document.getElementById('graphframe');
-  if(f&&f.contentWindow)
-    f.contentWindow.postMessage({type:'filter',hosts:filtered().map(b=>b.h)},'*');
+  if(!graphReady||!graphApi)return;
+  // Facets only — see the note by viewSet().
+  graphApi.setHosts(facetFiltered().map(b=>b.h));
+  const el=document.getElementById('subcount');
+  // find() is debounced, so show the node count now and the hit count when it
+  // lands; otherwise the line carries a corpus figure for 200ms.
+  if(el&&!F.q) el.textContent=graphStatus(0);
+  graphApi.find(F.q,n=>{ if(el) el.textContent=graphStatus(n); });
+}
+/* The Graph view counts nodes, not corpus rows: the network holds 217 of the
+   7,673 blogs plus 77 institutions, so "N of 7,673" would describe a set the
+   view cannot show. */
+function graphStatus(hits){
+  const cy=graphApi&&graphApi.cy;
+  const shown=cy?cy.nodes().filter(n=>n.style('display')!=='none').length:0;
+  if(!F.q) return `${shown.toLocaleString()} nodes`;
+  return hits?`${hits.toLocaleString()} of ${shown.toLocaleString()} nodes found`
+             :`No nodes match “${F.q}”`;
 }
 
 // ---- tabs / url ----
 document.getElementById('tabs').onclick=e=>{const t=e.target.closest('.tab');if(!t)return;
-  view=t.dataset.v; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+  view=t.dataset.v;
+  // Roving tabindex: the selected tab is the only one in the tab order, so Tab
+  // moves past the whole group and the arrow keys move within it. That is the
+  // tablist pattern, and it is why aria-selected and tabindex change together.
+  document.querySelectorAll('.tab').forEach(x=>{
+    const on=x===t;
+    x.classList.toggle('on',on);
+    x.setAttribute('aria-selected',String(on));
+    x.tabIndex=on?0:-1;
+  });
+  // At md the Filters button is hidden on the List view, where the facet rail
+  // is already on screen; this is what the CSS keys that off.
+  document.body.dataset.view=view;
+  /* The one search field means what the view means. On Graph it locates a node
+     and reaches the institutions the blog index does not contain; everywhere
+     else it narrows the corpus. */
+  const sf=document.getElementById('search');
+  sf.placeholder=view==='graph'?'Find a blog or institution…':'Search blogs, cities, quotes…';
+  sf.setAttribute('aria-label',view==='graph'
+    ?'Find a blog or institution on the graph'
+    :'Search blogs, cities and quotes');
   document.getElementById('dashview').style.display=view==='dash'?'flex':'none';
   document.getElementById('mapview').style.display=view==='map'?'block':'none';
   document.getElementById('graphview').style.display=view==='graph'?'block':'none';
+  /* Both of these are view-dependent now, so a switch has to redo them:
+     the Map group of facets belongs to the Map view only, and the status line
+     counts corpus rows on Map/List but graph nodes on Graph. Without the
+     render() the List view inherited whatever the graph last wrote. */
+  buildFacets();
+  render();
   // switching to Map/Graph with a blog open -> fly to that pin/node (#7)
   if(SEL&&(view==='map'||view==='graph'))pendingFocus=SEL;
   syncURL(); if(view==='map')showMap(); if(view==='graph')showGraph();};
-document.getElementById('search').oninput=e=>{F.q=e.target.value;setSearch(F.q);PAGE=0;syncURL();buildFacets();render();};
+/* Arrow keys move between tabs and activate as they go, which is the expected
+   behavior for a tablist whose panels are already in the DOM. Home and End
+   jump to the ends. Space and Enter need no handler — these are <button>s. */
+document.getElementById('tabs').onkeydown=e=>{
+  const keys={ArrowRight:1,ArrowLeft:-1,Home:'first',End:'last'};
+  if(!(e.key in keys))return;
+  const tabs=[...document.querySelectorAll('#tabs .tab')];
+  const i=tabs.indexOf(e.target.closest('.tab'));
+  if(i<0)return;
+  e.preventDefault();
+  const d=keys[e.key];
+  const next=d==='first'?tabs[0]:d==='last'?tabs[tabs.length-1]
+    :tabs[(i+d+tabs.length)%tabs.length];
+  next.focus(); next.click();
+};
+/* Debounced, for two reasons that arrived together.
+ *
+ * The work is not small: every keystroke re-scanned all ~5,000 records, rebuilt
+ * #facets.innerHTML wholesale and re-rendered the grid, the map layer and the
+ * graph filter. And #subcount is now an aria-live region, so undebounced it
+ * interrupts a screen reader on every letter and the user never hears a whole
+ * count. 200ms is below the ~250ms an average typist leaves between keys, so a
+ * pause reads as "done typing" without feeling laggy.
+ *
+ * Only this path is debounced. Facet checkboxes, the clear-all and the URL
+ * restore are discrete events and stay immediate. */
+let qTimer=null;
+document.getElementById('search').oninput=e=>{
+  const v=e.target.value;
+  clearTimeout(qTimer);
+  qTimer=setTimeout(()=>{F.q=v;setSearch(F.q);PAGE=0;syncURL();buildFacets();render();},200);
+};
 document.getElementById('loadmore').onclick=()=>{PAGE++;render();};
-document.onkeydown=e=>{if(e.key==='Escape')closeModal();};
+document.onkeydown=e=>{if(e.key!=='Escape')return;
+  if(document.body.classList.contains('nb-facets-open')&&window.nbSetFacets)nbSetFacets(false);
+  else closeModal();};
 
 function syncURL(){const p=new URLSearchParams();
   p.set('view',view); if(F.q)p.set('q',F.q);
@@ -672,10 +1531,142 @@ function readURL(){const p=new URLSearchParams(location.search);
   (p.get('mil')||"").split(',').filter(Boolean).forEach(x=>F.mil.add(x));
   (p.get('sc')||"").split(',').filter(Boolean).forEach(x=>F.sc.add(x));
   (p.get('f')||"").split(',').filter(Boolean).forEach(x=>F.flags.add(x));
-  // default landing view is the Map at cross-continental zoom (#3); dashboard/graph
-  // states carry an explicit ?view= so deep-links and the back button still work.
+  // Landing view is the Map: it is what the tool is for, and it is the first
+  // tab. That costs every visitor map_data.js (3.85 MB) up front — the reason
+  // the List view held this slot back when the map was an iframe on
+  // world_hyperlocal_map.html. It still loads lazily, just immediately.
   const v=p.get('view')||'map'; document.querySelector(`.tab[data-v="${v}"]`)?.click();
-  const host=p.get('host'); if(host)setTimeout(()=>{openModal(host);
-    if(p.get('opennews'))document.querySelector('#pinner details.news')?.setAttribute('open','');},0);}
+  // ?opennews=1 expands the news disclosure. `ne` lives in the deferred payload,
+  // so on a cold load the <details> does not exist yet when openModal returns --
+  // it only paints a placeholder. Wait for the detail to land before reaching
+  // for it. This worked on master because one file carried everything.
+  const host=p.get('host');
+  if(host)setTimeout(()=>{
+    openModal(host);
+    if(!p.get('opennews'))return;
+    const openNews=()=>document.querySelector('#pinner details.news')?.setAttribute('open','');
+    if(detailReady)openNews(); else loadDetail().then(()=>{if(SEL===host)openNews();});
+  },0);}
 function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---- mobile shell -------------------------------------------------------
+   The map and the graph are sized against what is left of the viewport, so the
+   header's real height has to be a number the CSS can read. It is measured
+   rather than assumed: the tool was full of a literal 56px that was only ever
+   right on one screen.
+
+   By id. `querySelector('header')` matched the SITE masthead, which precedes
+   this one in the DOM, so --nb-header-h was the wordmark block's height and
+   every offset derived from it was wrong.
+
+   Two things used to make this harder than it is. The separate #nb-filterbar
+   was a second measured band, and the disclaimer <details> changed the header's
+   height when it opened. Both are gone: Filters is a control inside the header,
+   and the disclaimer is a modal that does not touch layout. What is left is one
+   observer on one element. */
+(function(){
+  const header=document.getElementById('nb-header');
+  if(!header) return;
+
+  /* Two numbers, and they are not the same number.
+
+     --nb-header-h is the header's HEIGHT: what the facet rail offsets itself
+     by once the header is pinned.
+
+     --nb-stage-top is the canvas band's POSITION — its distance from the top
+     of the DOCUMENT, which is the banner plus the masthead plus this header.
+     The band's height was `100dvh - --nb-header-h`, which is the space
+     available only when the page is scrolled far enough for the header to be
+     pinned at top:0. On arrival it is ~270px taller than the window and the
+     map runs off the bottom of the screen.
+
+     offsetTop, not getBoundingClientRect: a sticky element's rect moves when
+     it pins, and this has to be the resting position. offsetTop is the static
+     layout position and does not. */
+  const docTop=el=>{let y=0;for(let n=el;n;n=n.offsetParent)y+=n.offsetTop;return y;};
+  const stage=document.getElementById('nb-stage');
+  const setH=()=>{
+    const s=document.documentElement.style;
+    s.setProperty('--nb-header-h',header.offsetHeight+'px');
+    if(stage) s.setProperty('--nb-stage-top',docTop(stage)+'px');
+  };
+  setH();
+  if(window.ResizeObserver){const ro=new ResizeObserver(setH);ro.observe(header);}
+  /* Unconditionally, not as the ResizeObserver's fallback: the observer
+     watches this header, and --nb-stage-top also moves when the banner or the
+     masthead above it rewraps, which it never sees. */
+  window.addEventListener('resize',setH);
+
+  /* The disclaimer modal. showModal(), never show() — only the modal form gets
+     the focus trap, the Escape handling, the backdrop and the top layer. The
+     platform also returns focus to the opener on close, so there is nothing to
+     restore by hand. */
+  const dlg=document.getElementById('nb-disclaimer');
+  const dlgOpen=document.getElementById('nb-disclaimer-open');
+  const dlgClose=document.getElementById('nb-disclaimer-close');
+  if(dlg&&dlgOpen){
+    dlgOpen.addEventListener('click',()=>dlg.showModal());
+    if(dlgClose) dlgClose.addEventListener('click',()=>dlg.close());
+    /* Click-outside-to-dismiss. The backdrop is not a child, so a click on it
+       targets the <dialog> itself; anything inside targets a descendant. */
+    dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+  }
+
+  /* The detail drawer becomes a bottom sheet on a phone. Without this, tapping
+     a card or a map pin updated a panel sitting off the right edge of a 390px
+     screen — the same no-visible-response failure as the graph tools. */
+  const panel=document.getElementById('panel');
+  const sheet=(window.DRSheet&&panel)?window.DRSheet.attach(panel,{
+    label:'Blog details', detent:'half',
+    onClose:()=>{ if(typeof closeModal==='function') closeModal(); }
+  }):null;
+
+  if(sheet){
+    // openModal/closeModal toggle .on; mirror that onto the sheet.
+    const obs=new MutationObserver(()=>{
+      if(!window.DRSheet.isMobile()) return;
+      const on=panel.classList.contains('on');
+      if(on&&!sheet.isOpen()) sheet.open();
+      else if(!on&&sheet.isOpen()) sheet.close();
+    });
+    obs.observe(panel,{attributes:true,attributeFilter:['class']});
+  }
+
+  /* Facets behind one button. On a phone the rail put four scrolling filter
+     sections between the user and the first result; on Map and Graph there was
+     no rail at all, at any width, even though the facets were still filtering
+     both. One button, one floating sheet, all three tabs. */
+  const bar=document.getElementById('nb-filters');
+  const facets=document.getElementById('facets');
+  const scrim=document.getElementById('nb-facetscrim');
+  const count=document.getElementById('nb-filtercount');
+  if(bar&&facets){
+    // Hang the sheet off the button's measured box — see the CSS note.
+    const place=()=>{
+      const r=bar.getBoundingClientRect();
+      const top=r.bottom+8;
+      facets.style.setProperty('--nb-facet-left',Math.max(8,r.left)+'px');
+      facets.style.setProperty('--nb-facet-top',top+'px');
+      facets.style.setProperty('--nb-facet-maxh',
+        Math.max(160,window.innerHeight-top-16)+'px');
+    };
+    window.nbSetFacets=function(open){
+      document.body.classList.toggle('nb-facets-open',open);
+      bar.setAttribute('aria-expanded',String(open));
+      if(scrim) scrim.hidden=!open;
+      if(open) place();
+    };
+    bar.addEventListener('click',()=>nbSetFacets(!document.body.classList.contains('nb-facets-open')));
+    if(scrim) scrim.addEventListener('click',()=>nbSetFacets(false));
+    window.addEventListener('resize',()=>{
+      if(document.body.classList.contains('nb-facets-open')) place();
+    });
+  }
+  // Keep the badge honest about how many filters are active.
+  window.nbUpdateFilterCount=function(){
+    if(!count) return;
+    const n=(F.co.size||0)+(F.cat.size||0)+(F.mil.size||0)+(F.sc.size||0)+(F.flags.size||0);
+    count.hidden=n===0; count.textContent=String(n);
+  };
+})();
 </script>

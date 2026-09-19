@@ -1,0 +1,105 @@
+/* .dr-tip — the one tooltip.
+ *
+ * WHY NOT `title`. The native tooltip cannot be styled, cannot wrap where you
+ * want it to, and — the reason this exists — takes about a second to appear.
+ * On a toolbar of icon-only controls that delay is the whole interaction: you
+ * hover a glyph you do not recognize, get nothing, and move on. A tooltip that
+ * explains an ambiguous control has to be instant or it is not an explanation.
+ *
+ * NOT `.tooltip`. main.css already has a `.tooltip` class at z-index 1000,
+ * used by older tool pages. Different name, different rules, no collision.
+ *
+ * Z-INDEX 70, and it is appended to <body> rather than next to its trigger.
+ * Both tool canvases set `isolation: isolate` to contain Leaflet and Cytoscape,
+ * so a tooltip rendered inside one is trapped in that stacking context and
+ * clipped by `overflow: hidden` on #stage. Out at body level it sits on the
+ * site's own scale and nothing this repo authors goes above 100.
+ *
+ * Outside @layer, like everything in components/: Tailwind drops a layered rule
+ * whose selector it cannot find in the scanned HTML, and this element is
+ * created by JS.
+ */
+
+.dr-tip {
+  position: fixed;
+  z-index: var(--dr-z-popover, 70);
+  max-width: 17rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--dr-radius-sm, 6px);
+  background: var(--dr-accent, #252739);
+  color: #fff;
+  font-family: var(--dr-font-content, inherit);
+  font-size: var(--dr-text-meta, 13px);
+  line-height: 1.4;
+  font-weight: 400;
+  text-align: left;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.26);
+  /* The trigger is usually a control the pointer is ON. A tooltip that can be
+     hovered steals the pointer and flickers. */
+  pointer-events: none;
+  /* Positioned by JS before it is shown; `hidden` keeps it out of the
+     accessibility tree and out of the way until then. */
+  opacity: 0;
+  transition: opacity var(--dr-dur-fast, 120ms) linear;
+}
+
+/* `:not([hidden])` is load-bearing — the same trap as .dr-sheet__scrim and
+   .dr-btn__count. `hidden` is only a UA display:none, so any `display` or
+   visibility rule here beats it. */
+.dr-tip[hidden] { display: none; }
+.dr-tip.is-on { opacity: 1; }
+
+/* The arrow. A pseudo-element on the tip itself, flipped by the class JS sets
+   when it has to place the tip below its trigger instead of above. */
+.dr-tip::after {
+  content: "";
+  position: absolute;
+  left: var(--dr-tip-arrow, 50%);
+  width: 0;
+  height: 0;
+  margin-left: -5px;
+  border: 5px solid transparent;
+}
+
+.dr-tip--above::after {
+  top: 100%;
+  border-top-color: var(--dr-accent, #252739);
+}
+
+.dr-tip--below::after {
+  bottom: 100%;
+  border-bottom-color: var(--dr-accent, #252739);
+}
+
+.dr-tip__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  /* The name and the explanation are one block, so the gap is small. */
+  margin-bottom: 0.125rem;
+}
+
+/* The value of a two-state control, opposite its name. Written by DRTip from
+   the trigger's `aria-pressed`, so it cannot disagree with the button. */
+.dr-tip__state {
+  margin-left: auto;
+  flex: none;
+  padding: 0 0.375rem;
+  border-radius: var(--dr-radius-sm, 6px);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.dr-tip__state[data-state="on"] {
+  background: var(--dr-on, #19B270);
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-tip { transition: none; }
+}

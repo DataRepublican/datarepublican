@@ -3,34 +3,45 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   {% include head-custom.html %}
   {% seo %}
 </head>
 
-<body class="m-0 p-0 flex flex-col md:flex-row">
-  {% include header.html %}
+{%- comment -%}
+  One DOM order for all three layouts: banner, masthead (which now carries the
+  nav), content, footer.
 
-  <div id="main-content" class="flex-1 transition-all duration-300">
-    <script>
-      // Set initial margin based on localStorage to prevent flash of content
-      (function() {
-        var mainContent = document.getElementById('main-content');
-        var isCollapsed = localStorage.getItem('menuCollapsed') === 'true';
-        
-        if (isCollapsed) {
-          mainContent.classList.add('menu-collapsed');
-        } else {
-          mainContent.classList.add('menu-expanded');
-        }
-      })();
-    </script>
-    <main class="@container p-4 xl:px-6 min-h-[calc(100vh-200px)]">
+  The nav is included by _includes/masthead.html, inside the wordmark row — it
+  is NOT a sibling of <header> any more. On a phone it is `position: fixed` and
+  floats at the bottom of the viewport regardless of what contains it; at md it
+  is a plain row of links across from the wordmark. There is still one piece of
+  nav markup and no route-gated rendering.
+
+  It used to sit here, between <header> and #content, so it could be sticky at
+  md. Desktop gave that up deliberately — see the note at the top of nav.html.
+
+  Every page uses the same shell measure — `.page-column` in main.css. Narrower
+  reading columns are a property of the content (`.text-column`, `.prose`), not
+  of the page, so there is nothing to switch on here.
+{%- endcomment -%}
+
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  {% include banner.html %}
+
+  <header class="page-column">
+    {% include masthead.html %}
+  </header>
+
+  <div id="content">
+    <main class="@container page-column min-h-[40vh] pb-10">
       {{ content }}
     </main>
-    {% include footer.html %}
   </div>
+
+  {% include footer.html %}
 </body>
+
 </html>

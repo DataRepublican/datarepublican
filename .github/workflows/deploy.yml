@@ -1,0 +1,86 @@
+name: Deploy to GitHub Pages
+
+# Builds the site in CI and publishes it, replacing the practice of committing
+# the build output to `docs/` and letting Pages serve it from the branch.
+#
+# ORDER MATTERS. This workflow has to be on `master` and running before the
+# repository's Pages source is switched from "Deploy from a branch
+# (master /docs)" to "GitHub Actions", and the `docs/` directory must not be
+# deleted until after that switch is verified. Delete it first and the live
+# site goes down the moment the branch merges.
+#
+# Rollout:
+#   1. Merge this workflow to master. It deploys, but Pages is still serving
+#      docs/, so nothing user-visible changes yet.
+#   2. Settings -> Pages -> Source -> GitHub Actions.
+#   3. Confirm datarepublican.com still serves every route, and that canonical
+#      and og:url are absolute https://datarepublican.com URLs.
+#   4. Only then merge the PR that removes docs/ from git.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two deploys at once, and never cancel one in flight — a canceled
+# deploy can leave Pages serving a partial upload.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1.4'
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      # The build is ~444 MB, against a 1 GB GitHub Pages ceiling. Fail here
+      # with a clear message rather than at upload time with an opaque one.
+      - name: Check size against the Pages ceiling
+        run: |
+          bytes=$(du -sb _site | cut -f1)
+          limit=$((1024 * 1024 * 1024))
+          printf 'build is %s, ceiling is 1.0 GiB\n' "$(du -sh _site | cut -f1)"
+          if [ "$bytes" -gt "$limit" ]; then
+            echo "::error::_site exceeds the 1 GB GitHub Pages limit. Move a dataset to object storage or add it to _config.yml exclude."
+            exit 1
+          fi
+
+      # Every published route must survive the deploy. Checked before upload,
+      # not after, so a build that lost a page never reaches production.
+      - name: Check route contract
+        run: |
+          diff tests/routes.txt <(scripts/route-inventory.sh _site) \
+            || { echo "::error::Published routes differ from tests/routes.txt. If intended, update that file in the same commit."; exit 1; }
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

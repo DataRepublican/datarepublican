@@ -1,14 +1,91 @@
+/* The design tokens, published to :root so the tools' raw CSS and every
+   runtime-generated class can read the same numbers the utilities do.
+   Inlined by postcss-import — see the note in postcss.config.js about why that
+   plugin has to be listed explicitly. It sits above the @tailwind directives
+   because @import has to precede every other statement in a stylesheet; the
+   theme() calls inside it are still resolved, because Tailwind runs after the
+   import has been inlined. */
+@import "./tokens.css";
+
+/* The component layer. Everything under components/ is OUTSIDE @layer, by
+   convention rather than by memory: Tailwind drops a layered rule whose
+   selector it cannot find in the scanned HTML, and these classes are written
+   onto elements at runtime. That has already cost us once — .dr-canvas and
+   .dr-controls vanished entirely, and .dr-sheet__grip kept its mobile rules
+   while losing its base display:none, so the drag handle showed up on desktop. */
+@import "./components/button.css";
+@import "./components/wordmark.css";
+@import "./components/leaflet.css";
+@import "./components/dialog.css";
+@import "./components/tooltip.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* How much room the floating nav pill needs at the bottom of a phone
+     viewport. Tool pages size canvases against this so nothing ends up
+     underneath the nav. Cleared at md, where the pill becomes static. */
+  --nav-clearance: 5.5rem;
+}
+
+@media (min-width: 768px) {
+  :root { --nav-clearance: 0rem; }
+}
+
 @layer components {
   body {
-    @apply bg-gray-100 text-neutral-600 font-['Open_Sans',_Helvetica,_sans-serif] font-light m-4 mt-2 py-0.5 mb-4 min-h-screen;
-    font-family: "Libre Franklin", serif;
+    @apply bg-surface text-ink m-0 p-0 min-h-screen;
+    font-family: "Libre Franklin", ui-sans-serif, system-ui, sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
+    padding-bottom: var(--nav-clearance);
+  }
+
+  /* The shell. One measure for every page — banner, masthead, nav and content
+     all line up on it, and it does not change between the tools index, a tool
+     and a narrative page. 20px gutters either side, from the mocks.
+
+     Reading measures are NOT set here. A narrow column is a property of the
+     content that needs it: `.text-column` below, and `.prose max-w-column` in
+     the markdown layout. */
+  .page-column {
+    @apply mx-auto w-full px-gutter;
+    max-width: var(--column-max);
+  }
+
+  /* Tools index sorting.
+     Jekyll writes each card's position under every sort onto the <li> as a
+     custom property; the <select> sets data-sort on the <ul>; `order` does the
+     work. The list is correctly ordered before any script runs, and stays
+     usable with JavaScript off — it just cannot be re-sorted. */
+  [data-sort] > li { order: var(--order-latest); }
+  [data-sort="featured"] > li { order: var(--order-featured); }
+  [data-sort="alpha"]    > li { order: var(--order-alpha); }
+  [data-sort="category"] > li { order: var(--order-category); }
+
+  /* Group headings belong to category mode only. */
+  .tool-group-header { display: none; }
+  [data-sort="category"] > .tool-group-header { display: block; }
+
+  /* The narrative measure, shared by /about/ and /donate/.
+     One class, because the two pages had set this independently and drifted:
+     About was `max-w-[46rem]` with lede type, Donate was `max-w-3xl` (48rem)
+     with default body type and centered with mx-auto. Change the measure here
+     and both move together. */
+  .text-column {
+    @apply mt-5 text-lede leading-relaxed;
+    max-width: theme('maxWidth.prose');
+  }
+
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-[200] rounded-card bg-ink-strong px-4 py-2 font-bold !text-white !no-underline;
   }
 
   strong {
@@ -131,28 +208,237 @@
     }
   }
 
-  /* Menu collapse/expand styles */
-  header#site-header {
-    @apply md:fixed flex flex-col bg-navy md:overflow-auto md:mx-auto p-2 md:p-0 text-white left-4 top-4 transition-all duration-300 md:rounded-lg md:w-[300px] max-h-[calc(100vh-2rem)] bottom-4;
-  }
-  
-  header#site-header.collapsed {
-    @apply md:w-8 max-h-36 md:rounded !bottom-auto;
-  }
-  
-  /* Main content margin adjustment */
-  body > div#main-content {
-    @apply transition-all duration-300;
-  }
-  
-  body > div#main-content.menu-collapsed {
-    @apply md:ml-10;
+  /* The collapsible left rail (header#site-header, #main-content.menu-*) was
+     removed with the v2 chrome. Its styles went with it — the eleven-item nav
+     is now the three-item pill in _includes/nav.html, and the tools it used to
+     list are cards on the home page. */
+}
+
+
+/* ================================================================
+   The shell measure. One number for the whole site, read by every
+   .page-column and by the banner bar's content column.
+
+   This was a per-page setting, with tools on the wide shell and the narrative
+   pages at 1024px. Navigating from Tools to About visibly shrank the masthead,
+   the rule and the nav, which read as a different site rather than a different
+   page. Content that needs a narrow column now asks for one itself.
+
+   TWO numbers, not one, and the split is by viewport rather than by page. On a
+   1500px window the full 1600px shell never gets to cap anything, so the
+   content ran the whole width of the glass with only the 20px gutters either
+   side — wide lines, and no margin to rest against. Below 1600 the shell is
+   1400, which puts real space back at the edges; from 1600 up, where there is
+   room for it, the measure is the full 1600 as before.
+
+   Stated mobile-first — the narrow measure is the default and the wide one is
+   the exception — so there is no fractional max-width breakpoint to get wrong.
+
+   Outside @layer components: a plain CSS rule inside a layer is dropped unless
+   Tailwind finds its selector in the scanned HTML, and `body` bare is not a
+   class it looks for.
+   ================================================================ */
+
+:root { --column-max: theme('maxWidth.snug'); }
+
+@media (min-width: 100rem) {
+  :root { --column-max: theme('maxWidth.wide'); }
+}
+
+.banner-bar { max-width: var(--column-max); }
+
+/* The band is the book's promo, not the site's voice: it sets its own
+   Helvetica/Arial rather than inheriting Libre Franklin from <body>. Scoped to
+   .banner-bar so nothing else picks it up.
+
+   Outside @layer components for the same reason as the rule above. */
+.banner-bar {
+  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+
+/* ================================================================
+   Tool shell — canvas, floating controls, and the bottom sheet.
+
+   Deliberately OUTSIDE @layer components. Tailwind scans the HTML and drops
+   plain CSS inside a layer when the class never appears there, and every class
+   below is created at runtime by assets/js/sheet.js. The first version of this
+   lived in the layer and was silently purged: .dr-canvas and .dr-controls
+   vanished entirely, and .dr-sheet__grip kept its mobile rules while losing the
+   base `display: none`, so the drag handle showed up on desktop.
+
+   The .tooltip rules below are outside the layer for the same
+   reason.
+   ================================================================ */
+
+/* ---- Tool shell -----------------------------------------------------
+   Shared behavior for the graph and map tools. See assets/js/sheet.js for
+   why the detail panel becomes a sheet below 768px. */
+
+/* A canvas sized to what is left of the viewport, never taller. The old
+   tools hardcode `calc(100vh - 110px)` and similar, which assumes a fixed
+   chrome height and is wrong on every phone with a dynamic URL bar. */
+.dr-canvas {
+  height: calc(100dvh - var(--tool-chrome, 13rem) - var(--nav-clearance));
+  min-height: 22rem;
+  /* Cytoscape and Leaflet both claim one-finger drag. Without this the page
+     cannot be scrolled past a full-bleed canvas on a phone. */
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+}
+
+.dr-canvas--grab { touch-action: none; }
+
+/* Floating control cluster. 44px targets, and it does not run under the
+   nav pill. */
+.dr-controls {
+  @apply absolute z-20 flex gap-1.5;
+}
+
+.dr-controls button,
+.dr-controls .dr-btn {
+  @apply inline-flex items-center justify-center gap-1.5 rounded-pill border border-rule/60 !bg-white/95 px-3 text-meta font-bold !text-ink-strong !min-w-0 !mr-0 shadow-sm backdrop-blur-[2px];
+  min-height: theme('spacing.tap');
+  min-width: theme('spacing.tap');
+}
+
+.dr-controls button[aria-pressed="true"] {
+  @apply !bg-ink-strong !text-white;
+}
+
+/* ---- Sheet ---------------------------------------------------------- */
+
+/* The wrapper vanishes from layout at desktop width so the panel it wraps
+   stays a direct child of the tool's own grid.
+
+   --dr-sheet-surface is the sheet's ground, and it is a variable because the
+   sheet and the panel it wraps are two different elements that have to agree.
+   noblogs' #panel sits on the PAGE ground (#E5E7EB) by design — "the tool's
+   own chrome sits on the page ground rather than on white panels" — while the
+   sheet was hardcoded #fff. Stacked, that painted a white strip above the
+   panel's content and another below it, which read as the sheet having a
+   header and a footer it does not have. A consumer overrides this rather than
+   restyling .dr-sheet. */
+.dr-sheet {
+  display: contents;
+  --dr-sheet-surface: #fff;
+}
+
+.dr-sheet__grip,
+.dr-sheet__close,
+.dr-sheet__scrim { display: none; }
+
+@media (max-width: 767px) {
+  .dr-sheet {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 60;
+    max-height: 92dvh;
+    display: flex;
+    flex-direction: column;
+    overscroll-behavior: contain;
+    border-top-left-radius: var(--dr-radius-sheet, 1rem);
+    border-top-right-radius: var(--dr-radius-sheet, 1rem);
+    background: var(--dr-sheet-surface);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.22);
+    transform: translateY(100%);
+    transition: transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+                height var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1));
+    /* Clearance for the home indicator, and nothing where there is none. The
+       `max(1rem, …)` floor this replaces put 16px of bare surface under the
+       scrolling body on every device without an inset, which reads as a footer
+       the sheet does not have. Padding the CONTENT is the consumer's job. */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  body > div#main-content.menu-expanded {
-    @apply md:ml-[316px] xl:ml-[326px];
+  .dr-sheet.is-open { transform: translateY(0); }
+  .dr-sheet.is-dragging { transition: none; }
+
+  /* The body scrolls; the grip stays put. */
+  .dr-sheet__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
+
+  /* The sheet takes focus when it opens so a screen reader announces it.
+     That should not paint a ring around the whole panel for a mouse user. */
+  .dr-sheet:focus { outline: none; }
+  .dr-sheet:focus-visible { outline: 2px solid theme('colors.ink-strong'); outline-offset: -2px; }
+
+  /* The grip IS the sheet's header row, and its height is load-bearing.
+     It was 24px of padding around a 4px bar while the close button is a 44px
+     target pinned to the top-right — so the close overhung the body by ~20px
+     and sat on top of whatever the panel rendered first. Every consumer would
+     have had to leave a hole in its own top-right corner.
+
+     44px here reserves that space once, for all of them. The bar stays
+     optically centered because the grip is a flex row rather than padding. */
+  .dr-sheet__grip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    flex: none;
+    min-height: var(--dr-tap, 2.75rem);
+    background: var(--dr-sheet-surface);
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .dr-sheet__grip::before {
+    content: '';
+    display: block;
+    width: 2.25rem;
+    height: 0.25rem;
+    border-radius: 9999px;
+    background: theme('colors.rule');
+  }
+
+  .dr-sheet__close {
+    display: flex !important;
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    min-width: theme('spacing.tap');
+    min-height: theme('spacing.tap');
+    border: 0;
+    background: transparent !important;
+    color: theme('colors.ink-muted') !important;
+    font-size: 1.75rem;
+    line-height: 1;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* :not([hidden]) is load-bearing. `hidden` only sets display:none through the
+     UA stylesheet, so a bare `.dr-sheet__scrim { display: block }` here beats it
+     on specificity and leaves a transparent full-screen overlay swallowing
+     every tap on the page while the sheet is closed. */
+  .dr-sheet__scrim:not([hidden]) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgba(0, 0, 0, 0.32);
+  }
+
+  /* The nav pill must not sit on top of an open sheet. */
+  body:has(.dr-sheet.is-open) nav[aria-label="Primary"] { display: none; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-sheet { transition: none; }
+}
+
 
 .tooltip {
   position: absolute;
@@ -172,37 +458,3 @@
 .tooltip.visible {
   opacity: 1;
 }
-
-.legend-item {
-  @apply flex border items-center text-[13px] hover:!border-black font-medium rounded-sm px-1.5 py-0.5 text-white cursor-pointer opacity-100;
-}
-
-.legend-FAMILY:not(.disabled) { @apply border-[#E11D48] bg-[#E11D48] }
-.legend-FAMILY.disabled { @apply border-[#E11D48] text-[#E11D48] }
-
-.legend-WORK:not(.disabled) { @apply border-[#2563EB] bg-[#2563EB] }
-.legend-WORK.disabled { @apply border-[#2563EB] text-[#2563EB] }
-
-.legend-POLITICAL:not(.disabled) { @apply border-[#9333EA] bg-[#9333EA] }
-.legend-POLITICAL.disabled { @apply border-[#9333EA] text-[#9333EA] }
-
-.legend-LEGAL:not(.disabled) { @apply border-[#7C3AED] bg-[#7C3AED] }
-.legend-LEGAL.disabled { @apply border-[#7C3AED] text-[#7C3AED] }
-
-.legend-MEDIA:not(.disabled) { @apply border-[#EA580C] bg-[#EA580C] }
-.legend-MEDIA.disabled { @apply border-[#EA580C] text-[#EA580C] }
-
-.legend-EDUCATION:not(.disabled) { @apply border-[#4ADE80] bg-[#4ADE80] }
-.legend-EDUCATION.disabled { @apply border-[#4ADE80] text-[#4ADE80] }
-
-.legend-HISTORICAL:not(.disabled) { @apply border-[#D97706] bg-[#D97706] }
-.legend-HISTORICAL.disabled { @apply border-[#D97706] text-[#D97706] }
-
-.legend-SOCIAL:not(.disabled) { @apply border-[#14B8A6] bg-[#14B8A6] }
-.legend-SOCIAL.disabled { @apply border-[#14B8A6] text-[#14B8A6] }
-
-.legend-OTHER:not(.disabled) { @apply border-[#6B7280] bg-[#6B7280] }
-.legend-OTHER.disabled { @apply border-[#6B7280] text-[#6B7280] }
-
-.legend-UNKNOWN:not(.disabled) { @apply border-[#6B7280] bg-[#6B7280] }
-.legend-UNKNOWN.disabled { @apply border-[#6B7280] text-[#6B7280] }

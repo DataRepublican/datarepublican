@@ -1,0 +1,89 @@
+/* Leaflet's own chrome, restyled to the site's canvas controls.
+ *
+ * Leaflet ships a joined, square, 26px `.leaflet-bar`. Next to a Cytoscape
+ * toolbar of .dr-btn--icon controls the two tools looked like two products,
+ * and 26px is well under the tap floor everything else here clears.
+ *
+ * This restyles rather than replaces: the control is still Leaflet's, still
+ * added by Leaflet, and still carries its own keyboard and disabled handling.
+ * Only the shape is ours.
+ *
+ * TWO THINGS ABOUT THE SELECTORS, both load-bearing:
+ *
+ * 1. Every selector below is prefixed with `.leaflet-container`, and the touch
+ *    variants add `.leaflet-touch` on that same element. That is not padding —
+ *    leaflet.css is fetched at RUNTIME by the map loader, so it lands in <head>
+ *    after this file and wins every specificity tie. Its own rules are
+ *    `.leaflet-bar a` (0,1,1) and `.leaflet-touch .leaflet-bar a` (0,2,1), so
+ *    ours have to be (0,2,1) and (0,3,1) to land.
+ *
+ * 2. Outside @layer, like everything in components/ — and here especially,
+ *    since Tailwind cannot find a single one of these runtime classes in the
+ *    scanned HTML and would purge the whole block from a layer.
+ */
+
+.leaflet-container .leaflet-bar,
+.leaflet-container.leaflet-touch .leaflet-bar {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: none;
+  /* Two separate controls rather than one segmented bar. */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.leaflet-container .leaflet-bar a,
+.leaflet-container.leaflet-touch .leaflet-bar a {
+  width: var(--dr-tap, 2.75rem);
+  height: var(--dr-tap, 2.75rem);
+  line-height: calc(var(--dr-tap, 2.75rem) - 2px);
+  border: 1px solid var(--dr-line-strong, #878D99);
+  border-radius: var(--dr-radius-control, 0.625rem);
+  background: var(--dr-panel, #fff);
+  color: var(--dr-ink-strong, #000);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* Leaflet rounds only the ends of the bar and squares the join. There is no
+   join any more, so every control gets the same four corners. */
+.leaflet-container .leaflet-bar a:first-child,
+.leaflet-container .leaflet-bar a:last-child,
+.leaflet-container.leaflet-touch .leaflet-bar a:first-child,
+.leaflet-container.leaflet-touch .leaflet-bar a:last-child {
+  border-radius: var(--dr-radius-control, 0.625rem);
+}
+
+.leaflet-container .leaflet-bar a:hover,
+.leaflet-container.leaflet-touch .leaflet-bar a:hover {
+  background: var(--dr-fill, #EFF1F4);
+  border-color: var(--dr-line-strong, #878D99);
+}
+
+.leaflet-container .leaflet-bar a:focus-visible {
+  outline: 2px solid var(--dr-accent, #252739);
+  outline-offset: 2px;
+}
+
+/* Leaflet's own disabled state, which it sets at the zoom limits. */
+.leaflet-container .leaflet-bar a.leaflet-disabled,
+.leaflet-container .leaflet-bar a.leaflet-disabled:hover {
+  border-color: var(--dr-line, #D3D7DE);
+  background: var(--dr-panel, #fff);
+  color: var(--dr-line-strong, #878D99);
+}
+
+/* 32px on a pointer device, like .dr-btn--sm — the 44px floor is a thumb
+   measurement, and on the canvas space is the scarce thing. */
+@media (min-width: 768px) and (pointer: fine) {
+  .leaflet-container .leaflet-bar a,
+  .leaflet-container.leaflet-touch .leaflet-bar a {
+    width: var(--dr-tap-sm, 2rem);
+    height: var(--dr-tap-sm, 2rem);
+    line-height: calc(var(--dr-tap-sm, 2rem) - 2px);
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,127 @@
+{%- comment -%}
+  Site-wide band, above the masthead on every page. Driven entirely by
+  _data/banner.yml — `enabled: false` there removes it everywhere.
+
+  Buttons carry `!` on their color utilities because main.css styles bare
+  `button` globally as a dark slate pill, which twenty-odd tool pages rely on.
+  Overriding here is cheaper and safer than unpicking that global.
+{%- endcomment -%}
+
+{%- assign b = site.data.banner -%}
+{%- if b.enabled -%}
+  {%- case b.tone -%}
+    {%- when 'alert' -%}{%- assign tone_bg = 'bg-red' -%}{%- assign tone_ink = 'text-white' -%}
+    {%- when 'info'  -%}{%- assign tone_bg = 'bg-navy' -%}{%- assign tone_ink = 'text-white' -%}
+    {%- else         -%}{%- assign tone_bg = 'bg-band' -%}{%- assign tone_ink = 'text-ink-strong' -%}
+  {%- endcase -%}
+
+{%- comment -%}
+  Two boxes, on purpose. The COLOR is full-bleed — the <aside> paints edge to
+  edge on any window, however much wider than the shell it is. The CONTENT is
+  not: `banner-bar` inside it is --column-max with the usual gutters, so the
+  cover, the copy and the buttons line up with the masthead below them.
+
+  This is not the bug that was fixed earlier, where the band's content ran
+  full-bleed too and so sat a gutter to the left of everything else. Paint and
+  measure are separate here.
+
+  The <aside> clips (`overflow-hidden`): the cover is deliberately taller than
+  the band and tilted, and the band's bottom edge is what crops it.
+{%- endcomment -%}
+<aside class="w-full overflow-hidden {{ tone_bg }} {{ tone_ink }}" aria-label="{{ b.title | default: 'Announcement' }}">
+  <div class="banner-bar mx-auto flex w-full items-stretch gap-3 pl-gutter pr-3 sm:gap-5 sm:pr-gutter">
+
+    {%- if b.image -%}
+    {%- comment -%}
+      The cover is absolutely positioned inside a fixed-width slot so its height
+      cannot stretch the flex line — the band's height stays a property of the
+      text column, and the cover simply overshoots it and is cropped. 156px is
+      half again the 104px it used to be capped at; the 2:3 cover is 104px wide
+      at that height, which is what the slot is sized for.
+
+      Rotating about the top-left corner keeps the top edge where it is put and
+      swings the bottom out of the band, which is the look in the mock.
+    {%- endcomment -%}
+    <a href="{{ b.image_href | default: '#' }}"
+       class="relative block w-[5.75rem] shrink-0 self-stretch sm:w-[6.5rem] no-underline"
+       {% if b.image_href contains '//' %}target="_blank" rel="noopener"{% endif %}>
+      <img src="{{ b.image | relative_url }}"
+           alt="{{ b.image_alt }}"
+           class="absolute left-0 top-2 h-[136px] w-auto sm:h-[156px] max-w-none origin-top-left rotate-3 shadow-[0_2px_10px_rgba(0,0,0,0.28)]"
+           loading="lazy" decoding="async">
+    </a>
+    {%- endif -%}
+
+    <div class="flex min-w-0 flex-1 flex-col justify-center gap-1.5 py-2 md:gap-2 md:py-3">
+      <div class="min-w-0">
+        <p class="m-0 text-lede font-bold leading-none md:text-card-title">{{ b.title }}</p>
+        {%- if b.body -%}
+        <p class="m-0 mt-1 text-meta font-semibold opacity-90">{{ b.body }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if b.actions -%}
+      {%- comment -%}
+        nowrap with horizontal scroll rather than flex-wrap. Wrapping put the
+        second button on its own line at 390px, which grew the banner to ~200px
+        and pushed every tool page's canvas that much further down.
+      {%- endcomment -%}
+      {%- comment -%}
+        One class string for both button shapes, assigned rather than written
+        inline twice — the <a> and the <button> drifted apart the last time they
+        were maintained separately. The quoted Liquid string is also what keeps
+        Tailwind's extractor happy; see the same note in _includes/nav.html.
+
+        `!bg-[#EDEDED]` is the background-COLOR under the gradient: the global
+        `button` rule in main.css paints bare buttons slate-900, and only the
+        color needs overriding — `bg-gradient-to-b` sets background-image, a
+        different property, so it never wins that cascade on its own.
+      {%- endcomment -%}
+      {%- assign btn = 'inline-flex min-h-tap shrink-0 items-center gap-2 whitespace-nowrap rounded-pill px-3 text-meta font-bold sm:px-4 sm:text-body !text-ink-strong !min-w-0 !mr-0 !bg-[#EDEDED] bg-gradient-to-b from-[#EDEDED] to-[#CACACA] hover:from-[#E4E4E4] hover:to-[#BEBEBE] shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_1px_2px_rgba(0,0,0,0.18)] transition-colors duration-150' -%}
+      <div class="flex flex-nowrap items-center gap-1.5 overflow-x-auto sm:gap-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {%- for a in b.actions -%}
+          {%- if a.modal == 'trailer' -%}
+        <button type="button"
+                data-trailer-open
+                class="{{ btn }} no-underline">
+          {{ a.label }}
+        </button>
+          {%- else -%}
+        <a href="{{ a.href }}" target="_blank" rel="noopener"
+           class="{{ btn }} !no-underline">
+            {%- if a.icon == 'amazon' -%}
+          {%- comment -%} Amazon's smile, as supplied. Sized in em so it tracks
+            the label across the text-meta / sm:text-body step. {%- endcomment -%}
+          <svg viewBox="0 0 24 7" class="h-[0.45em] w-[1.55em] shrink-0" fill="none" aria-hidden="true"><path d="M0.104296 0.459961C0.185247 0.396327 0.289584 0.387309 0.416796 0.433594C0.54974 0.47993 0.72351 0.587209 0.937304 0.754883C2.40595 1.93509 4.09166 2.80297 5.99394 3.3584C7.89625 3.91381 9.86793 4.1914 11.909 4.19141C13.5568 4.19141 15.1383 4.02398 16.6531 3.68848C18.1739 3.35866 19.4641 2.91582 20.5223 2.36035C20.7419 2.24468 20.9126 2.17243 21.034 2.14355C21.1553 2.1147 21.2598 2.14377 21.3465 2.23047C21.4098 2.30554 21.4412 2.38098 21.4412 2.45605C21.441 2.65857 21.2474 2.93029 20.8602 3.27148C19.7557 4.22616 18.3792 4.96663 16.7312 5.49316C15.0833 6.02547 13.3485 6.29199 11.5271 6.29199C10.1048 6.29197 8.71103 6.12165 7.34648 5.78027C5.98767 5.4447 4.71243 4.92365 3.52129 4.21777C2.33019 3.51189 1.3037 2.62611 0.442187 1.56152C0.228407 1.29551 0.0927563 1.07284 0.0349604 0.893555C-0.0286224 0.691097 -0.00545654 0.546776 0.104296 0.459961ZM22.0135 0C22.3893 0 22.7626 0.052096 23.1326 0.15625C23.5084 0.260345 23.7513 0.393655 23.8611 0.555664C23.9767 0.72345 24.0199 1.00115 23.991 1.38867C23.9621 1.77635 23.8838 2.14702 23.7566 2.5C23.5253 3.18258 23.1239 3.773 22.5516 4.27051C22.2337 4.56536 21.9908 4.71272 21.823 4.71289C21.7595 4.71289 21.7012 4.68682 21.6492 4.63477C21.5684 4.55965 21.5394 4.46714 21.5623 4.35742C21.5855 4.24745 21.6546 4.09618 21.7703 3.90527C22.071 3.43082 22.3088 2.9418 22.4822 2.43848C22.6613 1.93534 22.6986 1.60542 22.5945 1.44922C22.525 1.35104 22.3513 1.28169 22.074 1.24121C21.7966 1.20655 21.4701 1.20055 21.0945 1.22363C20.7187 1.25257 20.3565 1.30466 20.0096 1.37988C19.7958 1.4203 19.631 1.43238 19.5154 1.41504C19.3999 1.40342 19.3215 1.3513 19.2811 1.25879C19.2233 1.13156 19.2555 1.0102 19.3768 0.894531C19.4982 0.778847 19.6808 0.653596 19.9236 0.520508C20.5826 0.17352 21.2793 1.81816e-05 22.0135 0Z" fill="#FF6201"/></svg>
+            {%- endif -%}
+          {{ a.label }}
+        </a>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
+    </div>
+  </div>
+</aside>
+
+{%- comment -%} The trailer overlay, rendered only if some action asks for it. {%- endcomment -%}
+{%- comment -%} Picked, not looped. Emitting this from a loop meant two actions
+  with `modal: trailer` would produce two #trailer-modal elements, and
+  chrome.js's getElementById would play the first for both. (Limiting the loop
+  to one iteration is NOT the fix — the trailer is the second action in
+  banner.yml, so that renders no modal at all.) {%- endcomment -%}
+{%- assign trailer = b.actions | where: 'modal', 'trailer' | first -%}
+{%- if trailer -%}{%- assign a = trailer -%}
+<div id="trailer-modal" hidden
+     class="fixed inset-0 z-[100] items-center justify-center bg-black/80 p-4">
+  <div class="relative w-full max-w-4xl">
+    <button type="button" data-trailer-close
+            class="absolute -top-9 right-0 flex min-h-tap items-center gap-1 !border-0 !bg-transparent !min-w-0 !mr-0 !px-0 text-body font-semibold !text-white"
+            aria-label="Close trailer">Close &times;</button>
+    <video id="trailer-video" class="w-full rounded-card bg-black" controls playsinline preload="none">
+      <source src="{{ a.video | relative_url }}" type="video/mp4">
+    </video>
+  </div>
+</div>
+{%- endif -%}
+{%- endif -%}

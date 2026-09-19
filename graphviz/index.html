@@ -4,8 +4,6 @@ title: Charity graph - multi-root BFS & taxpayer totals
 ---
 
 <!-- jQuery for convenience -->
-<script src="jquery.min.js"></script>
-
 <!-- Viz.js (core + full render) -->
 <script src="viz.js"></script>
 <script src="full.render.js"></script>
@@ -542,7 +540,7 @@ async function downloadSVG () {
   const viz = new Viz();
   let svgText = await viz.renderString(currentDot);   // pristine output
 
-  // --- normalise <svg> attributes ----------------------------------------
+  // --- normalize <svg> attributes ----------------------------------------
   const parser = new DOMParser();
   const doc    = parser.parseFromString(svgText, 'image/svg+xml');
   const svgEl  = doc.documentElement;

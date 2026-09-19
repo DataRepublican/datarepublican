@@ -1,0 +1,18 @@
+# Pull quotes, rendered by _includes/quotes.html on /about/ and /donate/.
+#
+# Both pages render this whole list. Add an entry here rather than pasting
+# markup into a page — that is how the pre-redesign site ended up with the
+# same two quotes written out twice.
+#
+# Fields
+#   text    the quote itself, without quotation marks — the include adds them
+#   author  attribution, shown under the quote
+#   href    the original post
+
+- text: Worth following
+  author: Elon Musk
+  href: https://x.com/elonmusk/status/1884490061195989176
+
+- text: Love your insights! You're a must follow on this platform.
+  author: Charlie Kirk
+  href: https://x.com/charliekirk11/status/1878821674436714737

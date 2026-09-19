@@ -5,118 +5,344 @@ title: DSA Explorer
 
 <script src="cytoscape.min.js"></script>
 <script src="papaparse.min.js"></script>
-<script src="logos/logos.embed.js"></script>
-<script src="logos/avatars.embed.js"></script>
-<script src="logos/emblems.embed.js"></script>
-<script src="logos/afgj_logos.embed.js"></script>
-<script>
-var _hatueyLogo = window.LOGOS&&window.LOGOS.hatuey;
-window.LOGOS = Object.assign({}, window.LOGOS||{}, window.AVATARS||{}, window.EMBLEMS||{}, window.AFGJ_LOGOS||{});
-if(_hatueyLogo) window.LOGOS.hatuey = _hatueyLogo; /* canonical Hatuey keeps its real branded logo, not the generic emblem */
-</script>
+{%- comment -%}
+  These four files — logos, avatars, emblems and afgj_logos — were 23.4 MB of
+  base64 PNG loaded as blocking scripts before anything rendered, then merged
+  here at runtime. logos/index.js is the same two globals already merged, 73 KB,
+  with `uri` pointing at logos/img/ instead of carrying the bytes. The images
+  load lazily as the graph draws them.
+
+  Regenerate with `node scripts/extract-logo-blobs.mjs` after the pipeline drops
+  new .embed.js files in. Those stay in the repo as the pipeline's artifacts and
+  are excluded from the build in _config.yml.
+{%- endcomment -%}
+<script src="logos/index.js"></script>
 
 <style>
-  :root{
-    --money:#1B7F4B; --party:#C0392B; --state:#B8860B; --veneer:#4A6FA5;
-    --center:#111827; --ink:#1A1A1A; --line:#94A3B8; --bg:#F7F7F5; --panel:#FFFFFF;
+  /* #app, never :root — prohibition 3. A tool's variables are the tool's, and
+     an unlayered :root in a tool's <style> reaches the site chrome on that
+     page. Every consumer of these is inside #app; the disclaimer <dialog> and
+     the sheet's scrim both live outside it and read only --dr-* tokens.
+
+     --money / --party / --state / --veneer / --center / --line used to be
+     declared here too and were never read by a single `var()`. Their hexes
+     were hardcoded at each use site instead, which is the worst arrangement
+     available: a palette that looks themeable and is not. They are gone, and
+     the one real consumer points at the canonical data token.
+
+     --ink stays a literal for now. It is #1A1A1A against the system's #111111,
+     so wiring it to --dr-ink is a visible change rather than a rename, and it
+     belongs with the rest of that migration. */
+  #app{
+    --bg:    var(--dr-surface, #E5E7EB);
+    --panel: var(--dr-panel, #FFFFFF);
+    --ink:   #1A1A1A;
   }
   *{box-sizing:border-box}
-  #app{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;height:calc(100vh - 110px);min-height:560px;font-family:"Libre Franklin","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg)}
-  header{grid-column:1/3;padding:12px 18px;border-bottom:1px solid #E2E2DD;background:#fff;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-  header h1{font-size:18px;margin:0;font-weight:700}
-  header .sub{font-size:12.5px;color:#666}
-  header .counts{margin-left:auto;font-size:12px;color:#888;font-variant-numeric:tabular-nums}
-  header .disclaimer{flex-basis:100%;margin-top:8px;padding:7px 10px;border:1px solid #E4C9A0;background:#FBF3E4;border-radius:4px;font-size:11px;line-height:1.45;color:#6B5A3E}
-  header .disclaimer strong{color:#8A5A1A}
+  /* height was calc(100vh - 110px): a hardcoded guess at the site chrome that
+     is wrong on any phone with a collapsing URL bar, and 100vh there is the
+     expanded-bar height, so the bottom of the app sat under it. dvh tracks the
+     real viewport; --nav-clearance is the floating nav pill. */
+  #app{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;height:calc(100dvh - var(--dsa-app-top,7rem) - var(--nav-clearance));min-height:26rem;font-family:"Libre Franklin","Helvetica Neue",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+  /* #dsa-header, not a bare `header`: the site masthead in
+     _layouts/default.html is a <header> too, and the bare selector made it a
+     flex container — which collapsed the wordmark block to its content width
+     and cut the 5/3/2 rule short. */
+  /* ---- Tool header -------------------------------------------------------
+     Two rows: identity + legal, then the controls. There is no view toggle —
+     this tool has one view — so row 2 is just the search. Pattern in
+     .claude/skills/dr-design-system/references/tool-chrome.md §1.
+
+     #dsa-header, not a bare `header`: the site masthead in
+     _layouts/default.html is a <header> too, and the bare selector made it a
+     flex container — which collapsed the wordmark block to its content width
+     and cut the 5/3/2 rule short. */
+  /* No horizontal padding of its own. #app sits inside main.page-column, which
+     has already set the 20px gutter, so anything this header adds pushes the
+     title and the search field inboard of the canvas below them and out of
+     line with the masthead. The measure is the page shell's, not ours. */
+  /* No bottom rule: the band below draws its own box, and the header's would
+     run the page's full width across its rounded corners. */
+  #dsa-header{grid-column:1/3;padding:10px 0 12px;
+    background:var(--bg);display:flex;flex-direction:column;gap:10px}
+  .dsa-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .dsa-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+  #dsa-header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+  /* 13px is the sentence floor; 12px is the label size. This is a sentence. */
+  #dsa-header .sub{font-size:var(--dr-text-meta,13px);color:var(--dr-ink-faint,#6B7280);line-height:1.35}
+
+  /* The search is a LABEL wrapping the input, so the magnifier sits inside the
+     field's border. Scoped `.dsa-search #q`, never a bare `#q`. */
+  .dsa-controls{display:flex;align-items:center;gap:8px;min-width:0}
+  .dsa-search{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;
+    height:var(--dr-tap,2.75rem);padding:0 14px;background:var(--dr-panel,#fff);
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-pill,9999px)}
+  .dsa-search:focus-within{border-color:var(--dr-line-strong,#878D99);
+    outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  .dsa-search svg{flex:none;color:var(--dr-ink-faint,#6B7280)}
+  .dsa-search #q{flex:1 1 auto;min-width:0;appearance:none;border:0;background:none;
+    padding:0;margin:0;color:var(--ink);font-family:inherit;
+    /* 16px or iOS zooms the viewport on focus and never zooms back out. */
+    font-size:var(--dr-text-body,16px)}
+  .dsa-search #q:focus{outline:none}
+  .dsa-search #q::placeholder{color:var(--dr-ink-faint,#6B7280)}
+
+  @media(min-width:768px){
+    #dsa-header{padding:12px 0 14px;gap:12px}
+    #dsa-header h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
+    .dsa-id{flex-direction:row;align-items:baseline;gap:12px}
+    .dsa-search{flex:0 1 26rem;height:2.25rem}
+    .dsa-search #q{font-size:var(--dr-text-dense,14px)}
+  }
   #cy{width:100%;height:100%;background:
      radial-gradient(circle at 50% 42%, #FFFFFF 0%, #F2F2EE 70%)}
-  #stage{position:relative;overflow:hidden;grid-column:1;grid-row:2}
+  #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2;
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-lg,.75rem)}
+
+  /* The canvas and the panel are two grid children making one band, so the box
+     is drawn in halves: each takes the border and the two corners on its own
+     side, and the edge where they meet is #panel's border-left. noblogs does
+     this with one rule on a wrapper; here the header shares the grid, so there
+     is nothing to wrap that would not take it too. Collapsed, #stage is the
+     whole band and keeps all four sides (above). */
+  @media(min-width:768px){
+    #app:not(.panel-collapsed) #stage{border-right:0;
+      border-radius:var(--dr-radius-lg,.75rem) 0 0 var(--dr-radius-lg,.75rem)}
+    #app:not(.panel-collapsed) #panel{border-block:1px solid var(--dr-line,#D3D7DE);
+      border-right:1px solid var(--dr-line,#D3D7DE);
+      border-radius:0 var(--dr-radius-lg,.75rem) var(--dr-radius-lg,.75rem) 0}
+  }
   /* controls — NB: the site's global button{} rule paints buttons slate-900 bg + white text;
      these #stage overrides restore readable dark-on-light text and drop the forced min-width/margin */
   #stage button{color:#1A1A1A;background:#fff;min-width:0;margin:0;font-weight:500}
-  #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:5}
-  #controls button, #controls .grp{border:1px solid #D5D5CE;border-radius:6px;font-size:12px;padding:6px 9px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-  #controls button:hover{background:#f0f0ea}
-  #search{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:5}
-  #search input{width:260px;padding:7px 11px;border:1px solid #D5D5CE;border-radius:20px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-  /* details-panel collapse: widen the map; a node/edge tap (or the toggle) reopens it */
-  #panelToggle{position:absolute;top:12px;right:12px;z-index:6;border:1px solid #D5D5CE;border-radius:6px;font-size:15px;line-height:1;padding:5px 10px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-  #panelToggle:hover{background:#f0f0ea}
+  /* Scoped to #controls, not #stage. As a blanket `#stage button` rule this
+     also caught the legend's chips and rows, which are buttons with
+     aria-pressed too — see the polarity note in components.md. */
+  #controls button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  #controls button:focus-visible,#legend button:focus-visible{
+    outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
+  #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
+  /* Size lives in .dr-btn; the float and the corner are this toolbar's own —
+     see the note in noblogs/graph/graph.css. */
+  #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08);
+    border-radius:var(--dr-radius-control,.625rem)}
+
+  /* 32px above md — see the note in noblogs/graph/graph.css. Same stacked
+     column, same collision with a bottom-left legend. */
+  @media(min-width:768px){
+    #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
+    #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
+  }
+  /* The canvas search and the `›` panel chevron are gone. The header field is
+     this tool's search, and the panel opens on selection and closes on a
+     background tap — a control for a state that manages itself is not a
+     control. See tool-chrome.md §4 and §5. */
   #app.panel-collapsed{grid-template-columns:1fr 0}
   #app.panel-collapsed aside{display:none}
   /* legend — slim bottom bar (ideology chips); click ⌃ Legend to expand the full key upward */
-  #legend{position:absolute;left:12px;bottom:12px;z-index:5;display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
+  #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
   #legend .legbar{background:rgba(255,255,255,.96);border:1px solid #E2E2DD;border-radius:8px;padding:5px 8px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-  #legend .legtoggle{border:1px solid #D5D5CE;border-radius:6px;font-size:11px;padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end}
+  #legend .legtoggle{border:1px solid #D5D5CE;border-radius:6px;font-size:var(--dr-text-label,12px);padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end}
   #legend .legtoggle:hover{background:#f0f0ea}
   #legend .legchips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1 1 auto;min-width:0}
-  #legend .chip{display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:12px;cursor:pointer;font-size:11px;white-space:nowrap}
+  /* The bar chips and the full key's rows are the same control drawn twice, and
+     both are now real buttons — so both need the reset that beats main.css's
+     global `button` rule (slate fill, min-width:65px). Same pattern as the map
+     legend's .lgrow and the graph legend's .row. */
+  #legend .chip{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;color:inherit;
+    display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:var(--dr-radius-pill,9999px);
+    cursor:pointer;font-size:var(--dr-text-label,12px);white-space:nowrap}
   #legend .chip:hover{background:#F2F2EC}
-  #legend .chip.active{font-weight:700;background:#ECECE4}
+  #legend .chip.active{font-weight:700;background:var(--dr-accent-tint,#DEE0E8)}
+  #legend .chip:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
   #legend .chip .sw{width:11px;height:11px;border-radius:3px;flex:0 0 auto}
   #legend .legfull{background:rgba(255,255,255,.96);border:1px solid #E2E2DD;border-radius:8px;padding:10px 12px;max-width:280px;max-height:calc(100vh - 170px);overflow-y:auto;box-shadow:0 2px 6px rgba(0,0,0,.1)}
   #legend:not(.expanded) .legfull{display:none}
-  #legend h4{margin:0 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#888}
-  #legend .row{display:flex;align-items:center;gap:7px;margin:3px 0;cursor:pointer}
+  #legend h4{margin:0 0 6px;font-weight:600}
+  /* A .row is a <button> when it filters or navigates and a <div> when it is
+     only a key (the shape row). The reset is written on the class so both read
+     the same; a <div> ignores the parts that do not apply to it. */
+  #legend .row{appearance:none;border:0;margin:3px 0;min-width:0;background:none;font:inherit;color:inherit;
+    text-align:left;width:100%;padding:2px 4px;display:flex;align-items:center;gap:7px;cursor:pointer}
   #legend .row.off{opacity:.35}
   #legend .row.active{font-weight:700}
   #legend .row.active .sw,#legend .row.active .shp{box-shadow:0 0 0 2px #111,0 0 0 3px #fff;border-radius:3px}
   #legend .row[data-country]:hover,#legend .row[data-ideo]:hover{background:#F2F2EC;border-radius:4px}
-  #legend .allrow{font-size:11px;color:#555;margin:2px 0 4px;cursor:pointer;text-decoration:underline}
+  #legend .row:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px;border-radius:4px}
+  #legend .allrow{appearance:none;border:0;background:none;min-width:0;font:inherit;
+    font-size:var(--dr-text-label,12px);color:#555;margin:2px 0 4px;padding:2px 4px;cursor:pointer;text-decoration:underline}
+  #legend .allrow:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px;border-radius:4px}
   #legend .sw{width:14px;height:14px;border-radius:3px;flex:0 0 auto}
   #legend .shp{font-size:13px;width:16px;text-align:center}
   #legend .divider{height:1px;background:#E2E2DD;margin:8px 0}
-  #legend .hint{color:#999;font-size:11px;margin-top:6px;line-height:1.35}
+  /* Reserve the control column — see the note in noblogs/graph/graph.css.
+     After the legend's own rules, because a media query adds no specificity. */
+  @media(min-width:768px){ #legend{max-height:calc(100% - 300px)} }
+  #legend .hint{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);margin-top:6px;line-height:1.4}
   /* detail panel */
-  aside{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:16px 16px 24px;overflow:auto}
-  aside .empty{color:#999;font-size:13px;line-height:1.5;margin-top:20px}
-  aside .tag{display:inline-block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#fff;padding:2px 7px;border-radius:4px;margin:0 5px 5px 0}
-  aside h2{font-size:17px;margin:6px 0 4px;line-height:1.25}
-  aside .kv{font-size:12.5px;margin:9px 0;line-height:1.4}
-  aside .kv b{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin-bottom:1px;font-weight:700}
-  aside .notes{font-size:13px;line-height:1.5;margin:12px 0;padding:10px 12px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
-  aside a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
-  aside .srcs a.src{display:block;margin-top:5px;padding-left:12px;position:relative}
-  aside .srcs a.src:before{content:"›";position:absolute;left:0;color:#999}
-  aside .srcs .nocache{color:#c0392b;font-weight:700}
-  aside .srcs .cached{color:#2e7d32;font-weight:700}
-  aside .tier{font-size:12px;margin-top:10px}
-  aside .tier.confirmed{color:var(--money)} aside .tier.inferred{color:#B8860B}
-  aside .conns{margin-top:16px;border-top:1px solid #EEE;padding-top:12px}
-  aside .conns h3{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#999;margin:0 0 6px}
-  aside .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
-  aside .conn:hover .conn-head{color:#1155CC}
-  aside .conn .conn-head{font-weight:600}
-  aside .conn .rel{color:#999;font-style:italic;font-weight:400}
-  aside .conn.inf .rel::after{content:" · inferred";color:#B8860B}
-  aside .conn .conn-desc{font-size:11.5px;color:#555;line-height:1.4;margin:2px 0 0;font-weight:400;cursor:default}
-  aside .conn a.conn-src{display:inline-block;font-size:11px;color:#1155CC;margin-top:3px;word-break:break-all}
-  aside .conn a.conn-src:before{content:"› ";color:#999}
-  @media(max-width:820px){#app{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}#stage{grid-column:1;grid-row:2}aside{grid-column:1;grid-row:3;border-left:none;border-top:1px solid #E2E2DD;max-height:42vh}}
+  /* #panel, not a bare `aside`.
+     These rules used to say `aside`, and the site promo band is an <aside> that
+     renders earlier in the DOM — so on /dsa-explorer only, the band picked up
+     padding:16px 16px 24px and a left border from the detail panel. Measured,
+     not theorised: every other page reported 0. This is the trap CLAUDE.md
+     documents under "a tool must not style bare header, aside, main or #panel",
+     one element name later. The element already carried id="panel". */
+  #panel{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:16px 16px 24px;overflow:auto}
+  #panel .empty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;margin-top:20px}
+  /* A tag keeps its white ink — the background is set inline from the data, so
+     it is the one label that does not take --dr-ink-faint. Sentence case and
+     12px like the rest. */
+  #panel .tag{display:inline-block;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);
+    font-weight:600;color:#fff;padding:2px 7px;border-radius:var(--dr-radius-sm,6px);margin:0 5px 5px 0}
+  #panel h2{font-size:17px;margin:6px 0 4px;line-height:1.25}
+  #panel .kv{font-size:12.5px;margin:9px 0;line-height:1.4}
+  #panel .kv b{display:block;margin-bottom:1px;font-weight:600}
+  #panel .notes{font-size:13px;line-height:1.5;margin:12px 0;padding:10px 12px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
+  #panel a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
+  #panel .srcs a.src{display:block;margin-top:5px;padding-left:12px;position:relative}
+  #panel .srcs a.src:before{content:"›";position:absolute;left:0;color:#999}
+  #panel .srcs .nocache{color:#c0392b;font-weight:700}
+  #panel .srcs .cached{color:#2e7d32;font-weight:700}
+  #panel .tier{font-size:12px;margin-top:10px}
+  /* The data-encoding green, from tokens.css rather than a third copy of it. */
+  #panel .tier.confirmed{color:var(--dr-data-money,#1B7F4B)} #panel .tier.inferred{color:#B8860B}
+  #panel .conns{margin-top:16px;border-top:1px solid #EEE;padding-top:12px}
+  #panel .conns h3{margin:0 0 6px;font-weight:600}
+
+  /* One label recipe — same three-property set as noblogs and the graph.
+     Last, so it beats the rules above it on source order. */
+  #legend h4, #panel .kv b, #panel .conns h3{
+    font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);
+    line-height:1.25;
+    letter-spacing:normal;
+    text-transform:none;
+    color:var(--dr-ink-faint,#6B7280)}
+
+  #panel .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
+  #panel .conn:hover .conn-head{color:#1155CC}
+  #panel .conn .conn-head{font-weight:600}
+  #panel .conn .rel{color:#999;font-style:italic;font-weight:400}
+  #panel .conn.inf .rel::after{content:" · inferred";color:#B8860B}
+  #panel .conn .conn-desc{font-size:11.5px;color:#555;line-height:1.4;margin:2px 0 0;font-weight:400;cursor:default}
+  #panel .conn a.conn-src{display:inline-block;font-size:11px;color:#1155CC;margin-top:3px;word-break:break-all}
+  #panel .conn a.conn-src:before{content:"› ";color:#999}
+  /* ---- Phone -------------------------------------------------------------
+     The old rule here was a single max-width:820px breakpoint that stacked the
+     detail panel under the canvas. That is the failure this pass is about: the
+     panel landed ~700px below the fold, so tapping a node — the entire point of
+     the tool — produced no visible response.
+
+     Now the panel is a bottom sheet (assets/js/sheet.js) that rises over the
+     canvas with the tapped node still visible behind it, and the controls stop
+     covering the graph.
+
+     At 390px the old layout put a 160px control stack at top-left and a 260px
+     search field centered over it. They overlapped by ~125px, and the search
+     field, being later in the DOM with no z-index on either, painted on top —
+     Zoom, Reset view, Re-layout and Export PNG were all unreachable. */
+  @media(max-width:767px){
+    #app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
+    #dsa-header{padding:10px 0 12px}
+
+    /* The header STICKS and the canvas takes what is left.
+       This used to let the header scroll away and size the canvas as
+       `100dvh - nav - 2rem`, which assumes #stage starts at the top of the
+       window. It does not — the header is in flow above it — so the box ran
+       past the bottom of the viewport and the control rail sat 33px under the
+       floating nav pill. A length standing in for a position, the same bug as
+       the noblogs drawer's inset.
+
+       --dsa-header-h is measured at runtime, by id: the site masthead is also
+       a <header> and comes first in the DOM. See tool-chrome.md §6. */
+    #dsa-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30)}
+    #stage{grid-column:1;grid-row:2;
+      height:calc(100dvh - var(--dsa-stage-top,7rem) - var(--nav-clearance));min-height:20rem}
+    /* Cytoscape claims one-finger drag, so the page cannot be scrolled while a
+       finger is on the canvas. Pan the graph with two fingers instead. */
+    #cy{touch-action:pan-y}
+
+    /* Controls: one horizontal, scrollable row along the bottom of the canvas,
+       at 44px. Not a 160px column over the graph. */
+    #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
+    #controls::-webkit-scrollbar{display:none}
+    /* .dr-btn is already 44px and a pill; the rail only stops them shrinking. */
+    #controls .dr-btn{flex:0 0 auto}
+
+    /* Legend collapses to its toggle; the full key opens upward as before but
+       is capped so it cannot swallow the canvas. */
+    #legend{left:8px;right:8px;bottom:60px;max-width:none}
+    /* Collapse the chip row, NOT .legbar — .legtoggle lives inside .legbar, so
+       hiding the bar hid the only control that can expand the legend, and the
+       ideology filter became unreachable on a phone. */
+    #legend .legbar{padding:0;background:none;border:0;box-shadow:none}
+    #legend .legchips{display:none}
+    #legend.expanded .legchips{display:flex}
+    #legend .legtoggle{min-height:var(--dr-tap,2.75rem);border-radius:9999px;background:rgba(255,255,255,.95);padding:0 14px}
+    /* Now that the rows and chips are real controls, they take the thumb floor
+       like the other two legends do. */
+    #legend .row,#legend .chip,#legend .allrow{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
+    #legend .chip{padding:0 12px}
+    #legend .legfull{max-width:none;max-height:45dvh}
+
+    /* The panel is positioned by .dr-sheet in the site stylesheet; these just
+       undo the grid placement and the desktop border. */
+    #panel{grid-column:1;grid-row:auto;border-left:none;padding:0 16px 16px}
+  }
 </style>
 
 <div id="app">
-  <header>
-    <h1 id="title">DSA Explorer</h1>
-    <span class="sub" id="subtitle">Orgs &amp; people grouped by ideological current, orbiting the anti-imperialist spine · country is a separate patron/host axis</span>
-    <span class="counts" id="counts"></span>
-    <p class="disclaimer"><strong>Disclaimer:</strong> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Inferred, ideological, and patron/sphere associations are analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Do not rely on this material without independent verification. The author disclaims all liability for any use of, or reliance on, its contents.</p>
+  <header id="dsa-header">
+    <div class="dsa-idrow">
+      <div class="dsa-id">
+        <h1 id="title">DSA Explorer</h1>
+        <div class="sub" id="counts" role="status" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      <button type="button" class="dr-dialog-open" id="dsa-disclaimer-open" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Disclaimer
+      </button>
+    </div>
+    {%- comment -%}
+      The tool's only search, so it belongs in the header rather than on the
+      canvas. It FINDS — highlights and glides — and never filters; see
+      tool-chrome.md §5 for why a network view must not filter on search.
+    {%- endcomment -%}
+    <div class="dsa-controls">
+      <label class="dsa-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="text" placeholder="Find an org or person…" autocomplete="off" aria-label="Find an org or person on the graph">
+      </label>
+    </div>
   </header>
   <div id="stage">
     <div id="cy"></div>
-    <button id="panelToggle" title="Hide details panel">›</button>
-    <div id="search"><input id="q" type="text" placeholder="Search a node…" autocomplete="off"></div>
     <div id="controls">
-      <button id="zin">＋ Zoom</button>
-      <button id="zout">－ Zoom</button>
-      <button id="fit">Reset view</button>
-      <button id="relayout">Re-layout</button>
-      <button id="toggleInf">Hide inferred</button>
-      <button id="export" title="Download a high-resolution PNG of the current view (print / thread quality)">⬇ Export PNG</button>
-      <div class="grp" style="display:flex;gap:6px;padding:0;border:none;box-shadow:none">
-        <button id="back" style="flex:1" disabled>◀ Back</button>
-        <button id="focusToggle" style="flex:1">Focus: on</button>
-      </div>
+      <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" data-tip="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" data-tip="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" data-tip-title="Reset view" data-tip="Back to where you started. In focus mode that is the center node’s ring; otherwise the whole graph, fitted."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19 2 12l9-7z"/><path d="M22 19l-9-7 9-7z"/></svg></button>
+      <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" data-tip-title="Re-layout" data-tip="Recompute where every node sits. Useful when labels overlap after a lot of panning."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.97a4 4 0 0 0 3.3-1.75l5.46-8.5A4 4 0 0 1 16.03 6H22"/><path d="M2 6h1.97a4 4 0 0 1 3.3 1.75l.4.6"/><path d="M22 18h-5.97a4 4 0 0 1-3.3-1.75l-.4-.6"/></svg></button>
+      <!-- One flat column of icon-only controls. A labeled pill is the widest
+           thing on the canvas and a column of them reads as a menu rather than
+           as tools; the name lives in the tooltip and in aria-label, both of
+           which every control here carries.
+
+           The two toggles show their state with a .dr-btn__dot — present means
+           on. A dot cannot say WHICH mode is on, so it only works because the
+           icon already carries the identity.
+
+           Pressed on toggleInf means the inferred links are SHOWN, which is how
+           the graph loads — the state variable behind it is `infHidden`, so the
+           two read in opposite directions. -->
+      <!-- aria-disabled, not `disabled`: a browser fires no pointer events over
+           a disabled button, so its tooltip could never open — and an icon-only
+           control that is grayed out with no explanation is the worst case of
+           the icon-only trade. setBack() swaps the sentence with the state; the
+           click handler checks the attribute. -->
+      <button type="button" id="back" class="dr-btn dr-btn--icon" aria-label="Back" aria-disabled="true" data-tip-title="Back" data-tip="Goes back to the node you were looking at before this one. Turns on once you have opened a second node."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button type="button" id="focusToggle" class="dr-btn dr-btn--icon" aria-pressed="true" aria-label="Focus mode" data-tip-title="Focus mode" data-tip="Clicking a node shows only that node and its direct ties, so you can follow the network one node at a time. Turn it off to keep the whole graph visible and select without fading the rest."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg><span class="dr-btn__dot" id="focusState" aria-hidden="true"></span></button>
+      <button type="button" id="toggleInf" class="dr-btn dr-btn--icon" aria-pressed="true" aria-label="Inferred links" data-tip-title="Inferred links" data-tip="Show the dashed, inferred relationships as well as the solid confirmed ones. Inferred ties are analytical readings, not sourced facts."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span class="dr-btn__dot" id="infState" aria-hidden="true"></span></button>
+      <button type="button" id="export" class="dr-btn dr-btn--icon" aria-label="Export" data-tip-title="Export" data-tip="Download a high-resolution PNG of exactly this view — same pan, zoom and fade, at print quality."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></button>
     </div>
     <div id="legend"></div>
   </div>
@@ -124,6 +350,22 @@ if(_hatueyLogo) window.LOGOS.hatuey = _hatueyLogo; /* canonical Hatuey keeps its
     <div class="empty">Click a node to see its role, notes, and source URL.<br><br>Click an edge to see the relationship and its evidence tier.</div>
   </aside>
 </div>
+
+{%- comment -%}
+  showModal(), never show() — see assets/css/components/dialog.css.
+  Outside #app on purpose: the modal is not part of the tool's grid.
+{%- endcomment -%}
+<dialog class="dr-dialog" id="dsa-disclaimer" aria-labelledby="dsa-disclaimer-title">
+  <div class="dr-dialog__head">
+    <h2 id="dsa-disclaimer-title">Disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="dsa-disclaimer-close" aria-label="Close" data-tip="Close">✕</button>
+  </div>
+  <div class="dr-dialog__body">
+    <p>Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate.</p>
+    <p>Inferred, ideological, and patron/sphere associations are analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization.</p>
+    <p>Do not rely on this material without independent verification. The author disclaims all liability for any use of, or reliance on, its contents.</p>
+  </div>
+</dialog>
 
 <script>
 /* ------- layer palette + kind shapes ------- */
@@ -143,7 +385,7 @@ const KINDGLYPH = {project:'◆',org:'▭',person:'●',concept:'⬡'};
 /* ------- IDEOLOGY palette (v3): the six currents. Populated on ORGS only (nodes.csv
    `ideology` col); people/projects INHERIT their nearest org's current at load (ideoOf()).
    Untagged orgs = the anti-imperialist SPINE / outliers / opposition pole -> render in the
-   neutral SPINE colour: the uncolored center the currents orbit. IORDER = colour precedence
+   neutral SPINE color: the uncolored center the currents orbit. IORDER = color precedence
    when a node inherits more than one current (most-defining wins). ------- */
 const IDEOLOGY = {
   state:     {c:'#B45309', label:'Ruling party-state'},          // Cuba / Nicaragua / Iran organs
@@ -279,7 +521,7 @@ function build(nodes, edges, baked){
   // NEVER hand-tagged: each inherits the current(s) of its NEAREST org(s) by hop distance
   // (BFS, undirected, stops at the first depth that contains any org). If the nearest org(s)
   // are all spine/untagged -> the node stays neutral (shows only under "all"). Stopping at
-  // the first org layer is deliberate: it keeps a project coloured by ITS org, not smeared
+  // the first org layer is deliberate: it keeps a project colored by ITS org, not smeared
   // by the AFGJ spine hub that touches the whole graph.
   const adj = {}; nodes.forEach(n=>adj[n.id]=[]);
   edges.forEach(e=>{ if(byId[e.source]&&byId[e.target]){ adj[e.source].push(e.target); adj[e.target].push(e.source); } });
@@ -330,7 +572,7 @@ function build(nodes, edges, baked){
       ideo: ideo.primary||'', ideoset: ideo.set.join(';'),
       ein:n.ein||'', source_url:n.source_url||'', notes:n.notes||'',
       mag, isCenter:isCenter?1:0,
-      // colour by ideological current; center anchor uses its own current if tagged (falls back
+      // color by ideological current; center anchor uses its own current if tagged (falls back
       // to dark only if it's an untagged spine node); everything else spine/untagged = neutral
       col: ideo.primary ? IDEOLOGY[ideo.primary].c : (isCenter ? LAYER.center.c : SPINE_COL),
       // logo nodes render as a framed tile; bump them up so the mark is legible
@@ -397,7 +639,7 @@ function build(nodes, edges, baked){
   window.__usedTerr = usedTerr;                         // for the dynamic legend
 
   document.getElementById('counts').textContent =
-    nodes.length+' nodes · '+edges.length+' edges';
+    nodes.length.toLocaleString()+' nodes · '+edges.length.toLocaleString()+' edges';
 
   const cy = cytoscape({
     container: document.getElementById('cy'),
@@ -440,7 +682,7 @@ function build(nodes, edges, baked){
       {selector:'node[?isTerritory][terrKind = "country"]',style:{
         'background-opacity':0.07,'border-style':'dashed','border-opacity':0.6
       }},
-      /* logo nodes: "box within a box" — outer frame = layer colour, inner tile = data(tile),
+      /* logo nodes: "box within a box" — outer frame = layer color, inner tile = data(tile),
          logo contained on the tile (transparent corners of the PNG show the tile through). */
       {selector:'node[?hasLogo]',style:{
         'shape':'round-rectangle',
@@ -463,7 +705,7 @@ function build(nodes, edges, baked){
       {selector:'node[?hasLogo][kind = "concept"]',style:{
         'shape':'hexagon'
       }},
-      /* project logos: a rounded-diamond "gem" — layer-colour frame, tile fill, the mark
+      /* project logos: a rounded-diamond "gem" — layer-color frame, tile fill, the mark
          inset (via the wider export margin) to the diamond's inscribed square so nothing
          corner-clips. Diamonds are enlarged so the smaller inset mark stays legible, and
          the label is nudged clear of the lower vertex. Diamond shape = project kind. */
@@ -475,8 +717,8 @@ function build(nodes, edges, baked){
         'background-fit':'contain','background-clip':'node',
         'text-margin-y':8
       }},
-      /* deferred logo (BIG slices, pre-reveal): keep the framed shape + layer-colour frame but
-         paint the layer colour instead of decoding the PNG, so first frame is instant. revealLogos()
+      /* deferred logo (BIG slices, pre-reveal): keep the framed shape + layer-color frame but
+         paint the layer color instead of decoding the PNG, so first frame is instant. revealLogos()
          strips this class in idle chunks and the real tile streams in. */
       {selector:'node.deferlogo',style:{
         'background-image':'none','background-color':'data(col)','background-opacity':0.92
@@ -500,12 +742,12 @@ function build(nodes, edges, baked){
         'text-opacity':0,
         'min-zoomed-font-size':8
       }},
-      /* focus-walk: faded = out of the current node's immediate ring (label hidden to kill
-         sprawl, but still clickable so you can walk to it); nbr = in the ring, full strength. */
+      /* focus mode: faded = out of the current node's immediate ring (label hidden to kill
+         sprawl, but still clickable so you can open it); nbr = in the ring, full strength. */
       {selector:'.faded',style:{'opacity':0.11,'text-opacity':0,'transition-property':'opacity, text-opacity','transition-duration':'220ms'}},
       {selector:'node.nbr',style:{'opacity':1,'background-opacity':1,'text-opacity':1}},
       {selector:'edge.nbr',style:{'opacity':1,'text-opacity':1}},
-      /* territory boxes never vanish during the focus-walk — they stay as spatial context */
+      /* territory boxes never vanish in focus mode — they stay as spatial context */
       {selector:'node[?isTerritory].faded',style:{'opacity':1,'text-opacity':0.6}},
       {selector:'node.sel',style:{'border-width':4,'border-color':'#000'}},
       {selector:'edge.sel',style:{'width':4,'line-opacity':1,'text-opacity':1,'z-index':99}}
@@ -693,7 +935,7 @@ function build(nodes, edges, baked){
   window.__layoutMs = performance.now();   // instrumentation: ms from nav → layout ready (baked = near-instant)
   window.__baked = !!baked;
 
-  /* ---- STREAMED LOGOS: on BIG slices, logo nodes render as plain layer-colour shapes first
+  /* ---- STREAMED LOGOS: on BIG slices, logo nodes render as plain layer-color shapes first
      (instant paint), then their real tiles decode in during idle time, ~48 per idle slice, so the
      graph is interactive immediately and the branding fills in over the next moment. force=true
      reveals everything synchronously (used before a PNG export so the poster is fully branded). */
@@ -738,21 +980,24 @@ function build(nodes, edges, baked){
     const countries=terrs.filter(t=>t.tkind==='country').sort((a,b)=>a.name.localeCompare(b.name));
     const ideoRows=currents.map(k=>{
       const c=IDEOLOGY[k];
-      return `<div class="row" data-ideo="${k}"><span class="sw" style="background:${c.c}"></span>${c.label}</div>`;
+      return `<button type="button" class="row" data-ideo="${k}" aria-pressed="false"><span class="sw" style="background:${c.c}"></span>${c.label}</button>`;
     }).join('');
+    // A country row navigates — it flies to that box. It is not a toggle, so it
+    // carries no aria-pressed; a button that does something is not a button that
+    // is in a state.
     const regionRows=countries.length
-      ? countries.map(t=>`<div class="row" data-country="${t.name}"><span class="sw" style="background:${t.col};opacity:.7"></span>${t.name}</div>`).join('')
+      ? countries.map(t=>`<button type="button" class="row" data-country="${t.name}"><span class="sw" style="background:${t.col};opacity:.7"></span>${t.name}</button>`).join('')
       : '<div class="hint">none in this graph</div>';
     // compact ideology chips for the always-visible bottom bar
-    const barChips=currents.map(k=>`<span class="chip" data-ideo="${k}"><span class="sw" style="background:${IDEOLOGY[k].c}"></span>${IDEOLOGY[k].label}</span>`).join('')
-      + `<span class="chip" data-ideo="__spine"><span class="sw" style="background:${SPINE_COL}"></span>Spine</span>`;
+    const barChips=currents.map(k=>`<button type="button" class="chip" data-ideo="${k}" aria-pressed="false"><span class="sw" style="background:${IDEOLOGY[k].c}"></span>${IDEOLOGY[k].label}</button>`).join('')
+      + `<button type="button" class="chip" data-ideo="__spine" aria-pressed="false"><span class="sw" style="background:${SPINE_COL}"></span>Spine</button>`;
     document.getElementById('legend').innerHTML=`
-      <div class="legfull">
+      <div class="legfull" id="legfull">
         <h4>Ideological current — color</h4>
-        <div class="allrow" id="showAllIdeo">◎ Show all currents</div>
+        <button type="button" class="allrow" id="showAllIdeo" aria-pressed="true">◎ Show all currents</button>
         ${ideoRows}
-        <div class="row" data-ideo="__spine"><span class="sw" style="background:${SPINE_COL}"></span>Anti-imperialist spine (uncolored)</div>
-        <div class="hint" style="margin-top:4px">Click a current to isolate it. Grey <b>spine</b> = shared infrastructure, not a current.</div>
+        <button type="button" class="row" data-ideo="__spine" aria-pressed="false"><span class="sw" style="background:${SPINE_COL}"></span>Anti-imperialist spine (uncolored)</button>
+        <div class="hint" style="margin-top:4px">Click a current to isolate it. Gray <b>spine</b> = shared infrastructure, not a current.</div>
         <div class="divider"></div>
         <h4>Kind (shape)</h4>
         <div class="row"><span class="shp">◆</span>project &nbsp;<span class="shp">▭</span>org &nbsp;<span class="shp">●</span>person &nbsp;<span class="shp">⬡</span>concept</div>
@@ -761,20 +1006,24 @@ function build(nodes, edges, baked){
         ${regionRows}
         <div class="hint" style="margin-top:4px">Click a country to fly to it. ⇢ = sourced patron/backer, not nationality (Hezbollah ⇢ Iran).</div>
         <div class="divider"></div>
-        <div class="hint"><b>Focus-walk:</b> click a node for its ties. Solid = confirmed · dashed = inferred.</div>
+        <div class="hint"><b>Focus mode:</b> click a node for its ties. Solid = confirmed · dashed = inferred.</div>
       </div>
       <div class="legbar">
-        <button class="legtoggle" id="legToggle">⌃ Legend</button>
+        <button type="button" class="legtoggle" id="legToggle" aria-expanded="false" aria-controls="legfull">⌃ Legend</button>
         <div class="legchips">${barChips}</div>
       </div>`;
     // expand / collapse the full key (grows upward from the bar)
     const legEl=document.getElementById('legend');
     const legToggle=document.getElementById('legToggle');
-    legToggle.onclick=()=>{ legToggle.textContent=(legEl.classList.toggle('expanded')?'⌄':'⌃')+' Legend'; };
+    legToggle.onclick=()=>{
+      const open=legEl.classList.toggle('expanded');
+      legToggle.textContent=(open?'⌄':'⌃')+' Legend';
+      legToggle.setAttribute('aria-expanded',String(open));
+    };
     // IDEOLOGY FILTER — radio across BOTH the bar chips and the full-key rows: click a current ->
     // show only nodes whose ideoset includes it (orgs proven in it + people/projects that inherit it).
     // "__spine" -> the neutral, un-inherited nodes. Click the active current again, or "Show all", ->
-    // everything. display:none is separate from the focus-walk .faded opacity, so it composes with focus.
+    // everything. display:none is separate from focus mode's .faded opacity, so it composes with focus.
     const ideoEls=[...legEl.querySelectorAll('[data-ideo]')];   // rows + chips share the same handler
     const allBtn=document.getElementById('showAllIdeo');
     function nodeInCurrent(n, only){
@@ -800,8 +1049,25 @@ function build(nodes, edges, baked){
           box.style('display', anyVisible?'element':'none');
         });
       });
-      ideoEls.forEach(r=>r.classList.toggle('active', !!only && r.dataset.ideo===only));
+      /* The filter is single-select-with-clear: one current at a time, and
+         re-clicking the active one (or "Show all") clears it. That is why these
+         are aria-pressed toggles and not a radiogroup — a radio cannot be
+         unset, and clearing is the common case here.
+
+         Note the polarity, which differs from the other two legends and is
+         correct in each: on the map pressed means "this category is chosen", on
+         the graph everything is shown at load so pressed means "shown", and
+         here pressed means "this is the one current being isolated".
+
+         Rows and chips are the same control drawn twice — the bar summary and
+         the full key — so both carry the state. */
+      ideoEls.forEach(r=>{
+        const on=!!only && r.dataset.ideo===only;
+        r.classList.toggle('active', on);
+        r.setAttribute('aria-pressed', String(on));
+      });
       allBtn.classList.toggle('active', !only);
+      allBtn.setAttribute('aria-pressed', String(!only));
     }
     ideoEls.forEach(el=>el.onclick=()=>setIdeoFilter(el.dataset.ideo));
     allBtn.onclick=()=>setIdeoFilter(null);
@@ -835,26 +1101,110 @@ function build(nodes, edges, baked){
     }, 1500);
   }
 
-  /* ---- focus-walk: one node's immediate ring at a time; the rest fades but stays
-         clickable, so you *walk* the network hop-by-hop instead of drowning in it ---- */
+  /* ---- focus mode: one node's immediate ring at a time; the rest fades but stays
+         clickable, so you move through the network one node at a time ---- */
   const panel = document.getElementById('panel');
-  const EMPTY = '<div class="empty">Click a node to walk to it — you\'ll see its immediate connections, and everything else fades. Click a faded node (or a panel connection) to step to the next hop.<br><br>Click an edge for its evidence tier. <b>Focus: off</b> shows the whole network at once.</div>';
+  const EMPTY = '<div class="empty">Click a node to open it — you\'ll see its immediate connections, and everything else fades. Click a faded node (or a panel connection) to open that one next.<br><br>Click an edge for its evidence tier. <b>Focus: off</b> shows the whole network at once.</div>';
   const backBtn = document.getElementById('back');
+  /* Two sentences, because the control has to explain itself while it is
+     unavailable — which is when someone is most likely to ask. */
+  const BACK_TIP = {
+    on:  'Go back to the node you were looking at before this one.',
+    off: 'Goes back to the node you were looking at before this one. Turns on once you have opened a second node.'
+  };
+  function setBack(on){
+    backBtn.setAttribute('aria-disabled', String(!on));
+    backBtn.setAttribute('data-tip', on ? BACK_TIP.on : BACK_TIP.off);
+  }
   let focusMode = new URLSearchParams(location.search).get('focus')!=='off'; // start scoped-in; ?focus=off deep-links the full-network view
   let focusId = centerId;       // the node whose immediate ring is currently shown
-  const hist = [];              // walk history, for the Back button
-  // --- details-panel collapse: hide the right panel to widen the map; reopened by the toggle
-  //     or by any node/edge tap (which has something to show) ---
+  const hist = [];              // previously opened nodes, for the Back button
+  /* The panel opens and closes ITSELF, in response to selection. The `›`
+     chevron that used to float over the canvas is gone: the panel is empty
+     until you click something and empties again on a background tap, so the
+     button's only honest use was hiding a panel that already had something in
+     it — and the background click did that plus the deselect you wanted. */
+  /* The canvas is sized against what is left of the viewport, so the header's
+     real height has to be a number the CSS can read. Measured, never assumed —
+     and by id, because the site masthead is a <header> too and comes first. */
+  (function(){
+    const h=document.getElementById('dsa-header');
+    if(!h) return;
+    /* --dsa-header-h is this header's HEIGHT; --dsa-stage-top is the canvas
+       band's distance from the top of the DOCUMENT — the banner, the masthead
+       and this header. The band's height was `100dvh - 7rem`, a guess at the
+       second number that is ~170px short, so the graph ran off the bottom of
+       the window on arrival.
+
+       offsetTop, not getBoundingClientRect: a sticky element's rect moves when
+       it pins and this has to be the resting position. */
+    const docTop=el=>{let y=0;for(let n=el;n;n=n.offsetParent)y+=n.offsetTop;return y;};
+    /* Two positions, because the two layouts hang the height off different
+       elements: at md #app is a fixed-height grid and #stage takes its 1fr
+       row, below md #app is auto and #stage sizes itself. */
+    const app=document.getElementById('app'), st=document.getElementById('stage');
+    const setH=()=>{
+      const s=document.documentElement.style;
+      s.setProperty('--dsa-header-h',h.offsetHeight+'px');
+      if(app) s.setProperty('--dsa-app-top',docTop(app)+'px');
+      if(st) s.setProperty('--dsa-stage-top',docTop(st)+'px');
+    };
+    setH();
+    if(window.ResizeObserver) new ResizeObserver(setH).observe(h);
+    /* Unconditionally: the observer watches this header, and --dsa-stage-top
+       also moves when the banner or the masthead above it rewraps. */
+    window.addEventListener('resize',setH);
+  })();
+
   const appEl = document.getElementById('app');
-  const panelToggle = document.getElementById('panelToggle');
   function setPanelCollapsed(c){
+    if(appEl.classList.contains('panel-collapsed') === c) return;
     appEl.classList.toggle('panel-collapsed', c);
-    panelToggle.textContent = c ? '‹' : '›';
-    panelToggle.title = c ? 'Show details panel' : 'Hide details panel';
     requestAnimationFrame(()=>cy.resize());
   }
-  panelToggle.onclick = ()=>setPanelCollapsed(!appEl.classList.contains('panel-collapsed'));
-  const reopenPanel = ()=>{ if(appEl.classList.contains('panel-collapsed')) setPanelCollapsed(false); };
+
+  /* The legal notice. showModal(), never show() — only the modal form gets the
+     focus trap, Escape, the backdrop and the top layer, which is how it clears
+     Cytoscape's canvas without this repo authoring a z-index above 100. */
+  (function(){
+    const dlg=document.getElementById('dsa-disclaimer');
+    const open=document.getElementById('dsa-disclaimer-open');
+    const close=document.getElementById('dsa-disclaimer-close');
+    if(!dlg||!open) return;
+    open.addEventListener('click',()=>dlg.showModal());
+    if(close) close.addEventListener('click',()=>dlg.close());
+    // The backdrop is not a child, so a click on it targets the <dialog>.
+    dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+  })();
+
+  // On a phone the details panel is a bottom sheet rather than a column below
+  // the canvas, so a node tap answers where you can see it. On desktop
+  // DRSheet.attach is inert and this is the old collapse behavior.
+  /* No onClose. Dismissing the sheet must not touch the graph.
+
+     It used to run `cy.elements().removeClass('faded nbr sel')`, which is the
+     focus-OFF branch of the background-tap handler below — applied
+     unconditionally, including in focus mode, which is the default. So closing
+     the detail sheet on a phone threw away the focus ring and snapped the whole
+     network back to full strength, as if you had turned focus off. You tapped a
+     node to look at it, and closing what you were looking at undid your place in the graph.
+
+     The tool's own deselect gesture is a background tap, and it is conditional:
+     in focus mode it re-applies the ring, and only focus-off clears. The sheet
+     is a VIEW of the selection, not the selection itself, so closing it is not
+     a deselect at all — it leaves the fade, the selected node and the camera
+     exactly where they are. Re-applying the focus here would be wrong for a
+     second reason: applyFocus() animates the camera, so "restoring" the state
+     would move the view the user just positioned. */
+  const drSheet = (window.DRSheet ? window.DRSheet.attach(panel, {
+    label: 'Node details',
+    detent: 'half'
+  }) : null);
+
+  const reopenPanel = ()=>{
+    if(appEl.classList.contains('panel-collapsed')) setPanelCollapsed(false);
+    if(drSheet && window.DRSheet.isMobile()) drSheet.open();
+  };
   function fmtUrl(u){
     try{ const x=new URL(u); let p=(x.pathname+x.search).replace(/\/$/,''); if(p.length>34)p=p.slice(0,33)+'…'; return x.hostname.replace(/^www\./,'')+p; }
     catch(_){ return u; }
@@ -894,10 +1244,10 @@ function build(nodes, edges, baked){
       ${d.ein?`<div class="kv"><b>EIN</b><a href="https://projects.propublica.org/nonprofits/organizations/${d.ein.replace(/\D/g,'')}" target="_blank" rel="noopener" title="ProPublica Nonprofit Explorer">${d.ein}</a></div>`:''}
       ${d.notes?`<div class="notes">${d.notes}</div>`:''}
       <div class="kv"><b>Source</b>${link(d.source_url)}</div>
-      <div class="conns"><h3>${conns.length} connection${conns.length!==1?'s':''}${focusMode?' — click to walk':''}</h3>
+      <div class="conns"><h3>${conns.length} connection${conns.length!==1?'s':''}${focusMode?' — click to open':''}</h3>
         ${conns.map(c=>`<div class="conn ${c.inf?'inf':''}" data-goto="${c.id}"><div class="conn-head">${c.dir} ${c.label} <span class="rel">— ${c.rel}</span></div>${c.desc?`<div class="conn-desc">${c.desc}</div>`:''}${c.url?`<a class="conn-src" href="${c.url}" target="_blank" rel="noopener" title="${c.url}">${fmtUrl(c.url)}</a>`:''}</div>`).join('')}
       </div>`;
-    // walk on the connection body, but let the source link open normally
+    // open the connection from its body, but let the source link open normally
     panel.querySelectorAll('.conn').forEach(el=>el.onclick=e=>{ if(e.target.closest('a'))return; goto(el.dataset.goto); });
   }
 
@@ -912,14 +1262,14 @@ function build(nodes, edges, baked){
     return nb;
   }
 
-  // FOCUS MODE: walk focus to a node — fade the rest, fit to its ring, record history
+  // FOCUS MODE: move focus to a node — fade the rest, fit to its ring, record history
   function applyFocus(id,{push=true,fit=true}={}){
     const node=cy.$id(id); if(node.empty()) return;
     if(push && focusId && focusId!==id) hist.push(focusId);
     focusId=id;
     const nb=paintRing(node);
     if(fit){
-      // Glide to CENTER the walked-to node at a bounded zoom, instead of fit()-ing the whole ring —
+      // Glide to CENTER the opened node at a bounded zoom, instead of fit()-ing the whole ring —
       // fitting a hub whose neighbors sprawl across the graph yanks the view way out. We frame the
       // ring loosely but clamp the zoom so it stays a smooth pan, never a jarring zoom-out.
       const bb=nb.boundingBox(), pad=90;
@@ -928,7 +1278,7 @@ function build(nodes, edges, baked){
       cy.animate({center:{eles:node}, zoom:z},{duration:420,easing:'ease-in-out'});
     }
     renderNodePanel(node);
-    backBtn.disabled = !hist.length;
+    setBack(!!hist.length);
   }
 
   // FOCUS OFF: ephemeral highlight, no fitting, no history (classic full-graph view)
@@ -937,15 +1287,15 @@ function build(nodes, edges, baked){
     cy.batch(()=>{ cy.elements().addClass('faded').removeClass('nbr sel'); nb.removeClass('faded').addClass('nbr'); ele.addClass('sel'); });
   }
 
-  // unified "go to a node" — walks in focus mode, highlights otherwise
+  // unified "go to a node" — moves focus in focus mode, highlights otherwise
   function goto(id){
     const n=cy.$id(id); if(n.empty()) return;
     if(focusMode){ applyFocus(id); }
     else { ephemeral(n); renderNodePanel(n); cy.animate({center:{eles:n},zoom:1.4},{duration:350}); }
   }
 
-  // COUNTRY FOCUS: a country isn't a walk-node — it's a compound box. Clicking it (the box on the
-  // canvas OR its legend row) frames the box + its members and lists them, each a walk entry point.
+  // COUNTRY FOCUS: a country isn't an ordinary node — it's a compound box. Clicking it (the box on the
+  // canvas OR its legend row) frames the box + its members and lists them, each a way into the graph.
   function focusCountry(country){
     const box=cy.getElementById(pidOf('C:'+country)); if(box.empty()) return;
     const mem=box.children();
@@ -969,7 +1319,7 @@ function build(nodes, edges, baked){
       <span class="tag" style="background:${REGION[country]?.col||'#64748B'}">country box</span>
       <h2>${country}</h2>
       <div class="notes">${note} ${items.length} node${items.length!==1?'s':''} in this box.</div>
-      <div class="conns"><h3>${items.length} member${items.length!==1?'s':''}${focusMode?' — click to walk':''}</h3>
+      <div class="conns"><h3>${items.length} member${items.length!==1?'s':''}${focusMode?' — click to open':''}</h3>
         ${items.map(c=>`<div class="conn" data-goto="${c.id}"><div class="conn-head">${c.patron?'⇢ ':''}${KINDGLYPH[c.kind]||''} ${c.label} <span class="rel">— ${c.ideo?(IDEOLOGY[c.ideo]?.label||c.ideo):'spine'}${c.patron?' · patron':''}</span></div></div>`).join('')}
       </div>`;
     panel.querySelectorAll('.conn').forEach(el=>el.onclick=e=>{ if(e.target.closest('a'))return; goto(el.dataset.goto); });
@@ -1000,7 +1350,12 @@ function build(nodes, edges, baked){
   });
 
   // background tap: in focus mode, re-scope to the current node (re-fit its ring); else clear
-  cy.on('tap',ev=>{ if(ev.target===cy){ if(focusMode){ applyFocus(focusId,{push:false}); } else { cy.elements().removeClass('faded nbr sel'); panel.innerHTML=EMPTY; } }});
+  cy.on('tap',ev=>{ if(ev.target===cy){ if(focusMode){ applyFocus(focusId,{push:false}); } else { cy.elements().removeClass('faded nbr sel'); panel.innerHTML=EMPTY; if(drSheet) drSheet.close(); } }});
+
+  /* aria-pressed is the whole state. .dr-btn__dot is shown and hidden by CSS
+     keyed on that attribute, so there is nothing else to write and nothing
+     that can disagree with it. */
+  function setToggle(btn,on){ btn.setAttribute('aria-pressed',String(on)); }
 
   /* ---- controls ---- */
   document.getElementById('zin').onclick =()=>cy.zoom({level:cy.zoom()*1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
@@ -1012,13 +1367,24 @@ function build(nodes, edges, baked){
   document.getElementById('toggleInf').onclick=function(){
     infHidden=!infHidden;
     cy.edges('[?inferred]').style('display',infHidden?'none':'element');
-    this.textContent=infHidden?'Show inferred':'Hide inferred';
+    /* The LABEL holds still and the VALUE moves. Swapping the whole label to
+       "Inferred: off" shifted every button beside it on each click, and it read
+       as what the next click would do rather than as the current state.
+       aria-pressed is still the state a screen reader hears; the chip is the
+       same fact for everyone else. */
+    setToggle(this,!infHidden);
   };
   // Export PNG: a high-res still of the CURRENT view — exactly what's on screen, at the live
-  // pan/zoom and with the active focus/walk fade preserved. cy.png() (full:false) captures the
+  // pan/zoom and with the active focus fade preserved. cy.png() (full:false) captures the
   // current viewport only; it never re-frames to the whole graph and never touches focus/fade/camera.
   document.getElementById('export').onclick=function(){
-    const btn=this, was=btn.textContent; btn.textContent='Rendering…'; btn.disabled=true;
+    /* aria-busy and disabled, never a text swap. The button has no text to
+       swap now, and when it did, doing it with btn.textContent replaced every
+       child — the first export destroyed the <svg> and restoring the string
+       never brought it back. aria-busy is what button.css styles and what a
+       screen reader reads. */
+    const btn=this;
+    btn.disabled=true; btn.setAttribute('aria-busy','true');
     revealLogos(true);   // ensure logos visible in the frame are branded, not placeholder tiles
     // let the logo-filled frame settle one tick before snapshotting
     setTimeout(()=>{
@@ -1027,23 +1393,32 @@ function build(nodes, edges, baked){
         const a=document.createElement('a');
         a.href=uri; a.download='dsa-explorer.png'; a.click();
       }catch(err){ console.error('export failed',err); alert('Export failed: '+err.message); }
-      btn.textContent=was; btn.disabled=false;
+      btn.disabled=false; btn.removeAttribute('aria-busy');
     },60);
   };
-  // Back: step to the previous node in the walk history
-  backBtn.onclick=()=>{ if(hist.length){ const prev=hist.pop(); applyFocus(prev,{push:false}); } };
-  // Focus on/off: scoped hop-by-hop walk vs. the whole network at once
+  // Back: return to the previously opened node
+  // aria-disabled is not inert, so the guard is here rather than in the browser.
+  backBtn.onclick=()=>{ if(!hist.length) return; applyFocus(hist.pop(),{push:false}); };
+  // Focus on/off: one node and its ties at a time vs. the whole network at once
   document.getElementById('focusToggle').onclick=function(){
     focusMode=!focusMode;
-    this.textContent='Focus: '+(focusMode?'on':'off');
-    if(focusMode){ hist.length=0; backBtn.disabled=true; applyFocus(focusId,{push:false}); }
+    setToggle(this,focusMode);
+    if(focusMode){ hist.length=0; setBack(false); applyFocus(focusId,{push:false}); }
     else { cy.elements().removeClass('faded nbr sel'); cy.fit(40); panel.innerHTML=EMPTY; }
   };
   const q=document.getElementById('q');
-  let searchZoomT=null, lastZoomId=null;
+  let searchZoomT=null, lastZoomId=null, qTimer=null;
+  // Only the camera glide was debounced; the filter itself ran on every
+  // keystroke and restyled the whole element set inside a cy.batch each time.
+  // 200ms, matching the page search in noblogs/index.html. The queued glide is
+  // canceled immediately rather than inside the debounce, so it can never fire
+  // mid-word.
   q.oninput=()=>{
+    clearTimeout(searchZoomT); clearTimeout(qTimer);
+    qTimer=setTimeout(()=>runSearch(),200);
+  };
+  function runSearch(){
     const v=q.value.trim().toLowerCase();
-    clearTimeout(searchZoomT);
     if(!v){ lastZoomId=null; if(focusMode) applyFocus(focusId,{push:false}); else cy.elements().removeClass('faded nbr sel'); return; }
     let sole=null;
     cy.batch(()=>{
@@ -1055,10 +1430,10 @@ function build(nodes, edges, baked){
     // Only glide the camera once typing pauses, and never re-zoom a node we're already on.
     if(sole){ const id=sole.id(); searchZoomT=setTimeout(()=>{ if(id!==lastZoomId){ lastZoomId=id; cy.animate({center:{eles:sole},zoom:1.5},{duration:300}); } },350); }
     else lastZoomId=null;
-  };
+  }
   addEventListener('resize',()=>cy.resize());
 
-  /* ---- deep-link: index.html#nodeId walks to that node (default: center) ---- */
+  /* ---- deep-link: index.html#nodeId opens that node (default: center) ---- */
   function openHash(){
     const id=decodeURIComponent(location.hash.slice(1));
     const target=(id && cy.$id(id).nonempty())?id:centerId;

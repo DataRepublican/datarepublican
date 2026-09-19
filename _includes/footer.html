@@ -1,5 +1,10 @@
+{%- comment -%}
+  Both blocks below take `page-column`, so the footer rule and the callout stop
+  at the same measure as the masthead and the content rather than running the
+  full width of the window.
+{%- endcomment -%}
 {% unless page.url contains 'donate' or page.url contains 'browse' %}
-<div class="flex justify-center">
+<div class="page-column flex justify-center">
   <div
     class="m-4 border-2 border-green p-4 rounded text-sm bg-white text-center"
   >
@@ -11,7 +16,7 @@
 </div>
 {% endunless %}
 <footer
-  class="border-t border-gray-200 mt-4 py-4 flex flex-col items-center justify-center gap-6 mb-6"
+  class="page-column border-t border-gray-200 mt-4 py-4 flex flex-col items-center justify-center gap-6 mb-6"
 >
   <div class="flex items-center text-black/75 gap-2">
     <span class="text-xs">Hosted by</span>
@@ -110,9 +115,14 @@
     </a>
   </div>
 
-  <a
-    href="/policies"
-    class="text-navy text-xs opacity-60 hover:opacity-80 font-normal"
-    >Website policies</a
-  >
+  {%- comment -%}
+    These four were reachable only from the collapsible left rail, which the v2
+    chrome removed. The three-item pill nav is deliberately Tools/About/Donate
+    and does not grow to hold them, so they live here or nowhere.
+  {%- endcomment -%}
+  <nav aria-label="Secondary" class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-gutter text-center">
+    <a href="{{ '/policies' | relative_url }}" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">Website policies</a>
+    <a href="{{ '/christianity' | relative_url }}" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">The historical case for Christianity</a>
+    <a href="https://x.com/datarepublican" target="_blank" rel="noopener" class="text-navy text-xs font-normal opacity-60 hover:opacity-100">@datarepublican</a>
+  </nav>
 </footer>

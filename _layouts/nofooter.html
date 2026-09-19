@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{%- comment -%}
+  browse/index.html has declared `layout: nofooter` since it was written, and
+  this layout has never existed. Jekyll warned on every build and rendered the
+  page with no layout at all, which is why https://datarepublican.com/browse/
+  ships with no <head>, no <title>, no nav and no SEO tags.
+
+  Same as `default` minus the footer: the Sankey sizes itself against the
+  viewport and a footer underneath it produced a second scroll region.
+{%- endcomment -%}
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  {% include head-custom.html %}
+  {% seo %}
+</head>
+
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  {% include banner.html %}
+
+  <header class="page-column">
+    {% include masthead.html %}
+  </header>
+
+  <div id="content">
+    <main class="@container page-column min-h-[40vh] pb-10">
+      {{ content }}
+    </main>
+  </div>
+</body>
+
+</html>

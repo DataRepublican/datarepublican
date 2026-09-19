@@ -3,34 +3,32 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   {% include head-custom.html %}
   {% seo %}
 </head>
 
-<body class="m-0 p-0 flex flex-col md:flex-row">
-  {% include header.html %}
+{%- comment -%}
+  Same chrome as `default`, with the content in a prose column. Used by
+  /policies and /christianity.
+{%- endcomment -%}
 
-  <div id="main-content" class="flex-1 transition-all duration-300">
-    <script>
-      // Set initial margin based on localStorage to prevent flash of content
-      (function() {
-        var mainContent = document.getElementById('main-content');
-        var isCollapsed = localStorage.getItem('menuCollapsed') === 'true';
-        
-        if (isCollapsed) {
-          mainContent.classList.add('menu-collapsed');
-        } else {
-          mainContent.classList.add('menu-expanded');
-        }
-      })();
-    </script>
-    <main class="@container p-4 lg:px-6 min-h-[calc(100vh-200px)] max-w-5xl prose">
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
+  {% include banner.html %}
+
+  <header class="page-column">
+    {% include masthead.html %}
+  </header>
+
+  <div id="content">
+    <main class="@container page-column prose max-w-column min-h-[40vh] pb-10">
       {{ content }}
     </main>
-    {% include footer.html %}
   </div>
+
+  {% include footer.html %}
 </body>
+
 </html>

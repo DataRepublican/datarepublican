@@ -1,0 +1,121 @@
+{%- comment -%}
+  The three-item nav. Tools is the home page, so there is no Home item.
+
+  One DOM order, two layouts, and they are now genuinely different controls
+  rather than one control at two sizes:
+
+    phone  — a floating pill, fixed to the bottom of the viewport, in thumb
+             reach. It IS the navigation, so it keeps 44px targets and the
+             frosted pill chrome that makes it legible over scrolling content.
+    md up  — plain links, right-aligned on the wordmark's baseline. The pill
+             chrome is dropped entirely: border, fill, shadow and blur all go
+             transparent, because at this width the links sit inside the
+             masthead block and a second bounded surface inside it reads as a
+             widget stuck onto the page.
+
+  THIS INCLUDE LIVES INSIDE _includes/masthead.html, not beside <header>.
+  That is a reversal, and the reason the old arrangement existed is worth
+  stating so nobody restores it by halves: the nav used to be a SIBLING of
+  <header> so it could be `position: sticky` at md — a sticky element can only
+  travel inside its parent's box, and inside the masthead the box is ~130px
+  tall, so sticky would do nothing. Desktop deliberately gives up stickiness in
+  exchange for the links sitting across from the wordmark. The phone pill is
+  `position: fixed`, which is viewport-relative and does not care what contains
+  it, so moving the include costs the phone layout nothing.
+
+  Sizing is anchored to the 16px label and expressed in em from there, so the
+  control is a consequence of the type rather than a set of numbers that drift
+  away from it.
+
+  The 44px minimum tap target is kept on phones, where the finger is the
+  pointer. Above md there is a cursor and the compact size applies — min-h-tap
+  at every width made the row half again as tall as the design called for.
+
+  Hover: a white fill at md, a flat tint below it. White is the choice because
+  the page ground is #E5E7EB — a white pill reads as raised against a gray
+  ground, where the phone's translucent white would disappear into it. The
+  current item wears the same white fill, so hovering an inactive item previews
+  exactly what being current looks like rather than introducing a third
+  treatment. Both are color-only transitions, so nothing shifts under the
+  cursor.
+{%- endcomment -%}
+
+{%- assign here = page.url -%}
+{%- capture nav_items -%}
+/|Tools|tools,/about/|About|user,/donate/|Donate|donate
+{%- endcapture -%}
+
+{%- comment -%}
+  The scrim keeps the floating pill legible over scrolling content. Phone only:
+  at md the pill is gone and there is nothing to separate from.
+{%- endcomment -%}
+<div class="pointer-events-none fixed inset-x-0 bottom-0 z-40 h-28 bg-gradient-to-b from-transparent to-surface/80 md:hidden" aria-hidden="true"></div>
+
+{%- comment -%}
+  `page-column` is what centers the fixed pill on a phone. At md the nav is a
+  flex child of the wordmark row, so every part of that shell has to be undone
+  explicitly — the measure, the auto margins, the gutter and the full width.
+  Tailwind's utilities layer is emitted after components, so `md:max-w-none`
+  beats `.page-column`'s own max-width at equal specificity.
+{%- endcomment -%}
+<nav aria-label="Primary"
+     class="page-column fixed inset-x-0 bottom-4 z-50 flex justify-center
+            md:static md:z-auto md:mx-0 md:w-auto md:max-w-none md:px-0 md:pb-[0.375em]">
+  <ul class="m-0 flex list-none items-center gap-1 rounded-pill border border-white/60 bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.12)] backdrop-blur-[3px]
+             md:w-max md:gap-[0.125em] md:rounded-none md:border-0 md:bg-transparent md:p-0 md:shadow-none md:backdrop-blur-none">
+    {%- assign items = nav_items | strip | split: ',' -%}
+    {%- for item in items -%}
+      {%- assign parts = item | split: '|' -%}
+      {%- assign href = parts[0] -%}
+      {%- assign label = parts[1] -%}
+      {%- assign icon = parts[2] -%}
+      {%- if href == '/' -%}
+        {%- if here == '/' -%}{%- assign is_current = true -%}{%- else -%}{%- assign is_current = false -%}{%- endif -%}
+      {%- else -%}
+        {%- if here contains href -%}{%- assign is_current = true -%}{%- else -%}{%- assign is_current = false -%}{%- endif -%}
+      {%- endif -%}
+
+      {%- comment -%}
+        The state classes are assigned here rather than written inline in the
+        class attribute. Tailwind scans the raw file, and a class written
+        immediately after a closing Liquid tag, with no space between them, is
+        swallowed into one candidate together with that tag. The candidate
+        matches no utility, so the rule is never generated and the style
+        silently does nothing — it took a "why is hover dead" hunt to find.
+        Inside a quoted Liquid string every class is delimited by a quote or a
+        space, which the extractor handles.
+
+        `md:bg-none` is not a typo for `md:bg-transparent`: it clears the
+        background-IMAGE the phone gradient sets. The two set different
+        properties, so both are needed to get from a gradient pill to a flat
+        white one.
+      {%- endcomment -%}
+      {%- if is_current -%}
+        {%- assign state = 'bg-gradient-to-b from-[#EDEDED] to-[#CACACA] shadow-[inset_0_1px_0_rgba(255,255,255,0.7)] hover:from-[#E4E4E4] hover:to-[#BEBEBE] md:bg-none md:bg-white md:shadow-none md:hover:bg-white' -%}
+      {%- else -%}
+        {%- assign state = 'hover:bg-black/[0.06] md:hover:bg-white' -%}
+      {%- endif -%}
+    <li class="m-0">
+      <a href="{{ href | relative_url }}"
+         {% if is_current %}aria-current="page"{% endif %}
+         class="flex min-h-tap items-center gap-2 rounded-pill px-4 text-body font-bold tracking-[-0.03em] !no-underline !text-ink-strong
+                md:min-h-0 md:gap-[0.375em] md:px-[0.6875em] md:py-[0.3125em] md:leading-[1.25]
+                transition-colors duration-150
+                focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong
+                {{ state }}">
+        <span class="shrink-0" aria-hidden="true">
+          {%- case icon -%}
+          {%- when 'tools' -%}
+          <svg viewBox="0 0 24 24" class="size-5 md:size-[1.0625em]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+          {%- when 'user' -%}
+          <svg viewBox="0 0 24 24" class="size-5 md:size-[1.0625em]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          {%- when 'donate' -%}
+          <svg viewBox="0 0 24 24" class="size-5 md:size-[1.0625em]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 6v2m0 8v2"/></svg>
+          {%- endcase -%}
+        </span>
+        {{ label }}
+      </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+</nav>

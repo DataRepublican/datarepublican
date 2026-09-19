@@ -1,0 +1,87 @@
+name: CI
+
+# Builds the site and checks it. No deploy — that lives in deploy.yml and only
+# runs on master.
+#
+# Build and test are one job on purpose. They were split, with the 444 MB build
+# passed between them as an artifact; uploading and re-downloading 9,970 files
+# cost more than the build itself and added a failure mode of its own.
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1.4'
+          bundler-cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Tailwind is built by PostCSS, which Jekyll does not invoke, so the
+      # stylesheet has to be generated before the site build. `npm run build`
+      # does both in order.
+      - name: Build site
+        run: npm run build
+
+      - name: Report build size
+        run: |
+          du -sh _site
+          echo "GitHub Pages publishes at most 1 GB."
+
+      - name: Install browsers
+        run: npx playwright install --with-deps chromium
+
+      # Deliberately python's http.server rather than `npx serve`.
+      #
+      # `serve` applies clean-URL rewriting: it redirects /officers/index.html
+      # to /officers, dropping the trailing slash. Relative asset paths on that
+      # page then resolve against / instead of /officers/, so jquery.min.js,
+      # jszip.min.js and papaparse.min.js all 404 and the tool never runs.
+      # GitHub Pages preserves the trailing slash, so `serve` fails pages that
+      # work in production. `--single` is worse still — it answers 200 for
+      # every path, which makes the route check pass while nothing resolves.
+      #
+      # http.server serves directory index.html, preserves paths, and returns
+      # real 404s, which is what Pages does.
+      - name: Serve the build
+        run: |
+          python3 -m http.server 4000 --directory _site &>/dev/null &
+          until curl -sf -o /dev/null http://localhost:4000/; do sleep 0.5; done
+
+      # The route contract. Every URL the live site serves today must still
+      # resolve. A deliberate removal means updating tests/routes.txt in the
+      # same commit, so it shows up in review.
+      - name: Check routes
+        run: scripts/check-routes.sh http://localhost:4000 _site
+
+      - name: Playwright
+        run: npx playwright test
+        env:
+          HOST: http://localhost:4000
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 5

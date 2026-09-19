@@ -1,0 +1,154 @@
+# Contracts a refactor must not break
+
+Every entry here is load-bearing and non-obvious. Most encode a bug that was
+already fixed once.
+
+## `window.DRSheet` — `assets/js/sheet.js`
+
+The shared bottom sheet. **Two consumers**: `noblogs/index.html` and
+`dsa-explorer/index.html`. Do not replace it with a dialog machine.
+
+```js
+DRSheet = { attach(el, {label, detent, onClose}) -> handle, isMobile(), DETENTS }
+handle  = { el, open(detent?), close(), isOpen(), setDetent(d), isMobile() }
+DETENTS = { peek: 0.32, half: 0.55, full: 0.92 }   // fractions of innerHeight
+```
+
+**Three things the consumer owes the sheet.** It wraps a panel the tool already
+styles, so both have an opinion and they have to agree:
+
+| | |
+|---|---|
+| **ground** | set `--dr-sheet-surface` on the wrapper if the panel is not white. noblogs' `#panel` is the page ground; the mismatch painted white bands above and below the content that read as a header and footer the sheet does not have. Never restyle `.dr-sheet` directly |
+| **close** | the sheet adds one. Hide the tool's own below md, or the panel gets two X's in two header bars |
+| **top** | `.dr-sheet__grip` is the header row and is `min-height: var(--dr-tap)` so the 44px close fits inside it. Do not render anything into the sheet's top-right corner expecting it to be free |
+
+**Motion is `--dr-dur-sheet` / `--dr-ease-sheet`.** One bottom-sheet motion on
+this site; `.dr-dialog` uses the same two tokens. A new sliding surface takes
+them rather than picking a duration.
+
+**It wraps, it does not nest — and the host element becomes the body.**
+`attach()` inserts a `div.dr-sheet` *around* the host element and then adds
+`.dr-sheet__body` to the host itself (`sheet.js`). It never creates an inner
+content box. Both tools do `panel.innerHTML = …` on every interaction, so
+anything inserted as a child is destroyed on the first tap. The grip and close
+button live in the wrapper for this reason.
+
+The consequence has cost a bug: `#panel` and `.dr-sheet__body` are the same
+element, so a tool's id selector (1-0-0) beats every `.dr-sheet__body` rule
+(0-1-0). An `overflow` declared on the panel does not hand scrolling to an
+inner box — it *replaces* the sheet's only scroller. Consumers declare none
+below md. See §3b of `tool-chrome.md`.
+
+**`display: contents` is load-bearing.** At desktop the wrapper vanishes from
+layout so `#panel` stays a direct grid child. `test_dsa_explorer_mobile.spec.js`
+asserts the panel is the right-hand column at 1280px. Portalling breaks both the
+test and the layout.
+
+**`lastFocused` is captured only on the first open of a run.** dsa-explorer calls
+`open()` on *every* node tap; re-capturing made `close()` restore focus to a
+closed sheet. There is a comment in the file about it. Any rewrite that re-runs
+focus capture per `open()` reintroduces that bug.
+
+**Drag thresholds**, grip-only, Pointer Events: `dy > 120` steps down a detent or
+closes from `peek`; `dy < -80` steps up; upward drag is rubber-banded `dy/3`.
+Asymmetric on purpose. No velocity detection — a fast short flick will not close.
+
+**noblogs drives it indirectly**: a `MutationObserver` on `#panel`'s class mirrors
+the tool's own `.on` onto `sheet.open()` / `sheet.close()`. Calling the sheet
+directly is the improvement, but `openModal`/`closeModal` must stay the single
+entry point either way.
+
+### `onClose` is not a deselect hook
+
+**The sheet is a view of the selection, not the selection itself.** Dismissing it
+must leave the underlying visualization exactly as it was — same fade, same
+selected element, same camera.
+
+dsa-explorer got this wrong and it shipped. Its `onClose` ran
+`cy.elements().removeClass('faded nbr sel')`, which is the focus-OFF branch of
+its background-tap handler, applied unconditionally — including in focus mode,
+which is the default. So on a phone you tapped a node to read it, and closing
+what you were reading snapped the whole network back to full strength and lost
+your place in the graph.
+
+Two things to take from it:
+
+- The tool's real deselect gesture was **conditional** (focus mode re-applies the
+  ring; only focus-off clears) and the close handler borrowed one branch of it.
+  If you find yourself copying a line out of another handler into `onClose`, that
+  is the smell.
+- "Restoring" state on close is also wrong when restoring **moves** something.
+  `applyFocus()` animates the camera over 420ms, so re-applying it on dismiss
+  would shift the view the user had just positioned.
+
+noblogs is fine: its `onClose` calls `closeModal()`, which only clears its own
+`.on` classes and `SEL`, and touches neither the map nor the graph.
+
+Test a dismissal by **both** paths. The close button and a swipe are different
+code paths, and a swipe from `half` steps to `peek` rather than closing — a
+single drag never reaches `close()` at all.
+
+## noblogs view tabs
+
+`noblogs/index.html` calls `document.querySelector('.tab[data-v="…"]').click()`
+internally in two places, and `test_noblogs_mobile.spec.js` clicks
+`.tab[data-v="map"]` directly. The tablist is hand-built — `role="tablist"`,
+roving tabindex, arrows/Home/End, `aria-selected`, `aria-controls` — and the
+keyboard handler ends in `next.focus(); next.click()` precisely so the click path
+stays the single way a view changes. **Anything that reworks the tabs must leave
+`.click()` working**, or both internal callers and the spec break at once.
+
+## `NBMap` — `noblogs/map.js`
+
+```js
+NBMap.init(el, {standalone, legendScope, onOpenHost}) -> api
+api = { map, markers, setHosts(hosts) -> shownCount, setEdges(on), focus(host), invalidateSize(), destroy() }
+```
+
+**Two consumers with different chrome.** `noblogs/index.html` has no legend and
+no `#edgeToggle`; `noblogs/world_hyperlocal_map.html` still ships both. The
+module therefore owns edge visibility as a variable and exposes `setEdges()` —
+it must never go back to reading `edgeToggle.checked` live. The explorer's copy
+of that control lives in the filter popover, and `buildFacets()` rewrites that
+subtree wholesale on every change, so any element inside it is destroyed and
+recreated with no listener attached.
+
+**`setHosts` returns the number of pins actually placed**, which is not the
+number of blogs that matched — a blog with no resolvable city has no
+coordinates. The explorer's status line uses that return value. Do not discard
+it.
+
+`legendCats` and the `.lgrow` click wiring are live code, not dead: the
+standalone page depends on them.
+
+## noblogs cross-filter
+
+`filtered()` feeds three consumers at once — the card grid, the map's `setHosts`,
+and the graph's host set. A facet toggled anywhere must still filter all three.
+This is the single most valuable behavior not to break, and it is what made the
+unreachable Filters button a real bug rather than a cosmetic one.
+
+## Ids the specs assert
+
+`#nb-header` (sticky), `#panel`, `#gpanel`, `#legToggle` (visible, ≥44px),
+`#legend .legchips` (hidden → visible), `#mapcanvas`, `#maploading`,
+`header.page-column` (must stay `position: static`). Preserve them through any
+restructure.
+
+## Test expectations that encode product decisions
+
+- `test_noblogs_mobile.spec.js` — landing view is the **map**; a `?view=dash`
+  deep link must not fetch `map_data.js`, `/map.js` or leaflet.
+- Ten `.card` waits use `state: 'attached'` because the landing view hides
+  `#dashview`. The three that ask for `visible` navigate to `?view=dash`.
+- `test_review_regressions.spec.js` — the masthead stays a plain static block on
+  `/`, `/noblogs/`, `/dsa-explorer/`, `/browse/`, `/about/`; the shell measure
+  follows the viewport (1280 → 1280, 1500 → 1400, 1600 → 1600, 2000 → 1600).
+
+## Payload figures, correctly stated
+
+Over the wire, gzipped: `data.index.json` **3.1 MB** (fetched on every view,
+unconditionally), `data.detail.json` **2.3 MB** (prefetched after paint),
+`map_data.js` **0.8 MB** (on Map activation). The uncompressed 3.68 MB figure for
+`map_data.js` appears in older comments and overstates the cost by ~4×.

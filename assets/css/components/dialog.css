@@ -1,0 +1,213 @@
+/* .dr-dialog — the one modal.
+ *
+ * A native <dialog> driven with showModal(), not a hand-rolled overlay. That is
+ * the whole point of it, and it is worth being explicit about what the platform
+ * hands over for free, because every one of these is a thing this repo would
+ * otherwise have to write and test:
+ *
+ *   - a focus trap, and focus restored to the opener on close
+ *   - Escape closes, with no keydown listener anywhere
+ *   - ::backdrop, which no other element can produce
+ *   - inert-ing the rest of the document for assistive tech
+ *   - THE TOP LAYER. A modal dialog renders above every stacking context in the
+ *     page regardless of z-index, so this file sets none. That matters here
+ *     more than usual: Leaflet numbers its panes up to 1000 and Cytoscape draws
+ *     into an isolated canvas, and the repo's rule is that nothing it authors
+ *     goes above 100. The top layer is how a modal clears a vendored z-index
+ *     without joining the bidding war. --dr-z-modal stays in tokens.css for a
+ *     non-modal overlay that cannot use it.
+ *
+ * This is NOT a replacement for DRSheet and must not become one. The sheet is a
+ * persistent, draggable, detented VIEW OF A SELECTION that coexists with the
+ * canvas behind it — see references/contracts.md. A dialog is a modal
+ * interruption you dismiss. Different jobs. The phone styling below makes the
+ * dialog LOOK like a sheet because bottom-anchored is right for a thumb, not
+ * because they are interchangeable.
+ *
+ * Outside @layer, like everything in components/: Tailwind drops a layered rule
+ * whose selector it cannot find in the scanned HTML, and these classes are
+ * written by tool markup and by JS.
+ */
+
+.dr-dialog {
+  /* The closed state is the UA's `display: none`; do not set display here or
+     the dialog is visible with nothing to dismiss it. See the [open] rule. */
+  padding: 0;
+  border: 1px solid var(--dr-line, #D3D7DE);
+  border-radius: var(--dr-radius-lg, 12px);
+  background: var(--dr-panel, #fff);
+  color: var(--dr-ink, #111);
+  font-family: var(--dr-font-content, inherit);
+  width: min(34rem, calc(100vw - 2.5rem));
+  max-width: none;
+  max-height: min(85dvh, 44rem);
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.28);
+}
+
+.dr-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Motion ------------------------------------------------------------
+   THE RULE: every surface that arrives from an edge uses --dr-dur-sheet and
+   --dr-ease-sheet. There is one bottom-sheet motion on this site and both
+   .dr-sheet and .dr-dialog are instances of it.
+
+   This file shipped without any transition at all, which is how the
+   divergence was caught: the disclaimer appeared instantly while the detail
+   sheet eight pixels away slid. Two bottom-anchored surfaces, two different
+   physics, one of them wrong.
+
+   `allow-discrete` on `display` and `overlay` is what makes a <dialog>
+   animate rather than pop. Without it the element leaves the top layer the
+   instant close() is called and the exit transition never renders — the open
+   direction appears to work and the close direction silently does not, which
+   is the trap worth knowing here. `@starting-style` supplies the from-state
+   on open, since the element has no previous computed style to animate from. */
+.dr-dialog {
+  transition: opacity var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              overlay var(--dr-dur-sheet, 240ms) allow-discrete,
+              display var(--dr-dur-sheet, 240ms) allow-discrete;
+  opacity: 0;
+  transform: translateY(1rem) scale(0.98);
+}
+
+.dr-dialog[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .dr-dialog[open] {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.98);
+  }
+}
+
+.dr-dialog::backdrop {
+  background: rgba(20, 20, 18, 0.45);
+  opacity: 0;
+  transition: opacity var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
+              overlay var(--dr-dur-sheet, 240ms) allow-discrete,
+              display var(--dr-dur-sheet, 240ms) allow-discrete;
+}
+
+.dr-dialog[open]::backdrop { opacity: 1; }
+
+@starting-style {
+  .dr-dialog[open]::backdrop { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-dialog,
+  .dr-dialog::backdrop { transition: none; }
+}
+
+/* Header stays put; only the body scrolls. A long legal notice is the whole
+   reason this exists, so the close control must never scroll out of reach. */
+.dr-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex: none;
+  padding: 0.875rem 0.875rem 0.875rem 1.25rem;
+  border-bottom: 1px solid var(--dr-line, #D3D7DE);
+}
+
+.dr-dialog__head h2 {
+  margin: 0;
+  font-size: var(--dr-text-section, 18px);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.dr-dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1.25rem;
+  font-size: var(--dr-text-meta, 13px);
+  line-height: 1.6;
+}
+
+.dr-dialog__body > p { margin: 0 0 0.75rem; }
+.dr-dialog__body > p:last-child { margin-bottom: 0; }
+
+/* ---- Phone -------------------------------------------------------------
+   Bottom-anchored, full width, square at the bottom edge. A centered card on a
+   390px screen wastes the two safest thumb zones and puts the close button at
+   the top of a reach it does not need to be at.
+
+   `margin: auto auto 0` keeps the UA's horizontal centering and drops the
+   vertical, which is what pins it to the bottom. */
+@media (max-width: 767px) {
+  .dr-dialog {
+    width: 100%;
+    max-height: 85dvh;
+    margin: auto auto 0;
+    border-width: 1px 0 0;
+    border-radius: var(--dr-radius-sheet, 16px) var(--dr-radius-sheet, 16px) 0 0;
+    /* It rises from the bottom edge here, exactly as .dr-sheet does — a pure
+       slide, no fade. The desktop fade-and-lift above is the wrong gesture for
+       a surface pinned to the bottom of the screen, and a sheet that fades in
+       while the detail sheet beside it does not is the same divergence again,
+       one step smaller. `opacity: 1` here is what cancels it. */
+    transform: translateY(100%);
+    opacity: 1;
+  }
+
+  .dr-dialog[open] { transform: translateY(0); }
+
+  @starting-style {
+    .dr-dialog[open] { transform: translateY(100%); opacity: 1; }
+  }
+
+  .dr-dialog__body {
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* The opener. A button, not an <a> — it goes nowhere, and a link that does not
+   navigate is the most common false affordance in this codebase's older tools.
+   Sized as text rather than as a control: it sits on a type row beside the tool
+   title, so a 44px pill there would out-shout the title it sits next to. The
+   hit area still clears the mouse floor. */
+.dr-dialog-open {
+  appearance: none;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: var(--dr-tap-sm, 2rem);
+  padding: 0 0.125rem;
+  color: var(--dr-ink-muted, #5A5A5A);
+  font-family: var(--dr-font-content, inherit);
+  font-size: var(--dr-text-meta, 13px);
+  font-weight: 500;
+  line-height: 1.25;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.dr-dialog-open:hover { color: var(--dr-ink-strong, #000); }
+
+.dr-dialog-open:focus-visible {
+  outline: 2px solid var(--dr-accent, #252739);
+  outline-offset: 2px;
+  border-radius: var(--dr-radius-sm, 6px);
+}
+
+/* On a phone it is one of the few controls on the identity row, so it takes the
+   thumb floor there. */
+@media (max-width: 767px) {
+  .dr-dialog-open { min-height: var(--dr-tap, 2.75rem); }
+}

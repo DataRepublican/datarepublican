@@ -1,0 +1,229 @@
+/* The epistemic-anchor graph's styles, scoped under .nbgraph.
+ *
+ * These were bare `header`, `aside`, `html,body` and `:root` rules, which is
+ * why the graph had to be an iframe — inlined as-is they would have restyled
+ * the explorer's own header and detail drawer. Scoping is what replaces the
+ * frame boundary. The `:root`, `*` and `html,body` rules were dropped: they are
+ * document-level and the host page owns them.
+ *
+ * Both graph/index.html and the explorer's Graph tab load this file.
+ */
+/* One base rule. There were two: the first with literal colors, the second
+   with var(--ink)/var(--bg) — and the second won on source order. That was
+   backwards, because the standalone /noblogs/graph/ page loads no site
+   stylesheet at all, so those variables resolved to nothing there and the rule
+   carrying the working values was the one being overridden. Fallbacks now, so
+   the file is right whether it loads inside the explorer or on its own. */
+.nbgraph{display:grid;grid-template-columns:1fr 370px;grid-template-rows:auto 1fr;
+  font-family:"Libre Franklin","Helvetica Neue",Arial,sans-serif;
+  color:var(--dr-ink,#1A1A1A);background:var(--dr-surface,#E5E7EB)}
+.nbgraph *{box-sizing:border-box}
+  .nbgraph header{grid-column:1/3;padding:11px 18px;border-bottom:1px solid #E2E2DD;background:#fff;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .nbgraph header h1{font-size:17px;margin:0;font-weight:700}
+  .nbgraph header .sub{font-size:12px;color:#666}
+  .nbgraph header .counts{margin-left:auto;font-size:12px;color:#888;font-variant-numeric:tabular-nums}
+  .nbgraph header .disclaimer{flex-basis:100%;margin-top:7px;padding:0;border:1px solid #E4C9A0;background:#FBF3E4;
+    border-radius:6px;font-size:13px;line-height:1.5;color:#6B5A3E}
+  .nbgraph header .disclaimer>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
+    padding:8px 12px;min-height:2.75rem;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:600}
+  .nbgraph header .disclaimer>summary::-webkit-details-marker{display:none}
+  .nbgraph header .disclaimer>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
+  .nbgraph header .disclaimer[open]>summary::before{transform:rotate(90deg)}
+  .nbgraph header .disclaimer>summary:focus-visible{outline:2px solid #252739;outline-offset:-2px;border-radius:6px}
+  .nbgraph header .disclaimer .disclaimer-body{padding:0 12px 10px}
+  .nbgraph header .disclaimer strong{color:#8A5A1A}
+  .nbgraph #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2}
+  .nbgraph #cy{width:100%;height:100%;background:radial-gradient(circle at 50% 42%,#FFFFFF 0%,#F1F1EC 72%)}
+  /* Scoped to #controls, not #stage. As a blanket `#stage button` pair these
+     also caught the legend rows — which are buttons with aria-pressed too, and
+     all start pressed because every class loads shown. Every row painted solid
+     accent, so a list of toggles read as a list of selections and the pressed
+     fill meant nothing. The legend's own affordance is below. */
+  .nbgraph #controls button{color:#1A1A1A;background:#fff;font-weight:500}
+  .nbgraph #controls button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  .nbgraph #stage button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
+  .nbgraph #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
+  /* Size lives in .dr-btn. Two things are this toolbar's own: the float — a
+     control over a canvas needs a shadow to separate from it — and the corner.
+     .dr-btn is a pill everywhere else, and a stacked column of icon-only pills
+     reads as a row of dots rather than as tools. Same token as the Leaflet
+     zoom control, so the map and the graph agree. */
+  .nbgraph #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08);
+    border-radius:var(--dr-radius-control,.625rem)}
+
+  /* 32px on desktop. This is the system's `sm` size and the one place it is
+     allowed: a toolbar, above md, where there is a cursor. 44px is the floor
+     for a thumb, not for a mouse, and seven stacked 44px buttons make a column
+     taller than the space between the top inset and the legend. */
+  @media(min-width:768px){
+    .nbgraph #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
+    .nbgraph #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
+  }
+  /* max-height is measured against the CANVAS, not the viewport. It was
+     calc(100vh - 150px) — a guess at the chrome above it that is wrong the
+     moment the header wraps, and wrong by a different amount inside the
+     explorer's Graph tab than on the standalone page. The legend lives in
+     #stage, so bounding it by its own container is both correct and stable. */
+  .nbgraph #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);
+    background:rgba(255,255,255,.96);border:1px solid var(--dr-line,#D3D7DE);
+    border-radius:var(--dr-radius-card,8px);padding:9px 11px;max-width:300px;font-size:11.5px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);max-height:calc(100% - 24px);overflow:auto}
+  /* Desktop shows the key unconditionally, so the toggle would be lying. */
+  .nbgraph #legend .legtoggle{display:none}
+
+  /* Reserve the control column.
+     The legend is pinned bottom-left and the controls top-left, so they share
+     one edge and the legend has to stop before it reaches them — it was already
+     overlapping by 8px before the buttons grew, just not enough to notice.
+
+     The number is the control column's own height, not a guess at page chrome.
+     That is what makes it stable: it is derived from the thing directly above
+     it in the same box. Seven buttons: 7 x 32 + 6 x 6 gaps + the 12px inset,
+     plus headroom. If you add a control, move this with it;
+     test_toolbars.spec.js asserts the legend never reaches the column.
+
+     Placed AFTER the legend's base rule on purpose. A media query adds no
+     specificity, so an override written above the rule it means to beat simply
+     loses on source order — which is exactly what happened the first time. */
+  @media(min-width:768px){ .nbgraph #legend{max-height:calc(100% - 300px)} }
+
+  /* Sentence case. Uppercase micro-labels were the house tic, and 10px mixed
+     case fails the 12px floor, so the step went with them. */
+  .nbgraph #legend h4{margin:9px 0 4px;font-size:var(--dr-text-label,12px);font-weight:600;
+    font-family:var(--dr-font-ui,inherit);color:var(--dr-ink-faint,#6B7280)}
+  .nbgraph #legend h4:first-child{margin-top:0}
+  /* Buttons. Everything before `cursor` undoes the global button rule. */
+  .nbgraph #legend .row{appearance:none;border:0;margin:3px 0;min-width:0;background:none;
+    width:100%;text-align:left;font-family:inherit;font-size:inherit;font-weight:400;color:inherit;
+    display:flex;align-items:center;gap:7px;padding:1px 3px;border-radius:4px;cursor:pointer}
+  .nbgraph #legend .row:hover{background:#f0f0ea}
+  .nbgraph #legend .row:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+
+  /* The rows are a set of independent on/off switches that all start ON, so
+     the ON state cannot be the loud one — a whole panel of filled pills reads
+     as "all selected" rather than "all shown", and the state stops meaning
+     anything. The checkbox is what says "this is a toggle"; the swatch beside
+     it stays the color key. Same shape as the filter panel's category rows,
+     which do the same job with real <input type=checkbox>.
+
+     A box drawn in CSS rather than a real checkbox because the row is already
+     a <button aria-pressed>, and nesting an input inside a button is invalid —
+     see the note in graph.js on why these are buttons. */
+  .nbgraph #legend .row::before{content:"";flex:0 0 auto;width:14px;height:14px;
+    border:1px solid var(--dr-line-strong,#878D99);border-radius:3px;
+    background:var(--dr-panel,#fff) center/10px 10px no-repeat}
+  .nbgraph #legend .row[aria-pressed="true"]::before{
+    border-color:var(--dr-accent,#252739);background-color:var(--dr-accent,#252739);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.4 2.4 4.6-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+  /* Off dims the KEY, not the checkbox — you still need to read what is off. */
+  .nbgraph #legend .row.off .sw,
+  .nbgraph #legend .row.off .ln{opacity:.35}
+  .nbgraph #legend .row.off{color:var(--dr-ink-faint,#6B7280)}
+  .nbgraph #legend .sw{width:13px;height:13px;border-radius:3px;flex:0 0 auto}
+  .nbgraph #legend .ln{width:20px;height:0;border-top:3px solid;flex:0 0 auto}
+  .nbgraph #legend .hint{color:#999;font-size:10.5px;margin-top:7px;line-height:1.35}
+  .nbgraph aside{grid-column:2;grid-row:2;border-left:1px solid #E2E2DD;background:var(--panel);padding:15px 15px 24px;overflow:auto}
+  .nbgraph aside .empty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;margin-top:16px}
+  /* A tag keeps its white ink — the background is set inline from the data, so
+     it is the one label that does not take --dr-ink-faint. */
+  .nbgraph aside .tag{display:inline-block;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);
+    font-weight:600;color:#fff;padding:2px 7px;border-radius:var(--dr-radius-sm,6px);margin:0 5px 5px 0}
+  .nbgraph aside h2{font-size:16px;margin:6px 0 3px;line-height:1.25;word-break:break-word}
+  .nbgraph aside .kv{font-size:12.5px;margin:8px 0;line-height:1.4}
+  .nbgraph aside .kv b{display:block;margin-bottom:1px;font-weight:600}
+  .nbgraph aside .notes{font-size:12.5px;line-height:1.5;margin:11px 0;padding:9px 11px;background:#F7F7F3;border-left:3px solid #ddd;border-radius:0 6px 6px 0}
+  .nbgraph aside a.src{display:inline-block;font-size:12px;color:#1155CC;word-break:break-all;margin-top:3px}
+  .nbgraph aside .conns{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}
+  .nbgraph aside .conns h3{margin:0 0 6px;font-weight:600}
+  .nbgraph aside .conn{font-size:12.5px;padding:7px 0;cursor:pointer;border-bottom:1px solid #F2F2F2}
+  .nbgraph aside .conn:hover .conn-head{color:#1155CC}
+  .nbgraph aside .conn .conn-head{font-weight:600}
+  .nbgraph aside .conn .rel{color:#999;font-style:italic;font-weight:400}
+  .nbgraph aside .conn .tgtflag{color:#DC2626;font-weight:700;font-style:normal}
+  /* .panelToggle is gone. It was a `‹`/`›` chevron floating over the canvas,
+     controlling a state that manages itself — the panel fills when you select
+     a node and empties when you click the background. See the note by
+     setPanel() in graph.js.
+
+     graph.js puts `collapsed` on the root element itself — there is no #app any
+     more. With `.nbgraph #app.collapsed` this matched nothing and the panel
+     collapse was dead: the graph booted showing an empty 370px aside. */
+  .nbgraph.collapsed{grid-template-columns:1fr 0}.nbgraph.collapsed aside{display:none}
+  .nbgraph /* quotes (evidence) — English leads, .nbgraph foreign source collapsible, .nbgraph institutions scroll */
+  aside .quotes{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}
+  .nbgraph aside .quotes h3{margin:0 0 7px;font-weight:600}
+  .nbgraph aside .qscroll{max-height:300px;overflow:auto;padding-right:4px;margin-right:-4px}
+  .nbgraph aside .q{border-left:2px solid #C9C9C2;padding:1px 0 3px 10px;margin-bottom:11px}
+  .nbgraph aside .q.tgt{border-left-color:#DC2626}
+  .nbgraph aside .q .qhead{font-size:10px;color:#999;margin-bottom:3px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .nbgraph aside .q .qhost{font-weight:700;color:#555}
+  .nbgraph aside .q .qflag{color:#DC2626;font-weight:700}
+  .nbgraph aside .q .qcrit{color:#C2410C;font-weight:700}
+  .nbgraph aside .q .en{font-size:12.5px;line-height:1.5;color:#1A1A1A}
+  .nbgraph aside .q .orig{margin-top:3px}
+  .nbgraph aside .q .orig>summary{font-size:10.5px;color:#1155CC;cursor:pointer;list-style:none;user-select:none}
+  .nbgraph aside .q .orig>summary::-webkit-details-marker{display:none}
+  .nbgraph aside .q .orig>summary::before{content:"▸ "}
+  .nbgraph aside .q .orig[open]>summary::before{content:"▾ "}
+  .nbgraph aside .q .orig .fo{font-size:11.5px;color:#777;margin-top:3px;line-height:1.45;font-style:italic}
+  .nbgraph aside .q .qsrc{font-size:10.5px;margin-top:3px}
+  .nbgraph aside .q .qsrc a{color:#1155CC;text-decoration:none} .nbgraph aside .q .qsrc .wh{color:#b08}
+  .nbgraph /* institution quotes as a click-to-expand dropdown (see all quotes across quoting blogs) */
+  aside details.qdrop{margin-top:15px;border-top:1px solid #EEE;padding-top:11px}
+  /* The red stays: this summary flags target-designation quotes, so it is a data
+     signal, not chrome. Only the shouting goes. */
+  .nbgraph aside details.qdrop>summary{cursor:pointer;list-style:none;user-select:none;display:flex;align-items:center;gap:7px;
+    font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:#B91C1C}
+  .nbgraph aside details.qdrop>summary::-webkit-details-marker{display:none}
+  .nbgraph aside details.qdrop>summary::before{content:"▸";color:#DC2626;font-weight:700}
+  .nbgraph aside details.qdrop[open]>summary::before{content:"▾"}
+  .nbgraph aside details.qdrop>summary:hover{color:#7F1D1D}
+  /* .sc used to undo the summary's uppercase and tracking by hand; both are gone. */
+  .nbgraph aside details.qdrop>summary .sc{margin-left:auto;color:var(--dr-ink-faint,#6B7280);font-weight:400}
+
+  /* One label recipe — same three-property set as noblogs and dsa-explorer.
+     Last, so it beats the rules above it on source order. */
+  .nbgraph aside .kv b, .nbgraph aside .conns h3, .nbgraph aside .quotes h3{
+    font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);
+    line-height:1.25;
+    letter-spacing:normal;
+    text-transform:none;
+    color:var(--dr-ink-faint,#6B7280)}
+  .nbgraph aside details.qdrop .qscroll{margin-top:10px}
+  .nbgraph /* neutral "show N more" expander (connections + spillover quotes) */
+  aside details.mdrop{margin-top:7px}
+  .nbgraph aside details.mdrop>summary{cursor:pointer;list-style:none;user-select:none;font-size:11.5px;color:#1155CC}
+  .nbgraph aside details.mdrop>summary::-webkit-details-marker{display:none}
+  .nbgraph aside details.mdrop>summary::before{content:"▸ "}
+  .nbgraph aside details.mdrop[open]>summary::before{content:"▾ "}
+  .nbgraph aside details.mdrop>summary:hover{text-decoration:underline}
+
+/* ---- Phone ----------------------------------------------------------- */
+@media(max-width:767px){
+  .nbgraph{grid-template-columns:1fr}
+  .nbgraph #controls{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;left:0;right:0;top:auto;bottom:8px;
+    padding:2px 8px;gap:6px;scrollbar-width:none}
+  .nbgraph #controls::-webkit-scrollbar{display:none}
+  /* .dr-btn is already 44px and a pill; the rail only has to stop them shrinking. */
+  .nbgraph #controls .dr-btn{flex:0 0 auto}
+  .nbgraph #legend{left:8px;right:8px;bottom:60px;max-height:45dvh;overflow:auto;padding:0}
+  /* Collapsed to one 44px row by default: the key used to run down the screen
+     over the graph it was describing. */
+  .nbgraph #legend .legtoggle{display:flex;align-items:center;gap:8px;width:100%;
+    appearance:none;border:0;margin:0;min-width:0;background:none;
+    padding:0 12px;min-height:2.75rem;cursor:pointer;
+    font-family:var(--dr-font-ui,inherit);font-size:var(--dr-text-meta,13px);font-weight:700;
+    color:var(--dr-ink-strong,#111);text-align:left}
+  .nbgraph #legend .legtoggle::before{content:"\25B4";font-size:11px}
+  .nbgraph #legend .legtoggle[aria-expanded="false"]::before{content:"\25BE"}
+  .nbgraph #legend .legtoggle:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px}
+  .nbgraph #legend .legtoggle[aria-expanded="false"] ~ .legbody{display:none}
+  .nbgraph #legend .legbody{padding:0 12px 10px}
+  .nbgraph #legend .row{min-height:2.75rem;font-size:13px}
+  .nbgraph .panelToggle{display:none}
+  /* The panel is a DRSheet on a phone; the sheet wrapper owns the geometry, so
+     the aside only has to stop being a grid column. `.collapsed aside{display:none}`
+     still hides it when nothing is selected. */
+  .nbgraph aside{grid-column:1;border-left:0;padding:0 15px 15px}
+}
