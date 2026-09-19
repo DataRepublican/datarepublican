@@ -27,10 +27,18 @@ styles, so both have an opinion and they have to agree:
 this site; `.dr-dialog` uses the same two tokens. A new sliding surface takes
 them rather than picking a duration.
 
-**It wraps, it does not nest.** `attach()` inserts a `div.dr-sheet` *around* the
-host element. Both tools do `panel.innerHTML = …` on every interaction, so
+**It wraps, it does not nest — and the host element becomes the body.**
+`attach()` inserts a `div.dr-sheet` *around* the host element and then adds
+`.dr-sheet__body` to the host itself (`sheet.js`). It never creates an inner
+content box. Both tools do `panel.innerHTML = …` on every interaction, so
 anything inserted as a child is destroyed on the first tap. The grip and close
 button live in the wrapper for this reason.
+
+The consequence has cost a bug: `#panel` and `.dr-sheet__body` are the same
+element, so a tool's id selector (1-0-0) beats every `.dr-sheet__body` rule
+(0-1-0). An `overflow` declared on the panel does not hand scrolling to an
+inner box — it *replaces* the sheet's only scroller. Consumers declare none
+below md. See §3b of `tool-chrome.md`.
 
 **`display: contents` is load-bearing.** At desktop the wrapper vanishes from
 layout so `#panel` stays a direct grid child. `test_dsa_explorer_mobile.spec.js`

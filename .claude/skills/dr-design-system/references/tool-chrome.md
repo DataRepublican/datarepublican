@@ -132,6 +132,12 @@ Four things follow from it:
 - **The close button only exists while there is somewhere to go back to.** It
   returns you to the default content; without a selection it has no meaning.
 - **The scrim goes.** A scrim is for something modal, and a column is not.
+- **The panel clips; a child inside it scrolls.** `overflow: hidden` above is
+  deliberate — the panel is a fixed-height flex column clipped to the band's
+  rounded corner, and noblogs' `#pinner` and `#nb-side-cats` each carry their
+  own `overflow-y: auto`. Do not move the scrolling back up to `#panel` here:
+  below md that same element becomes `.dr-sheet__body` and has to be the only
+  scroller. Desktop clips and delegates; mobile scrolls itself. §3b.
 
 **A view with no canvas keeps the overlay.** noblogs' List view already spends
 a column on the facet rail, and measuring showed a third drops the card grid
@@ -269,11 +275,20 @@ can disagree. Three ways they did:
   not `max(1rem, env(…))`. The floor put 16px of bare surface under the
   scrolling body on every device without a home indicator, which is the footer
   band again. Padding the *content* is the consumer's job.
-- **One scroller.** `.dr-sheet__body` is it. A consumer panel that keeps its
-  own `overflow-y: auto` nests a second scroller of identical height inside the
-  first: the outer one never moves, and a drag started anywhere in the content
-  scrolls the inner one instead of dismissing the sheet. Set `overflow: visible`
-  on the panel below md.
+- **One scroller, and it is the panel itself.** `attach()` puts
+  `.dr-sheet__body` on the host element. `#panel` *is* the body; there is no
+  inner content box, so the two can never be nested scrollers. An earlier
+  version of this section said to set `overflow: visible` on the panel below
+  md, to stop a second scroller from swallowing a drag. **That advice was
+  wrong and it shipped a bug.** `#panel` at 1-0-0 outranks
+  `.dr-sheet__body { overflow-y: auto }` at 0-1-0, so the declaration removed
+  the drawer's only scroller: nothing moved inside the sheet and the touch
+  chained straight through to the page behind it. Drag-to-dismiss is bound to
+  the grip alone, so content scrolling was never competing with it.
+  **Declare no `overflow` on the panel below md** and let the desktop rule
+  carry through. `test_noblogs_mobile.spec.js` asserts the computed value
+  rather than a scroll position, because scrolling an element that cannot
+  scroll is a silent no-op that reads as a pass — which is how this survived.
 - **Close buttons.** `DRSheet` adds one; most panels already have their own.
   On a phone they stacked into two X's in two header bars. **The sheet's wins**
   (it is the one that also dismisses the sheet); hide the tool's own below md.

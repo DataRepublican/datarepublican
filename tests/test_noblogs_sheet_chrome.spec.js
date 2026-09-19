@@ -155,6 +155,40 @@ test.describe('the canvas-view sidebar', () => {
     expect(g.close).toBe(false);
   });
 
+  /* The desktop counterpart to "the open detail sheet scrolls its own content"
+     in test_noblogs_mobile.spec.js, and it asserts the opposite arrangement on
+     purpose. #panel is a fixed-height flex column clipped to the band's corner,
+     so here a CHILD scrolls; below md the same element becomes
+     .dr-sheet__body and has to be the only scroller itself. Both spellings are
+     one declaration away from leaving a tall summary unreachable, and neither
+     failure is visible unless the fixture overflows — so this measures a
+     fixture that does. */
+  test('a tall detail is reachable — something inside the sidebar scrolls', async ({ page }) => {
+    await page.goto(
+      HOST + '/noblogs/?view=map&host=carreproletarien.noblogs.org',
+      { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#panel.on', { timeout: 90000 });
+    await page.waitForTimeout(400);
+
+    const m = await page.evaluate(() => {
+      const panel = document.getElementById('panel');
+      const inner = document.getElementById('pinner');
+      inner.scrollTop = 200;
+      return {
+        panelOverflows: panel.scrollHeight > panel.clientHeight + 1,
+        innerOverflows: inner.scrollHeight > inner.clientHeight + 1,
+        innerMoved: inner.scrollTop,
+      };
+    });
+
+    // If this is false the fixture no longer overflows and the rest proves
+    // nothing — pick a blog with a longer summary.
+    expect(m.innerOverflows, 'detail does not overflow; pick a taller fixture').toBe(true);
+    expect(m.innerMoved, 'the detail cannot be scrolled to its end').toBeGreaterThan(0);
+    // The clipped panel must not be the thing holding the overflow.
+    expect(m.panelOverflows, '#panel is clipping content nothing can scroll').toBe(false);
+  });
+
   test('picking a blog swaps categories for the detail, and back', async ({ page }) => {
     await page.goto(
       HOST + '/noblogs/?view=map&host=vernetzungpartizipation.noblogs.org',
