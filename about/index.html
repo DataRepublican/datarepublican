@@ -12,18 +12,21 @@ permalink: /about/
   quotes in a rail across from it. Below lg the rail is simply the next thing
   down the page, which is why it carries its own top margin.
 
-  The rail is the FIXED track and the narrative takes what is left, so the
-  rail's right edge lands on the tweet wall's below it. Sizing the narrative
-  instead — at `maxWidth.prose` — left the rail stopping ~170px short of the
-  wall at 1400px, which read as a column that had failed to reach the edge.
-  `.text-column` caps the paragraphs at the shared measure either way, so the
-  narrative is no wider than it is on /donate/.
+  The narrative grows to the shared reading measure and STOPS; the rail is the
+  `1fr` and takes everything past it. So at 1400px the text is exactly 52rem —
+  the same measure `.text-column` caps it at, and the same one /donate/ uses —
+  and every pixel after that belongs to the quotes.
 
-  `minmax(0,…)` on the flexible track keeps a long unbroken string from
-  widening it, and `items-start` sits the rail at the top of the text rather
-  than centering it against a column several times its height.
+  `minmax(19rem, 1fr)` rather than a bare `1fr` is what stops the rail
+  collapsing at the bottom of this range: at 1024px there is not room for
+  52rem of text AND a rail, so the floor makes the text give way instead.
+
+  `items-start` sits the rail at the top of the text rather than centering it
+  against a column several times its height. Below lg the rail is simply the
+  next thing down the page, and its own container query lays the two quotes
+  out side by side once it has the width for them.
 {%- endcomment -%}
-<div class="lg:grid lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start lg:gap-x-12">
+<div class="lg:grid lg:grid-cols-[minmax(0,52rem)_minmax(19rem,1fr)] lg:items-start lg:gap-x-12">
   <div>
     {%- comment -%}
       `.text-column` is the shared narrative measure — /donate/ uses the same

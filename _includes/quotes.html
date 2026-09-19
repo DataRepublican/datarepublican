@@ -1,17 +1,27 @@
 {%- comment -%}
-  The laurel pull quotes, as a rail across from the About narrative.
+  The laurel pull quotes. On /about/ they are a rail across from the narrative
+  above lg, and a full-width block below it.
 
-  Every entry in _data/quotes.yml, stacked. The laurels are decorative and
-  marked aria-hidden; the quote itself is a blockquote so it is announced as
-  one.
+  EVERY BREAKPOINT HERE IS A CONTAINER QUERY, and that is the point. The same
+  markup is a ~19rem rail beside the text at 1024px, the remainder of the row
+  (up to ~42rem) at 1600px, and the full page width on a tablet. A viewport
+  query cannot tell those apart — 900px of viewport means one wide block, while
+  1600px of viewport means a narrow-ish rail — so it would have to guess, and
+  the two quotes would sit side by side exactly where there is least room.
+  `@container` on the <aside> measures the space the cards are actually in.
 
-  Sized for the 19rem rail, which is why the laurels and the type are smaller
-  than the About mock draws them: two 40px wreaths plus the card padding left
-  about 150px for the text and broke the longer quote over six lines. If this
-  ever goes back to full width, both grow with it.
+  Two steps, both keyed to how wide ONE CARD ends up:
+    under @xl  one column, so a card is the whole container
+    @xl (576px) and up  two columns, so a card is about half
+  Going two-up HALVES the card, which is why the type does not grow there. It
+  grows at @4xl, where half the container is wider than the whole of it was at
+  the first step.
+
+  The laurels are decorative and aria-hidden; the quote is a blockquote so it
+  is announced as one.
 {%- endcomment -%}
 {%- capture laurel -%}
-<svg viewBox="0 0 62 104" class="h-14 w-8 shrink-0 fill-black/20" aria-hidden="true">
+<svg viewBox="0 0 62 104" class="h-14 w-8 shrink-0 fill-black/20 @4xl:h-16 @4xl:w-10" aria-hidden="true">
   <path d="M48 101C33 86 24 66 24 44c0-13 3-25 9-36-2 12-3 23-3 34 0 22 6 42 18 59z"/>
   <ellipse cx="22" cy="80" rx="11" ry="5" transform="rotate(-34 22 80)"/>
   <ellipse cx="19" cy="66" rx="11" ry="5" transform="rotate(-27 19 66)"/>
@@ -26,20 +36,28 @@
 </svg>
 {%- endcapture -%}
 
-<aside class="mt-10 flex flex-col gap-4 lg:mt-5" aria-label="What people have said">
-  {%- for quote in site.data.quotes %}
-  <figure class="m-0 rounded-card bg-black/[0.03] px-3 py-6 text-center">
-    <div class="flex items-center justify-center gap-2">
-      {{ laurel }}
-      <blockquote class="m-0 text-lede font-bold tracking-title text-ink-strong">
-        &ldquo;{{ quote.text }}&rdquo;
-      </blockquote>
-      <span class="-scale-x-100">{{ laurel }}</span>
-    </div>
-    <figcaption class="mt-3 text-meta font-semibold text-ink-muted">
-      <a href="{{ quote.href }}" target="_blank" rel="noopener"
-         class="!font-semibold !text-ink-muted !no-underline hover:!underline">{{ quote.author }}</a>
-    </figcaption>
-  </figure>
-  {%- endfor %}
+{%- comment -%}
+  `max-w-prose` below lg so the block lines up with the paragraphs above it —
+  the narrative is capped at that measure and the quotes were running up to
+  150px past its right edge at ~1000px. Above lg the grid track is the cap, so
+  the limit comes off or the rail could never use the space past 52rem.
+{%- endcomment -%}
+<aside class="@container mt-10 max-w-prose lg:mt-5 lg:max-w-none" aria-label="What people have said">
+  <div class="grid gap-4 @xl:grid-cols-2 @4xl:gap-6">
+    {%- for quote in site.data.quotes %}
+    <figure class="m-0 flex flex-col justify-center rounded-card bg-black/[0.03] px-3 py-6 text-center @4xl:px-6 @4xl:py-7">
+      <div class="flex items-center justify-center gap-2 @4xl:gap-4">
+        {{ laurel }}
+        <blockquote class="m-0 text-lede font-bold tracking-title text-ink-strong @4xl:text-title">
+          &ldquo;{{ quote.text }}&rdquo;
+        </blockquote>
+        <span class="-scale-x-100">{{ laurel }}</span>
+      </div>
+      <figcaption class="mt-3 text-meta font-semibold text-ink-muted">
+        <a href="{{ quote.href }}" target="_blank" rel="noopener"
+           class="!font-semibold !text-ink-muted !no-underline hover:!underline">{{ quote.author }}</a>
+      </figcaption>
+    </figure>
+    {%- endfor %}
+  </div>
 </aside>

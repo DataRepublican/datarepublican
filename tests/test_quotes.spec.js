@@ -59,6 +59,49 @@ test.describe('the /about/ pull-quote rail', () => {
     expect(narrow.beside, 'the rail is still squeezing the text on a phone').toBe(false);
     expect(narrow.below).toBe(true);
   });
+
+  /* The quotes lay themselves out from the CONTAINER, not the viewport, and
+     these three rows are why that distinction is load-bearing: ~1000px of
+     viewport is one wide block, while 1400px of viewport is a 480px rail. A
+     media query sees the second number as the bigger one and would go two-up
+     in the narrower box. */
+  const LAYOUT = [
+    { w: 560,  twoUp: false, note: 'one column while the block is narrow' },
+    { w: 900,  twoUp: true,  note: 'two columns once the full-width block has room' },
+    { w: 1400, twoUp: false, note: 'back to one column in the 480px rail' },
+    { w: 1600, twoUp: true,  note: 'two again once the rail takes the extra width' },
+  ];
+
+  for (const { w, twoUp, note } of LAYOUT) {
+    test(`at ${w}px: ${note}`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: 1000 });
+      await page.goto(`${HOST}/about/`);
+
+      const m = await page.evaluate(() => {
+        const rail = document.querySelector('main aside[aria-label]');
+        const [a, b] = [...rail.querySelectorAll('figure')].map(f => f.getBoundingClientRect());
+        const text = document.querySelector('.text-column').getBoundingClientRect();
+        return {
+          sideBySide: Math.abs(a.top - b.top) < 2,
+          railRight: Math.round(rail.getBoundingClientRect().right),
+          textRight: Math.round(text.right),
+          textW: Math.round(text.width),
+        };
+      });
+
+      expect(m.sideBySide).toBe(twoUp);
+      // Below lg the block is capped at the same measure as the paragraphs; it
+      // was overhanging their right edge by up to 150px around 1000px wide.
+      if (w < 1024) {
+        expect(Math.abs(m.railRight - m.textRight),
+          'the quotes overhang the narrative').toBeLessThanOrEqual(1);
+      } else {
+        // Above lg the narrative stops at the reading measure and the rail
+        // takes everything past it.
+        expect(m.textW, 'the narrative is not at the reading measure').toBe(832);
+      }
+    });
+  }
 });
 
 test.describe('the /about/ tweet wall', () => {

@@ -2948,6 +2948,10 @@ select {
   margin-top:      3rem;
 }
 
+.mt-16 {
+  margin-top:      4rem;
+}
+
 .mt-2 {
   margin-top:      0.5rem;
 }
@@ -2970,10 +2974,6 @@ select {
 
 .mt-8 {
   margin-top:      2rem;
-}
-
-.mt-16 {
-  margin-top:      4rem;
 }
 
 .block {
@@ -3105,6 +3105,10 @@ select {
   height:      0.25rem;
 }
 
+.h-14 {
+  height:      3.5rem;
+}
+
 .h-16 {
   height:      4rem;
 }
@@ -3155,14 +3159,6 @@ select {
 
 .h-full {
   height:      100%;
-}
-
-.h-12 {
-  height:      3rem;
-}
-
-.h-14 {
-  height:      3.5rem;
 }
 
 .max-h-16 {
@@ -3273,10 +3269,6 @@ select {
   width:      100vw;
 }
 
-.w-7 {
-  width:      1.75rem;
-}
-
 .\!min-w-0 {
   min-width:      0px !important;
 }
@@ -3325,10 +3317,6 @@ select {
   max-width:      240px;
 }
 
-.max-w-\[34rem\] {
-  max-width:      34rem;
-}
-
 .max-w-column {
   max-width:      64rem;
 }
@@ -3350,12 +3338,12 @@ select {
   max-width:      none;
 }
 
-.max-w-prose {
-  max-width:      52rem;
-}
-
 .max-w-sm {
   max-width:      24rem;
+}
+
+.max-w-prose {
+  max-width:      52rem;
 }
 
 .flex-1 {
@@ -4211,11 +4199,6 @@ select {
   padding-right:      1rem;
 }
 
-.px-6 {
-  padding-left:      1.5rem;
-  padding-right:      1.5rem;
-}
-
 .px-gutter {
   padding-left:      1.25rem;
   padding-right:      1.25rem;
@@ -4246,19 +4229,14 @@ select {
   padding-bottom:      1rem;
 }
 
-.py-7 {
-  padding-top:      1.75rem;
-  padding-bottom:      1.75rem;
+.py-6 {
+  padding-top:      1.5rem;
+  padding-bottom:      1.5rem;
 }
 
 .py-8 {
   padding-top:      2rem;
   padding-bottom:      2rem;
-}
-
-.py-6 {
-  padding-top:      1.5rem;
-  padding-bottom:      1.5rem;
 }
 
 .\!pr-4 {
@@ -5528,6 +5506,14 @@ select {
     grid-column:      span 3 / span 3;
   }
 
+  .\@4xl\:h-16 {
+    height:      4rem;
+  }
+
+  .\@4xl\:w-10 {
+    width:      2.5rem;
+  }
+
   .\@4xl\:grid-cols-1 {
     grid-template-columns:      repeat(1, minmax(0, 1fr));
   }
@@ -5540,8 +5526,32 @@ select {
     grid-template-columns:      repeat(5, minmax(0, 1fr));
   }
 
+  .\@4xl\:gap-4 {
+    gap:      1rem;
+  }
+
+  .\@4xl\:gap-6 {
+    gap:      1.5rem;
+  }
+
   .\@4xl\:gap-8 {
     gap:      2rem;
+  }
+
+  .\@4xl\:px-6 {
+    padding-left:      1.5rem;
+    padding-right:      1.5rem;
+  }
+
+  .\@4xl\:py-7 {
+    padding-top:      1.75rem;
+    padding-bottom:      1.75rem;
+  }
+
+  .\@4xl\:text-title {
+    font-size:      1.5rem;
+    line-height:      1.15;
+    letter-spacing:      -0.02em;
   }
 }
 
@@ -6050,17 +6060,17 @@ select {
     max-width:      24rem;
   }
 
+  .lg\:max-w-none {
+    max-width:      none;
+  }
+
   .lg\:columns-3 {
     -moz-columns:      3;
          columns:      3;
   }
 
-  .lg\:grid-cols-\[minmax\(0\2c 52rem\)_minmax\(0\2c 19rem\)\] {
-    grid-template-columns:      minmax(0,52rem) minmax(0,19rem);
-  }
-
-  .lg\:grid-cols-\[minmax\(0\2c 1fr\)_19rem\] {
-    grid-template-columns:      minmax(0,1fr) 19rem;
+  .lg\:grid-cols-\[minmax\(0\2c 52rem\)_minmax\(19rem\2c 1fr\)\] {
+    grid-template-columns:      minmax(0,52rem) minmax(19rem,1fr);
   }
 
   .lg\:items-start {
