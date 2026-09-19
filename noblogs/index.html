@@ -272,10 +272,21 @@ title: TrumpBlogs formerly known as NoBlogs
   .loadmore{display:flex;margin:22px auto}
 
   /* ---- detail drawer (dsa-explorer style: docked sidebar, not a modal) ---- */
-  #scrim{position:fixed;inset:var(--nb-header-h,56px) 0 0 0;background:rgba(20,20,18,.20);z-index:var(--dr-z-scrim,55);
-    opacity:0;pointer-events:none;transition:opacity .2s}
+  /* Full viewport, both of them.
+     They used to be inset by --nb-header-h, which is the tool header's HEIGHT
+     and not its distance from the top of the window. Those two numbers agree
+     only when the page is scrolled far enough for the sticky header to be
+     pinned at top:0 — at any other scroll position the drawer began partway
+     down the masthead and the scrim left a live, clickable strip of page above
+     itself. A modal that does not cover the thing it is modal over is not one.
+
+     `inset:0` needs no measurement at all, which is the better property: this
+     was a geometry bug that could only exist because a length was standing in
+     for a position. */
+  #scrim{position:fixed;inset:0;background:rgba(20,20,18,.20);z-index:var(--dr-z-scrim,55);
+    opacity:0;pointer-events:none;transition:opacity var(--dr-dur-fast,120ms) var(--dr-ease-sheet,ease)}
   #scrim.on{opacity:1;pointer-events:auto}
-  #panel{position:fixed;top:var(--nb-header-h,56px);right:0;bottom:0;
+  #panel{position:fixed;top:0;right:0;bottom:0;
     /* One clamp instead of a width plus a breakpoint. This was width:392px
        with @media(max-width:820px){width:340px}, which left 768-820px showing
        a 340px drawer for no reason — the sheet takes over at 767. The clamp
@@ -283,7 +294,12 @@ title: TrumpBlogs formerly known as NoBlogs
        when those panels adopt it. */
     width:clamp(320px, 30vw, 392px);max-width:94vw;background:var(--bg);
     border-left:1px solid var(--line);box-shadow:-3px 0 22px rgba(0,0,0,.13);z-index:var(--dr-z-panel,60);
-    transform:translateX(100%);transition:transform .22s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+    /* The site's one motion for a surface arriving from an edge. This was
+       .22s cubic-bezier(.4,0,.2,1) — near enough to be invisible next to the
+       sheet, far enough to be a second set of numbers nobody could justify. */
+    transform:translateX(100%);
+    transition:transform var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,cubic-bezier(.32,.72,0,1));
+    overflow-y:auto}
   #panel.on{transform:translateX(0)}
   .pclose{position:sticky;top:0;float:right;z-index:var(--dr-z-raised,10);margin:0;border:none;background:transparent;
     font-size:20px;line-height:1;color:var(--dim);cursor:pointer;padding:14px 16px}

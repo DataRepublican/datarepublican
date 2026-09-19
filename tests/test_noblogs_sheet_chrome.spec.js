@@ -67,6 +67,48 @@ test.describe('the noblogs detail sheet', () => {
   });
 });
 
+test.describe('the desktop detail drawer', () => {
+  test.use({ viewport: { width: 1400, height: 900 } });
+
+  test('fills the viewport at any scroll position', async ({ page }) => {
+    /* #panel and #scrim were inset by --nb-header-h, which is the tool
+       header's HEIGHT and not its distance from the top of the window. Those
+       agree only when the page is scrolled far enough for the sticky header to
+       be pinned at top:0 — at every other scroll position the drawer started
+       partway down the masthead and the scrim left a live, clickable strip of
+       page above itself.
+
+       A length standing in for a position is the whole bug, so the assertion
+       is simply that neither depends on scroll. */
+    await page.goto(
+      HOST + '/noblogs/?view=map&host=vernetzungpartizipation.noblogs.org',
+      { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#panel.on', { timeout: 90000 });
+    await page.waitForTimeout(400);
+
+    const box = () => page.evaluate(() => {
+      const p = document.getElementById('panel').getBoundingClientRect();
+      const s = document.getElementById('scrim').getBoundingClientRect();
+      return {
+        panelTop: Math.round(p.top), panelBottom: Math.round(p.bottom),
+        scrimTop: Math.round(s.top), scrimHeight: Math.round(s.height),
+        vh: window.innerHeight,
+      };
+    });
+
+    const atTop = await box();
+    expect(atTop.panelTop, 'the drawer does not reach the top of the window').toBe(0);
+    expect(atTop.panelBottom).toBe(atTop.vh);
+    expect(atTop.scrimTop, 'live page above the scrim').toBe(0);
+    expect(atTop.scrimHeight).toBe(atTop.vh);
+
+    await page.evaluate(() => window.scrollTo(0, 300));
+    await page.waitForTimeout(200);
+    const scrolled = await box();
+    expect(scrolled, 'the drawer moved with the page').toEqual(atTop);
+  });
+});
+
 test.describe('the filter popover reset', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
