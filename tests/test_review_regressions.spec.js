@@ -204,6 +204,41 @@ test.describe('the masthead is not restyled by a tool', () => {
       expect(m.total).toBe(10);
     });
   }
+
+  /* The wordmark is an <h1> on the tools index and a <p> wrapping a link to
+     `/` everywhere else, so the outline stays honest. While that was two
+     copies of the same utilities the two drifted, and not visibly at the point
+     of the mistake: main.css's `a { @apply font-semibold }` is 600 and applies
+     to the <a> INSIDE the <p>, which is the element that renders the glyphs.
+     The `font-bold` sat on the <p> and never reached them, so every page but
+     the index drew the wordmark a weight light. One .dr-wordmark now; the
+     variant is which tag, never which type. */
+  test('the wordmark is the same type on every page', async ({ page }) => {
+    const read = async (path) => {
+      await page.goto(HOST + path, { waitUntil: 'domcontentloaded' });
+      await page.waitForSelector('.dr-wordmark', { timeout: 60000 });
+      return page.evaluate(() => {
+        const el = document.querySelector('.dr-wordmark');
+        /* The element that actually PAINTS the text, which is the link when
+           there is one. Reading the <p> is what hid the bug in the first
+           place: it computed 700 while the <a> inside it rendered at 600. */
+        const painted = el.querySelector('a') || el;
+        const s = getComputedStyle(painted);
+        return {
+          weight: s.fontWeight, size: s.fontSize, spacing: s.letterSpacing,
+          color: s.color, underline: s.textDecorationLine,
+        };
+      });
+    };
+
+    const home = await read('/');
+    expect(home.weight).toBe('700');
+    expect(home.underline).toBe('none');
+
+    for (const path of ['/noblogs/', '/dsa-explorer/', '/about/', '/browse/']) {
+      expect(await read(path), `${path} draws the wordmark differently`).toEqual(home);
+    }
+  });
 });
 
 // Every band of site chrome stops at the shell measure. The banner and the

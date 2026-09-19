@@ -67,24 +67,33 @@ test.describe('the view switcher is a tablist', () => {
 test.describe('toggles report state with aria-pressed', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  /* The LABEL holds still and the VALUE moves. Swapping a whole label to
-     "Focus: off" shifted every button beside it on each click and read as what
-     the NEXT click would do; a lone filled pill said "this is in a state" but
-     not which one, and in a toolbar of plain actions barely that. So .glabel is
-     fixed, .dr-btn__state carries On/Off, and aria-pressed must agree with the
-     chip — one setToggle() writes both. */
+  /* A canvas toggle is icon-only, so the state is a dot in its corner: present
+     means on. aria-pressed is the single source — the dot is shown and hidden
+     by CSS keyed on it, which is why nothing can disagree with it — and the
+     button's width must not change, or the whole column shifts on every click.
+
+     The dot alone cannot say WHICH mode is on, so the accessible name has to
+     be there and has to hold still too. */
   const toggle = async (page, sel, expected) => {
     const btn = page.locator(sel);
-    const label = await btn.locator('.glabel').textContent();
+    const dot = btn.locator('.dr-btn__dot');
+    const name = await btn.getAttribute('aria-label');
+    expect(name, 'an icon-only toggle with no accessible name').toBeTruthy();
+
+    const width = () => btn.evaluate(e => Math.round(e.getBoundingClientRect().width));
+    const w0 = await width();
+
     await expect(btn).toHaveAttribute('aria-pressed', String(expected));
-    await expect(btn.locator('.dr-btn__state')).toHaveText(expected ? 'On' : 'Off');
+    expected ? await expect(dot).toBeVisible() : await expect(dot).toBeHidden();
 
     await btn.click();
     await expect(btn).toHaveAttribute('aria-pressed', String(!expected));
-    await expect(btn.locator('.dr-btn__state'), 'the chip disagrees with aria-pressed')
-      .toHaveText(!expected ? 'On' : 'Off');
-    expect(await btn.locator('.glabel').textContent(),
-      'the label moved when the state changed').toBe(label);
+    !expected ? await expect(dot, 'the dot disagrees with aria-pressed').toBeVisible()
+              : await expect(dot, 'the dot disagrees with aria-pressed').toBeHidden();
+
+    expect(await btn.getAttribute('aria-label'),
+      'the name changed with the state').toBe(name);
+    expect(await width(), 'the button resized, so the column shifted').toBe(w0);
   };
 
   test('noblogs graph: Focus mode and Target edges only', async ({ page }) => {

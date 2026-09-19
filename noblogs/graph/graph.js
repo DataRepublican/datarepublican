@@ -22,19 +22,10 @@
 (function (global) {
   'use strict';
 
-  /* Every labelled control carries its word inside a <span class="glabel">, not
-   * as a bare text node. Export swaps its label to "Rendering\u2026" while cy.png()
-   * runs, and it used to do that with `b.textContent = \u2026` \u2014 which replaces ALL
-   * children, so the first export silently deleted the button's <svg> and it
-   * never came back. A dedicated label element is the fix; the icon is not the
-   * label's business.
-   *
-   * Tooltips are `title`, on every control including the ones that have a word.
-   * "Focus mode" and "Target edges only" name a mode without saying what it
-   * does, which is the one thing a label cannot do and a tooltip can. No JS
-   * tooltip machinery: `title` is free, works on hover and on keyboard focus,
-   * and is what tests/test_toolbars.spec.js already asserts on icon-only
-   * controls. */
+  /* Every control here is icon-only. The name lives in aria-label and in the
+   * DRTip tooltip, which is also where the sentence explaining a mode goes \u2014
+   * "Focus mode" names it without saying what it does, and that is the one
+   * thing a label cannot do. */
   var ICON = {
     search:   '<path d="M11 3a8 8 0 1 0 0 16 8 8 0 0 0 0-16"/><path d="m21 21-4.3-4.3"/>',
     zin:      '<path d="M5 12h14"/><path d="M12 5v14"/>',
@@ -57,14 +48,12 @@
    * neither, and leaving both would stack a second one underneath ours a
    * second later and read the text twice to a screen reader. */
   function btn(o) {
-    var iconOnly = !o.label;
-    return '<button type="button" id="' + o.id + '" class="dr-btn' + (iconOnly ? ' dr-btn--icon' : '') + '" ' +
-      (iconOnly ? 'aria-label="' + (o.name || o.tipTitle) + '" ' : '') +
+    return '<button type="button" id="' + o.id + '" class="dr-btn dr-btn--icon" ' +
+      'aria-label="' + (o.name || o.tipTitle || o.tip) + '" ' +
       (o.tipTitle ? 'data-tip-title="' + o.tipTitle + '" ' : '') +
       'data-tip="' + o.tip + '" ' + (o.extra || '') + '>' +
       svg(o.icon) +
-      (o.label ? '<span class="glabel">' + o.label + '</span>' : '') +
-      (o.state ? '<span class="dr-btn__state">' + o.state + '</span>' : '') +
+      (o.toggle ? '<span class="dr-btn__dot" aria-hidden="true"></span>' : '') +
       '</button>';
   }
 
@@ -80,15 +69,15 @@
              tip:'Back to the whole network, fitted to the canvas, with any focus cleared.'}) +
         btn({id:'relayout', icon:'relayout', tipTitle:'Re-layout', name:'Re-layout',
              tip:'Recompute where every node sits. Useful when labels overlap after a lot of panning.'}) +
-        btn({id:'focusToggle', icon:'focus', label:'Focus mode', state:'On',
+        btn({id:'focusToggle', icon:'focus', toggle:true, name:'Focus mode',
              tipTitle:'Focus mode',
              tip:'Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest.',
              extra:'aria-pressed="true"'}) +
-        btn({id:'tgtOnly', icon:'target', label:'Target edges only', state:'Off',
+        btn({id:'tgtOnly', icon:'target', toggle:true, name:'Target edges only',
              tipTitle:'Target edges only',
              tip:'Hide every citation except the ones backing a target designation \u2014 the red edges in the key.',
              extra:'aria-pressed="false"'}) +
-        btn({id:'export', icon:'download', label:'Export',
+        btn({id:'export', icon:'download', name:'Export',
              tipTitle:'Export',
              tip:'Download a high-resolution PNG of exactly this view \u2014 same pan, zoom and fade, at print quality.'}) +
       '</div>' +
@@ -588,30 +577,27 @@
   $id('zout').onclick=()=>cy.zoom({level:cy.zoom()/1.3,renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
   $id('fit').onclick=()=>{cy.elements().removeClass('faded nbr sel');focusId=null;collapsePanel();requestAnimationFrame(()=>cy.fit(45));};
   $id('relayout').onclick=()=>{territoryLayout();if(focusMode&&focusId)applyFocus(focusId,false);};
-  /* One place that writes a toggle's state, so the attribute a screen reader
-     reads and the chip a sighted user reads can never disagree. */
-  function setToggle(btn,on){
-    btn.setAttribute('aria-pressed',String(on));
-    const chip=btn.querySelector('.dr-btn__state');
-    if(chip) chip.textContent = on ? 'On' : 'Off';
-  }
+  /* aria-pressed is the whole state. .dr-btn__dot is shown and hidden by CSS
+     keyed on that attribute, so there is nothing else to write. */
+  function setToggle(btn,on){ btn.setAttribute('aria-pressed',String(on)); }
   $id('focusToggle').onclick=function(){focusMode=!focusMode;setToggle(this,focusMode);cy.elements().removeClass('faded nbr sel');if(!focusMode)collapsePanel();};
   let tgtOnly=false;
   $id('tgtOnly').onclick=function(){tgtOnly=!tgtOnly;setToggle(this,tgtOnly);
     cy.batch(()=>{cy.edges().forEach(e=>e.style('display',(!tgtOnly||e.data('tgt')>0)?'element':'none'));});};
-  /* Only the .glabel is swapped while rendering. Writing button.textContent —
-     which is what this did — replaces every child, so the <svg> was destroyed
-     on the first export and restoring the string never brought it back.
-     aria-busy is what button.css styles and what a screen reader reads. */
+  /* aria-busy and disabled, never a text swap. The button has no text to swap
+     now, and when it did, doing it with button.textContent replaced every
+     child — the <svg> was destroyed on the first export and restoring the
+     string never brought it back. aria-busy is what button.css styles and what
+     a screen reader reads. */
   $id('export').onclick=function(){
-    const b=this,lab=b.querySelector('.glabel'),was=lab.textContent;
-    lab.textContent='Rendering…'; b.setAttribute('aria-busy','true');
+    const b=this;
+    b.setAttribute('aria-busy','true');
     setTimeout(()=>{
       try{
         const uri=cy.png({full:false,scale:3,bg:'#fff',maxWidth:12000,maxHeight:12000});
         const a=document.createElement('a');a.href=uri;a.download='noblogs-graph.png';a.click();
       }catch(e){alert('Export failed: '+e.message);}
-      lab.textContent=was; b.removeAttribute('aria-busy');
+      b.removeAttribute('aria-busy');
     },60);
   };
 

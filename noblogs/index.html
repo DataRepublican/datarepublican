@@ -23,6 +23,17 @@ title: TrumpBlogs formerly known as NoBlogs
      a warm grey of this tool's own; it was #F7F7F5, and the masthead and nav
      above the tool sat on a different background from every other page. */
   body{
+    /* What the canvas and the sidebar beside it are allowed to be: the window,
+       less the distance from the document top down to the band, less the fixed
+       phone nav, less the band's own two border lines — the height goes on the
+       children and the border is on #nb-stage around them, so it is not in
+       their box.
+
+       --nb-stage-top is measured; the 7rem fallback only has to be sane before
+       the script runs. */
+    --nb-band-line:1px;
+    --nb-band-h:calc(100dvh - var(--nb-stage-top,7rem) - var(--nav-clearance) - var(--nb-band-line) * 2);
+
     --bg:#E5E7EB;--panel:#FFFFFF;--ink:#1A1A1A;--dim:#6B6F76;--line:#E2E2DD;
     --accent:#C0392B;--hi:#C0392B;--med:#B8860B;--low:#4A6FA5;--news:#1B7F4B;--gold:#B8860B;
     --tile:#F1F1EC;--tile2:#F7F7F3;--link:#1155CC;
@@ -256,7 +267,7 @@ title: TrumpBlogs formerly known as NoBlogs
   /* On the List view #nb-stage still holds the hidden canvases and the overlay
      #panel, so a border there would draw a 2px-tall box under the header. */
   body[data-view="map"] #nb-stage,
-  body[data-view="graph"] #nb-stage{border:1px solid var(--dr-line,var(--line));
+  body[data-view="graph"] #nb-stage{border:var(--nb-band-line) solid var(--dr-line,var(--line));
     border-radius:var(--dr-radius-lg,.75rem);overflow:hidden}
 
   /* ---- Detail panel ------------------------------------------------------
@@ -299,7 +310,7 @@ title: TrumpBlogs formerly known as NoBlogs
     body[data-view="map"] #panel,
     body[data-view="graph"] #panel{position:static;width:auto;max-width:none;
       transform:none;box-shadow:none;z-index:auto;overflow:hidden;
-      height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
+      height:var(--nb-band-h);min-height:22rem}
     body[data-view="map"] #scrim,
     body[data-view="graph"] #scrim{display:none}
 
@@ -431,7 +442,7 @@ title: TrumpBlogs formerly known as NoBlogs
      need it, but the rule is that a tool canvas is always an isolated box, so
      no vendored stylesheet can reach the page again. */
   #mapwrap{position:relative;width:100%;isolation:isolate;
-    height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
+    height:var(--nb-band-h);min-height:22rem}
   /* #mapcanvas gets its own stacking context too, and this is load-bearing.
      Isolating #mapwrap alone is not enough: #mapcanvas is position:absolute
      with z-index:auto, so Leaflet's panes — .leaflet-map-pane 400,
@@ -468,7 +479,7 @@ title: TrumpBlogs formerly known as NoBlogs
      The map does not have this problem because its sheet wraps #panel, which is
      a sibling of #mapview rather than a child of #mapwrap. */
   #graphouter{position:relative;width:100%;
-    height:calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance))}
+    height:var(--nb-band-h);min-height:22rem}
   #graphwrap{width:100%;height:100%}
 
   /* ---- Filter popover ----------------------------------------------------
@@ -1547,12 +1558,35 @@ function esc(s){return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;'
 (function(){
   const header=document.getElementById('nb-header');
   if(!header) return;
+
+  /* Two numbers, and they are not the same number.
+
+     --nb-header-h is the header's HEIGHT: what the facet rail offsets itself
+     by once the header is pinned.
+
+     --nb-stage-top is the canvas band's POSITION — its distance from the top
+     of the DOCUMENT, which is the banner plus the masthead plus this header.
+     The band's height was `100dvh - --nb-header-h`, which is the space
+     available only when the page is scrolled far enough for the header to be
+     pinned at top:0. On arrival it is ~270px taller than the window and the
+     map runs off the bottom of the screen.
+
+     offsetTop, not getBoundingClientRect: a sticky element's rect moves when
+     it pins, and this has to be the resting position. offsetTop is the static
+     layout position and does not. */
+  const docTop=el=>{let y=0;for(let n=el;n;n=n.offsetParent)y+=n.offsetTop;return y;};
+  const stage=document.getElementById('nb-stage');
   const setH=()=>{
-    document.documentElement.style.setProperty('--nb-header-h',header.offsetHeight+'px');
+    const s=document.documentElement.style;
+    s.setProperty('--nb-header-h',header.offsetHeight+'px');
+    if(stage) s.setProperty('--nb-stage-top',docTop(stage)+'px');
   };
   setH();
   if(window.ResizeObserver){const ro=new ResizeObserver(setH);ro.observe(header);}
-  else window.addEventListener('resize',setH);
+  /* Unconditionally, not as the ResizeObserver's fallback: the observer
+     watches this header, and --nb-stage-top also moves when the banner or the
+     masthead above it rewraps, which it never sees. */
+  window.addEventListener('resize',setH);
 
   /* The disclaimer modal. showModal(), never show() — only the modal form gets
      the focus trap, the Escape handling, the backdrop and the top layer. The

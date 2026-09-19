@@ -54,7 +54,10 @@ Jekyll rebuild, which reads in the diff exactly like a regression.
 | `.dr-check` | `.fitem`, which set `pointer-events:none` on the real checkbox and handled the click on the row. Fixed natively in noblogs: `<label>` around `<input>` inside `<fieldset><legend>`, handler on the input's `change`. **When a list rebuilds itself, restore focus** — see below |
 | `.dr-link` | five source-link classes, all `#1155CC`. Promote dsa's `fmtUrl()` to a shared helper |
 | `.dr-tip` | every `title` on a toolbar control. Instant, styled, appended to `<body>` so the canvases' `isolation: isolate` cannot clip it. Driven by `data-tip` / `data-tip-title`, delegated from `document` so runtime-built controls need no binding. **Never alongside `title`** — the native tip stacks under it and the text is read twice |
-| `.dr-btn__state` | the `On` / `Off` value on a two-state toggle. A filled pill alone says "in a state" but not which; a swapped label moved the text. Written by the same function that sets `aria-pressed`, or the two drift |
+| `.dr-btn__state` | the `On` / `Off` value on a **labelled** two-state toggle. A filled pill alone says "in a state" but not which; a swapped label moved the text. Written by the same function that sets `aria-pressed`, or the two drift |
+| `.dr-btn__dot` | the same fact on an **icon-only** toggle, where there is no room for a word: a dot in the corner, present means on. Shown and hidden by CSS keyed on `aria-pressed`, so there is nothing to keep in sync. Only correct where the icon already carries the identity — a dot cannot say *which* mode is on |
+| `.dr-wordmark` | the site name in the masthead: an `<h1>` on the index, a `<p>` wrapping a link everywhere else. **One class, two tags.** While it was two copies of the same utilities they drifted — `a { font-semibold }` is 600 and applies to the `<a>` that paints the glyphs, so every page but the index rendered a weight light |
+| `.leaflet-bar` (restyled) | Leaflet's zoom control, given the canvas-control shape. Its stylesheet is fetched at runtime and lands after ours, so every selector needs `.leaflet-container` in front of it to win the tie |
 
 Button sizes: `md` = 44px at every width. `sm` = 32px, **desktop-only**, inside a
 panel or toolbar. Never `sm` below md.

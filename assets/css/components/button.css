@@ -82,10 +82,41 @@
 
 /* Icon only. The <button> carries the aria-label; the <svg> is aria-hidden. */
 .dr-btn--icon {
+  position: relative;      /* for .dr-btn__dot */
   width: var(--dr-tap, 2.75rem);
   padding: 0;
   gap: 0;
 }
+
+/* The value on an ICON-ONLY toggle.
+ *
+ * .dr-btn__state below needs a label beside it to be a value OF anything, and
+ * in a canvas toolbar there is no room for one — a column of labelled pills is
+ * the widest thing on the canvas and it reads as a menu rather than as tools.
+ * So the state is a dot in the corner: present means on, absent means off.
+ *
+ * It is the only hue in the chrome, and it is decorative — aria-pressed is
+ * what a screen reader reads, and the tooltip names the mode. A dot alone
+ * cannot say WHICH mode is on, so it is only ever correct on a control whose
+ * identity is already carried by its icon.
+ */
+.dr-btn__dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dr-on, #19B270);
+  /* A ring in the button's own fill, so the dot reads as sitting ON the
+     control at both rest and pressed rather than merging with either. */
+  box-shadow: 0 0 0 2px var(--dr-panel, #fff);
+  pointer-events: none;
+}
+
+/* Absent means off — the rule the whole affordance rests on. */
+.dr-btn[aria-pressed="false"] .dr-btn__dot { display: none; }
+.dr-btn[aria-pressed="true"] .dr-btn__dot { box-shadow: 0 0 0 2px var(--dr-accent, #252739); }
 
 /* 32px. Desktop only, inside a panel or a toolbar — never below md, where the
    44px target is the floor. */

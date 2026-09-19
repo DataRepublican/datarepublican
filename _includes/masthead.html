@@ -4,11 +4,14 @@
   tracking, the rule sitting directly under the baseline.
 
   The wordmark is an <h1> on the home page and a <p> everywhere else, so tool
-  pages keep their own <h1> and the document outline stays honest. That is the
-  only difference between pages — every page renders the same masthead at the
-  same size. There used to be a `compact` variant that dropped the rule and the
-  tagline on tool pages to buy back phone height; it made internal pages look
-  like a different site, so it is gone.
+  pages keep their own <h1> and the document outline stays honest. Which TAG is
+  the only difference; the type is .dr-wordmark either way, and it has to be one
+  class rather than two copies of the same utilities — see the note in
+  components/wordmark.css for the weight that drifted while it was two.
+
+  There used to be a `compact` variant that dropped the rule and the tagline on
+  tool pages to buy back phone height; it made internal pages look like a
+  different site, so it is gone.
 
   The primary nav is included INSIDE the wordmark row, so at md the links sit
   across from the wordmark on its baseline. See the long note in nav.html for
@@ -24,12 +27,11 @@
 
 <div class="pt-5 pb-1">
   <div class="flex items-end justify-between gap-6">
+    {%- assign wordmark = site.title | replace: 'DataRepublican', 'Data Republican' -%}
     {%- if page.url == '/' -%}
-    <h1 class="m-0 min-w-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</h1>
+    <h1 class="dr-wordmark">{{ wordmark }}</h1>
     {%- else -%}
-    <p class="m-0 min-w-0 text-[clamp(2.25rem,11vw,3.4375rem)] font-bold leading-none tracking-display text-ink-strong">
-      <a href="{{ '/' | relative_url }}" class="!text-ink-strong !no-underline">{{ site.title | replace: 'DataRepublican', 'Data Republican' }}</a>
-    </p>
+    <p class="dr-wordmark"><a href="{{ '/' | relative_url }}">{{ wordmark }}</a></p>
     {%- endif -%}
 
     {% include nav.html %}

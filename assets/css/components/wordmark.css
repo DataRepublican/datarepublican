@@ -1,0 +1,40 @@
+/* .dr-wordmark — the site name in the masthead.
+ *
+ * Drawn on `system-primitives` in Paper. See .claude/skills/dr-design-system.
+ *
+ * It renders as an <h1> on the home page and as a <p> wrapping a link to `/`
+ * everywhere else, so that tool pages keep their own <h1> and the document
+ * outline stays honest. Those are two different elements carrying one piece of
+ * typography, and while the rules were written inline as utilities the two
+ * drifted: `a { @apply font-semibold }` in main.css is 600 and applies to the
+ * <a> INSIDE the <p>, which is the element that actually renders the glyphs.
+ * The `font-bold` sat on the <p> and never reached them, so every page but the
+ * home page drew the wordmark a weight light.
+ *
+ * Hence the link rule below, and hence this being one class: the variant is
+ * which tag, never which type.
+ *
+ * Outside @layer, like everything in components/.
+ */
+
+.dr-wordmark {
+  margin: 0;
+  min-width: 0;
+  /* 55px is the mock's size; the clamp is what a 390px phone needs. */
+  font-size: clamp(2.25rem, 11vw, 3.4375rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.05em;   /* tailwind.config.js `tracking.display` */
+  color: var(--dr-ink-strong, #000);
+}
+
+/* The link is the wordmark, not a link that happens to be in it. Everything
+   the global `a` rule sets — colour, weight, underline — has to come back off,
+   and `font: inherit` is what keeps the weight correct if the type above ever
+   changes. */
+.dr-wordmark a {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  text-decoration: none;
+}

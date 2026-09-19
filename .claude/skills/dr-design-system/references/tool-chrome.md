@@ -399,12 +399,40 @@ moving it. A miss says so in the status line; it does not empty the canvas.
 Canvases size against what is left of the viewport:
 
 ```css
-height: calc(100dvh - var(--nb-header-h,56px) - var(--nav-clearance));
+height: calc(100dvh - var(--nb-stage-top,7rem) - var(--nav-clearance)
+             - var(--nb-band-line) * 2);
 ```
 
 Every literal in that expression is a bug waiting for a different screen, so
-the header height is measured. Two things used to make this harder than it is,
-and the pattern removes both:
+the offset is measured.
+
+### A height is not a position, and this repo has paid for that four times
+
+`--nb-stage-top` is the band's distance from the top of the **document**. It
+was `--nb-header-h`, the tool header's height — and those two agree only when
+the page is scrolled far enough for the header to be pinned at `top: 0`. On
+arrival the band also has the site banner and the masthead above it, so it ran
+~270px past the bottom of the window: you landed on a map you had to scroll to
+see. dsa-explorer had the same bug with a literal `7rem` standing in for the
+same distance.
+
+Three rules fall out of it:
+
+- **Measure the position when you mean the position.** The header's height is
+  still the right number for the facet rail's sticky offset. It is never the
+  right number for "how much room is left below this".
+- **`offsetTop`, not `getBoundingClientRect().top`.** A sticky element's rect
+  moves when it pins; `offsetTop` is the static layout position and does not.
+  Sum it up the `offsetParent` chain.
+- **Subtract the band's own border.** The height goes on the children and the
+  1px rule is on the wrapper around them, so it is not in their box. Name the
+  width once (`--nb-band-line`) and use it in both places, or the canvas is
+  2px too tall and nobody ever works out why.
+
+Keep a `min-height` floor. Below some window height a usable canvas matters
+more than fitting, and that is a deliberate choice rather than an oversight.
+
+Two things used to make this harder than it is, and the pattern removes both:
 
 - a **separate filter bar** below the header — a second measured band. Filters
   is a control *inside* the header's controls row, so there is one band.
@@ -526,36 +554,39 @@ not the mechanism:
 Zoom in / Zoom out get two words. Do not write a sentence for a control nobody
 has ever had to think about.
 
-### A toggle shows its value
+### A canvas toolbar is icon-only, and a toggle shows its state with a dot
 
 ```html
-<button aria-pressed="true" data-tip="…">
-  <svg …><span class="glabel">Focus mode</span><span class="dr-btn__state">On</span>
+<button class="dr-btn dr-btn--icon" aria-pressed="true"
+        aria-label="Focus mode" data-tip-title="Focus mode" data-tip="…">
+  <svg …><span class="dr-btn__dot" aria-hidden="true"></span>
+</button>
 ```
 
-A filled pill says "this control is in a state" but not **which** one, and in a
-toolbar where most buttons are plain actions it barely says that — filled reads
-as selected, or hovered, or just emphasised. The version before that swapped the
-whole label to "Focus: on" / "Focus: off", which was legible but moved the text
-and shifted every button beside it on each click.
+A labelled pill is the widest thing on the canvas, and a column of them reads
+as a menu rather than as tools — it also covers the canvas, which §2 is about.
+So **every control in a canvas toolbar is icon-only.** The name goes in
+`aria-label` and in `data-tip-title`; the sentence explaining a mode goes in
+`data-tip`, which is the one thing a label could never do anyway.
 
-So **the label holds still and the value gets its own slot.** `min-width` on
-`.dr-btn__state` is what keeps it stable, since "On" and "Off" are different
-widths.
-
-**Write both from one function**, or the attribute a screen reader hears and the
-chip a sighted user reads will drift:
+That leaves a toggle with nowhere to put a word, so the state is a dot in the
+corner: **present means on, absent means off.** `aria-pressed` is the single
+source — `.dr-btn__dot` is shown and hidden by CSS keyed on that attribute, so
+there is nothing else to write and nothing that can disagree with it:
 
 ```js
-function setToggle(btn, on){
-  btn.setAttribute('aria-pressed', String(on));
-  const chip = btn.querySelector('.dr-btn__state');
-  if (chip) chip.textContent = on ? 'On' : 'Off';
-}
+function setToggle(btn, on){ btn.setAttribute('aria-pressed', String(on)); }
 ```
 
+A dot cannot say *which* mode is on, so it only works where the icon already
+carries the identity. For a toggle that does have a label — in a panel, in a
+form — `.dr-btn__state` is the counterpart: an On/Off value in its own slot,
+`min-width`ed so the two strings do not resize the button. Either way the
+button's width must not change with its state, or the whole column shifts on
+every click.
+
 Only for a real two-state toggle. A button that *does* something — Reset view,
-Export — has no value to show.
+Export — has no state to show.
 
 ### Icons: pick the verb, not the category
 
@@ -565,24 +596,36 @@ are **rewind** (go back to the start) and **shuffle** (rearrange) now. Ask what
 the control *does* and find the glyph for that verb; if you cannot, the control
 needs a word, not a better icon.
 
-### Never swap a button's label with `textContent`
+### Busy is an attribute, never a text swap
 
 ```js
 b.textContent = 'Rendering…';   // deletes the <svg> child, permanently
 ```
 
 The graph's Export button did this and lost its icon on the first export, for
-the whole session. Put the word in its own element and swap that:
+the whole session — `textContent` replaces *every* child, and restoring the
+string never brings the `<svg>` back. An icon-only button has no text to swap
+anyway. Say it with attributes:
 
 ```js
-const lab = b.querySelector('.glabel'), was = lab.textContent;
-lab.textContent = 'Rendering…'; b.setAttribute('aria-busy','true');
+b.disabled = true; b.setAttribute('aria-busy','true');
 // …
-lab.textContent = was; b.removeAttribute('aria-busy');
+b.disabled = false; b.removeAttribute('aria-busy');
 ```
 
 `.dr-btn[aria-busy="true"]` is already styled, and `aria-busy` is what a screen
-reader reads.
+reader reads. If a control genuinely needs a word swapped, put the word in its
+own element and swap that element's text — never the button's.
+
+### The vendor's own controls get the same shape
+
+Leaflet ships a joined, square, 26px `.leaflet-bar`. Beside a Cytoscape toolbar
+of round `.dr-btn--icon` controls the two tools looked like two products, and
+26px is well under the tap floor everything else clears.
+`components/leaflet.css` restyles it — still Leaflet's control, still with its
+own keyboard and disabled handling, only the shape is ours. Every selector in
+that file is a class Leaflet writes at runtime, which is exactly why it has to
+live outside `@layer`.
 
 ---
 
@@ -637,6 +680,14 @@ was.
 - [ ] Cross-module state goes through an API; no data scraped from the DOM.
 - [ ] `data-tip` on every toolbar control (never `title`); a sentence for
       anything ambiguous, written for someone who has not used the tool.
-- [ ] Two-state toggles carry a `.dr-btn__state` value, written by the same
-      function that sets `aria-pressed`.
-- [ ] Label swaps target a `.glabel`, never `textContent`.
+- [ ] Every canvas control is icon-only, with `aria-label` + `data-tip-title`
+      for the name and `data-tip` for the sentence. Rounded rectangle, one
+      token (`--dr-radius-control`) shared with the vendor's own controls.
+- [ ] A canvas toggle's state is a `.dr-btn__dot`, driven by `aria-pressed`
+      alone; a labelled toggle uses `.dr-btn__state`. Either way the button's
+      width does not change with its state.
+- [ ] Busy is `aria-busy` + `disabled`, never a `textContent` swap.
+- [ ] The band's height comes from its own distance to the top of the
+      document, measured with `offsetTop`, minus the band's border. Never from
+      a header's height.
+- [ ] One `.dr-wordmark`; a masthead variant is which tag, never which type.

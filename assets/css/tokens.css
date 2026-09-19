@@ -42,6 +42,10 @@
   --dr-accent-tint:      theme('colors.accent-tint');
   --dr-accent-tint-line: theme('colors.accent-tint-line');
 
+  /* The one hue in the chrome: "this mode is on". Used by .dr-btn__dot, where
+     an icon-only toggle has no room to say so in words. */
+  --dr-on: theme('colors.green');
+
   /* ---- The legal callout ------------------------------------------------- */
   --dr-legal-border: theme('colors.legal-border');
   --dr-legal-fill:   theme('colors.legal-fill');
@@ -67,6 +71,9 @@
   --dr-radius-lg:    theme('borderRadius.lg');
   --dr-radius-sheet: theme('borderRadius.sheet');
   --dr-radius-pill:  theme('borderRadius.pill');
+  /* Canvas toolbars. A column of full pills reads as a row of dots; these are
+     square controls with the corners taken off. */
+  --dr-radius-control: 0.625rem;
 
   /* ---- Motion ------------------------------------------------------------ */
   --dr-dur-fast:     120ms;

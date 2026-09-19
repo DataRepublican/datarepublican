@@ -43,10 +43,13 @@
   .nbgraph #controls button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
   .nbgraph #stage button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   .nbgraph #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
-  /* Geometry lives in .dr-btn. These rules used to set a 6px-radius 12px box
-     here and override it into a pill below 767px; both are gone. What stays is
-     the float — a control over a canvas needs a shadow to separate from it. */
-  .nbgraph #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+  /* Size lives in .dr-btn. Two things are this toolbar's own: the float — a
+     control over a canvas needs a shadow to separate from it — and the corner.
+     .dr-btn is a pill everywhere else, and a stacked column of icon-only pills
+     reads as a row of dots rather than as tools. Same token as the Leaflet
+     zoom control, so the map and the graph agree. */
+  .nbgraph #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08);
+    border-radius:var(--dr-radius-control,.625rem)}
 
   /* 32px on desktop. This is the system's `sm` size and the one place it is
      allowed: a toolbar, above md, where there is a cursor. 44px is the floor

@@ -205,6 +205,38 @@ test.describe('the canvas-view sidebar', () => {
     });
   }
 
+  /* The band's height was `100dvh - <the tool header's height>`, which is the
+     space available only once the page is scrolled far enough for that header
+     to be pinned at top:0. On arrival the band also has the site banner and
+     the masthead above it, so it ran ~270px past the bottom of the window and
+     you landed on a map you had to scroll to see.
+
+     A height is not a position — the third time that exact substitution has
+     been paid for here. The band is measured from its own distance to the top
+     of the DOCUMENT now (--nb-stage-top / --dsa-app-top), by offsetTop, which
+     unlike getBoundingClientRect does not move when the header pins. */
+  for (const [name, url, sel] of [
+    ['noblogs map', '/noblogs/?view=map', '#mapcanvas'],
+    ['noblogs graph', '/noblogs/?view=graph', '#graphwrap #cy canvas'],
+    ['dsa-explorer', '/dsa-explorer/', '#cy canvas'],
+  ]) {
+    test(`${name}: the canvas fits the window on arrival`, async ({ page }) => {
+      await page.goto(HOST + url, { waitUntil: 'domcontentloaded' });
+      await page.waitForSelector(sel, { timeout: 120000 });
+      await page.waitForTimeout(600);
+
+      const m = await page.evaluate(() => {
+        const b = document.querySelector('#nb-stage, #stage').getBoundingClientRect();
+        return { top: Math.round(b.top), bottom: Math.round(b.bottom), vh: window.innerHeight };
+      });
+      expect(m.top, 'the band starts off-screen').toBeGreaterThan(0);
+      expect(m.bottom, `the band runs ${m.bottom - m.vh}px past the bottom of the window`)
+        .toBeLessThanOrEqual(m.vh);
+      // And it is not tiny either — it should take what is left, not a guess.
+      expect(m.bottom - m.top).toBeGreaterThan(m.vh - m.top - 24);
+    });
+  }
+
   for (const [name, url, sel] of [
     ['noblogs', '/noblogs/?view=map', '#nb-header'],
     ['dsa-explorer', '/dsa-explorer/', '#dsa-header'],
