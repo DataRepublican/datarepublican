@@ -59,6 +59,35 @@ test.describe('the graph legend filters from a keyboard', () => {
     await expect(after).not.toHaveClass(/off/);
   });
 
+  test('the rows read as toggles, not as selections', async ({ page }) => {
+    await ready(page);
+    /* These are independent switches that ALL start on, so the on state cannot
+       be the loud one: a blanket `#stage button[aria-pressed="true"]` rule —
+       written for the toolbar's Focus mode — painted every row solid accent,
+       and a panel of filled pills reads as "all selected" rather than "all
+       shown". The toolbar keeps that fill; the legend gets a checkbox. */
+    const paint = await page.evaluate(() => {
+      const row = document.querySelector('#legend .row');
+      const box = getComputedStyle(row, '::before');
+      return {
+        rowBg: getComputedStyle(row).backgroundColor,
+        toolbarBg: getComputedStyle(document.getElementById('focusToggle')).backgroundColor,
+        boxWidth: box.width,
+        boxHasCheck: box.backgroundImage !== 'none',
+      };
+    });
+
+    // A checkbox that is filled and carries a tick.
+    expect(paint.boxWidth).not.toBe('auto');
+    expect(paint.boxHasCheck, 'the pressed row has no checkmark').toBe(true);
+
+    // The row itself stays unfilled, and the toolbar toggle stays filled.
+    expect(paint.rowBg, 'legend rows are painted like toolbar toggles')
+      .toMatch(/rgba\(0, 0, 0, 0\)|transparent/);
+    expect(paint.toolbarBg, 'the toolbar toggle lost its pressed fill')
+      .not.toMatch(/rgba\(0, 0, 0, 0\)|transparent/);
+  });
+
   test('hiding an edge type actually hides edges', async ({ page }) => {
     await ready(page);
     const before = await page.evaluate(

@@ -134,6 +134,33 @@ dsa is `aria-pressed` and not a `radiogroup` on purpose: one current at a time,
 but re-clicking the active one clears it, and **a radio cannot be unset**.
 Clearing is the common case there.
 
+### Polarity decides the PAINT, not just the semantics
+
+**If everything starts pressed, pressed cannot be the loud state.** The graph's
+rows all load shown, so a solid accent fill on `[aria-pressed="true"]` painted
+the entire panel dark — a list of toggles reading as a list of selections, with
+the state carrying no information because nothing ever lacked it.
+
+| legend | default | pressed looks like |
+|---|---|---|
+| noblogs map | nothing chosen | **filled** — the exception stands out |
+| dsa-explorer | nothing isolated | **filled** — one at a time |
+| noblogs graph | *everything* shown | **a ticked checkbox**, row otherwise plain |
+
+So the graph's rows carry a checkbox drawn in `::before` — the same shape as
+the filter panel's category rows, which do the same job with real
+`<input type="checkbox">`. Off dims the **swatch and the label**, never the
+box: you still have to read what you turned off.
+
+A box in CSS rather than a real input because the row is already a
+`<button aria-pressed>`, and an input inside a button is invalid.
+
+**Watch for blanket rules reaching legend rows.** This came from
+`.nbgraph #stage button[aria-pressed="true"]`, written for the toolbar's Focus
+mode and Target-edges toggles — legend rows are also buttons with
+`aria-pressed`, also inside `#stage`. Scope a toolbar's pressed fill to the
+toolbar (`#controls`), never to the canvas.
+
 Two further rules the dsa conversion settled:
 
 - **A button that does something is not a button that is in a state.** The

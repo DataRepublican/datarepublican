@@ -34,8 +34,13 @@
   .nbgraph header .disclaimer strong{color:#8A5A1A}
   .nbgraph #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2}
   .nbgraph #cy{width:100%;height:100%;background:radial-gradient(circle at 50% 42%,#FFFFFF 0%,#F1F1EC 72%)}
-  .nbgraph #stage button{color:#1A1A1A;background:#fff;font-weight:500}
-  .nbgraph #stage button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  /* Scoped to #controls, not #stage. As a blanket `#stage button` pair these
+     also caught the legend rows — which are buttons with aria-pressed too, and
+     all start pressed because every class loads shown. Every row painted solid
+     accent, so a list of toggles read as a list of selections and the pressed
+     fill meant nothing. The legend's own affordance is below. */
+  .nbgraph #controls button{color:#1A1A1A;background:#fff;font-weight:500}
+  .nbgraph #controls button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
   .nbgraph #stage button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   .nbgraph #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
   /* Geometry lives in .dr-btn. These rules used to set a 6px-radius 12px box
@@ -90,7 +95,27 @@
     display:flex;align-items:center;gap:7px;padding:1px 3px;border-radius:4px;cursor:pointer}
   .nbgraph #legend .row:hover{background:#f0f0ea}
   .nbgraph #legend .row:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
-  .nbgraph #legend .row.off{opacity:.3}
+
+  /* The rows are a set of independent on/off switches that all start ON, so
+     the ON state cannot be the loud one — a whole panel of filled pills reads
+     as "all selected" rather than "all shown", and the state stops meaning
+     anything. The checkbox is what says "this is a toggle"; the swatch beside
+     it stays the colour key. Same shape as the filter panel's category rows,
+     which do the same job with real <input type=checkbox>.
+
+     A box drawn in CSS rather than a real checkbox because the row is already
+     a <button aria-pressed>, and nesting an input inside a button is invalid —
+     see the note in graph.js on why these are buttons. */
+  .nbgraph #legend .row::before{content:"";flex:0 0 auto;width:14px;height:14px;
+    border:1px solid var(--dr-line-strong,#878D99);border-radius:3px;
+    background:var(--dr-panel,#fff) center/10px 10px no-repeat}
+  .nbgraph #legend .row[aria-pressed="true"]::before{
+    border-color:var(--dr-accent,#252739);background-color:var(--dr-accent,#252739);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.3l2.4 2.4 4.6-5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+  /* Off dims the KEY, not the checkbox — you still need to read what is off. */
+  .nbgraph #legend .row.off .sw,
+  .nbgraph #legend .row.off .ln{opacity:.35}
+  .nbgraph #legend .row.off{color:var(--dr-ink-faint,#6B7280)}
   .nbgraph #legend .sw{width:13px;height:13px;border-radius:3px;flex:0 0 auto}
   .nbgraph #legend .ln{width:20px;height:0;border-top:3px solid;flex:0 0 auto}
   .nbgraph #legend .hint{color:#999;font-size:10.5px;margin-top:7px;line-height:1.35}
