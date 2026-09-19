@@ -6,60 +6,152 @@ const HOST = process.env.HOST || 'http://localhost:4000';
  * and it was the smallest type on the page: 10–11px across three copies,
  * clipped to a few lines on a phone with a click handler bolted onto a <p>.
  *
- * TWO MECHANISMS, deliberately, and this file is split along that line.
+ * Both tools open a modal <dialog> now. The callout it replaced was a
+ * permanent full-width amber band under the header whose resting state was the
+ * word "Disclaimer" and a triangle — a row of a 390px screen spent, on every
+ * view, on a notice read once if ever.
  *
- * noblogs opens a modal <dialog>. Its callout was a permanent full-width amber
- * band under the header whose resting state was the word "Disclaimer" and a
- * triangle — a row of a 390px screen spent, on every view, on a notice read
- * once if ever. dsa-explorer still uses the <details> callout; it has not been
- * through this pass yet, and the design system's adoption rule is to migrate
- * what you touched and only what you touched.
- *
- * What both must satisfy is the same and is what these specs actually assert:
- * the full text is reachable without a pointer, and it is never the smallest
- * type on the page. */
+ * What these specs actually assert: the full text is reachable without a
+ * pointer, it is never the smallest type on the page, opening it does not move
+ * the layout, and it rises on the site's one sheet motion. */
 
 const FULL_TEXT_MIN = 300;
+const TOOLS = [
+  { name: 'noblogs', path: '/noblogs/?view=map', id: 'nb',
+    header: '#nb-header', ready: '.leaflet-marker-icon, .marker-cluster' },
+  { name: 'dsa-explorer', path: '/dsa-explorer/', id: 'dsa',
+    header: '#dsa-header', ready: '#cy canvas' },
+];
 
-test.describe('noblogs disclaimer (modal dialog)', () => {
+for (const t of TOOLS) {
+  const OPEN = `#${t.id}-disclaimer-open`;
+  const DLG = `#${t.id}-disclaimer`;
+  const CLOSE = `#${t.id}-disclaimer-close`;
+
+  test.describe(`${t.name} disclaimer (modal dialog)`, () => {
+    test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+
+    const open = async (page) => {
+      await page.goto(HOST + t.path, { waitUntil: 'domcontentloaded' });
+      await page.waitForSelector(OPEN, { timeout: 60000 });
+    };
+
+    test('is closed at rest and costs the header no height', async ({ page }) => {
+      await open(page);
+      expect(await page.locator(DLG).evaluate(e => e.open)).toBe(false);
+
+      /* Settle first: a live status line rewrites itself once the data lands,
+         and an unsettled header measures that rather than the dialog. Poll
+         until the height holds still — a fixed timeout just moves the race. */
+      const h = () => page.evaluate(
+        (sel) => Math.round(document.querySelector(sel).offsetHeight), t.header);
+      await page.waitForSelector(t.ready, { timeout: 90000 });
+      let before = await h();
+      await expect.poll(async () => {
+        const now = await h();
+        const stable = now === before;
+        before = now;
+        return stable;
+      }, { timeout: 15000 }).toBe(true);
+
+      // The old callout was in the header's flow, so opening it resized the
+      // canvas. A modal is in the top layer and must not move layout at all.
+      await page.locator(OPEN).click();
+      await page.waitForTimeout(250);
+      expect(await h(), 'opening the disclaimer must not reflow the header').toBe(before);
+    });
+
+    test('the opener is a 44px target and the text is never the smallest type', async ({ page }) => {
+      await open(page);
+      const h = await page.locator(OPEN)
+        .evaluate(e => Math.round(e.getBoundingClientRect().height));
+      expect(h, 'the opener is the tap target').toBeGreaterThanOrEqual(44);
+
+      await page.locator(OPEN).click();
+      const px = await page.locator(`${DLG} .dr-dialog__body`)
+        .evaluate(e => parseFloat(getComputedStyle(e).fontSize));
+      expect(px, 'legal text below 13px').toBeGreaterThanOrEqual(13);
+    });
+
+    test('opens from the keyboard, traps focus, and Escape closes it', async ({ page }) => {
+      await open(page);
+      const dlg = page.locator(DLG);
+      const body = page.locator(`${DLG} .dr-dialog__body`);
+
+      await expect(body).toBeHidden();
+      await page.locator(OPEN).focus();
+      await page.keyboard.press('Enter');
+
+      await expect(body).toBeVisible();
+      expect(await dlg.evaluate(e => e.open)).toBe(true);
+      expect((await body.textContent()).length,
+        'the full disclaimer should be present, not a clipped excerpt').toBeGreaterThan(FULL_TEXT_MIN);
+
+      // showModal(), not show(). Only the modal form makes the rest of the
+      // document inert and gives us Escape and a ::backdrop for free — if this
+      // ever regresses to show(), the whole reason for using <dialog> is gone.
+      expect(await dlg.evaluate(e => e.matches(':modal')),
+        'must be opened with showModal(), not show()').toBe(true);
+
+      await page.keyboard.press('Escape');
+      await expect(body).toBeHidden();
+      expect(await dlg.evaluate(e => e.open)).toBe(false);
+    });
+
+    test('rises from the bottom edge, on the same motion as the sheet', async ({ page }) => {
+      /* It shipped with no transition at all, while the detail sheet eight
+         pixels away slid — two bottom-anchored surfaces, two different physics.
+         There is one bottom-sheet motion on this site and both use it.
+
+         `allow-discrete` on display/overlay is the part that is easy to lose: a
+         <dialog> leaves the top layer the instant close() is called, so without
+         it the OPEN direction animates and the close direction silently does
+         not. Both durations are asserted for that reason. */
+      await open(page);
+      const props = await page.evaluate((sel) => {
+        const cs = getComputedStyle(document.querySelector(sel));
+        return { transition: cs.transitionProperty, duration: cs.transitionDuration };
+      }, DLG);
+      expect(props.transition).toContain('transform');
+      expect(props.transition, 'a dialog without allow-discrete cannot animate closed')
+        .toContain('display');
+      expect(props.transition).toContain('overlay');
+      expect(props.duration).toMatch(/0\.24s|240ms/);
+
+      /* And it actually moves. The closed state cannot be read from
+         getComputedStyle — a closed <dialog> is display:none, so its transform
+         resolves to "none" no matter what the rule says — so sample the
+         position mid-flight instead. */
+      const top = () => page.evaluate(
+        (sel) => document.querySelector(sel).getBoundingClientRect().top, DLG);
+      await page.locator(OPEN).click();
+      const mid = await top();
+      await page.waitForTimeout(500);
+      const settled = await top();
+      expect(mid, 'the dialog appears in place instead of rising').toBeGreaterThan(settled);
+    });
+
+    test('returns focus to the opener on close', async ({ page }) => {
+      await open(page);
+      await page.locator(OPEN).focus();
+      await page.keyboard.press('Enter');
+      await page.locator(CLOSE).click();
+      // The platform does this; the test is here so a hand-rolled replacement
+      // cannot quietly drop it.
+      expect(await page.evaluate(
+        () => document.activeElement.id)).toBe(`${t.id}-disclaimer-open`);
+    });
+  });
+}
+
+test.describe('noblogs status line', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
 
-  const open = async (page) => {
-    await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
-    await page.waitForSelector('#nb-disclaimer-open', { timeout: 60000 });
-  };
-
-  test('is closed at rest and costs the header no height', async ({ page }) => {
-    await open(page);
-    expect(await page.locator('#nb-disclaimer').evaluate(e => e.open)).toBe(false);
-
-    /* Settle first. #subcount is a live region that the map rewrites once
-       map_data.js lands, and an unsettled header was measuring the status line
-       changing rather than the dialog opening. Poll until the height holds
-       still for two reads — a fixed timeout just moves the race. */
-    const h = () => page.evaluate(
-      () => Math.round(document.getElementById('nb-header').offsetHeight));
-    await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
-    let before = await h();
-    await expect.poll(async () => {
-      const now = await h();
-      const stable = now === before;
-      before = now;
-      return stable;
-    }, { timeout: 15000 }).toBe(true);
-
-    // The old callout was in the header's flow, so opening it resized the map.
-    // A modal is in the top layer and must not move layout at all.
-    await page.locator('#nb-disclaimer-open').click();
-    await page.waitForTimeout(250);
-    expect(await h(), 'opening the disclaimer must not reflow the header').toBe(before);
-  });
-
-  test('the status line stays one line on a phone', async ({ page }) => {
+  test('stays one line on a phone', async ({ page }) => {
     /* The header's height is what the map is sized against, so a status line
        that wraps is a status line that shrinks the map. The first version of
        the map-view count ran to three lines at 390px. */
-    await open(page);
+    await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
     await page.waitForTimeout(500);
 
@@ -72,132 +164,6 @@ test.describe('noblogs disclaimer (modal dialog)', () => {
       };
     });
     expect(lines, `the status line wraps: "${text}"`).toBeLessThanOrEqual(1);
-  });
-
-  test('the opener is a 44px target and the text is never the smallest type', async ({ page }) => {
-    await open(page);
-    const h = await page.locator('#nb-disclaimer-open')
-      .evaluate(e => Math.round(e.getBoundingClientRect().height));
-    expect(h, 'the opener is the tap target').toBeGreaterThanOrEqual(44);
-
-    await page.locator('#nb-disclaimer-open').click();
-    const px = await page.locator('#nb-disclaimer .dr-dialog__body')
-      .evaluate(e => parseFloat(getComputedStyle(e).fontSize));
-    expect(px, 'legal text below 13px').toBeGreaterThanOrEqual(13);
-  });
-
-  test('opens from the keyboard, traps focus, and Escape closes it', async ({ page }) => {
-    await open(page);
-    const dlg = page.locator('#nb-disclaimer');
-    const body = page.locator('#nb-disclaimer .dr-dialog__body');
-
-    await expect(body).toBeHidden();
-    await page.locator('#nb-disclaimer-open').focus();
-    await page.keyboard.press('Enter');
-
-    await expect(body).toBeVisible();
-    expect(await dlg.evaluate(e => e.open)).toBe(true);
-    expect((await body.textContent()).length,
-      'the full disclaimer should be present, not a clipped excerpt').toBeGreaterThan(FULL_TEXT_MIN);
-
-    // showModal(), not show(). Only the modal form makes the rest of the
-    // document inert and gives us Escape and a ::backdrop for free — if this
-    // ever regresses to show(), the whole reason for using <dialog> is gone.
-    expect(await dlg.evaluate(e => e.matches(':modal')),
-      'must be opened with showModal(), not show()').toBe(true);
-
-    await page.keyboard.press('Escape');
-    await expect(body).toBeHidden();
-    expect(await dlg.evaluate(e => e.open)).toBe(false);
-  });
-
-  test('rises from the bottom edge, on the same motion as the sheet', async ({ page }) => {
-    /* It shipped with no transition at all, while the detail sheet eight
-       pixels away slid — two bottom-anchored surfaces, two different physics.
-       There is one bottom-sheet motion on this site and both use it.
-
-       `allow-discrete` on display/overlay is the part that is easy to lose: a
-       <dialog> leaves the top layer the instant close() is called, so without
-       it the OPEN direction animates and the close direction silently does
-       not. Both durations are asserted for that reason. */
-    await open(page);
-    const props = await page.evaluate(() => {
-      const cs = getComputedStyle(document.getElementById('nb-disclaimer'));
-      return {
-        transition: cs.transitionProperty,
-        duration: cs.transitionDuration,
-        transform: cs.transform,
-      };
-    });
-    expect(props.transition).toContain('transform');
-    expect(props.transition, 'a dialog without allow-discrete cannot animate closed')
-      .toContain('display');
-    expect(props.transition).toContain('overlay');
-    // Non-zero, and the same token .dr-sheet uses.
-    expect(props.duration).toMatch(/0\.24s|240ms/);
-
-    /* And it actually moves. The closed state cannot be read from
-       getComputedStyle — a closed <dialog> is display:none, so its transform
-       resolves to "none" no matter what the rule says — so sample the position
-       mid-flight instead. Straight after the click it should still be low on
-       the screen, and settle higher. */
-    const top = () => page.evaluate(
-      () => document.getElementById('nb-disclaimer').getBoundingClientRect().top);
-    await page.locator('#nb-disclaimer-open').click();
-    const mid = await top();
-    await page.waitForTimeout(500);
-    const settled = await top();
-    expect(mid, 'the dialog appears in place instead of rising')
-      .toBeGreaterThan(settled);
-  });
-
-  test('returns focus to the opener on close', async ({ page }) => {
-    await open(page);
-    await page.locator('#nb-disclaimer-open').focus();
-    await page.keyboard.press('Enter');
-    await page.locator('#nb-disclaimer-close').click();
-    // The platform does this; the test is here so a hand-rolled replacement
-    // cannot quietly drop it.
-    expect(await page.evaluate(() => document.activeElement.id)).toBe('nb-disclaimer-open');
-  });
-});
-
-test.describe('dsa-explorer disclaimer (details callout)', () => {
-  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-
-  test('is a real details, closed, with a 44px summary', async ({ page }) => {
-    await page.goto(HOST + '/dsa-explorer/', { waitUntil: 'domcontentloaded' });
-    const d = page.locator('details.disclaimer');
-    await expect(d).toBeVisible();
-    expect(await d.evaluate(e => e.open)).toBe(false);
-
-    const h = await page.locator('details.disclaimer > summary')
-      .evaluate(e => Math.round(e.getBoundingClientRect().height));
-    expect(h, 'the summary is the tap target').toBeGreaterThanOrEqual(44);
-  });
-
-  test('is never the smallest type on the page', async ({ page }) => {
-    await page.goto(HOST + '/dsa-explorer/', { waitUntil: 'domcontentloaded' });
-    await page.locator('details.disclaimer > summary').click();
-
-    const px = await page.locator('details.disclaimer .disclaimer-body')
-      .evaluate(e => parseFloat(getComputedStyle(e).fontSize));
-    expect(px, 'legal text below 13px').toBeGreaterThanOrEqual(13);
-  });
-
-  test('opens from the keyboard and reveals the full text', async ({ page }) => {
-    await page.goto(HOST + '/dsa-explorer/', { waitUntil: 'domcontentloaded' });
-    const d = page.locator('details.disclaimer');
-    const body = page.locator('details.disclaimer .disclaimer-body');
-
-    await expect(body).toBeHidden();
-    await page.locator('details.disclaimer > summary').focus();
-    await page.keyboard.press('Enter');
-
-    await expect(body).toBeVisible();
-    expect(await d.evaluate(e => e.open)).toBe(true);
-    expect((await body.textContent()).length,
-      'the full disclaimer should be present, not a clipped excerpt').toBeGreaterThan(FULL_TEXT_MIN);
   });
 });
 

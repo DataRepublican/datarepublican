@@ -144,23 +144,26 @@ Each of these has already happened here, or is one edit away.
 
 ## Where the migration stands
 
-`noblogs` is the reference implementation of `tool-chrome.md`. `dsa-explorer`
-has the `.dr-btn` toolbar and the legend conversion but **not** the chrome
-pattern — it still has the amber `<details>` disclaimer, a search field parked
-on the canvas, a `›` panel chevron and a ragged control cluster.
+Both `noblogs` and `dsa-explorer` follow `tool-chrome.md`. noblogs is the
+reference implementation; dsa-explorer went through in the same pass and is the
+proof the pattern transfers.
 
-**It is designed but not built.** The boards are `dsa 3/mobile — reorganized`
-and `dsa 3/desktop — reorganized` on page `p-2-0`; `dsa 2/*` are the before.
-What they settle, beyond a straight copy of the noblogs chrome:
+Where dsa differs, and why — these are not omissions:
 
-- **The search goes in the header row, not on the canvas.** dsa has only one
-  search and it is the page's; noblogs' graph keeps a canvas search only because
-  the page already has a different one two rows above it.
+- **No view toggle.** It has one view, so row 2 of the header is just search.
+- **The search is in the header** and nowhere else: it is the tool's only
+  search, so there is no page/canvas split to make. It finds, never filters.
 - **The legend stays on the canvas.** It is dsa's colour key AND its only
   filter, and unlike the noblogs map there is no facet panel to fold it into.
   Building a popover to hold one control is worse than leaving it where it
-  doubles as the key. Collapsed to one 44px row on a phone, as it is now.
-- **The control cluster is the noblogs graph's, exactly**: icon-only column for
-  zoom / zoom / fit / re-layout, then icon+label pills for Back, Focus mode,
-  Inferred links, Export. 32px above md, 44px below, pressed = accent fill.
-  A horizontal scrolling rail at the bottom on a phone.
+  doubles as the key.
+- **Legend polarity is inverted from the graph's.** dsa is single-select with
+  clear and nothing is isolated by default, so a filled pressed state is
+  correct there — see the polarity table in `components.md`.
+
+The older boards `dsa 3/mobile — reorganized` and `dsa 3/desktop — reorganized`
+on page `p-2-0` are what this was built from; `dsa 2/*` are the before.
+
+What is left in dsa, for whoever is next in the file: its `:root` block should
+be scoped to `#app` (prohibition 3). It only sets custom properties today, so
+nothing leaks, but the rule is the rule.

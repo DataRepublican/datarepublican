@@ -30,17 +30,21 @@ test.describe('dsa-explorer on a phone', () => {
   test('controls are reachable and tappable', async ({ page }) => {
     await loadGraph(page);
 
-    const search = await box(page, '#search');
-    const controls = await box(page, '#controls');
-    expect(search).not.toBeNull();
-    expect(controls).not.toBeNull();
+    /* The search field and the control cluster used to overlap by ~125px, both
+       pinned to the canvas, and the field painted over Zoom / Reset view /
+       Re-layout / Export because it came later in the DOM with no z-index on
+       either. They cannot collide any more: the search moved into the header
+       and the canvas carries no input at all. */
+    const onCanvas = await page.evaluate(() => ({
+      inputs: document.querySelectorAll('#stage input').length,
+      legacySearch: !!document.querySelector('#stage #search'),
+      headerField: !!document.querySelector('#dsa-header #q'),
+    }));
+    expect(onCanvas.inputs, 'a search field is back on the canvas').toBe(0);
+    expect(onCanvas.legacySearch).toBe(false);
+    expect(onCanvas.headerField, 'the search must live in the header').toBe(true);
 
-    // These two used to overlap by ~125px, and the search field painted over
-    // Zoom / Reset view / Re-layout / Export PNG, which were unreachable.
-    const overlaps =
-      !(search.x + search.w <= controls.x || controls.x + controls.w <= search.x ||
-        search.y + search.h <= controls.y || controls.y + controls.h <= search.y);
-    expect(overlaps, 'search must not cover the control cluster').toBe(false);
+    expect(await box(page, '#controls')).not.toBeNull();
 
     // 44px minimum on every control.
     const small = await page.evaluate(() =>

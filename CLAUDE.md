@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (157 specs, ~48s).
+Tests need the dev server running: `npx playwright test` (176 specs, ~45s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -150,8 +150,8 @@ which blocks and why.
 - **Tool chrome has a pattern, and it is written down.** One row per question,
   nothing permanent on the canvas, legal text in a modal. Read
   `.claude/skills/dr-design-system/references/tool-chrome.md` before laying out
-  a tool header or putting anything on top of a map or a graph. `noblogs` is the
-  reference implementation; `dsa-explorer` has not been through it yet.
+  a tool header or putting anything on top of a map or a graph. `noblogs` and
+  `dsa-explorer` both follow it.
 
 ## Deploying — read this before touching `docs/`
 

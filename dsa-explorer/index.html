@@ -21,7 +21,12 @@ title: DSA Explorer
 <style>
   :root{
     --money:#1B7F4B; --party:#C0392B; --state:#B8860B; --veneer:#4A6FA5;
-    --center:#111827; --ink:#1A1A1A; --line:#94A3B8; --bg:#F7F7F5; --panel:#FFFFFF;
+    --center:#111827; --ink:#1A1A1A; --line:#94A3B8; --panel:#FFFFFF;
+    /* The site surface, not a warm grey of this tool's own. It was #F7F7F5,
+       which made the tool's header and ground read as a lighter band pasted
+       onto the page — the temperature split the design system exists to close.
+       noblogs made the same change; see the note at the top of its file. */
+    --bg:#E5E7EB;
   }
   *{box-sizing:border-box}
   /* height was calc(100vh - 110px): a hardcoded guess at the site chrome that
@@ -33,39 +38,61 @@ title: DSA Explorer
      _layouts/default.html is a <header> too, and the bare selector made it a
      flex container — which collapsed the wordmark block to its content width
      and cut the 5/3/2 rule short. */
-  #dsa-header{grid-column:1/3;padding:12px 18px;border-bottom:1px solid #E2E2DD;background:#fff;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-  #dsa-header h1{font-size:18px;margin:0;font-weight:700}
-  #dsa-header .sub{font-size:12.5px;color:#666}
-  #dsa-header .counts{margin-left:auto;font-size:12px;color:#888;font-variant-numeric:tabular-nums}
-  /* Same callout as noblogs. See the note there — one implementation, 13px,
-     native disclosure, 44px summary. */
-  #dsa-header .disclaimer{flex-basis:100%;margin-top:8px;padding:0;border:1px solid var(--dr-legal-border,#E4C9A0);
-    background:var(--dr-legal-fill,#FBF3E4);border-radius:var(--dr-radius-sm,6px);
-    font-size:var(--dr-text-meta,13px);line-height:1.5;color:var(--dr-legal-ink,#6B5A3E)}
-  #dsa-header .disclaimer>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;
-    padding:8px 12px;min-height:2.75rem;font-family:var(--dr-font-ui,inherit);font-weight:600}
-  #dsa-header .disclaimer>summary::-webkit-details-marker{display:none}
-  #dsa-header .disclaimer>summary::before{content:"\25B8";font-size:11px;transition:transform .12s}
-  #dsa-header .disclaimer[open]>summary::before{transform:rotate(90deg)}
-  #dsa-header .disclaimer>summary:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:-2px;
-    border-radius:var(--dr-radius-sm,6px)}
-  #dsa-header .disclaimer .disclaimer-body{padding:0 12px 10px}
-  #dsa-header .disclaimer strong{color:#8A5A1A}
+  /* ---- Tool header -------------------------------------------------------
+     Two rows: identity + legal, then the controls. There is no view toggle —
+     this tool has one view — so row 2 is just the search. Pattern in
+     .claude/skills/dr-design-system/references/tool-chrome.md §1.
+
+     #dsa-header, not a bare `header`: the site masthead in
+     _layouts/default.html is a <header> too, and the bare selector made it a
+     flex container — which collapsed the wordmark block to its content width
+     and cut the 5/3/2 rule short. */
+  #dsa-header{grid-column:1/3;padding:10px 18px 12px;border-bottom:1px solid var(--dr-line,#D3D7DE);
+    background:var(--bg);display:flex;flex-direction:column;gap:10px}
+  .dsa-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .dsa-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+  #dsa-header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.2}
+  /* 13px is the sentence floor; 12px is the label size. This is a sentence. */
+  #dsa-header .sub{font-size:var(--dr-text-meta,13px);color:var(--dr-ink-faint,#6B7280);line-height:1.35}
+
+  /* The search is a LABEL wrapping the input, so the magnifier sits inside the
+     field's border. Scoped `.dsa-search #q`, never a bare `#q`. */
+  .dsa-controls{display:flex;align-items:center;gap:8px;min-width:0}
+  .dsa-search{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;
+    height:var(--dr-tap,2.75rem);padding:0 14px;background:var(--dr-panel,#fff);
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-pill,9999px)}
+  .dsa-search:focus-within{border-color:var(--dr-line-strong,#878D99);
+    outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  .dsa-search svg{flex:none;color:var(--dr-ink-faint,#6B7280)}
+  .dsa-search #q{flex:1 1 auto;min-width:0;appearance:none;border:0;background:none;
+    padding:0;margin:0;color:var(--ink);font-family:inherit;
+    /* 16px or iOS zooms the viewport on focus and never zooms back out. */
+    font-size:var(--dr-text-body,16px)}
+  .dsa-search #q:focus{outline:none}
+  .dsa-search #q::placeholder{color:var(--dr-ink-faint,#6B7280)}
+
+  @media(min-width:768px){
+    #dsa-header{padding:12px 18px 14px;gap:12px}
+    #dsa-header h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
+    .dsa-id{flex-direction:row;align-items:baseline;gap:12px}
+    .dsa-search{flex:0 1 26rem;height:2.25rem}
+    .dsa-search #q{font-size:var(--dr-text-dense,14px)}
+  }
   #cy{width:100%;height:100%;background:
      radial-gradient(circle at 50% 42%, #FFFFFF 0%, #F2F2EE 70%)}
   #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2}
   /* controls — NB: the site's global button{} rule paints buttons slate-900 bg + white text;
      these #stage overrides restore readable dark-on-light text and drop the forced min-width/margin */
   #stage button{color:#1A1A1A;background:#fff;min-width:0;margin:0;font-weight:500}
-  /* A pressed toggle is filled, so the state is visible as well as announced.
-     main.css already has this rule for .dr-controls; these controls are not on
-     that class yet, so it is repeated here until they are. */
-  #stage button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
-  #controls button:focus-visible,#panelToggle:focus-visible,#legend button:focus-visible{
+  /* Scoped to #controls, not #stage. As a blanket `#stage button` rule this
+     also caught the legend's chips and rows, which are buttons with
+     aria-pressed too — see the polarity note in components.md. */
+  #controls button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  #controls button:focus-visible,#legend button:focus-visible{
     outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
   #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
-  /* Geometry lives in .dr-btn. The .grp wrapper keeps no box of its own — it is
-     a layout row, not a control. */
+  /* Geometry lives in .dr-btn. What stays is the float — a control over a
+     canvas needs a shadow to separate from it. */
   #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08)}
 
   /* 32px above md — see the note in noblogs/graph/graph.css. Same stacked
@@ -74,11 +101,10 @@ title: DSA Explorer
     #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
     #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
   }
-  #search{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:var(--dr-z-canvas-ui,20)}
-  #search input{width:260px;padding:7px 11px;border:1px solid #D5D5CE;border-radius:20px;font-size:13px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
-  /* details-panel collapse: widen the map; a node/edge tap (or the toggle) reopens it */
-  #panelToggle{position:absolute;top:12px;right:12px;z-index:calc(var(--dr-z-canvas-ui,20) + 1);border:1px solid #D5D5CE;border-radius:6px;font-size:15px;line-height:1;padding:5px 10px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
-  #panelToggle:hover{background:#f0f0ea}
+  /* The canvas search and the `›` panel chevron are gone. The header field is
+     this tool's search, and the panel opens on selection and closes on a
+     background tap — a control for a state that manages itself is not a
+     control. See tool-chrome.md §4 and §5. */
   #app.panel-collapsed{grid-template-columns:1fr 0}
   #app.panel-collapsed aside{display:none}
   /* legend — slim bottom bar (ideology chips); click ⌃ Legend to expand the full key upward */
@@ -184,23 +210,24 @@ title: DSA Explorer
      Zoom, Reset view, Re-layout and Export PNG were all unreachable. */
   @media(max-width:767px){
     #app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
-    #dsa-header{padding:10px 14px}
-    #dsa-header h1{font-size:16px}
-    #dsa-header .sub{display:none}
-    /* Closed by default; nothing to clip. */
+    #dsa-header{padding:10px 14px 12px}
 
-    /* Sized so that once the chrome has scrolled off, the canvas and its
-       control row fill the screen down to just above the nav pill. Trying to
-       fit canvas *and* chrome in one viewport left a 300px graph; letting the
-       header scroll away gives the tool the whole screen. */
-    #stage{grid-column:1;grid-row:2;height:calc(100dvh - var(--nav-clearance) - 2rem);min-height:20rem}
+    /* The header STICKS and the canvas takes what is left.
+       This used to let the header scroll away and size the canvas as
+       `100dvh - nav - 2rem`, which assumes #stage starts at the top of the
+       window. It does not — the header is in flow above it — so the box ran
+       past the bottom of the viewport and the control rail sat 33px under the
+       floating nav pill. A length standing in for a position, the same bug as
+       the noblogs drawer's inset.
+
+       --dsa-header-h is measured at runtime, by id: the site masthead is also
+       a <header> and comes first in the DOM. See tool-chrome.md §6. */
+    #dsa-header{position:sticky;top:0;z-index:var(--dr-z-sticky,30)}
+    #stage{grid-column:1;grid-row:2;
+      height:calc(100dvh - var(--dsa-header-h,7rem) - var(--nav-clearance));min-height:20rem}
     /* Cytoscape claims one-finger drag, so the page cannot be scrolled while a
        finger is on the canvas. Pan the graph with two fingers instead. */
     #cy{touch-action:pan-y}
-
-    /* Search first: full width across the top, clear of everything else. */
-    #search{position:absolute;top:8px;left:8px;right:8px;transform:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
-    #search input{width:100%;min-height:2.75rem;font-size:16px}
 
     /* Controls: one horizontal, scrollable row along the bottom of the canvas,
        at 44px. Not a 160px column over the graph. */
@@ -208,10 +235,6 @@ title: DSA Explorer
     #controls::-webkit-scrollbar{display:none}
     /* .dr-btn is already 44px and a pill; the rail only stops them shrinking. */
     #controls .dr-btn{flex:0 0 auto}
-    #controls .grp{display:contents}
-
-    /* The sheet has its own close affordance. */
-    #panelToggle{display:none}
 
     /* Legend collapses to its toggle; the full key opens upward as before but
        is capped so it cannot swallow the canvas. */
@@ -237,29 +260,53 @@ title: DSA Explorer
 
 <div id="app">
   <header id="dsa-header">
-    <h1 id="title">DSA Explorer</h1>
-    <span class="sub" id="subtitle">Orgs &amp; people grouped by ideological current, orbiting the anti-imperialist spine · country is a separate patron/host axis</span>
-    <span class="counts" id="counts"></span>
-    <details class="disclaimer"><summary><span class="disclaimer-label">Disclaimer</span></summary><div class="disclaimer-body">Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate. Inferred, ideological, and patron/sphere associations are analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization. Do not rely on this material without independent verification. The author disclaims all liability for any use of, or reliance on, its contents.</div></details>
+    <div class="dsa-idrow">
+      <div class="dsa-id">
+        <h1 id="title">DSA Explorer</h1>
+        <div class="sub" id="counts" role="status" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      <button type="button" class="dr-dialog-open" id="dsa-disclaimer-open" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Disclaimer
+      </button>
+    </div>
+    {%- comment -%}
+      The tool's only search, so it belongs in the header rather than on the
+      canvas. It FINDS — highlights and glides — and never filters; see
+      tool-chrome.md §5 for why a network view must not filter on search.
+    {%- endcomment -%}
+    <div class="dsa-controls">
+      <label class="dsa-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="text" placeholder="Find an org or person…" autocomplete="off" aria-label="Find an org or person on the graph">
+      </label>
+    </div>
   </header>
   <div id="stage">
     <div id="cy"></div>
-    <button id="panelToggle" title="Hide details panel">›</button>
-    <div id="search"><input id="q" type="text" placeholder="Search a node…" autocomplete="off"></div>
     <div id="controls">
       <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
       <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
       <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" title="Reset view"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></button>
       <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" title="Re-layout"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button>
-      <!-- Pressed means the inferred links are SHOWN, which is how the graph
-           loads — the state variable behind it is `infHidden`, so the two read
-           in opposite directions and the initial value has to say so. -->
-      <button type="button" id="toggleInf" class="dr-btn" aria-pressed="true">Inferred links</button>
-      <button type="button" id="export" class="dr-btn" title="Download a high-resolution PNG of the current view (print / thread quality)"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>
-      <div class="grp" style="display:flex;gap:6px;padding:0;border:none;box-shadow:none">
-        <button type="button" id="back" class="dr-btn" style="flex:1" disabled><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>Back</button>
-        <button type="button" id="focusToggle" class="dr-btn" style="flex:1" aria-pressed="true"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg>Focus mode</button>
-      </div>
+      <!-- One flat column, matching noblogs' graph: icon-only for the four
+           conventional actions, icon + .glabel for anything that names a mode
+           or is irreversible. The `.grp` row that used to pair Back and Focus
+           mode is gone — it made two controls look like one control with two
+           halves.
+
+           Every labelled control carries its word in a <span class="glabel">.
+           Export swaps that label while cy.png() runs, and doing it with
+           `btn.textContent` replaces ALL children, so the first export deleted
+           the button's <svg> permanently.
+
+           Pressed on toggleInf means the inferred links are SHOWN, which is how
+           the graph loads — the state variable behind it is `infHidden`, so the
+           two read in opposite directions. -->
+      <button type="button" id="back" class="dr-btn" title="Step back to the previous node in the focus walk" disabled><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span class="glabel">Back</span></button>
+      <button type="button" id="focusToggle" class="dr-btn" aria-pressed="true" title="Focus mode — clicking a node isolates it and its immediate ties, and walks the network one step at a time. Turn it off to keep the whole graph visible."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg><span class="glabel">Focus mode</span></button>
+      <button type="button" id="toggleInf" class="dr-btn" aria-pressed="true" title="Show the dashed inferred links as well as the solid confirmed ones."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span class="glabel">Inferred links</span></button>
+      <button type="button" id="export" class="dr-btn" title="Download a high-resolution PNG of the current view (print / thread quality)"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg><span class="glabel">Export</span></button>
     </div>
     <div id="legend"></div>
   </div>
@@ -267,6 +314,22 @@ title: DSA Explorer
     <div class="empty">Click a node to see its role, notes, and source URL.<br><br>Click an edge to see the relationship and its evidence tier.</div>
   </aside>
 </div>
+
+{%- comment -%}
+  showModal(), never show() — see assets/css/components/dialog.css.
+  Outside #app on purpose: the modal is not part of the tool's grid.
+{%- endcomment -%}
+<dialog class="dr-dialog" id="dsa-disclaimer" aria-labelledby="dsa-disclaimer-title">
+  <div class="dr-dialog__head">
+    <h2 id="dsa-disclaimer-title">Disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="dsa-disclaimer-close" aria-label="Close" title="Close">✕</button>
+  </div>
+  <div class="dr-dialog__body">
+    <p>Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered &ldquo;as is&rdquo; without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100&#37; accurate.</p>
+    <p>Inferred, ideological, and patron/sphere associations are analytical interpretations, not statements of fact, and nothing here alleges unlawful conduct by any named person or organization.</p>
+    <p>Do not rely on this material without independent verification. The author disclaims all liability for any use of, or reliance on, its contents.</p>
+  </div>
+</dialog>
 
 <script>
 /* ------- layer palette + kind shapes ------- */
@@ -540,7 +603,7 @@ function build(nodes, edges, baked){
   window.__usedTerr = usedTerr;                         // for the dynamic legend
 
   document.getElementById('counts').textContent =
-    nodes.length+' nodes · '+edges.length+' edges';
+    nodes.length.toLocaleString()+' nodes · '+edges.length.toLocaleString()+' edges';
 
   const cy = cytoscape({
     container: document.getElementById('cy'),
@@ -1010,17 +1073,43 @@ function build(nodes, edges, baked){
   let focusMode = new URLSearchParams(location.search).get('focus')!=='off'; // start scoped-in; ?focus=off deep-links the full-network view
   let focusId = centerId;       // the node whose immediate ring is currently shown
   const hist = [];              // walk history, for the Back button
-  // --- details-panel collapse: hide the right panel to widen the map; reopened by the toggle
-  //     or by any node/edge tap (which has something to show) ---
+  /* The panel opens and closes ITSELF, in response to selection. The `›`
+     chevron that used to float over the canvas is gone: the panel is empty
+     until you click something and empties again on a background tap, so the
+     button's only honest use was hiding a panel that already had something in
+     it — and the background click did that plus the deselect you wanted. */
+  /* The canvas is sized against what is left of the viewport, so the header's
+     real height has to be a number the CSS can read. Measured, never assumed —
+     and by id, because the site masthead is a <header> too and comes first. */
+  (function(){
+    const h=document.getElementById('dsa-header');
+    if(!h) return;
+    const setH=()=>document.documentElement.style.setProperty('--dsa-header-h',h.offsetHeight+'px');
+    setH();
+    if(window.ResizeObserver) new ResizeObserver(setH).observe(h);
+    else window.addEventListener('resize',setH);
+  })();
+
   const appEl = document.getElementById('app');
-  const panelToggle = document.getElementById('panelToggle');
   function setPanelCollapsed(c){
+    if(appEl.classList.contains('panel-collapsed') === c) return;
     appEl.classList.toggle('panel-collapsed', c);
-    panelToggle.textContent = c ? '‹' : '›';
-    panelToggle.title = c ? 'Show details panel' : 'Hide details panel';
     requestAnimationFrame(()=>cy.resize());
   }
-  panelToggle.onclick = ()=>setPanelCollapsed(!appEl.classList.contains('panel-collapsed'));
+
+  /* The legal notice. showModal(), never show() — only the modal form gets the
+     focus trap, Escape, the backdrop and the top layer, which is how it clears
+     Cytoscape's canvas without this repo authoring a z-index above 100. */
+  (function(){
+    const dlg=document.getElementById('dsa-disclaimer');
+    const open=document.getElementById('dsa-disclaimer-open');
+    const close=document.getElementById('dsa-disclaimer-close');
+    if(!dlg||!open) return;
+    open.addEventListener('click',()=>dlg.showModal());
+    if(close) close.addEventListener('click',()=>dlg.close());
+    // The backdrop is not a child, so a click on it targets the <dialog>.
+    dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+  })();
 
   // On a phone the details panel is a bottom sheet rather than a column below
   // the canvas, so a node tap answers where you can see it. On desktop
@@ -1216,7 +1305,12 @@ function build(nodes, edges, baked){
   // pan/zoom and with the active focus/walk fade preserved. cy.png() (full:false) captures the
   // current viewport only; it never re-frames to the whole graph and never touches focus/fade/camera.
   document.getElementById('export').onclick=function(){
-    const btn=this, was=btn.textContent; btn.textContent='Rendering…'; btn.disabled=true;
+    /* Only the .glabel is swapped. btn.textContent — which is what this did —
+       replaces every child, so the first export destroyed the button's <svg>
+       and restoring the string never brought it back. aria-busy is what
+       button.css styles and what a screen reader reads. */
+    const btn=this, lab=btn.querySelector('.glabel'), was=lab.textContent;
+    lab.textContent='Rendering…'; btn.disabled=true; btn.setAttribute('aria-busy','true');
     revealLogos(true);   // ensure logos visible in the frame are branded, not placeholder tiles
     // let the logo-filled frame settle one tick before snapshotting
     setTimeout(()=>{
@@ -1225,7 +1319,7 @@ function build(nodes, edges, baked){
         const a=document.createElement('a');
         a.href=uri; a.download='dsa-explorer.png'; a.click();
       }catch(err){ console.error('export failed',err); alert('Export failed: '+err.message); }
-      btn.textContent=was; btn.disabled=false;
+      lab.textContent=was; btn.disabled=false; btn.removeAttribute('aria-busy');
     },60);
   };
   // Back: step to the previous node in the walk history
