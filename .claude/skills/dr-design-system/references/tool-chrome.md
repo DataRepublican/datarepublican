@@ -69,7 +69,7 @@ be a de-duplication rather than a relocation:
 |---|---|
 | counts | the header's live status line (`#subcount`) — already announced to a screen reader |
 | a display toggle | a group in the filter popover, behind a real API (§7) |
-| a colour legend | the facet group that already lists the same categories |
+| a color legend | the facet group that already lists the same categories |
 
 If something has no home, that is a signal the thing itself was not carrying
 its weight.
@@ -126,7 +126,7 @@ Four things follow from it:
   to re-measure Leaflet or re-fit Cytoscape on open and close — the bug class
   goes away rather than getting a handler.
 - **It is never empty.** Default content when nothing is selected (on noblogs,
-  the categories, which double as the map's colour key), the detail when
+  the categories, which double as the map's color key), the detail when
   something is, one swapped for the other by a class on `body`. A panel that
   is blank half the time reads as a rendering failure.
 - **The close button only exists while there is somewhere to go back to.** It
@@ -171,7 +171,7 @@ its containing block is the viewport.
 Categories render in the sidebar *and* in the filter popover. That looks like
 duplication and the first cut removed the popover's copy — which broke the
 thing the sidebar was for: once a blog is selected the detail takes the column
-over, and there was then no way to recolour the map while reading one.
+over, and there was then no way to recolor the map while reading one.
 
 Two presentations of one control is fine. **Neither may hold state.** Render
 both out of the single source on every change, from the same function, and bind
@@ -235,7 +235,7 @@ one of them obviously wrong. If you are writing a new surface and reaching for
 a duration, you are already off the path: take the tokens.
 
 On a phone the motion is a **pure slide**, no fade. A fade-and-lift is the
-desktop gesture for a centred card; using it on something pinned to the bottom
+desktop gesture for a centered card; using it on something pinned to the bottom
 edge is the same divergence one step smaller, which is why `.dr-dialog`'s
 mobile block explicitly re-states `opacity: 1`.
 
@@ -265,7 +265,7 @@ can disagree. Three ways they did:
 
 - **Ground.** The sheet, its grip and the panel inside it are three elements
   painting what has to look like one surface, and each had its own idea of the
-  colour. Stacked, that put a band above the content and another below it,
+  color. Stacked, that put a band above the content and another below it,
   which read as a header and a footer the sheet does not have. The sheet
   exposes `--dr-sheet-surface` and the consumer sets it — never restyle
   `.dr-sheet` itself. **A detail panel's ground is `--panel`, not `--bg`**:
@@ -299,7 +299,7 @@ can disagree. Three ways they did:
 
 The general rule: when a shared wrapper and its consumer both have an opinion
 about a surface, the wrapper exposes a variable and the consumer sets it. Two
-stylesheets independently deciding what colour something is will drift.
+stylesheets independently deciding what color something is will drift.
 
 ## 4. A control for a state that manages itself is not a control
 
@@ -338,13 +338,13 @@ setPanel(false);
 ## 5. Search is a control, not furniture
 
 A search field parked on the canvas is a white box permanently covering data.
-The graph's sat top-centre over the densest part of the network **and**
+The graph's sat top-center over the densest part of the network **and**
 duplicated the explorer's page-level field two rows above it.
 
 Search opens from the toolbar:
 
 The header field is the only field. noblogs' graph went through three canvas
-searches — a 270px box parked top-centre, one hidden behind a toolbar button,
+searches — a 270px box parked top-center, one hidden behind a toolbar button,
 one growing out of that button — before the answer turned out to be that a
 canvas does not need one. If you are positioning a search over a visualization,
 stop and ask what the header field is for.
@@ -403,7 +403,7 @@ Three things follow, and each one is a bug if you miss it:
   view-dependent now, so a switch that only toggles `display` leaves the
   previous view's numbers on screen.
 
-Frame what you found: centre a single hit, fit several, and **leave the camera
+Frame what you found: center a single hit, fit several, and **leave the camera
 alone on zero** — moving the view to show an empty result is worse than not
 moving it. A miss says so in the status line; it does not empty the canvas.
 
@@ -533,7 +533,7 @@ Two different jobs, and a control that is ambiguous usually needs both.
 `assets/js/tooltip.js` + `components/tooltip.css`. **`title` was tried first and
 is not good enough**: the native tooltip waits about a second, and on an
 icon-only control that delay is the whole interaction — you hover a glyph you do
-not recognise, get nothing, and move on. A tooltip that exists to explain an
+not recognize, get nothing, and move on. A tooltip that exists to explain an
 ambiguous control has to be instant.
 
 Three things about it that are not obvious:
@@ -559,12 +559,19 @@ not the mechanism:
 
 | control | tooltip |
 |---|---|
-| Focus mode | "Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest." |
+| Focus mode | "Clicking a node shows only that node and its direct ties, so you can follow the network one node at a time. Turn it off to keep the whole graph visible and select without fading the rest." |
 | Target edges only | "Hide every citation except the ones backing a target designation — the red edges in the key." |
 | Inferred links | "Show the dashed, inferred relationships as well as the solid confirmed ones. Inferred ties are analytical readings, not sourced facts." |
 | Re-layout | "Recompute where every node sits. Useful when labels overlap after a lot of panning." |
-| Reset view | "Back to where you started. In focus mode that is the centre node's ring; otherwise the whole graph, fitted." |
+| Reset view | "Back to where you started. In focus mode that is the center node's ring; otherwise the whole graph, fitted." |
 | Export | "Download a high-resolution PNG of exactly this view — same pan, zoom and fade, at print quality." |
+| Back (available) | "Go back to the node you were looking at before this one." |
+| Back (unavailable) | "Goes back to the node you were looking at before this one. Turns on once you have opened a second node." |
+
+**Plain American English, and no metaphor the tool does not draw.** These
+sentences described "walking" the network one hop at a time — a picture the
+tool never puts on screen, and a word that has to be decoded before the
+sentence helps. You *open* a node and *follow* its ties.
 
 Zoom in / Zoom out get two words. Do not write a sentence for a control nobody
 has ever had to think about.
@@ -578,7 +585,7 @@ has ever had to think about.
 </button>
 ```
 
-A labelled pill is the widest thing on the canvas, and a column of them reads
+A labeled pill is the widest thing on the canvas, and a column of them reads
 as a menu rather than as tools — it also covers the canvas, which §2 is about.
 So **every control in a canvas toolbar is icon-only.** The name goes in
 `aria-label` and in `data-tip-title`; the sentence explaining a mode goes in
@@ -602,6 +609,46 @@ every click.
 
 Only for a real two-state toggle. A button that *does* something — Reset view,
 Export — has no state to show.
+
+**The tooltip says the state in words, and DRTip writes it.** The dot is the
+at-a-glance answer; the tip's title row carries `ON` / `OFF` opposite the name,
+so hovering a mode you are unsure about tells you what it is set to as well as
+what it does. Nothing is added to the markup for this — DRTip reads the
+trigger's `aria-pressed`, so any control that is already a proper toggle gets
+it, and no second attribute exists to drift. A control without `aria-pressed`
+gets no chip, which is why plain actions stay plain. DRTip also re-renders the
+tip when you click the control it is already describing, or a toggle would read
+`ON` for as long as the pointer stayed put after switching it off.
+
+### An unavailable control still has to explain itself
+
+Use **`aria-disabled="true"`, not `disabled`**, on any icon-only control that
+can be unavailable, and guard the handler yourself:
+
+```js
+backBtn.onclick = () => { if (!hist.length) return; … };
+```
+
+A browser dispatches **no pointer events at all** over a `disabled` element, so
+its tooltip can never open — and an icon-only control that is grayed out with
+no way to ask why is the worst case of the icon-only trade. It is also the
+moment someone is most likely to want the explanation: the control is there,
+it is clearly off, and nothing says what would turn it on. `.dr-btn:disabled`
+keeps `pointer-events: none`; the `[aria-disabled]` rule deliberately does not.
+
+Swap the sentence with the state, so the unavailable case says how to reach the
+available one rather than describing something that is not happening:
+
+```js
+const BACK_TIP = {
+  on:  'Go back to the node you were looking at before this one.',
+  off: 'Goes back to the node you were looking at before this one. Turns on once you have opened a second node.'
+};
+```
+
+`disabled` is still right for a control that is briefly inert because it is
+*working* — Export during a render, where `aria-busy` is the state and there is
+nothing to explain.
 
 ### Icons: pick the verb, not the category
 
@@ -699,7 +746,7 @@ was.
       for the name and `data-tip` for the sentence. Rounded rectangle, one
       token (`--dr-radius-control`) shared with the vendor's own controls.
 - [ ] A canvas toggle's state is a `.dr-btn__dot`, driven by `aria-pressed`
-      alone; a labelled toggle uses `.dr-btn__state`. Either way the button's
+      alone; a labeled toggle uses `.dr-btn__state`. Either way the button's
       width does not change with its state.
 - [ ] Busy is `aria-busy` + `disabled`, never a `textContent` swap.
 - [ ] The band's height comes from its own distance to the top of the

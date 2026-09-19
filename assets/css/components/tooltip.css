@@ -3,7 +3,7 @@
  * WHY NOT `title`. The native tooltip cannot be styled, cannot wrap where you
  * want it to, and — the reason this exists — takes about a second to appear.
  * On a toolbar of icon-only controls that delay is the whole interaction: you
- * hover a glyph you do not recognise, get nothing, and move on. A tooltip that
+ * hover a glyph you do not recognize, get nothing, and move on. A tooltip that
  * explains an ambiguous control has to be instant or it is not an explanation.
  *
  * NOT `.tooltip`. main.css already has a `.tooltip` class at z-index 1000,
@@ -72,10 +72,32 @@
 }
 
 .dr-tip__title {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
   /* The name and the explanation are one block, so the gap is small. */
   margin-bottom: 0.125rem;
+}
+
+/* The value of a two-state control, opposite its name. Written by DRTip from
+   the trigger's `aria-pressed`, so it cannot disagree with the button. */
+.dr-tip__state {
+  margin-left: auto;
+  flex: none;
+  padding: 0 0.375rem;
+  border-radius: var(--dr-radius-sm, 6px);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.dr-tip__state[data-state="on"] {
+  background: var(--dr-on, #19B270);
+  color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {

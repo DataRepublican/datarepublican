@@ -238,7 +238,7 @@ title: DSA Explorer
      covering the graph.
 
      At 390px the old layout put a 160px control stack at top-left and a 260px
-     search field centred over it. They overlapped by ~125px, and the search
+     search field centered over it. They overlapped by ~125px, and the search
      field, being later in the DOM with no z-index on either, painted on top —
      Zoom, Reset view, Re-layout and Export PNG were all unreachable. */
   @media(max-width:767px){
@@ -320,9 +320,9 @@ title: DSA Explorer
     <div id="controls">
       <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" data-tip="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
       <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" data-tip="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
-      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" data-tip-title="Reset view" data-tip="Back to where you started. In focus mode that is the centre node’s ring; otherwise the whole graph, fitted."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19 2 12l9-7z"/><path d="M22 19l-9-7 9-7z"/></svg></button>
+      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" data-tip-title="Reset view" data-tip="Back to where you started. In focus mode that is the center node’s ring; otherwise the whole graph, fitted."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 19 2 12l9-7z"/><path d="M22 19l-9-7 9-7z"/></svg></button>
       <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-label="Re-layout" data-tip-title="Re-layout" data-tip="Recompute where every node sits. Useful when labels overlap after a lot of panning."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.97a4 4 0 0 0 3.3-1.75l5.46-8.5A4 4 0 0 1 16.03 6H22"/><path d="M2 6h1.97a4 4 0 0 1 3.3 1.75l.4.6"/><path d="M22 18h-5.97a4 4 0 0 1-3.3-1.75l-.4-.6"/></svg></button>
-      <!-- One flat column of icon-only controls. A labelled pill is the widest
+      <!-- One flat column of icon-only controls. A labeled pill is the widest
            thing on the canvas and a column of them reads as a menu rather than
            as tools; the name lives in the tooltip and in aria-label, both of
            which every control here carries.
@@ -334,8 +334,13 @@ title: DSA Explorer
            Pressed on toggleInf means the inferred links are SHOWN, which is how
            the graph loads — the state variable behind it is `infHidden`, so the
            two read in opposite directions. -->
-      <button type="button" id="back" class="dr-btn dr-btn--icon" aria-label="Back" data-tip-title="Back" data-tip="Step back to the node you were on before this one." disabled><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
-      <button type="button" id="focusToggle" class="dr-btn dr-btn--icon" aria-pressed="true" aria-label="Focus mode" data-tip-title="Focus mode" data-tip="Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg><span class="dr-btn__dot" id="focusState" aria-hidden="true"></span></button>
+      <!-- aria-disabled, not `disabled`: a browser fires no pointer events over
+           a disabled button, so its tooltip could never open — and an icon-only
+           control that is grayed out with no explanation is the worst case of
+           the icon-only trade. setBack() swaps the sentence with the state; the
+           click handler checks the attribute. -->
+      <button type="button" id="back" class="dr-btn dr-btn--icon" aria-label="Back" aria-disabled="true" data-tip-title="Back" data-tip="Goes back to the node you were looking at before this one. Turns on once you have opened a second node."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button type="button" id="focusToggle" class="dr-btn dr-btn--icon" aria-pressed="true" aria-label="Focus mode" data-tip-title="Focus mode" data-tip="Clicking a node shows only that node and its direct ties, so you can follow the network one node at a time. Turn it off to keep the whole graph visible and select without fading the rest."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/></svg><span class="dr-btn__dot" id="focusState" aria-hidden="true"></span></button>
       <button type="button" id="toggleInf" class="dr-btn dr-btn--icon" aria-pressed="true" aria-label="Inferred links" data-tip-title="Inferred links" data-tip="Show the dashed, inferred relationships as well as the solid confirmed ones. Inferred ties are analytical readings, not sourced facts."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><path d="M8 12h8"/></svg><span class="dr-btn__dot" id="infState" aria-hidden="true"></span></button>
       <button type="button" id="export" class="dr-btn dr-btn--icon" aria-label="Export" data-tip-title="Export" data-tip="Download a high-resolution PNG of exactly this view — same pan, zoom and fade, at print quality."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></button>
     </div>
@@ -380,7 +385,7 @@ const KINDGLYPH = {project:'◆',org:'▭',person:'●',concept:'⬡'};
 /* ------- IDEOLOGY palette (v3): the six currents. Populated on ORGS only (nodes.csv
    `ideology` col); people/projects INHERIT their nearest org's current at load (ideoOf()).
    Untagged orgs = the anti-imperialist SPINE / outliers / opposition pole -> render in the
-   neutral SPINE colour: the uncolored center the currents orbit. IORDER = colour precedence
+   neutral SPINE color: the uncolored center the currents orbit. IORDER = color precedence
    when a node inherits more than one current (most-defining wins). ------- */
 const IDEOLOGY = {
   state:     {c:'#B45309', label:'Ruling party-state'},          // Cuba / Nicaragua / Iran organs
@@ -516,7 +521,7 @@ function build(nodes, edges, baked){
   // NEVER hand-tagged: each inherits the current(s) of its NEAREST org(s) by hop distance
   // (BFS, undirected, stops at the first depth that contains any org). If the nearest org(s)
   // are all spine/untagged -> the node stays neutral (shows only under "all"). Stopping at
-  // the first org layer is deliberate: it keeps a project coloured by ITS org, not smeared
+  // the first org layer is deliberate: it keeps a project colored by ITS org, not smeared
   // by the AFGJ spine hub that touches the whole graph.
   const adj = {}; nodes.forEach(n=>adj[n.id]=[]);
   edges.forEach(e=>{ if(byId[e.source]&&byId[e.target]){ adj[e.source].push(e.target); adj[e.target].push(e.source); } });
@@ -567,7 +572,7 @@ function build(nodes, edges, baked){
       ideo: ideo.primary||'', ideoset: ideo.set.join(';'),
       ein:n.ein||'', source_url:n.source_url||'', notes:n.notes||'',
       mag, isCenter:isCenter?1:0,
-      // colour by ideological current; center anchor uses its own current if tagged (falls back
+      // color by ideological current; center anchor uses its own current if tagged (falls back
       // to dark only if it's an untagged spine node); everything else spine/untagged = neutral
       col: ideo.primary ? IDEOLOGY[ideo.primary].c : (isCenter ? LAYER.center.c : SPINE_COL),
       // logo nodes render as a framed tile; bump them up so the mark is legible
@@ -677,7 +682,7 @@ function build(nodes, edges, baked){
       {selector:'node[?isTerritory][terrKind = "country"]',style:{
         'background-opacity':0.07,'border-style':'dashed','border-opacity':0.6
       }},
-      /* logo nodes: "box within a box" — outer frame = layer colour, inner tile = data(tile),
+      /* logo nodes: "box within a box" — outer frame = layer color, inner tile = data(tile),
          logo contained on the tile (transparent corners of the PNG show the tile through). */
       {selector:'node[?hasLogo]',style:{
         'shape':'round-rectangle',
@@ -700,7 +705,7 @@ function build(nodes, edges, baked){
       {selector:'node[?hasLogo][kind = "concept"]',style:{
         'shape':'hexagon'
       }},
-      /* project logos: a rounded-diamond "gem" — layer-colour frame, tile fill, the mark
+      /* project logos: a rounded-diamond "gem" — layer-color frame, tile fill, the mark
          inset (via the wider export margin) to the diamond's inscribed square so nothing
          corner-clips. Diamonds are enlarged so the smaller inset mark stays legible, and
          the label is nudged clear of the lower vertex. Diamond shape = project kind. */
@@ -712,8 +717,8 @@ function build(nodes, edges, baked){
         'background-fit':'contain','background-clip':'node',
         'text-margin-y':8
       }},
-      /* deferred logo (BIG slices, pre-reveal): keep the framed shape + layer-colour frame but
-         paint the layer colour instead of decoding the PNG, so first frame is instant. revealLogos()
+      /* deferred logo (BIG slices, pre-reveal): keep the framed shape + layer-color frame but
+         paint the layer color instead of decoding the PNG, so first frame is instant. revealLogos()
          strips this class in idle chunks and the real tile streams in. */
       {selector:'node.deferlogo',style:{
         'background-image':'none','background-color':'data(col)','background-opacity':0.92
@@ -737,12 +742,12 @@ function build(nodes, edges, baked){
         'text-opacity':0,
         'min-zoomed-font-size':8
       }},
-      /* focus-walk: faded = out of the current node's immediate ring (label hidden to kill
-         sprawl, but still clickable so you can walk to it); nbr = in the ring, full strength. */
+      /* focus mode: faded = out of the current node's immediate ring (label hidden to kill
+         sprawl, but still clickable so you can open it); nbr = in the ring, full strength. */
       {selector:'.faded',style:{'opacity':0.11,'text-opacity':0,'transition-property':'opacity, text-opacity','transition-duration':'220ms'}},
       {selector:'node.nbr',style:{'opacity':1,'background-opacity':1,'text-opacity':1}},
       {selector:'edge.nbr',style:{'opacity':1,'text-opacity':1}},
-      /* territory boxes never vanish during the focus-walk — they stay as spatial context */
+      /* territory boxes never vanish in focus mode — they stay as spatial context */
       {selector:'node[?isTerritory].faded',style:{'opacity':1,'text-opacity':0.6}},
       {selector:'node.sel',style:{'border-width':4,'border-color':'#000'}},
       {selector:'edge.sel',style:{'width':4,'line-opacity':1,'text-opacity':1,'z-index':99}}
@@ -930,7 +935,7 @@ function build(nodes, edges, baked){
   window.__layoutMs = performance.now();   // instrumentation: ms from nav → layout ready (baked = near-instant)
   window.__baked = !!baked;
 
-  /* ---- STREAMED LOGOS: on BIG slices, logo nodes render as plain layer-colour shapes first
+  /* ---- STREAMED LOGOS: on BIG slices, logo nodes render as plain layer-color shapes first
      (instant paint), then their real tiles decode in during idle time, ~48 per idle slice, so the
      graph is interactive immediately and the branding fills in over the next moment. force=true
      reveals everything synchronously (used before a PNG export so the poster is fully branded). */
@@ -992,7 +997,7 @@ function build(nodes, edges, baked){
         <button type="button" class="allrow" id="showAllIdeo" aria-pressed="true">◎ Show all currents</button>
         ${ideoRows}
         <button type="button" class="row" data-ideo="__spine" aria-pressed="false"><span class="sw" style="background:${SPINE_COL}"></span>Anti-imperialist spine (uncolored)</button>
-        <div class="hint" style="margin-top:4px">Click a current to isolate it. Grey <b>spine</b> = shared infrastructure, not a current.</div>
+        <div class="hint" style="margin-top:4px">Click a current to isolate it. Gray <b>spine</b> = shared infrastructure, not a current.</div>
         <div class="divider"></div>
         <h4>Kind (shape)</h4>
         <div class="row"><span class="shp">◆</span>project &nbsp;<span class="shp">▭</span>org &nbsp;<span class="shp">●</span>person &nbsp;<span class="shp">⬡</span>concept</div>
@@ -1001,7 +1006,7 @@ function build(nodes, edges, baked){
         ${regionRows}
         <div class="hint" style="margin-top:4px">Click a country to fly to it. ⇢ = sourced patron/backer, not nationality (Hezbollah ⇢ Iran).</div>
         <div class="divider"></div>
-        <div class="hint"><b>Focus-walk:</b> click a node for its ties. Solid = confirmed · dashed = inferred.</div>
+        <div class="hint"><b>Focus mode:</b> click a node for its ties. Solid = confirmed · dashed = inferred.</div>
       </div>
       <div class="legbar">
         <button type="button" class="legtoggle" id="legToggle" aria-expanded="false" aria-controls="legfull">⌃ Legend</button>
@@ -1018,7 +1023,7 @@ function build(nodes, edges, baked){
     // IDEOLOGY FILTER — radio across BOTH the bar chips and the full-key rows: click a current ->
     // show only nodes whose ideoset includes it (orgs proven in it + people/projects that inherit it).
     // "__spine" -> the neutral, un-inherited nodes. Click the active current again, or "Show all", ->
-    // everything. display:none is separate from the focus-walk .faded opacity, so it composes with focus.
+    // everything. display:none is separate from focus mode's .faded opacity, so it composes with focus.
     const ideoEls=[...legEl.querySelectorAll('[data-ideo]')];   // rows + chips share the same handler
     const allBtn=document.getElementById('showAllIdeo');
     function nodeInCurrent(n, only){
@@ -1096,14 +1101,24 @@ function build(nodes, edges, baked){
     }, 1500);
   }
 
-  /* ---- focus-walk: one node's immediate ring at a time; the rest fades but stays
-         clickable, so you *walk* the network hop-by-hop instead of drowning in it ---- */
+  /* ---- focus mode: one node's immediate ring at a time; the rest fades but stays
+         clickable, so you move through the network one node at a time ---- */
   const panel = document.getElementById('panel');
-  const EMPTY = '<div class="empty">Click a node to walk to it — you\'ll see its immediate connections, and everything else fades. Click a faded node (or a panel connection) to step to the next hop.<br><br>Click an edge for its evidence tier. <b>Focus: off</b> shows the whole network at once.</div>';
+  const EMPTY = '<div class="empty">Click a node to open it — you\'ll see its immediate connections, and everything else fades. Click a faded node (or a panel connection) to open that one next.<br><br>Click an edge for its evidence tier. <b>Focus: off</b> shows the whole network at once.</div>';
   const backBtn = document.getElementById('back');
+  /* Two sentences, because the control has to explain itself while it is
+     unavailable — which is when someone is most likely to ask. */
+  const BACK_TIP = {
+    on:  'Go back to the node you were looking at before this one.',
+    off: 'Goes back to the node you were looking at before this one. Turns on once you have opened a second node.'
+  };
+  function setBack(on){
+    backBtn.setAttribute('aria-disabled', String(!on));
+    backBtn.setAttribute('data-tip', on ? BACK_TIP.on : BACK_TIP.off);
+  }
   let focusMode = new URLSearchParams(location.search).get('focus')!=='off'; // start scoped-in; ?focus=off deep-links the full-network view
   let focusId = centerId;       // the node whose immediate ring is currently shown
-  const hist = [];              // walk history, for the Back button
+  const hist = [];              // previously opened nodes, for the Back button
   /* The panel opens and closes ITSELF, in response to selection. The `›`
      chevron that used to float over the canvas is gone: the panel is empty
      until you click something and empties again on a background tap, so the
@@ -1164,7 +1179,7 @@ function build(nodes, edges, baked){
 
   // On a phone the details panel is a bottom sheet rather than a column below
   // the canvas, so a node tap answers where you can see it. On desktop
-  // DRSheet.attach is inert and this is the old collapse behaviour.
+  // DRSheet.attach is inert and this is the old collapse behavior.
   /* No onClose. Dismissing the sheet must not touch the graph.
 
      It used to run `cy.elements().removeClass('faded nbr sel')`, which is the
@@ -1172,7 +1187,7 @@ function build(nodes, edges, baked){
      unconditionally, including in focus mode, which is the default. So closing
      the detail sheet on a phone threw away the focus ring and snapped the whole
      network back to full strength, as if you had turned focus off. You tapped a
-     node to look at it, and closing what you were looking at undid the walk.
+     node to look at it, and closing what you were looking at undid your place in the graph.
 
      The tool's own deselect gesture is a background tap, and it is conditional:
      in focus mode it re-applies the ring, and only focus-off clears. The sheet
@@ -1229,10 +1244,10 @@ function build(nodes, edges, baked){
       ${d.ein?`<div class="kv"><b>EIN</b><a href="https://projects.propublica.org/nonprofits/organizations/${d.ein.replace(/\D/g,'')}" target="_blank" rel="noopener" title="ProPublica Nonprofit Explorer">${d.ein}</a></div>`:''}
       ${d.notes?`<div class="notes">${d.notes}</div>`:''}
       <div class="kv"><b>Source</b>${link(d.source_url)}</div>
-      <div class="conns"><h3>${conns.length} connection${conns.length!==1?'s':''}${focusMode?' — click to walk':''}</h3>
+      <div class="conns"><h3>${conns.length} connection${conns.length!==1?'s':''}${focusMode?' — click to open':''}</h3>
         ${conns.map(c=>`<div class="conn ${c.inf?'inf':''}" data-goto="${c.id}"><div class="conn-head">${c.dir} ${c.label} <span class="rel">— ${c.rel}</span></div>${c.desc?`<div class="conn-desc">${c.desc}</div>`:''}${c.url?`<a class="conn-src" href="${c.url}" target="_blank" rel="noopener" title="${c.url}">${fmtUrl(c.url)}</a>`:''}</div>`).join('')}
       </div>`;
-    // walk on the connection body, but let the source link open normally
+    // open the connection from its body, but let the source link open normally
     panel.querySelectorAll('.conn').forEach(el=>el.onclick=e=>{ if(e.target.closest('a'))return; goto(el.dataset.goto); });
   }
 
@@ -1247,14 +1262,14 @@ function build(nodes, edges, baked){
     return nb;
   }
 
-  // FOCUS MODE: walk focus to a node — fade the rest, fit to its ring, record history
+  // FOCUS MODE: move focus to a node — fade the rest, fit to its ring, record history
   function applyFocus(id,{push=true,fit=true}={}){
     const node=cy.$id(id); if(node.empty()) return;
     if(push && focusId && focusId!==id) hist.push(focusId);
     focusId=id;
     const nb=paintRing(node);
     if(fit){
-      // Glide to CENTER the walked-to node at a bounded zoom, instead of fit()-ing the whole ring —
+      // Glide to CENTER the opened node at a bounded zoom, instead of fit()-ing the whole ring —
       // fitting a hub whose neighbors sprawl across the graph yanks the view way out. We frame the
       // ring loosely but clamp the zoom so it stays a smooth pan, never a jarring zoom-out.
       const bb=nb.boundingBox(), pad=90;
@@ -1263,7 +1278,7 @@ function build(nodes, edges, baked){
       cy.animate({center:{eles:node}, zoom:z},{duration:420,easing:'ease-in-out'});
     }
     renderNodePanel(node);
-    backBtn.disabled = !hist.length;
+    setBack(!!hist.length);
   }
 
   // FOCUS OFF: ephemeral highlight, no fitting, no history (classic full-graph view)
@@ -1272,15 +1287,15 @@ function build(nodes, edges, baked){
     cy.batch(()=>{ cy.elements().addClass('faded').removeClass('nbr sel'); nb.removeClass('faded').addClass('nbr'); ele.addClass('sel'); });
   }
 
-  // unified "go to a node" — walks in focus mode, highlights otherwise
+  // unified "go to a node" — moves focus in focus mode, highlights otherwise
   function goto(id){
     const n=cy.$id(id); if(n.empty()) return;
     if(focusMode){ applyFocus(id); }
     else { ephemeral(n); renderNodePanel(n); cy.animate({center:{eles:n},zoom:1.4},{duration:350}); }
   }
 
-  // COUNTRY FOCUS: a country isn't a walk-node — it's a compound box. Clicking it (the box on the
-  // canvas OR its legend row) frames the box + its members and lists them, each a walk entry point.
+  // COUNTRY FOCUS: a country isn't an ordinary node — it's a compound box. Clicking it (the box on the
+  // canvas OR its legend row) frames the box + its members and lists them, each a way into the graph.
   function focusCountry(country){
     const box=cy.getElementById(pidOf('C:'+country)); if(box.empty()) return;
     const mem=box.children();
@@ -1304,7 +1319,7 @@ function build(nodes, edges, baked){
       <span class="tag" style="background:${REGION[country]?.col||'#64748B'}">country box</span>
       <h2>${country}</h2>
       <div class="notes">${note} ${items.length} node${items.length!==1?'s':''} in this box.</div>
-      <div class="conns"><h3>${items.length} member${items.length!==1?'s':''}${focusMode?' — click to walk':''}</h3>
+      <div class="conns"><h3>${items.length} member${items.length!==1?'s':''}${focusMode?' — click to open':''}</h3>
         ${items.map(c=>`<div class="conn" data-goto="${c.id}"><div class="conn-head">${c.patron?'⇢ ':''}${KINDGLYPH[c.kind]||''} ${c.label} <span class="rel">— ${c.ideo?(IDEOLOGY[c.ideo]?.label||c.ideo):'spine'}${c.patron?' · patron':''}</span></div></div>`).join('')}
       </div>`;
     panel.querySelectorAll('.conn').forEach(el=>el.onclick=e=>{ if(e.target.closest('a'))return; goto(el.dataset.goto); });
@@ -1360,7 +1375,7 @@ function build(nodes, edges, baked){
     setToggle(this,!infHidden);
   };
   // Export PNG: a high-res still of the CURRENT view — exactly what's on screen, at the live
-  // pan/zoom and with the active focus/walk fade preserved. cy.png() (full:false) captures the
+  // pan/zoom and with the active focus fade preserved. cy.png() (full:false) captures the
   // current viewport only; it never re-frames to the whole graph and never touches focus/fade/camera.
   document.getElementById('export').onclick=function(){
     /* aria-busy and disabled, never a text swap. The button has no text to
@@ -1381,13 +1396,14 @@ function build(nodes, edges, baked){
       btn.disabled=false; btn.removeAttribute('aria-busy');
     },60);
   };
-  // Back: step to the previous node in the walk history
-  backBtn.onclick=()=>{ if(hist.length){ const prev=hist.pop(); applyFocus(prev,{push:false}); } };
-  // Focus on/off: scoped hop-by-hop walk vs. the whole network at once
+  // Back: return to the previously opened node
+  // aria-disabled is not inert, so the guard is here rather than in the browser.
+  backBtn.onclick=()=>{ if(!hist.length) return; applyFocus(hist.pop(),{push:false}); };
+  // Focus on/off: one node and its ties at a time vs. the whole network at once
   document.getElementById('focusToggle').onclick=function(){
     focusMode=!focusMode;
     setToggle(this,focusMode);
-    if(focusMode){ hist.length=0; backBtn.disabled=true; applyFocus(focusId,{push:false}); }
+    if(focusMode){ hist.length=0; setBack(false); applyFocus(focusId,{push:false}); }
     else { cy.elements().removeClass('faded nbr sel'); cy.fit(40); panel.innerHTML=EMPTY; }
   };
   const q=document.getElementById('q');
@@ -1395,7 +1411,7 @@ function build(nodes, edges, baked){
   // Only the camera glide was debounced; the filter itself ran on every
   // keystroke and restyled the whole element set inside a cy.batch each time.
   // 200ms, matching the page search in noblogs/index.html. The queued glide is
-  // cancelled immediately rather than inside the debounce, so it can never fire
+  // canceled immediately rather than inside the debounce, so it can never fire
   // mid-word.
   q.oninput=()=>{
     clearTimeout(searchZoomT); clearTimeout(qTimer);
@@ -1417,7 +1433,7 @@ function build(nodes, edges, baked){
   }
   addEventListener('resize',()=>cy.resize());
 
-  /* ---- deep-link: index.html#nodeId walks to that node (default: center) ---- */
+  /* ---- deep-link: index.html#nodeId opens that node (default: center) ---- */
   function openHash(){
     const id=decodeURIComponent(location.hash.slice(1));
     const target=(id && cy.$id(id).nonempty())?id:centerId;

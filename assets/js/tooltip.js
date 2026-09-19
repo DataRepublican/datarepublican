@@ -7,7 +7,7 @@
  *
  * WHY THIS EXISTS. `title` cannot be styled, cannot control its own wrapping,
  * and waits about a second before appearing. On a toolbar of icon-only controls
- * that delay is the entire interaction: you hover a glyph you do not recognise,
+ * that delay is the entire interaction: you hover a glyph you do not recognize,
  * get nothing, and give up. A tooltip that exists to explain an ambiguous
  * control has to be instant.
  *
@@ -48,6 +48,34 @@
       });
   }
 
+  /* A two-state control says which state it is in, in the tip's title row.
+     Read from aria-pressed rather than a second attribute, so a toggle gets
+     this by existing and nothing can drift out of sync with the button. The
+     dot on the button says a mode is on without room to say which; this says
+     which and what it is set to. Controls with no aria-pressed get nothing. */
+  function stateOf(trigger) {
+    var pressed = trigger.getAttribute('aria-pressed');
+    if (pressed === 'true') return 'on';
+    if (pressed === 'false') return 'off';
+    return '';
+  }
+
+  function render(trigger) {
+    var t = el();
+    var title = trigger.getAttribute('data-tip-title');
+    var state = stateOf(trigger);
+    var head = '';
+    if (title) {
+      head = '<b class="dr-tip__title">' + esc(title) +
+        (state
+          ? '<span class="dr-tip__state" data-state="' + state + '">' +
+              (state === 'on' ? 'ON' : 'OFF') + '</span>'
+          : '') +
+        '</b>';
+    }
+    t.innerHTML = head + esc(trigger.getAttribute('data-tip'));
+  }
+
   function place(trigger) {
     var t = el();
     var r = trigger.getBoundingClientRect();
@@ -59,18 +87,18 @@
     var above = r.top - GAP - h >= EDGE;
     var top = above ? r.top - GAP - h : r.bottom + GAP;
 
-    // Centre on the trigger, then clamp into the viewport. The arrow tracks the
-    // trigger's real centre rather than the tip's, so clamping does not leave it
+    // Center on the trigger, then clamp into the viewport. The arrow tracks the
+    // trigger's real center rather than the tip's, so clamping does not leave it
     // pointing at nothing.
-    var centre = r.left + r.width / 2;
-    var left = centre - w / 2;
+    var center = r.left + r.width / 2;
+    var left = center - w / 2;
     var max = global.innerWidth - EDGE - w;
     if (left > max) left = max;
     if (left < EDGE) left = EDGE;
 
     t.style.top = Math.round(top) + 'px';
     t.style.left = Math.round(left) + 'px';
-    t.style.setProperty('--dr-tip-arrow', Math.round(centre - left) + 'px');
+    t.style.setProperty('--dr-tip-arrow', Math.round(center - left) + 'px');
     t.classList.toggle('dr-tip--above', above);
     t.classList.toggle('dr-tip--below', !above);
   }
@@ -82,8 +110,7 @@
     hide();
 
     var t = el();
-    var title = trigger.getAttribute('data-tip-title');
-    t.innerHTML = (title ? '<b class="dr-tip__title">' + esc(title) + '</b>' : '') + esc(text);
+    render(trigger);
     t.hidden = false;
     // Measure, then place: offsetWidth is 0 while hidden.
     place(trigger);
@@ -147,6 +174,12 @@
     if (!current) return;
     if (!current.isConnected) hide();
     else if (trigger(e) !== current) hide();
+    /* Clicking the control the tip is already describing: its state or its
+       copy has just changed under the pointer, so re-render rather than leave
+       a toggle reading ON straight after it was switched off. Bubble phase, so
+       the control's own handler has already run. Re-place too — the new text
+       can be a different size. */
+    else { render(current); place(current); }
   });
 
   global.DRTip = { show: show, hide: hide };

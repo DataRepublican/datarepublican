@@ -50,12 +50,14 @@ Jekyll rebuild, which reads in the diff exactly like a regression.
 | `.dr-seg` | three `<div>`s with click handlers. Not focusable, no role, no arrow keys |
 | `.dr-field` | three search inputs (340 / 270 / 260px). **Two of them float over a canvas and duplicate the page-level field — delete those**; it also frees the canvas top edge where dsa's mobile controls collided |
 | `.dr-chip` | six chip and legend-row patterns across three files, 19–25px tall, all `<span>` + onclick |
-| `.dr-tag` | four tag/badge patterns at radius 4/6/12. **Never carries an inline background** — dsa's data colouring becomes `--tag-bg` on a `solid` tone |
+| `.dr-tag` | four tag/badge patterns at radius 4/6/12. **Never carries an inline background** — dsa's data coloring becomes `--tag-bg` on a `solid` tone |
 | `.dr-check` | `.fitem`, which set `pointer-events:none` on the real checkbox and handled the click on the row. Fixed natively in noblogs: `<label>` around `<input>` inside `<fieldset><legend>`, handler on the input's `change`. **When a list rebuilds itself, restore focus** — see below |
 | `.dr-link` | five source-link classes, all `#1155CC`. Promote dsa's `fmtUrl()` to a shared helper |
 | `.dr-tip` | every `title` on a toolbar control. Instant, styled, appended to `<body>` so the canvases' `isolation: isolate` cannot clip it. Driven by `data-tip` / `data-tip-title`, delegated from `document` so runtime-built controls need no binding. **Never alongside `title`** — the native tip stacks under it and the text is read twice |
-| `.dr-btn__state` | the `On` / `Off` value on a **labelled** two-state toggle. A filled pill alone says "in a state" but not which; a swapped label moved the text. Written by the same function that sets `aria-pressed`, or the two drift |
+| `.dr-btn__state` | the `On` / `Off` value on a **labeled** two-state toggle. A filled pill alone says "in a state" but not which; a swapped label moved the text. Written by the same function that sets `aria-pressed`, or the two drift |
 | `.dr-btn__dot` | the same fact on an **icon-only** toggle, where there is no room for a word: a dot in the corner, present means on. Shown and hidden by CSS keyed on `aria-pressed`, so there is nothing to keep in sync. Only correct where the icon already carries the identity — a dot cannot say *which* mode is on |
+| `.dr-tip__state` | the `ON` / `OFF` chip in a tooltip's title row. Written by DRTip from the trigger's `aria-pressed`, so a toggle gets it by existing and no second attribute can drift. The dot says a mode is on; this says which mode and what it is set to |
+| `.dr-btn[aria-disabled]` | an unavailable control that can still be hovered, focused and explained. `disabled` suppresses every pointer event, so a `disabled` icon button's tooltip can never open — guard the handler instead. `:disabled` keeps `pointer-events: none`; this does not |
 | `.dr-wordmark` | the site name in the masthead: an `<h1>` on the index, a `<p>` wrapping a link everywhere else. **One class, two tags.** While it was two copies of the same utilities they drifted — `a { font-semibold }` is 600 and applies to the `<a>` that paints the glyphs, so every page but the index rendered a weight light |
 | `.leaflet-bar` (restyled) | Leaflet's zoom control, given the canvas-control shape. Its stylesheet is fetched at runtime and lands after ours, so every selector needs `.leaflet-container` in front of it to win the tie |
 
@@ -75,14 +77,14 @@ means to beat loses on source order.
 | Class | Replaces / decision |
 |---|---|
 | `.dr-card` | drops the `translateY(-2px)` hover (it makes an auto-fill grid shimmer). Its type now clears the floors — every line of it was 10–11.5px, which made the library view's main content the smallest text in the tool. **Still a `<div>` with onclick**: not keyboard-reachable, not openable in a new tab, no `href` to copy. Deliberately parked, not overlooked — becoming an `<a>` is the fix when someone is next in that file |
-| `.dr-tile` | KPI values lose their six colours. Two of the six were already identical because `--gold` and `--med` are the same hex |
+| `.dr-tile` | KPI values lose their six colors. Two of the six were already identical because `--gold` and `--med` are the same hex |
 | `.dr-panel` | three layouts. **Docked column wins** over noblogs' fixed overlay: an overlay + scrim dims the map you just clicked, the failure the sheet exists to fix. `clamp(320px, 30vw, 392px)` absorbs 340/370/392 and deletes the stray `@media(max-width:820px)` with its 768–820 dead zone |
 | `.dr-sheet` | keep as-is structurally. Gains a visible title and keyboard detent control |
 | `.dr-popover` | the hand-rolled facet sheet + `#nb-facetscrim` + `place()` |
 | `.dr-legend` | three legends, **all three now converted.** dsa's bar + expandable key won the design and was, for a while, the only one still built from `<div>`/`<span>` with a delegated click. Rows are `<button aria-pressed>`, the collapse is a `<button aria-expanded aria-controls>`, everything 44px on a phone. Swatch *shape* stays a variable so the map keeps circles and the graph keeps squares. Bound a floating key by its own container, never `calc(100vh - …)`. See the polarity note below |
 | `.dr-controls` | two near-identical toolbars, both converted: icon-first `.dr-btn` controls, Lucide glyphs, `.dr-btn--icon` where the action has a conventional icon and no state. **`sm` (32px) applies above md inside a toolbar** — seven stacked 44px buttons make a column taller than the room above the legend, so the thumb floor is a floor for thumbs. The unused `.dr-controls` block in `main.css` is still there and still unadopted; its `!important`s were never needed |
 | `.dr-callout` | three amber disclaimers at 10 / 10.5 / 11px with different line-heights. **Goes up to 13px**, and becomes a real `<details>` with a 44px summary on phones. **Superseded for legal text** — both tools use `.dr-dialog` now. Still correct for an in-flow notice you want read without a click |
-| `.dr-dialog` | the legal callout, where it was a permanent full-width band. A native `<dialog>` + `showModal()`, opened by a `.dr-dialog-open` link in the tool's identity row. Bottom sheet on a phone, centred card above md. **Uses the TOP LAYER, so it sets no z-index** — which is how a modal clears Leaflet's 1000 without joining the bidding war. Both tools are converted; `tests/test_disclaimer.spec.js` runs one suite over both. Full rationale in `assets/css/components/dialog.css` and §3 of `tool-chrome.md` |
+| `.dr-dialog` | the legal callout, where it was a permanent full-width band. A native `<dialog>` + `showModal()`, opened by a `.dr-dialog-open` link in the tool's identity row. Bottom sheet on a phone, centered card above md. **Uses the TOP LAYER, so it sets no z-index** — which is how a modal clears Leaflet's 1000 without joining the bidding war. Both tools are converted; `tests/test_disclaimer.spec.js` runs one suite over both. Full rationale in `assets/css/components/dialog.css` and §3 of `tool-chrome.md` |
 | `.dr-empty` | four empty states at 13px → **16px, done** (`.empty`, `.pempty`, graph `aside .empty`, dsa `#panel .empty`). Still to gain the action that resolves them |
 | `.dr-loading` | `role="status"` on the two noblogs veils, **done**; they read at 16px. The error state still has no retry |
 
@@ -95,7 +97,7 @@ means to beat loses on source order.
 ### The label recipe — done, and how
 
 **Thirteen** rules across three files did one job: 10, 10.5 and 11px, four
-letter-spacings, three greys, every one of them uppercase. They are now one
+letter-spacings, three grays, every one of them uppercase. They are now one
 grouped rule per file, all reading `--dr-text-label`, `--dr-font-ui` and
 `--dr-ink-faint`:
 
@@ -109,7 +111,7 @@ Two labels stay out of the group, for reasons worth keeping:
 
 - **`.tag`** (both tools) keeps `color:#fff` — its background is set inline from
   the data, so `ink-faint` would make it unreadable. It takes the size and the
-  sentence case, not the colour.
+  sentence case, not the color.
 - **`details.qdrop>summary`** in the graph keeps `#B91C1C`. It flags
   target-designation quotes, so the red is a data signal, not chrome.
 
@@ -242,7 +244,7 @@ toggling **twice**, since one toggle passes either way.
 
 ## Known dead code, safe to delete on contact
 
-- `main.css:404-446` — `.legend-item` plus ten category colours. Zero references
+- `main.css:404-446` — `.legend-item` plus ten category colors. Zero references
   anywhere; ships on every page.
 - `noblogs/index.html:9` — targets `#main-content > main`; the wrapper is
   `#content`, so it has never matched. Delete it; do **not** "fix" it, since that

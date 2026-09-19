@@ -45,7 +45,7 @@
   /* #5A5A5A meta            */
   --dr-ink-faint:    #6B7280;
   /* #6B7280 counts, hints   */
-  /* ---- Lines and fills. Cool, replacing seven near-duplicate warm greys. -- */
+  /* ---- Lines and fills. Cool, replacing seven near-duplicate warm grays. -- */
   --dr-line:         #D3D7DE;
   /* decorative hairlines    */
   --dr-line-strong:  #878D99;
@@ -118,16 +118,16 @@
   /* the skip link. Must beat everything. */
 }
 
-/* Data-encoding colours.
+/* Data-encoding colors.
  *
- * A restyle must NOT touch these. The map legend, the pin colours and the
+ * A restyle must NOT touch these. The map legend, the pin colors and the
  * LAYER/IDEOLOGY palettes inside noblogs/graph/graph.js and
  * dsa-explorer/index.html all agree on these hexes; changing one here without
  * changing the JS makes the legend lie about the picture it labels.
  *
  * Listed so they are visible and versioned, not so they are themeable. They are
  * literals because they are data, not design — which is also why they are the
- * only saturated colour the system permits on screen. */
+ * only saturated color the system permits on screen. */
 
 :root {
   --dr-data-money:  #1B7F4B;
@@ -207,7 +207,7 @@
   background: var(--dr-fill, #EFF1F4);
 }
 
-/* Pressed is a fill, not a colour. The accent is near-ink on purpose: chrome
+/* Pressed is a fill, not a color. The accent is near-ink on purpose: chrome
    must not compete with the thirteen categories the data encodes. */
 
 .dr-btn[aria-pressed="true"],
@@ -249,7 +249,7 @@
 /* The value on an ICON-ONLY toggle.
  *
  * .dr-btn__state below needs a label beside it to be a value OF anything, and
- * in a canvas toolbar there is no room for one — a column of labelled pills is
+ * in a canvas toolbar there is no room for one — a column of labeled pills is
  * the widest thing on the canvas and it reads as a menu rather than as tools.
  * So the state is a dot in the corner: present means on, absent means off.
  *
@@ -303,6 +303,18 @@
   background: var(--dr-panel, #fff);
   color: var(--dr-line-strong, #878D99);
   cursor: default;
+}
+
+/* Only the real `disabled` goes inert. An aria-disabled control has to keep
+ * receiving hover and focus, because the moment a control is unavailable is
+ * exactly when someone needs to read what it would do — and a browser fires no
+ * pointer events at all over a `disabled` button, so its tooltip can never
+ * open. The handler checks the attribute instead of relying on the browser.
+ *
+ * This is why an icon-only control that can be unavailable uses aria-disabled:
+ * an unexplained gray glyph is the worst case of the icon-only trade. */
+
+.dr-btn:disabled {
   pointer-events: none;
 }
 
@@ -318,7 +330,7 @@
  *
  * A filled pill says "this control is in a state" but not WHICH state, and in a
  * toolbar where most buttons are plain actions it does not even say that
- * reliably — filled reads as selected, or hovered, or just emphasised. The
+ * reliably — filled reads as selected, or hovered, or just emphasized. The
  * older version of these controls swapped their whole label to "Focus: on" /
  * "Focus: off", which was legible but moved the text and shifted every button
  * beside it on each click.
@@ -362,7 +374,7 @@
  * single digit came out vertically squashed, wider than it was tall. The pill
  * has to state its own box: a min-height, a matching min-width so "1" and "12"
  * are both round-ish rather than one being a circle and the other a lozenge,
- * and its own centring. */
+ * and its own centering. */
 
 /* `:not([hidden])` is load-bearing, and this is the second time this exact
  * trap has been paid for in this repo — see .dr-sheet__scrim in main.css.
@@ -426,7 +438,7 @@
 }
 
 /* The link is the wordmark, not a link that happens to be in it. Everything
-   the global `a` rule sets — colour, weight, underline — has to come back off,
+   the global `a` rule sets — color, weight, underline — has to come back off,
    and `font: inherit` is what keeps the weight correct if the type above ever
    changes. */
 
@@ -684,11 +696,11 @@
 }
 
 /* ---- Phone -------------------------------------------------------------
-   Bottom-anchored, full width, square at the bottom edge. A centred card on a
+   Bottom-anchored, full width, square at the bottom edge. A centered card on a
    390px screen wastes the two safest thumb zones and puts the close button at
    the top of a reach it does not need to be at.
 
-   `margin: auto auto 0` keeps the UA's horizontal centring and drops the
+   `margin: auto auto 0` keeps the UA's horizontal centering and drops the
    vertical, which is what pins it to the bottom. */
 
 @media (max-width: 767px) {
@@ -776,7 +788,7 @@
  * WHY NOT `title`. The native tooltip cannot be styled, cannot wrap where you
  * want it to, and — the reason this exists — takes about a second to appear.
  * On a toolbar of icon-only controls that delay is the whole interaction: you
- * hover a glyph you do not recognise, get nothing, and move on. A tooltip that
+ * hover a glyph you do not recognize, get nothing, and move on. A tooltip that
  * explains an ambiguous control has to be instant or it is not an explanation.
  *
  * NOT `.tooltip`. main.css already has a `.tooltip` class at z-index 1000,
@@ -852,10 +864,33 @@
 }
 
 .dr-tip__title {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-weight: 700;
   /* The name and the explanation are one block, so the gap is small. */
   margin-bottom: 0.125rem;
+}
+
+/* The value of a two-state control, opposite its name. Written by DRTip from
+   the trigger's `aria-pressed`, so it cannot disagree with the button. */
+
+.dr-tip__state {
+  margin-left: auto;
+  flex: none;
+  padding: 0 0.375rem;
+  border-radius: var(--dr-radius-sm, 6px);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.dr-tip__state[data-state="on"] {
+  background: var(--dr-on, #19B270);
+  color: #fff;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2295,7 +2330,7 @@ body {
 /* The narrative measure, shared by /about/ and /donate/.
      One class, because the two pages had set this independently and drifted:
      About was `max-w-[46rem]` with lede type, Donate was `max-w-3xl` (48rem)
-     with default body type and centred with mx-auto. Change the measure here
+     with default body type and centered with mx-auto. Change the measure here
      and both move together. */
 
 .text-column {
@@ -4886,7 +4921,7 @@ select {
    ================================================================ */
 
 /* ---- Tool shell -----------------------------------------------------
-   Shared behaviour for the graph and map tools. See assets/js/sheet.js for
+   Shared behavior for the graph and map tools. See assets/js/sheet.js for
    why the detail panel becomes a sheet below 768px. */
 
 /* A canvas sized to what is left of the viewport, never taller. The old
@@ -5037,7 +5072,7 @@ select {
      have had to leave a hole in its own top-right corner.
 
      44px here reserves that space once, for all of them. The bar stays
-     optically centred because the grip is a flex row rather than padding. */
+     optically centered because the grip is a flex row rather than padding. */
 
   .dr-sheet__grip {
     display: flex;

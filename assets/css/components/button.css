@@ -60,7 +60,7 @@
 
 .dr-btn:hover { background: var(--dr-fill, #EFF1F4); }
 
-/* Pressed is a fill, not a colour. The accent is near-ink on purpose: chrome
+/* Pressed is a fill, not a color. The accent is near-ink on purpose: chrome
    must not compete with the thirteen categories the data encodes. */
 .dr-btn[aria-pressed="true"],
 .dr-btn.is-on,
@@ -91,7 +91,7 @@
 /* The value on an ICON-ONLY toggle.
  *
  * .dr-btn__state below needs a label beside it to be a value OF anything, and
- * in a canvas toolbar there is no room for one — a column of labelled pills is
+ * in a canvas toolbar there is no room for one — a column of labeled pills is
  * the widest thing on the canvas and it reads as a menu rather than as tools.
  * So the state is a dot in the corner: present means on, absent means off.
  *
@@ -137,8 +137,17 @@
   background: var(--dr-panel, #fff);
   color: var(--dr-line-strong, #878D99);
   cursor: default;
-  pointer-events: none;
 }
+
+/* Only the real `disabled` goes inert. An aria-disabled control has to keep
+ * receiving hover and focus, because the moment a control is unavailable is
+ * exactly when someone needs to read what it would do — and a browser fires no
+ * pointer events at all over a `disabled` button, so its tooltip can never
+ * open. The handler checks the attribute instead of relying on the browser.
+ *
+ * This is why an icon-only control that can be unavailable uses aria-disabled:
+ * an unexplained gray glyph is the worst case of the icon-only trade. */
+.dr-btn:disabled { pointer-events: none; }
 
 /* Busy keeps its width so a label swapped for "Rendering…" does not shunt the
    controls beside it. */
@@ -151,7 +160,7 @@
  *
  * A filled pill says "this control is in a state" but not WHICH state, and in a
  * toolbar where most buttons are plain actions it does not even say that
- * reliably — filled reads as selected, or hovered, or just emphasised. The
+ * reliably — filled reads as selected, or hovered, or just emphasized. The
  * older version of these controls swapped their whole label to "Focus: on" /
  * "Focus: off", which was legible but moved the text and shifted every button
  * beside it on each click.
@@ -193,7 +202,7 @@
  * single digit came out vertically squashed, wider than it was tall. The pill
  * has to state its own box: a min-height, a matching min-width so "1" and "12"
  * are both round-ish rather than one being a circle and the other a lozenge,
- * and its own centring. */
+ * and its own centering. */
 /* `:not([hidden])` is load-bearing, and this is the second time this exact
  * trap has been paid for in this repo — see .dr-sheet__scrim in main.css.
  * `hidden` only sets display:none through the UA stylesheet, so a bare

@@ -70,7 +70,7 @@ dsa-explorer got this wrong and it shipped. Its `onClose` ran
 its background-tap handler, applied unconditionally — including in focus mode,
 which is the default. So on a phone you tapped a node to read it, and closing
 what you were reading snapped the whole network back to full strength and lost
-the walk.
+your place in the graph.
 
 Two things to take from it:
 
@@ -126,7 +126,7 @@ standalone page depends on them.
 
 `filtered()` feeds three consumers at once — the card grid, the map's `setHosts`,
 and the graph's host set. A facet toggled anywhere must still filter all three.
-This is the single most valuable behaviour not to break, and it is what made the
+This is the single most valuable behavior not to break, and it is what made the
 unreachable Filters button a real bug rather than a cosmetic one.
 
 ## Ids the specs assert

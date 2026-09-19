@@ -71,7 +71,7 @@
              tip:'Recompute where every node sits. Useful when labels overlap after a lot of panning.'}) +
         btn({id:'focusToggle', icon:'focus', toggle:true, name:'Focus mode',
              tipTitle:'Focus mode',
-             tip:'Clicking a node isolates it and its immediate ties, so you walk the network one step at a time. Turn it off to keep the whole graph visible and select without fading the rest.',
+             tip:'Clicking a node shows only that node and its direct ties, so you can follow the network one node at a time. Turn it off to keep the whole graph visible and select without fading the rest.',
              extra:'aria-pressed="true"'}) +
         btn({id:'tgtOnly', icon:'target', toggle:true, name:'Target edges only',
              tipTitle:'Target edges only',
@@ -363,11 +363,11 @@
     legend.innerHTML =
       `<button type="button" class="legtoggle" aria-expanded="false" aria-controls="glegend-body">Legend</button>`+
       `<div id="glegend-body" class="legbody">`+
-      `<h4>Institution class — node colour</h4>${irows}`+
+      `<h4>Institution class — node color</h4>${irows}`+
       `<h4>Blogs</h4><button type="button" class="row" data-nkey="n:blog" aria-pressed="true"><span class="sw" style="background:${BLOG_COL};border-radius:50%"></span>Blog (round · size = impact)</button>`+
       `<button type="button" class="row" data-nkey="n:dox" aria-pressed="true"><span class="sw" style="background:${DOX_COL};border-radius:50%;box-shadow:0 0 0 2px #DC2626"></span>Doxxing-flagged blog</button>`+
       `<h4>Edge — “cited-by”</h4>${erows}`+
-      `<div class="hint">Click a legend row to hide or show that class or edge type. Click any node to walk its ties.</div>`+
+      `<div class="hint">Click a legend row to hide or show that class or edge type. Click any node to see its ties.</div>`+
       `</div>`;
     legend.addEventListener('click',ev=>{
       const t=ev.target.closest('.legtoggle');
@@ -385,7 +385,7 @@
     });
   })();
 
-  /* ---- detail panel + focus-walk ---- */
+  /* ---- detail panel + focus mode ---- */
   const panel=$id('gpanel');
   const EMPTY=panel.innerHTML;
   let focusMode=true, focusId=null;
@@ -437,7 +437,7 @@
     /* Closing hides the panel again and does NOT touch the graph. The sheet is
        a view of the selection, not the selection itself — dsa-explorer cleared
        cy classes here and dismissing the sheet threw away the focus ring and
-       the walk. Leave the fade, the selected node and the camera alone. */
+       your place in the graph. Leave the fade, the selected node and the camera alone. */
     onClose: ()=>setPanel(false)
   }) : null);
 
@@ -510,7 +510,7 @@
     // Connections: top 3 most-connected shown, rest behind a "show N more" expander (#1).
     const connRow=c=>`<div class="conn" data-goto="${c.id}"><div class="conn-head">${c.label} <span class="rel">— ${c.w} post${c.w!==1?'s':''}${c.dox?' · doxxing':''}</span>${c.tgt>0?` <span class="tgtflag">⚠ target×${c.tgt}</span>`:''}</div></div>`;
     const cTop=conns.slice(0,3), cRest=conns.slice(3);
-    const connsHtml=`<div class="conns"><h3>${conns.length} citing blog${conns.length!==1?'s':''} — click to walk</h3>
+    const connsHtml=`<div class="conns"><h3>${conns.length} citing blog${conns.length!==1?'s':''} — click to open</h3>
         ${cTop.map(connRow).join('')}
         ${cRest.length?`<details class="mdrop"><summary>Show ${cRest.length} more blog${cRest.length!==1?'s':''}</summary>${cRest.map(connRow).join('')}</details>`:''}
       </div>`;
@@ -543,7 +543,7 @@
       ${link}
       ${d.summary?`<div class="notes">${d.summary}</div>`:''}
       ${quotesBlock(IQ.byHost[d.id],{scroll:true,labelType:'inst',title:'Verified institutional citations'})}
-      <div class="conns"><h3>${conns.length} institution${conns.length!==1?'s':''} cited — click to walk</h3>
+      <div class="conns"><h3>${conns.length} institution${conns.length!==1?'s':''} cited — click to open</h3>
         ${conns.map(c=>`<div class="conn" data-goto="${c.id}"><div class="conn-head">${c.label} <span class="rel">— ${c.w} post${c.w!==1?'s':''} · ${c.inv}${c.depth?(' · depth '+c.depth):''}${c.val==='critical'?' · critical':''}</span>${c.tgt>0?` <span class="tgtflag">⚠ target×${c.tgt}</span>`:''}</div></div>`).join('')}
       </div>`;
     wire();
@@ -607,7 +607,7 @@
      77 institutions would be unreachable by any filtering search.
 
      Debounced at 200ms to match the page field: undebounced, each keystroke
-     walked every node and rewrote classes over the whole element set inside a
+     iterated over every node and rewrote classes across the whole element set inside a
      cy.batch, and a fast typist queued one full restyle per letter.
 
      Returns the hit count so the caller can report it. */
@@ -638,7 +638,7 @@
     qTimer=setTimeout(()=>{
       const n=paintFind(v);
       /* Frame the hits so a search that matches one node off-screen is not a
-         search that appears to do nothing. One hit gets centred; several get
+         search that appears to do nothing. One hit gets centered; several get
          fitted. Nothing matched leaves the camera alone — moving the view to
          show an empty result is worse than not moving it. */
       if(n===1) cy.animate({center:{eles:cy.$('.nbr')},zoom:Math.max(cy.zoom(),1.1)},{duration:350});

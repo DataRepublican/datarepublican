@@ -9,7 +9,7 @@ const HOST = process.env.HOST || 'http://localhost:4000';
  * focus-OFF branch of the background-tap handler — unconditionally, including
  * in focus mode, which is the default. So on a phone you tapped a node to read
  * it, and dismissing what you were reading snapped the whole network back to
- * full strength and lost the walk.
+ * full strength and lost your place in the graph.
  *
  * The graph's own deselect is a background tap, and it is conditional: focus
  * mode re-applies the ring, only focus-off clears.
@@ -27,7 +27,7 @@ test.describe('dsa-explorer: dismissing the sheet leaves the graph alone', () =>
     await page.waitForTimeout(600);
   };
 
-  // A node the app itself would open, walked through its own tap handler.
+  // A node the app itself would open, driven through its own tap handler.
   const tapANode = (page) => page.evaluate(() => {
     const n = cy.nodes().filter(n => n.data('kind') === 'person').first();
     n.emit('tap');
@@ -102,7 +102,7 @@ test.describe('dsa-explorer: dismissing the sheet leaves the graph alone', () =>
     await page.waitForTimeout(800);
 
     // Focus mode re-applies the ring rather than clearing to full strength —
-    // the behaviour the close handler was wrongly borrowing.
+    // the behavior the close handler was wrongly borrowing.
     await page.evaluate(() => cy.emit('tap', [{ target: cy }]));
     await page.waitForTimeout(700);
     expect(await page.evaluate(() => cy.elements('.faded').length),

@@ -68,7 +68,7 @@ test.describe('graph detail on a phone', () => {
       zoom: Math.round(graphApi.cy.zoom() * 1000),
     }));
     // dsa-explorer cleared cy classes in onClose and dismissing the sheet threw
-    // away the walk. The graph must not repeat it.
+    // away your place in the graph. The graph must not repeat it.
     expect(after.faded, 'closing the sheet reset the graph').toBe(before.faded);
     expect(after.zoom, 'closing the sheet moved the camera').toBe(before.zoom);
   });
@@ -100,13 +100,13 @@ test.describe('graph detail on a desktop', () => {
   });
 });
 
-/* The category facets carry the map's colours.
+/* The category facets carry the map's colors.
  *
  * With the filter popover open it covers the map legend, so choosing
- * "anarchist" meant picking a category with no way to see which colour it is on
+ * "anarchist" meant picking a category with no way to see which color it is on
  * the map behind. The swatches are read off the legend markup at boot rather
  * than restated in JS, so the two cannot drift. */
-test.describe('category facets show the map colours', () => {
+test.describe('category facets show the map colors', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
   test('every category row has a swatch, and it matches the legend', async ({ page }) => {
@@ -137,7 +137,7 @@ test.describe('category facets show the map colours', () => {
     // below the first group is behind a scroll.
     expect(r.firstGroup).toBe('Category');
     expect(r.mismatched, `category rows missing or mismatching a swatch: ${r.mismatched}`).toEqual([]);
-    // Only the category group is colour-coded; the others would be noise.
+    // Only the category group is color-coded; the others would be noise.
     expect(r.scopeSwatches).toBe(0);
   });
 });
