@@ -147,6 +147,54 @@ test.describe('the graph cross-filter', () => {
     await type('');
     expect(await shown(), 'clearing the search should restore every node').toBe(all);
   });
+
+  test('the graph search highlights only what is on screen, institutions included', async ({ page }) => {
+    /* Two searches with different jobs. The page one FILTERS the corpus and
+       covers blogs only; the graph one HIGHLIGHTS a node by name and is the
+       only way to reach the 77 institutions, which are not rows in the blog
+       data at all.
+       It used to match nodes the cross-filter had already hidden, so
+       highlighting one was a silent no-op — the ring went off screen. */
+    await page.goto(HOST + '/noblogs/?view=graph&q=russia', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(
+      () => typeof graphApi !== 'undefined' && graphApi && graphApi.cy.nodes().length > 0,
+      { timeout: 90000 });
+    await page.waitForTimeout(600);
+
+    // The page search reaches no institution, ever.
+    const reach = await page.evaluate(() => ({
+      institutions: cy.nodes('[kind="institution"]').length,
+      inBlogData: cy.nodes('[kind="institution"]').filter(n => BYHOST[n.id()]).length,
+    }));
+    expect(reach.institutions).toBeGreaterThan(0);
+    expect(reach.inBlogData, 'institutions are not in the blog index').toBe(0);
+
+    const graphFind = async (v) => {
+      await page.evaluate((s) => {
+        const q = document.getElementById('q');
+        q.value = s;
+        q.oninput();
+      }, v);
+      await page.waitForTimeout(400);
+      return page.evaluate(() => ({
+        hits: cy.$('.nbr').length,
+        offScreen: cy.$('.nbr').filter(n => n.style('display') === 'none').length,
+      }));
+    };
+
+    // A blog the page filter has excluded must not light up.
+    const hiddenName = await page.evaluate(() => {
+      const h = cy.nodes('[kind="blog"]').filter(n => n.style('display') === 'none');
+      return h.length ? h[0].data('label').slice(0, 8).toLowerCase() : null;
+    });
+    expect(hiddenName, 'expected the query to hide some blogs').not.toBeNull();
+    expect((await graphFind(hiddenName)).offScreen,
+      'highlighted a node the cross-filter had hidden').toBe(0);
+
+    // An institution stays findable regardless of the blog filter.
+    expect((await graphFind('splcenter')).hits,
+      'institutions became unreachable').toBeGreaterThan(0);
+  });
 });
 
 test.describe('the filter popover reset', () => {

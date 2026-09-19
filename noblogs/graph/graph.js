@@ -49,9 +49,13 @@
     return '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" ' +
       'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON[k] + '</svg>';
   }
+  // `extra` may carry its own aria-label, for a control whose tooltip is a
+  // sentence — a sentence makes a poor accessible name.
   function btn(id, icon, title, label, extra) {
+    extra = extra || '';
+    var named = !!label || extra.indexOf('aria-label') !== -1;
     return '<button type="button" id="' + id + '" class="dr-btn' + (label ? '' : ' dr-btn--icon') + '" ' +
-      (label ? '' : 'aria-label="' + title + '" ') + 'title="' + title + '" ' + (extra || '') + '>' +
+      (named ? '' : 'aria-label="' + title + '" ') + 'title="' + title + '" ' + extra + '>' +
       svg(icon) + (label ? '<span class="glabel">' + label + '</span>' : '') + '</button>';
   }
 
@@ -76,8 +80,11 @@
          * invisible, and a keyboard user tabbing onto a field they cannot see
          * is worse than not having it. setSearchOpen restores it. */
         '<div id="gsearch"><div class="gsearch__box">' +
-          btn('gsearchToggle', 'search', 'Search the graph', '', 'aria-expanded="false" aria-controls="q"') +
-          '<input id="q" type="text" placeholder="Search a blog or institution\u2026" autocomplete="off" tabindex="-1">' +
+          btn('gsearchToggle', 'search',
+              'Find a node by name. It highlights matches and dims the rest \u2014 it does not filter. ' +
+              'Institutions can only be found here: the page search covers blogs only.',
+              '', 'aria-expanded="false" aria-controls="q" aria-label="Find a node on the graph"') +
+          '<input id="q" type="text" placeholder="Find a blog or institution\u2026" autocomplete="off" tabindex="-1">' +
         '</div></div>' +
         btn('zin', 'zin', 'Zoom in', '') +
         btn('zout', 'zout', 'Zoom out', '') +
@@ -637,7 +644,16 @@
   let qTimer=null;
   q.oninput=()=>{clearTimeout(qTimer);qTimer=setTimeout(()=>{
     const v=q.value.trim().toLowerCase();if(!v){if(focusMode&&focusId)applyFocus(focusId,false);else cy.elements().removeClass('faded nbr sel');return;}
-    cy.batch(()=>{cy.elements().addClass('faded').removeClass('nbr sel');const m=cy.nodes().filter(n=>(n.data('label')||'').toLowerCase().includes(v)||n.id().toLowerCase().includes(v));m.removeClass('faded').addClass('nbr');m.connectedEdges().removeClass('faded');});},200);};
+    cy.batch(()=>{
+      cy.elements().addClass('faded').removeClass('nbr sel');
+      /* Visible nodes only. Without the display check this matched nodes the
+         explorer's cross-filter had already hidden, so highlighting one was a
+         silent no-op — the ring went onto something off screen. */
+      const m=cy.nodes().filter(n=>n.style('display')!=='none'&&
+        ((n.data('label')||'').toLowerCase().includes(v)||n.id().toLowerCase().includes(v)));
+      m.removeClass('faded').addClass('nbr');
+      m.connectedEdges().removeClass('faded');
+    });},200);};
   addEventListener('resize',()=>cy.resize());
 
   /* ---- cross-filter from the explorer facets (postMessage host-set) ---- */
