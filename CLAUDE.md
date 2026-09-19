@@ -201,6 +201,16 @@ Consequences for anything you do here:
 After a deploy, verify by content: the domain returns 200 for any path, so a
 status code proves nothing.
 
+**And fetch the host's own path, not a URL the page hands you.** `url:` in
+`_config.yml` is `https://datarepublican.com`, and jekyll-seo-tag builds
+absolute URLs from it, so *every* environment — localhost, a staging app, a PR
+preview — serves `<meta property="og:image" content="https://datarepublican.com/…">`.
+Following that tag to check a deploy measures production and reports the
+environment you are actually testing as broken. Request
+`<host>/assets/images/og.png` directly and compare md5 against
+`git show <ref>:assets/images/og.png`. Same failure shape as the 200: a correct
+build that reads as a bad one.
+
 ### Going live: the cutover runbook
 
 The repo side of this is already done and sitting on this branch — `Dockerfile`,
