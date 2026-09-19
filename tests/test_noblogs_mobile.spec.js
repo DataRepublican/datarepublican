@@ -159,6 +159,52 @@ test.describe('noblogs on a phone', () => {
     await expect(page.locator('#nb-filters')).toHaveAttribute('aria-expanded', 'true');
   });
 
+  /* The detail sheet has to scroll its own content. #panel IS .dr-sheet__body
+     — sheet.js adds the class to the element rather than wrapping it — so a
+     `#panel{overflow:visible}` in the tool's own stylesheet outranks
+     `.dr-sheet__body{overflow-y:auto}` and leaves the sheet with no scroller
+     at all. The content still overflows, so the touch chains to the document
+     and scrolls the page behind the open sheet.
+
+     Asserting the computed value rather than a scroll position, because a
+     synthetic scroll on a non-scrolling element is a no-op that looks like a
+     pass. */
+  test('the open detail sheet scrolls its own content, not the page', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=map&host=carreproletarien.noblogs.org', {
+      waitUntil: 'domcontentloaded',
+    });
+    await page.waitForSelector('#panel.on', { timeout: 60000 });
+    await page.waitForTimeout(500);
+
+    const m = await page.evaluate(() => {
+      const body = document.querySelector('.dr-sheet__body');
+      const cs = getComputedStyle(body);
+      return {
+        isSamePanel: body === document.getElementById('panel'),
+        overflowY: cs.overflowY,
+        overscroll: cs.overscrollBehaviorY,
+        overflows: body.scrollHeight > body.clientHeight + 1,
+      };
+    });
+
+    // If this is ever false the specificity trap above no longer applies, and
+    // the rest of this test is measuring the wrong element.
+    expect(m.isSamePanel).toBe(true);
+
+    expect(m.overflows, 'sheet content does not overflow; pick a taller fixture').toBe(true);
+    expect(m.overflowY, '#panel must not override .dr-sheet__body overflow').not.toBe('visible');
+    // Scroll must not chain to the document behind the sheet.
+    expect(m.overscroll).toBe('contain');
+
+    // And it actually moves.
+    const moved = await page.evaluate(() => {
+      const b = document.querySelector('.dr-sheet__body');
+      b.scrollTop = 120;
+      return b.scrollTop;
+    });
+    expect(moved, 'sheet body did not scroll').toBeGreaterThan(0);
+  });
+
   test('tapping a card opens the detail sheet on screen', async ({ page }) => {
     // ?view=dash because this one has to click a real card, which means the
     // card has to be on screen.

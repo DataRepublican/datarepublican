@@ -541,12 +541,21 @@ title: TrumpBlogs formerly known as NoBlogs
     main{padding:12px 0 calc(var(--nav-clearance) + 12px)}
 
     /* The detail drawer is positioned by .dr-sheet from the site stylesheet.
-       `overflow:visible` hands the scrolling to .dr-sheet__body: two nested
-       scrollers of the same height means the outer one never moves and a drag
-       started anywhere in the content scrolls the inner one instead of
-       dismissing the sheet. */
+
+       Do NOT set `overflow` here, and do not restore `overflow:visible`.
+       #panel IS .dr-sheet__body — sheet.js adds the class to this element
+       rather than wrapping it in one — so they are not two nested scrollers,
+       and `#panel` at 1-0-0 outranks `.dr-sheet__body` at 0-1-0. Declaring
+       `overflow:visible` therefore removed the sheet's ONLY scroller: nothing
+       moved inside the drawer and the touch chained straight through to the
+       page behind it.
+
+       The drag-to-dismiss that was protecting is bound to the grip alone
+       (sheet.js), never to the body, so scrolling the content has never been
+       able to compete with it. Leaving overflow unset lets the desktop rule's
+       `overflow-y:auto` carry through, which is what .dr-sheet__body expects. */
     #panel{position:static;width:auto;max-width:none;top:auto;right:auto;bottom:auto;
-      box-shadow:none;border-left:0;transform:none;height:auto;overflow:visible}
+      box-shadow:none;border-left:0;transform:none;height:auto}
     #scrim{display:none}
 
     /* One close button, not two. DRSheet puts a 44px close in its wrapper, and
