@@ -88,14 +88,27 @@ test.describe('the standalone map legend filters from a keyboard', () => {
   });
 });
 
+/* Category is the map's colour key, so on a canvas view at md it lives in the
+ * sidebar beside the canvas and NOT in the filter popover — one group rendered
+ * in two places at once is the duplication the sidebar removed. Below md, and
+ * on the List view, the popover is still where it is, because neither has a
+ * sidebar. The rows are the same markup either way: `bindFacets()` binds both
+ * copies, so anything asserted about one holds for the other. */
 test.describe('the explorer filters categories from the facet panel', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
+
+  // Canvas view: no click needed, the sidebar is always open.
+  const openCats = async (page) => {
+    await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
+    await page.waitForSelector('#nb-side-cats .fitem[data-f="cat"]', { timeout: 30000 });
+  };
 
   const openFilters = async (page) => {
     await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
     await page.click('#nb-filters');
-    await page.waitForSelector('#facets .fitem[data-f="cat"]', { timeout: 30000 });
+    await page.waitForSelector('#facets .fgroup', { timeout: 30000 });
   };
 
   test('the map carries no permanent overlay, so the zoom control is clear', async ({ page }) => {
@@ -113,8 +126,8 @@ test.describe('the explorer filters categories from the facet panel', () => {
   });
 
   test('the Category group carries the swatches the legend used to', async ({ page }) => {
-    await openFilters(page);
-    const rows = page.locator('#facets .fitem[data-f="cat"]');
+    await openCats(page);
+    const rows = page.locator('#nb-side-cats .fitem[data-f="cat"]');
     expect(await rows.count()).toBeGreaterThan(10);
 
     // The colour encoding has to survive the legend's deletion: CATCOLOR used
@@ -136,7 +149,7 @@ test.describe('the explorer filters categories from the facet panel', () => {
   });
 
   test('toggling a category filters the map and the status line', async ({ page }) => {
-    await openFilters(page);
+    await openCats(page);
     // The first number in the line, commas stripped. Not `replace(/[^\d].*/)`
     // — that stops at the thousands separator and reads "4,620" as 4.
     const readCount = () => page.evaluate(() => {
@@ -147,7 +160,7 @@ test.describe('the explorer filters categories from the facet panel', () => {
     const before = await readCount();
     expect(before).toBeGreaterThan(0);
 
-    const first = page.locator('#facets .fitem[data-f="cat"] input').first();
+    const first = page.locator('#nb-side-cats .fitem[data-f="cat"] input').first();
     await first.check();
     await expect.poll(readCount).toBeLessThan(before);
 
@@ -173,5 +186,47 @@ test.describe('the explorer filters categories from the facet panel', () => {
     // through a checkbox map.js reads out of the DOM.
     const edgeCount = await page.locator('.coedge').count();
     expect(edgeCount, 'unchecking the toggle left the edges on the map').toBe(0);
+  });
+
+  /* Category is drawn twice on a canvas view and the two cannot be allowed to
+     drift. Neither copy holds state — buildFacets() renders both out of F on
+     every change — but that is exactly the kind of invariant that survives
+     until someone optimises one of the two rebuilds away. */
+  test('both copies of Category track the same state', async ({ page }) => {
+    const read = () => page.evaluate(() => {
+      const of = root => [...document.querySelectorAll(
+        `${root} .fitem[data-f="cat"]`)].map(e => [e.dataset.v, e.querySelector('input').checked]);
+      return { side: of('#nb-side-cats'), pop: of('#facets') };
+    });
+
+    // Set it in the sidebar, with the popover closed.
+    await openCats(page);
+    const before = await read();
+    expect(before.side.length).toBeGreaterThan(10);
+    expect(before.pop, 'the popover dropped Category').toEqual(before.side);
+    await page.locator('#nb-side-cats .fitem[data-f="cat"] input').first().check();
+
+    // The popover opens already agreeing with it.
+    await page.click('#nb-filters');
+    await page.waitForSelector('#facets .fitem[data-f="cat"]', { timeout: 30000 });
+    const open = await read();
+    expect(open.pop[0][1], 'the popover opened out of date').toBe(true);
+    expect(open.pop).toEqual(open.side);
+
+    // And clearing it there reaches the sidebar underneath.
+    await page.locator('#facets .fitem[data-f="cat"] input').first().uncheck();
+    await expect.poll(async () => (await read()).side[0][1]).toBe(false);
+    const after = await read();
+    expect(after.pop).toEqual(after.side);
+  });
+
+  test('the List view has no sidebar, so the rail carries Category alone', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=dash', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#dashview .card', { timeout: 60000 });
+    const onList = await page.evaluate(() => ({
+      side: !!document.querySelector('#nb-side-cats .fitem[data-f="cat"]')?.offsetParent,
+      rail: !!document.querySelector('#facets .fitem[data-f="cat"]')?.offsetParent,
+    }));
+    expect(onList).toEqual({ side: false, rail: true });
   });
 });

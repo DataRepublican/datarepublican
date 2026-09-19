@@ -103,6 +103,81 @@ not.
 
 ---
 
+## 2a. The detail panel is a column of the canvas, not a drawer over the page
+
+Two tools drawing the same picture — a canvas plus a detail for whatever is
+selected — solved it two different ways. dsa-explorer had a persistent sidebar
+in its stage grid. noblogs had a full-viewport drawer that flew in from the
+right over a scrim, so picking a pin dimmed the map you picked it from and the
+map you were reading against was behind a wash.
+
+**The sidebar is the pattern.** A canvas view gets a second grid column, the
+panel lives in it, and the canvas is simply narrower:
+
+```css
+body[data-view="map"] #nb-stage { display: grid; grid-template-columns: minmax(0,1fr) var(--nb-side, 21rem) }
+body[data-view="map"] #panel    { position: static; transform: none; box-shadow: none; overflow: hidden }
+body[data-view="map"] #scrim    { display: none }
+```
+
+Four things follow from it:
+
+- **The column is always there, so the canvas width is constant.** Nothing has
+  to re-measure Leaflet or re-fit Cytoscape on open and close — the bug class
+  goes away rather than getting a handler.
+- **It is never empty.** Default content when nothing is selected (on noblogs,
+  the categories, which double as the map's colour key), the detail when
+  something is, one swapped for the other by a class on `body`. A panel that
+  is blank half the time reads as a rendering failure.
+- **The close button only exists while there is somewhere to go back to.** It
+  returns you to the default content; without a selection it has no meaning.
+- **The scrim goes.** A scrim is for something modal, and a column is not.
+
+**A view with no canvas keeps the overlay.** noblogs' List view already spends
+a column on the facet rail, and measuring showed a third drops the card grid
+from four columns to two. Below md both forms become the same bottom sheet.
+
+`openModal` / `closeModal` do not know any of this. They set the selection and
+toggle a class; the placement is CSS keyed on `body[data-view]`. If the
+placement rules reach into the open/close path, you have two mechanisms.
+
+**The band is rounded, and only on its outer corners.** `--dr-radius-lg`, with
+`overflow: hidden` — that second part is what makes the corners real, because
+Leaflet's tiles and Cytoscape's canvas are opaque children that square them off
+otherwise. Where the tool has a wrapper around the whole band (noblogs'
+`#nb-stage`) one rule does it. Where the canvas and the panel are separate grid
+children (dsa-explorer, whose header shares the grid so there is nothing to
+wrap) each takes the two corners on its own side and the seam between them
+stays square. `position: fixed` chrome — the overlay drawer, the phone sheet —
+is not clipped by any of this: its containing block is the viewport.
+
+### Drawing one control in two places
+
+Categories render in the sidebar *and* in the filter popover. That looks like
+duplication and the first cut removed the popover's copy — which broke the
+thing the sidebar was for: once a blog is selected the detail takes the column
+over, and there was then no way to recolour the map while reading one.
+
+Two presentations of one control is fine. **Neither may hold state.** Render
+both out of the single source on every change, from the same function, and bind
+them with the same binder:
+
+```js
+el.innerHTML   = groups();          // the popover
+side.innerHTML = grp("Category", "cat", …);   // the sidebar
+bindFacets(el); bindFacets(side);
+```
+
+They cannot drift because there is nothing to drift — there is one `F`, and
+both are output. The trap is the *other* direction: anything that reads the DOM
+back now has two answers to choose from. Restoring focus after a rebuild broke
+on exactly this, because `document.querySelector` returns the first match in
+document order, which was the copy inside the closed popover — `display:none`,
+where `focus()` is a silent no-op. Capture **which container** held focus, not
+only which row.
+
+---
+
 ## 3. Legal text is a modal, not a band
 
 The disclaimer was a full-width amber callout pinned under the header. Its
@@ -173,11 +248,23 @@ Assert the motion by sampling the element's position mid-flight instead.
 `.dr-sheet` wraps a panel the tool already owns, so there are two elements that
 can disagree. Three ways they did:
 
-- **Ground.** The sheet was hardcoded `#fff`; noblogs' `#panel` sits on the
-  page ground by design. Stacked, that painted a white band above the content
-  and another below it, which read as a header and a footer the sheet does not
-  have. The sheet exposes `--dr-sheet-surface` and the consumer overrides it —
-  never restyle `.dr-sheet` itself.
+- **Ground.** The sheet, its grip and the panel inside it are three elements
+  painting what has to look like one surface, and each had its own idea of the
+  colour. Stacked, that put a band above the content and another below it,
+  which read as a header and a footer the sheet does not have. The sheet
+  exposes `--dr-sheet-surface` and the consumer sets it — never restyle
+  `.dr-sheet` itself. **A detail panel's ground is `--panel`, not `--bg`**:
+  it is a surface sitting on the page, not a piece of the page, and once it is
+  white there is nothing left to override.
+- **Padding at the bottom.** `padding-bottom: env(safe-area-inset-bottom, 0px)`,
+  not `max(1rem, env(…))`. The floor put 16px of bare surface under the
+  scrolling body on every device without a home indicator, which is the footer
+  band again. Padding the *content* is the consumer's job.
+- **One scroller.** `.dr-sheet__body` is it. A consumer panel that keeps its
+  own `overflow-y: auto` nests a second scroller of identical height inside the
+  first: the outer one never moves, and a drag started anywhere in the content
+  scrolls the inner one instead of dismissing the sheet. Set `overflow: visible`
+  on the panel below md.
 - **Close buttons.** `DRSheet` adds one; most panels already have their own.
   On a phone they stacked into two X's in two header bars. **The sheet's wins**
   (it is the one that also dismisses the sheet); hide the tool's own below md.
@@ -501,6 +588,8 @@ usually still real and only the trigger moved.
 | `test_disclaimer.spec.js` | full text reachable without a pointer; never the smallest type; **and for the modal**: `:modal` (so `show()` can't creep in), focus returns to the opener, opening does not reflow the header |
 | `test_review_regressions.spec.js` | `.collapsed` really moves the grid column — now driven by selecting a node; the search field boots hidden, opens beside the controls, and takes focus |
 | `test_noblogs_mobile.spec.js` | `--nb-header-h` is the tool header's height and not the masthead's |
+| `test_noblogs_sheet_chrome.spec.js` | the sheet, its grip and the panel are one surface; **and the sidebar**: in flow beside the canvas, never over it, never empty, and the band's outer corners are clipped |
+| `test_map_legend.spec.js` | Category renders in both the sidebar and the popover, and neither holds state |
 
 **When you add a control to a cluster, move the legend's height budget with
 it.** `graph.css` reserves `calc(100% - 340px)` for eight 32px buttons plus gaps
@@ -515,6 +604,13 @@ was.
 - [ ] Three rows: identity + legal / views / subset. Phone stacks, md merges 2+3.
 - [ ] Header is a flex column, not `flex-wrap`.
 - [ ] Canvas has no permanent overlay. Vendor corners are clear.
+- [ ] The detail is a column of the canvas, not a drawer over the page; it is
+      never empty, the close only exists with a selection, and there is no
+      scrim. A view with no canvas keeps the overlay.
+- [ ] The canvas band is rounded on its outer corners with `overflow: hidden`.
+- [ ] A control drawn in two places holds no state: both rendered from the one
+      source on every change, both bound by the same binder, and anything
+      reading the DOM back names which container it means.
 - [ ] Legal text is a `.dr-dialog`, opened with `showModal()`.
 - [ ] Every sliding surface uses `--dr-dur-sheet` / `--dr-ease-sheet`; a
       `<dialog>` also needs `allow-discrete` + `@starting-style`.

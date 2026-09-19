@@ -94,7 +94,18 @@ title: DSA Explorer
   }
   #cy{width:100%;height:100%;background:
      radial-gradient(circle at 50% 42%, #FFFFFF 0%, #F2F2EE 70%)}
-  #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2}
+  #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2;
+    border-radius:var(--dr-radius-lg,.75rem)}
+
+  /* The canvas and the panel are two grid children making one band, so only
+     the band's OUTER corners round — the edge where they meet stays square.
+     noblogs does this with one `overflow:hidden` on a wrapper; here the header
+     shares the grid, so there is nothing to wrap that would not take it too.
+     Collapsed, #stage is the whole band and keeps all four (above). */
+  @media(min-width:768px){
+    #app:not(.panel-collapsed) #stage{border-radius:var(--dr-radius-lg,.75rem) 0 0 var(--dr-radius-lg,.75rem)}
+    #app:not(.panel-collapsed) #panel{border-radius:0 var(--dr-radius-lg,.75rem) var(--dr-radius-lg,.75rem) 0}
+  }
   /* controls — NB: the site's global button{} rule paints buttons slate-900 bg + white text;
      these #stage overrides restore readable dark-on-light text and drop the forced min-width/margin */
   #stage button{color:#1A1A1A;background:#fff;min-width:0;margin:0;font-weight:500}

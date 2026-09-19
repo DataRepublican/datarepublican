@@ -36,9 +36,11 @@ test.describe('the noblogs detail sheet', () => {
 
   test('is one continuous surface — no white band above or below the content', async ({ page }) => {
     await openSheet(page);
-    // #panel sits on the PAGE ground by design; the sheet defaulted to #fff, so
-    // the grip row and the safe-area padding painted white strips that read as
-    // a header and a footer the sheet does not have.
+    // The sheet, its grip and the panel it wraps are three elements painting
+    // what has to look like one surface, and each had its own idea of the
+    // colour — so the grip row and the padding below the body read as a header
+    // and a footer the sheet does not have. Whatever the ground is, all three
+    // have to name it.
     const c = await page.evaluate(() => {
       const sheet = document.querySelector('.dr-sheet');
       const grip = document.querySelector('.dr-sheet__grip');
@@ -70,6 +72,9 @@ test.describe('the noblogs detail sheet', () => {
 test.describe('the desktop detail drawer', () => {
   test.use({ viewport: { width: 1400, height: 900 } });
 
+  /* The overlay is the List view's form. That view already spends a column on
+     the facet rail and a third would cost half the card grid, so the detail
+     still arrives over the top of it. The canvas views get the sidebar below. */
   test('fills the viewport at any scroll position', async ({ page }) => {
     /* #panel and #scrim were inset by --nb-header-h, which is the tool
        header's HEIGHT and not its distance from the top of the window. Those
@@ -81,7 +86,7 @@ test.describe('the desktop detail drawer', () => {
        A length standing in for a position is the whole bug, so the assertion
        is simply that neither depends on scroll. */
     await page.goto(
-      HOST + '/noblogs/?view=map&host=vernetzungpartizipation.noblogs.org',
+      HOST + '/noblogs/?view=dash&host=vernetzungpartizipation.noblogs.org',
       { waitUntil: 'domcontentloaded' });
     await page.waitForSelector('#panel.on', { timeout: 90000 });
     await page.waitForTimeout(400);
@@ -107,6 +112,89 @@ test.describe('the desktop detail drawer', () => {
     const scrolled = await box();
     expect(scrolled, 'the drawer moved with the page').toEqual(atTop);
   });
+});
+
+/* The canvas views carry a persistent sidebar instead, scoped to the stage the
+ * way dsa-explorer's is: categories by default, the detail in the same column
+ * when a node is picked. The two tools were solving one problem two ways —
+ * this is the shared answer, and openModal/closeModal are unchanged by it.
+ * They toggle `.on` and `SEL`; the placement is CSS keyed on body[data-view]. */
+test.describe('the canvas-view sidebar', () => {
+  test.use({ viewport: { width: 1400, height: 900 } });
+
+  const geom = (page) => page.evaluate(() => {
+    const p = document.getElementById('panel');
+    const r = p.getBoundingClientRect();
+    const map = document.getElementById('mapwrap').getBoundingClientRect();
+    return {
+      position: getComputedStyle(p).position,
+      bg: getComputedStyle(p).backgroundColor,
+      scrim: getComputedStyle(document.getElementById('scrim')).display,
+      clearsCanvas: r.left >= map.right - 1,
+      cats: !!document.querySelector('#nb-side-cats .fitem[data-f="cat"]')?.offsetParent,
+      detail: !!document.getElementById('pinner').offsetParent,
+      close: !!document.querySelector('#panel .pclose')?.offsetParent,
+      right: Math.abs(r.right - document.querySelector('#panel .pclose').getBoundingClientRect().right),
+    };
+  });
+
+  test('it sits beside the canvas rather than over it, on white', async ({ page }) => {
+    await page.goto(HOST + '/noblogs/?view=map', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.leaflet-marker-icon, .marker-cluster', { timeout: 90000 });
+
+    const g = await geom(page);
+    expect(g.position, 'the sidebar is still an overlay').toBe('static');
+    expect(g.scrim, 'a sidebar does not dim the page behind it').toBe('none');
+    expect(g.clearsCanvas, 'the sidebar is covering the map').toBe(true);
+    // A panel surface, not the page ground it is sitting on.
+    expect(g.bg).toBe('rgb(255, 255, 255)');
+
+    // Categories, and no way back from a place you have not left.
+    expect(g.cats).toBe(true);
+    expect(g.detail).toBe(false);
+    expect(g.close).toBe(false);
+  });
+
+  test('picking a blog swaps categories for the detail, and back', async ({ page }) => {
+    await page.goto(
+      HOST + '/noblogs/?view=map&host=vernetzungpartizipation.noblogs.org',
+      { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('#pinner h2', { timeout: 90000 });
+
+    const g = await geom(page);
+    expect(g.detail).toBe(true);
+    expect(g.cats, 'both halves are showing at once').toBe(false);
+    expect(g.close).toBe(true);
+    // The close is at the trailing edge. As a flex item with a stale
+    // `float:right` it stretched full width and centred its glyph instead.
+    expect(g.right, 'the close button is not on the right').toBeLessThan(20);
+
+    await page.click('#panel .pclose');
+    await expect.poll(async () => (await geom(page)).cats).toBe(true);
+    expect((await geom(page)).detail).toBe(false);
+  });
+
+  /* The radius is cosmetic; the `overflow:hidden` under it is not. Leaflet's
+     tiles and Cytoscape's canvas are opaque children that square the corners
+     off without it, so the rule reads as applied and does nothing. Both tools,
+     because they round the band two different ways — one wrapper on noblogs,
+     matching half-radii on dsa-explorer, whose header shares the grid. */
+  for (const [name, url, sel] of [
+    ['noblogs', '/noblogs/?view=map', '#nb-stage'],
+    ['dsa-explorer', '/dsa-explorer/', '#stage'],
+  ]) {
+    test(`${name}: the canvas band is rounded and actually clips`, async ({ page }) => {
+      await page.goto(HOST + url, { waitUntil: 'domcontentloaded' });
+      await page.waitForSelector(sel, { timeout: 90000 });
+      const cs = await page.locator(sel).evaluate(e => {
+        const s = getComputedStyle(e);
+        return { tl: parseFloat(s.borderTopLeftRadius), oflow: s.overflow };
+      });
+      expect(cs.tl, 'the band is not rounded').toBeGreaterThan(6);
+      expect(cs.oflow, 'the radius is decorative — the canvas paints over it')
+        .toBe('hidden');
+    });
+  }
 });
 
 test.describe('the graph cross-filter', () => {

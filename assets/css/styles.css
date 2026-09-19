@@ -4821,7 +4821,11 @@ select {
     transform: translateY(100%);
     transition: transform var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1)),
                 height var(--dr-dur-sheet, 240ms) var(--dr-ease-sheet, cubic-bezier(0.32, 0.72, 0, 1));
-    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    /* Clearance for the home indicator, and nothing where there is none. The
+       `max(1rem, …)` floor this replaces put 16px of bare surface under the
+       scrolling body on every device without an inset, which reads as a footer
+       the sheet does not have. Padding the CONTENT is the consumer's job. */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   .dr-sheet.is-open {
