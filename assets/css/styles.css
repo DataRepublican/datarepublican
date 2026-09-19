@@ -2972,6 +2972,10 @@ select {
   margin-top:      2rem;
 }
 
+.mt-16 {
+  margin-top:      4rem;
+}
+
 .block {
   display:      block;
 }
@@ -5778,6 +5782,11 @@ select {
     transform:      translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
 
+  .md\:columns-2 {
+    -moz-columns:      2;
+         columns:      2;
+  }
+
   .md\:grid-cols-2 {
     grid-template-columns:      repeat(2, minmax(0, 1fr));
   }
@@ -6016,6 +6025,15 @@ select {
     max-width:      24rem;
   }
 
+  .lg\:columns-3 {
+    -moz-columns:      3;
+         columns:      3;
+  }
+
+  .lg\:gap-8 {
+    gap:      2rem;
+  }
+
   .lg\:px-6 {
     padding-left:      1.5rem;
     padding-right:      1.5rem;
@@ -6062,6 +6080,19 @@ select {
 .\[\&_\.right-icon\]\:text-green-light .right-icon {
   --tw-text-opacity:      1;
   color:      rgb(52 226 151 / var(--tw-text-opacity));
+}
+
+.\[\&_\.twitter-tweet\]\:\!mb-4 .twitter-tweet {
+  margin-bottom:      1rem !important;
+}
+
+.\[\&_\.twitter-tweet\]\:\!mt-0 .twitter-tweet {
+  margin-top:      0px !important;
+}
+
+.\[\&_\.twitter-tweet\]\:break-inside-avoid .twitter-tweet {
+  -moz-column-break-inside:      avoid;
+       break-inside:      avoid;
 }
 
 .\[\&_div\]\:\!mb-4 div {

@@ -1,0 +1,112 @@
+{%- comment -%}
+  The tweet wall from the pre-redesign homepage. /donate/ is its home now.
+
+  These are Twitter's OWN embeds. The `<blockquote class="twitter-tweet">` is
+  only the fallback: widgets.js finds each one, replaces it with an iframe it
+  controls, and re-uses the same `.twitter-tweet` class on the wrapper it
+  leaves behind. So nothing here can style what lands inside — only the columns
+  around it — and the arbitrary variants below have to target `.twitter-tweet`
+  rather than `blockquote`, or they stop matching the moment the script runs.
+
+  The script is loaded HERE rather than in head-custom.html. It is
+  third-party, it sets its own cookies, and exactly one page needs it — putting
+  it in the head would load it on all 34 routes for the sake of this one.
+
+  A tweet that has since been deleted renders as a "Not found" card, not as
+  nothing. Check the wall after changing it.
+{%- endcomment -%}
+
+<section class="mt-16" aria-labelledby="praise-title">
+  <h2 id="praise-title" class="mt-0 mb-1 text-card-title tracking-title text-ink-strong">
+    Nice things people have said
+  </h2>
+  <p class="mb-4 text-ink-muted">
+    Follow <a href="https://x.com/DataRepublican" target="_blank" rel="noopener">@DataRepublican</a>
+    on X to get the latest updates.
+  </p>
+
+  <div class="gap-4 md:columns-2 lg:columns-3 lg:gap-8 [&_.twitter-tweet]:!mt-0 [&_.twitter-tweet]:!mb-4 [&_.twitter-tweet]:break-inside-avoid">
+    <blockquote class="twitter-tweet">
+      <p lang="en" dir="ltr">
+        This may be one of the most Important accounts to follow this year. You
+        will need data to combat the false narratives they will be pushing.
+        <a href="https://x.com/DataRepublican?ref_src=twsrc%5Etfw">@DataRepublican</a>
+        <a href="https://t.co/VuVGuSnG7r">https://t.co/VuVGuSnG7r</a>
+      </p>
+      &mdash; Shawn Hendrix (@TheShawnHendrix)
+      <a href="https://twitter.com/TheShawnHendrix/status/1886168023100219576?ref_src=twsrc%5Etfw">February 2, 2025</a>
+    </blockquote>
+
+    <blockquote class="twitter-tweet">
+      <p lang="en" dir="ltr">
+        Spoke with
+        <a href="https://x.com/charliekirk11?ref_src=twsrc%5Etfw">@charliekirk11</a>
+        today about the rampant waste, stupidity, and outright malice of the
+        funding schemes USAID deploys to spread International Wokism.<br /><br />Shout
+        out to
+        <a href="https://x.com/DataRepublican?ref_src=twsrc%5Etfw">@DataRepublican</a>
+        <a href="https://t.co/s24uCXBkcC">pic.x.com/s24uCXBkcC</a>
+      </p>
+      &mdash; Lomez (@L0m3z)
+      <a href="https://twitter.com/L0m3z/status/1886850188096233505?ref_src=twsrc%5Etfw">February 4, 2025</a>
+    </blockquote>
+
+    <blockquote class="twitter-tweet" data-conversation="none">
+      <p lang="en" dir="ltr">You're my new favorite X account.</p>
+      &mdash; Tim Young (@TimRunsHisMouth)
+      <a href="https://twitter.com/TimRunsHisMouth/status/1886823330000388553?ref_src=twsrc%5Etfw">February 4, 2025</a>
+    </blockquote>
+
+    <blockquote class="twitter-tweet">
+      <p lang="en" dir="ltr">
+        If you don't follow
+        <a href="https://x.com/DataRepublican?ref_src=twsrc%5Etfw">@DataRepublican</a>
+        you should. <br /><br />Simply genius. <br /><br />And, oh yeah,
+        <a href="https://x.com/BillKristol?ref_src=twsrc%5Etfw">@BillKristol</a>
+        go away. You're yesterday's news, and you're busted.
+        <a href="https://x.com/Kash?ref_src=twsrc%5Etfw">@kash</a><a href="https://x.com/marcorubio?ref_src=twsrc%5Etfw">@marcorubio</a>
+        <a href="https://x.com/PamBondi?ref_src=twsrc%5Etfw">@PamBondi</a>
+        <a href="https://x.com/realDonaldTrump?ref_src=twsrc%5Etfw">@realDonaldTrump</a>
+        <a href="https://x.com/EagleEdMartin?ref_src=twsrc%5Etfw">@EagleEdMartin</a>
+        <a href="https://t.co/s2vBZA5l49">https://t.co/s2vBZA5l49</a>
+      </p>
+      &mdash; General Mike Flynn (@GenFlynn)
+      <a href="https://twitter.com/GenFlynn/status/1886386439484531057?ref_src=twsrc%5Etfw">February 3, 2025</a>
+    </blockquote>
+
+    <blockquote class="twitter-tweet">
+      <p lang="en" dir="ltr">
+        DataRepublican was by far the best quant account during the election and
+        anyone following her knew the outcome well before everyone else, and she
+        is now the best quant account tracking and identifying wasteful
+        spending. <br /><br />Follow her.
+        <a href="https://t.co/c7GLy82aHn">https://t.co/c7GLy82aHn</a>
+      </p>
+      &mdash; Lomez (@L0m3z)
+      <a href="https://twitter.com/L0m3z/status/1886426214229061782?ref_src=twsrc%5Etfw">February 3, 2025</a>
+    </blockquote>
+
+    <blockquote class="twitter-tweet">
+      <p lang="en" dir="ltr">
+        She's a heroine
+        <a href="https://t.co/t4N8WldWnL">https://t.co/t4N8WldWnL</a>
+      </p>
+      &mdash; Kurt Schlichter (@KurtSchlichter)
+      <a href="https://twitter.com/KurtSchlichter/status/1886886183873208438?ref_src=twsrc%5Etfw">February 4, 2025</a>
+    </blockquote>
+
+    <blockquote class="twitter-tweet">
+      <p lang="en" dir="ltr">
+        <a href="https://x.com/DataRepublican?ref_src=twsrc%5Etfw">@DataRepublican</a>
+        You were and are amazing. In the lead up to the election, I referenced
+        your X feed hourly. You are the Frontlines of techno-populism, and are
+        ushering in a new traditionalist civilization. God bless you!
+        <a href="https://t.co/NjIrGUUhI1">https://t.co/NjIrGUUhI1</a>
+      </p>
+      &mdash; Dr. Steve Turley (@DrTurleyTalks)
+      <a href="https://twitter.com/DrTurleyTalks/status/1871766121747300428?ref_src=twsrc%5Etfw">December 25, 2024</a>
+    </blockquote>
+  </div>
+</section>
+
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
