@@ -1,0 +1,565 @@
+---
+layout: default
+title: "EA — in their own words"
+---
+<style>
+/* EA — in their own words. Scoped to #wapp / #drawer; reads the site's --dr-*
+   tokens so it shares one visual system with the network graph — cool light
+   ground, near-ink slate chrome, saturated color reserved for data. */
+#wapp,#drawer{
+  --bg:var(--dr-surface,#E5E7EB); --panel:var(--dr-panel,#FFFFFF);
+  --ink:var(--dr-ink,#111111); --ink-strong:var(--dr-ink-strong,#000);
+  --muted:var(--dr-ink-muted,#5A5A5A); --faint:var(--dr-ink-faint,#6B7280);
+  --line:var(--dr-line,#D3D7DE); --line-strong:var(--dr-line-strong,#878D99);
+  --fill:var(--dr-fill,#EFF1F4); --fill-quiet:var(--dr-fill-quiet,#F2F2EE);
+  --accent:var(--dr-accent,#252739); --tint:var(--dr-accent-tint,#DEE0E8);
+  --tint-line:var(--dr-accent-tint-line,#C3C7D6);
+  --serif:var(--dr-font-content,"Libre Franklin",ui-sans-serif,system-ui,sans-serif);
+  --sans:var(--dr-font-ui,var(--dr-font-content,"Libre Franklin",ui-sans-serif,system-ui,sans-serif));
+  --rad:var(--dr-radius-lg,.75rem); --rad-sm:var(--dr-radius-control,.625rem);
+  color:var(--ink);font-family:var(--serif);line-height:1.5}
+#wapp *,#drawer *{box-sizing:border-box}
+#wapp a{color:inherit}
+
+/* tool header — identity row + view switcher, mirrors the graph's #ea-header */
+#words-header{padding:6px 0 14px;display:flex;flex-direction:column;gap:12px}
+.ea-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ea-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+#words-header h1{margin:0;font-family:var(--serif);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(1.3rem,3.4vw,1.7rem);color:var(--ink-strong);line-height:1.15}
+#words-header .sub{font-family:var(--sans);font-size:var(--dr-text-meta,13px);color:var(--faint)}
+.ea-idright{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.ea-switch{display:flex;gap:2px;background:var(--fill);border:1px solid var(--line);
+  border-radius:var(--rad-sm);padding:3px}
+.ea-switch a{padding:6px 11px;border-radius:var(--dr-radius-sm,6px);font-family:var(--sans);
+  font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);white-space:nowrap;text-decoration:none}
+.ea-switch a:hover{color:var(--ink-strong)}
+.ea-switch a.on{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ea-home{font-family:var(--sans);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);
+  text-decoration:none;white-space:nowrap;flex:0 0 auto}
+.ea-home:hover{color:var(--ink-strong)}
+.ea-whatis{font-family:var(--sans);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--accent);
+  text-decoration:none;white-space:nowrap;flex:0 0 auto}
+.ea-whatis:hover{text-decoration:underline}
+.ea-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ea-lenses{display:flex;gap:2px;background:var(--fill);border:1px solid var(--line);
+  border-radius:var(--rad-sm);padding:3px}
+.ea-lenses button{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;cursor:pointer;
+  padding:7px 14px;border-radius:var(--dr-radius-sm,6px);font-family:var(--sans);
+  font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);white-space:nowrap}
+.ea-lenses button:hover{color:var(--ink-strong)}
+.ea-lenses button.on{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.ea-lenses button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+
+/* reading-note callout — in-flow amber notice (the site's legal token), dismissible */
+#notice{margin:0 0 22px;background:var(--dr-legal-fill,#FBF6E9);border:1px solid var(--dr-legal-border,#E4D08A);
+  border-radius:var(--rad);font-family:var(--sans);font-size:var(--dr-text-meta,13px);color:var(--dr-legal-ink,#5B4B15)}
+#notice>div{display:flex;gap:14px;align-items:flex-start;padding:12px 16px}
+#notice b{color:var(--dr-legal-ink,#5B4B15)}
+#notice span{flex:1;line-height:1.55}
+#notice button{flex:none;background:var(--panel);border:1px solid var(--dr-legal-border,#E4D08A);
+  color:var(--dr-legal-ink,#5B4B15);border-radius:var(--dr-radius-sm,6px);padding:4px 11px;cursor:pointer;
+  font:inherit;font-weight:600}
+#notice.hide{display:none}
+
+#main{padding:6px 0 40px;min-height:60vh}
+h1.view{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.8rem);font-weight:700;color:var(--ink-strong);
+  letter-spacing:-.01em;margin:0 0 4px}
+.lede{font-family:var(--sans);color:var(--faint);font-size:.95rem;margin:0 0 24px;max-width:74ch;line-height:1.55}
+
+/* topic grid */
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.tcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:18px;
+  cursor:pointer;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column}
+.tcard:hover{border-color:var(--line-strong);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.thead{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.thead img{width:64px;height:64px;border-radius:50%;flex:0 0 auto;background:var(--panel);
+  border:1px solid var(--line);padding:5px}
+.thead .tl{font-family:var(--serif);font-size:1.12rem;font-weight:700;line-height:1.15;color:var(--ink-strong)}
+.thead .tt{color:var(--faint);font-family:var(--sans);font-size:.84rem;font-style:italic;margin-top:3px}
+.tcard .peek{color:var(--muted);font-family:var(--serif);font-size:.98rem;line-height:1.5;
+  border-left:2px solid var(--line);padding-left:12px;margin:2px 0 14px}
+.tcard .peek b{color:var(--ink-strong);font-weight:600;background:var(--tint);border-radius:2px;padding:0 .12em}
+.tcard .tmeta{margin-top:auto;color:var(--faint);font-family:var(--sans);font-size:.8rem;display:flex;gap:14px}
+.tcard .tmeta b{color:var(--ink-strong);font-weight:700}
+
+/* filter bar */
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px}
+.filters input[type=search]{flex:1;min-width:240px;font:inherit;font-family:var(--sans);background:var(--panel);
+  color:var(--ink);border:1px solid var(--line);border-radius:var(--dr-radius-pill,9999px);padding:10px 16px}
+.filters input[type=search]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--line-strong)}
+.filters select,.chiptog{font:inherit;font-family:var(--sans);font-size:.86rem;background:var(--panel);color:var(--ink);
+  border:1px solid var(--line);border-radius:var(--rad-sm);padding:9px 12px;cursor:pointer}
+.filters select:hover,.chiptog:hover{border-color:var(--line-strong)}
+.chiptog.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:22px}
+.chip{font-family:var(--sans);font-size:.78rem;color:var(--muted);background:var(--fill);border:1px solid var(--line);
+  border-radius:var(--dr-radius-pill,9999px);padding:5px 12px;cursor:pointer;white-space:nowrap}
+.chip:hover{color:var(--ink-strong);border-color:var(--line-strong)}
+.chip.on{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:600}
+
+/* quote feed */
+.qfeed{display:flex;flex-direction:column;gap:14px;max-width:900px}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:18px 20px}
+.qcard blockquote{margin:0 0 12px;font-family:var(--serif);font-size:1.12rem;line-height:1.55;color:var(--ink)}
+.qcard blockquote b,.dq blockquote b{color:var(--ink-strong);font-weight:600;background:var(--tint);
+  border-radius:2px;padding:0 .12em}
+.qmeta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--sans);font-size:.82rem;color:var(--faint)}
+.qmeta .who{color:var(--ink-strong);font-weight:600;cursor:pointer}
+.qmeta .who:hover{color:var(--accent)}
+.stars{color:var(--dr-data-state,#B8860B);letter-spacing:1px}
+.ftag{font-family:var(--sans);font-size:.72rem;color:var(--accent);border:1px solid var(--line);background:var(--fill);
+  border-radius:var(--dr-radius-pill,9999px);padding:2px 9px;cursor:pointer}
+.ftag:hover{background:var(--tint);border-color:var(--tint-line)}
+.badge{font-family:var(--sans);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  border:1px solid var(--tint-line);background:var(--tint);border-radius:var(--dr-radius-pill,9999px);padding:2px 8px;font-weight:600}
+.hedge{font-family:var(--sans);font-size:.66rem;color:var(--muted);border:1px dashed var(--line-strong);
+  background:var(--fill-quiet);border-radius:var(--dr-radius-pill,9999px);padding:2px 8px;font-style:italic;cursor:help}
+.qmeta a.src{color:var(--faint);text-decoration:none;border-bottom:1px dotted var(--line-strong)}
+.qmeta a.src:hover{color:var(--accent);border-color:var(--accent)}
+.gloss{color:var(--faint);font-family:var(--sans);font-size:.86rem;margin-top:8px;font-style:italic}
+
+/* people grid */
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.pcard{background:var(--panel);border:1px solid var(--line);border-radius:var(--rad);padding:16px;
+  cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.pcard:hover{border-color:var(--line-strong);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.phead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.phead img{width:52px;height:52px;border-radius:50%;flex:0 0 auto;background:var(--fill);object-fit:cover}
+.phead img.named{box-shadow:0 0 0 2px var(--accent)}
+.pname{font-family:var(--serif);font-size:1.1rem;font-weight:700;line-height:1.15;color:var(--ink-strong)}
+.psub{color:var(--faint);font-family:var(--sans);font-size:.78rem;margin-top:2px}
+.concern{display:flex;align-items:center;gap:6px;margin-top:5px}
+.cdots{display:inline-flex;gap:2px}
+.cdots i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.clab{color:var(--faint);font-family:var(--sans);font-size:.68rem;letter-spacing:.02em;text-transform:uppercase}
+.pteaser{color:var(--muted);font-family:var(--serif);font-size:.95rem;line-height:1.5;
+  border-left:2px solid var(--line);padding-left:11px;margin-top:8px}
+.pteaser b{color:var(--ink-strong);font-weight:600;background:var(--tint);border-radius:2px;padding:0 .12em}
+
+/* graph cross-link (named people only) — mirrors the graph's .wordslink */
+.maplink{display:inline-block;margin-top:10px;font-family:var(--sans);font-size:.75rem;font-weight:600;
+  color:var(--accent);text-decoration:none;border:1px solid var(--tint-line);background:var(--tint);
+  border-radius:var(--dr-radius-pill,9999px);padding:5px 12px}
+.maplink:hover{background:var(--fill)}
+.dmaplink{display:block;margin:0 0 10px;font-family:var(--sans);font-size:.82rem;font-weight:600;color:var(--accent);
+  text-decoration:none;border:1px solid var(--tint-line);background:var(--tint);border-radius:8px;padding:10px 13px}
+.dmaplink:hover{background:var(--fill)}
+
+.more{margin:26px auto 0;display:block;font:inherit;font-family:var(--sans);font-weight:600;background:var(--panel);
+  color:var(--ink);border:1px solid var(--line-strong);border-radius:var(--rad-sm);padding:11px 22px;cursor:pointer}
+.more:hover{background:var(--fill)}
+.empty{color:var(--faint);font-family:var(--sans);padding:40px 0;text-align:center;font-size:1rem}
+
+/* drawer */
+#scrim{position:fixed;inset:0;background:rgba(17,17,17,.4);opacity:0;pointer-events:none;
+  transition:opacity var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,ease);z-index:var(--dr-z-scrim,55)}
+#scrim.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;right:0;height:100%;width:min(560px,94vw);background:var(--panel);
+  border-left:1px solid var(--line);transform:translateX(100%);
+  transition:transform var(--dr-dur-sheet,240ms) var(--dr-ease-sheet,cubic-bezier(.32,.72,0,1));
+  z-index:var(--dr-z-panel,60);overflow-y:auto;padding:26px 26px 60px;color:var(--ink);font-family:var(--serif)}
+#drawer.on{transform:none}
+.dclose{position:absolute;top:16px;right:18px;font-size:1.5rem;line-height:1;color:var(--faint);cursor:pointer;
+  background:none;border:none}
+.dclose:hover{color:var(--ink-strong)}
+.dhead{display:flex;align-items:center;gap:16px;margin:6px 0 18px}
+.dhead img{width:76px;height:76px;border-radius:50%;background:var(--fill);object-fit:cover}
+.dhead img.named{box-shadow:0 0 0 2px var(--accent)}
+.dname{font-family:var(--serif);font-size:1.45rem;font-weight:700;color:var(--ink-strong)}
+.dname a{text-decoration:none;border-bottom:1px dotted var(--line-strong);color:inherit}
+.dname a:hover{color:var(--accent)}
+.dsub{color:var(--faint);font-family:var(--sans);font-size:.82rem;margin-top:3px}
+.dsection{font-family:var(--sans);font-size:var(--dr-text-label,12px);letter-spacing:.08em;text-transform:uppercase;
+  color:var(--faint);margin:22px 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.dq{padding:12px 0;border-bottom:1px solid var(--line)}
+.dq blockquote{margin:0 0 8px;font-family:var(--serif);font-size:1.02rem;line-height:1.5;color:var(--ink)}
+
+.wapp-foot{border-top:1px solid var(--line);margin-top:30px;padding:26px 0;color:var(--faint);
+  font-family:var(--sans);font-size:.78rem;text-align:center}
+.wapp-foot details{max-width:74ch;margin:10px auto 0;text-align:left}
+.wapp-foot summary{cursor:pointer;color:var(--muted);text-align:center}
+.wapp-foot details p{margin:.6em 0;line-height:1.55}
+.wapp-foot a{color:var(--accent)}
+</style>
+
+<div id="wapp">
+  <header id="words-header">
+    <div class="ea-idrow">
+      <div class="ea-id">
+        <h1>Effective Altruism, in their own words</h1>
+        <div class="sub" id="count" role="status" aria-live="polite" aria-atomic="true"></div>
+      </div>
+      <div class="ea-idright">
+        <a class="ea-home" href="../index.html" title="EA Explorer — overview">◂ EA&nbsp;Explorer</a>
+        <div class="ea-switch" title="Switch between the two views of the same ecosystem">
+          <a href="index.html" class="on">Their words</a>
+          <a href="../network.html">The network</a>
+        </div>
+        <a class="ea-whatis" href="opener.html">What is EA?&nbsp;↗</a>
+      </div>
+    </div>
+    <div class="ea-controls">
+      <nav class="ea-lenses" role="tablist" aria-label="View">
+        <button type="button" data-lens="topics" role="tab">Topics</button>
+        <button type="button" data-lens="quotes" role="tab">Quotes</button>
+        <button type="button" data-lens="people" role="tab">People</button>
+      </nav>
+    </div>
+  </header>
+
+  <div id="notice"><div>
+    <span><b>Reading note.</b> Every line here is a verbatim quote from a public post, shown with its surrounding context and linked to the original. But people think out loud on these forums: some quotes are ideas an author was <em>weighing, forecasting, or steelmanning</em> — not necessarily a settled belief. Read them as "this is a view that circulates in EA," not "this person definitely holds this." Where we could identify quotes in which the author was arguing <em>against</em> the idea, we've excluded them.</span>
+    <button id="noticeX">Got it</button>
+  </div></div>
+
+  <div id="main"></div>
+
+  <div class="wapp-foot">
+    Every quote is verbatim and links to its source.
+    <details><summary>Method &amp; caveats</summary>
+      <p><b>Source.</b> Public posts on LessWrong, the EA Forum, and the Alignment Forum. Blockquotes were stripped before excerpting, so no one is ever shown saying words they were quoting from someone else. Multi-speaker dialogue posts were re-attributed to the actual speaker where the transcript made it verifiable.</p>
+      <p><b>Selection.</b> Candidate passages were flagged and then reviewed for which of fourteen recurring "power themes" they express, keeping the most revealing line verbatim. This surfaces the eyebrow-raising veins the taxonomy could reach — it is <em>representative, not exhaustive</em>, and it leans toward the striking over the mundane.</p>
+      <p><b>Context &amp; stance.</b> Every displayed quote was re-verified as an exact substring of its source post. We also reviewed quotes against their surrounding paragraphs to gauge whether the author was endorsing a view or arguing against it, and excluded the clear "arguing-against" cases where we could identify them. Even so, some quotes may be hypotheticals or steelmen — see the reading note above. When in doubt, click through to the full post.</p>
+      <p><b>Editorial.</b> The quotes are theirs; the ranking, the topic names, and the taglines are ours. The searchable <em>Quotes</em> lens is the neutral backstop — read it unfiltered to form your own view.</p>
+    </details>
+  </div>
+</div>
+
+<div id="scrim"></div>
+<aside id="drawer"></aside>
+
+<script>
+(function(){try{
+  if(localStorage.getItem("ea_notice_dismissed")) document.getElementById("notice").classList.add("hide");
+}catch(e){}
+  document.addEventListener("click",function(e){
+    if(e.target && e.target.id==="noticeX"){
+      document.getElementById("notice").classList.add("hide");
+      try{localStorage.setItem("ea_notice_dismissed","1");}catch(e){}
+    }
+  });
+})();
+let DATA, Q={}, A={}, LENS="topics";
+const PAGE=60;
+let feedN=PAGE, peopleN=PAGE;
+
+// ---- reverse keyword index -------------------------------------------------
+// Built once over every quote: a sorted token list + per-token postings (quote
+// array indices). Query tokens match by exact + prefix (binary search) and are
+// AND-intersected. Indexed fields: context text, gloss, post title, author name.
+// Normalized so search is case/punctuation/diacritics-insensitive and instant.
+let IDX=new Map(), IDX_KEYS=[], SEARCHSET=null;
+function norm(s){return (s==null?"":String(s)).toLowerCase().normalize('NFKD')
+  .replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,' ').trim();}
+function toks(s){const n=norm(s);return n?n.split(' '):[];}
+function buildQuoteIndex(){
+  IDX=new Map();
+  DATA.quotes.forEach((q,i)=>{
+    q._i=i;
+    const au=A[q.a]?A[q.a].n:"";
+    const seen=new Set();
+    for(const f of [q.c,q.sum,q.t,au]) for(const t of toks(f)) seen.add(t);
+    for(const t of seen){let s=IDX.get(t);if(!s){s=new Set();IDX.set(t,s);}s.add(i);}
+  });
+  IDX_KEYS=[...IDX.keys()].sort();
+}
+function idxPrefix(tok){          // postings for exact tok + every token with that prefix
+  const out=new Set(); let lo=0,hi=IDX_KEYS.length;
+  while(lo<hi){const m=(lo+hi)>>1; if(IDX_KEYS[m]<tok)lo=m+1;else hi=m;}
+  for(let i=lo;i<IDX_KEYS.length&&IDX_KEYS[i].startsWith(tok);i++)
+    for(const id of IDX.get(IDX_KEYS[i])) out.add(id);
+  return out;
+}
+function setSearch(q){
+  const ts=toks(q);
+  if(!ts.length){SEARCHSET=null;return;}
+  let run=null;
+  for(const t of ts){const u=idxPrefix(t);
+    if(run===null)run=u; else{const nx=new Set();for(const id of run)if(u.has(id))nx.add(id);run=nx;}
+    if(!run.size)break;}
+  SEARCHSET=run||new Set();
+}
+
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const stars=n=>"★".repeat(n||0);
+// concern rating: 5 dots, filled by crating, colored by severity (data ramp)
+function concernBadge(a){
+  const r=a.crating||0;
+  const col=r>=5?"var(--dr-data-party,#C0392B)":r>=4?"var(--dr-data-state,#B8860B)":r>=3?"var(--dr-data-state,#B8860B)":r>=1?"var(--dr-data-money,#1B7F4B)":"var(--line,#D3D7DE)";
+  let dots="";for(let i=1;i<=5;i++)dots+=`<i style="background:${i<=r?col:'var(--line,#D3D7DE)'}"></i>`;
+  return `<div class="concern" title="Concern ${r}/5 — how alarming this author's most-revealing quote is">
+    <span class="cdots">${dots}</span><span class="clab">concern ${r}/5</span></div>`;}
+function bolded(c,m){let x=esc(c); if(m){const e=esc(m); x=x.replace(e,"<b>"+e+"</b>");} return x;}
+const flabel=f=>DATA.meta.flag_label[f]||f;
+const plabel=p=>DATA.meta.plat_label[p]||p;
+const clabel=c=>DATA.meta.cat_label[c]||c;
+function authorOf(q){return A[q.a];}
+// cross-link to the network-graph sub-project, highlighting this person's node.
+// Only named/published people carry a verified graph node (gnode).
+function graphLink(a){return a&&a.gnode?`../network.html#${encodeURIComponent(a.gnode)}`:null;}
+
+// ---- URL state ----
+function readHash(){
+  const h=location.hash.slice(1);
+  const [lens,qs]=h.split("?");
+  const p=new URLSearchParams(qs||"");
+  return {lens:lens||"topics", p};
+}
+function go(lens,params){
+  const qs=params&&[...params].length?"?"+params.toString():"";
+  location.hash=lens+qs;
+}
+
+// ---- render lenses ----
+function setNav(){
+  document.querySelectorAll(".ea-lenses button").forEach(b=>b.classList.toggle("on",b.dataset.lens===LENS.split(":")[0]||b.dataset.lens===LENS));
+}
+
+function viewTopics(){
+  const t=DATA.topics.map(t=>{
+    const lead=t.lead.map(id=>Q[id]).filter(Boolean)[0];
+    const peek=lead?`<div class="peek">${bolded((lead.m||lead.c).slice(0,180)+((lead.m||lead.c).length>180?"…":""),lead.m&&lead.m.length<160?lead.m:null)}</div>`:"";
+    return `<div class="tcard" data-topic="${t.key}">
+      <div class="thead"><img src="${t.avatar}" alt="">
+        <div><div class="tl">${esc(t.label)}</div><div class="tt">${esc(t.tag)}</div></div></div>
+      ${peek}
+      <div class="tmeta"><span><b>${t.nq}</b> quotes</span><span><b>${t.na}</b> people</span></div>
+    </div>`;}).join("");
+  document.getElementById("main").innerHTML=
+    `<h1 class="view">The ideology, by topic</h1>
+     <p class="lede">Fourteen recurring tells, ordered by how far they sit from ordinary charity talk. Each is a real theme EAs return to — in their own words. Click one to read every quote it fired on.</p>
+     <div class="topics">${t}</div>`;
+  document.querySelectorAll(".tcard").forEach(el=>el.onclick=()=>{
+    const p=new URLSearchParams(); p.set("flag",el.dataset.topic); go("quotes",p);});
+  document.getElementById("count").textContent=`${(DATA.meta.counts.tagged||DATA.meta.counts.quotes).toLocaleString()} quotes · ${DATA.meta.counts.authors.toLocaleString()} people`;
+}
+
+function quoteCard(q){
+  const au=authorOf(q);
+  const badge=au&&au.pub?'<span class="badge">named</span>':'';
+  const who=au?`<span class="who" data-a="${esc(q.a)}">${esc(au.n)}</span>`:'';
+  const src=q.u?`<a class="src" href="${q.u}" target="_blank" rel="noopener">source ↗</a>`:'';
+  const tags=(q.fl||[]).map(f=>`<span class="ftag" data-flag="${f}">${esc(flabel(f))}</span>`).join("");
+  const gloss=q.sum?`<div class="gloss">${esc(q.sum)}</div>`:"";
+  const hedge=q.sm?'<span class="hedge" title="The author raised this as a hypothetical or steelman, not stated as a settled belief.">raised as hypothetical / steelman</span>':'';
+  return `<div class="qcard">
+    <blockquote>${bolded(q.c,q.m)}</blockquote>
+    <div class="qmeta">${who}${badge}<span class="stars">${stars(q.s)}</span>${tags}${hedge}
+      <span>${plabel(q.p)} · ${esc(q.d)}</span>${src}</div>${gloss}</div>`;
+}
+
+function filteredQuotes(p){
+  setSearch((p.get("q")||"").trim());          // reverse-index lookup (instant)
+  const flag=p.get("flag"), cat=p.get("cat"), plat=p.get("plat");
+  const minsig=+(p.get("sig")||0), named=p.get("named")==="1";
+  const pass=q=>{
+    if(!q.pf)return false;                       // Quotes lens = the tagged payload
+    if(flag&&q.pf!==flag)return false;           // one primary theme per quote (counts partition)
+    if(cat&&q.cat!==cat)return false;
+    if(plat&&q.p!==plat)return false;
+    if(minsig&&(q.s||0)<minsig)return false;
+    if(named&&!(A[q.a]&&A[q.a].pub))return false;
+    return true;};
+  let qs;
+  if(SEARCHSET){qs=[];for(const i of SEARCHSET){const q=DATA.quotes[i];if(q&&pass(q))qs.push(q);}}  // iterate only the matches
+  else qs=DATA.quotes.filter(pass);
+  // rank: under a topic filter, genuine advocates first, then neutral mentions,
+  // then quotes that only steelman THIS idea, then warnings/off-topic last;
+  // steelman/hypothetical quotes sink everywhere; then significance, intensity, date.
+  qs.sort((a,b)=>{
+    if(flag){
+      const av=x=>(x.adv&&x.adv.includes(flag))?0
+        :((x.wrn&&x.wrn.includes(flag))?3
+        :((x.stl&&x.stl.includes(flag))?2:1));
+      const d=av(a)-av(b); if(d)return d;
+    }
+    const s=(a.sm?1:0)-(b.sm?1:0); if(s)return s;
+    return (b.s-a.s)||(b.i-a.i)||((b.d||"")<(a.d||"")?-1:1);
+  });
+  return qs;
+}
+
+// Re-render ONLY the results feed + count (leaves the search box and filter
+// bar untouched, so typing keeps focus and never rebuilds the shell):
+// keystrokes touch a small container, not #main.
+function renderFeed(p){
+  const feedEl=document.getElementById("qfeed"); if(!feedEl)return;
+  const qs=filteredQuotes(p);
+  const shown=qs.slice(0,feedN);
+  feedEl.innerHTML=shown.length?shown.map(quoteCard).join(""):`<div class="empty">No quotes match.</div>`;
+  const mw=document.getElementById("morewrap");
+  mw.innerHTML=qs.length>feedN?`<button class="more" id="more">Show more (${(qs.length-feedN).toLocaleString()} more)</button>`:"";
+  const mb=document.getElementById("more"); if(mb)mb.onclick=()=>{feedN+=PAGE;renderFeed(p);};
+  document.getElementById("count").textContent=`${qs.length.toLocaleString()} quotes`;
+}
+
+function viewQuotes(p){
+  const flag=p.get("flag");
+  const head=flag?`<h1 class="view">${esc(flabel(flag))}</h1>
+      <p class="lede">${esc(DATA.meta.flag_tag[flag]||"")} — every verbatim quote that fired this theme, most revealing first.</p>`
+    :`<h1 class="view">Search the quotes</h1>
+      <p class="lede">Every theme-tagged quote, searchable — each filed under the one theme it most distinctively fits, so the counts add up. Filter by theme, cause area, platform, or how revealing it is. (A given person's fuller record lives under People.)</p>`;
+  const flagChips=DATA.meta.flag_order.map(f=>
+    `<span class="chip ${f===flag?'on':''}" data-setflag="${f}">${esc(flabel(f))}</span>`).join("");
+  const cats=Object.keys(DATA.meta.cat_label).map(c=>`<option value="${c}">${esc(clabel(c))}</option>`).join("");
+  const bar=`<div class="filters">
+      <input type="search" id="q" placeholder="Search quotes, people, titles…" value="${esc(p.get('q')||'')}">
+      <select id="cat"><option value="">All cause areas</option>${cats}</select>
+      <select id="plat"><option value="">All platforms</option>
+        <option value="lw">LessWrong</option><option value="ea">EA Forum</option><option value="af">Alignment Forum</option></select>
+      <select id="sig"><option value="">Any significance</option>
+        <option value="5">★★★★★ only</option><option value="4">★★★★+</option><option value="3">★★★+</option></select>
+      <span class="chiptog" id="named">Named only</span>
+    </div>
+    <div class="chips">${flagChips}</div>`;
+  // Build the shell ONCE; the feed + more-button live in their own containers.
+  document.getElementById("main").innerHTML=head+bar+`<div class="qfeed" id="qfeed"></div><div id="morewrap"></div>`;
+
+  // restore control values
+  const cat=document.getElementById("cat"), plat=document.getElementById("plat"), sig=document.getElementById("sig");
+  if(cat)cat.value=p.get("cat")||""; if(plat)plat.value=p.get("plat")||""; if(sig)sig.value=p.get("sig")||"";
+  const named=document.getElementById("named"); if(named)named.classList.toggle("on",p.get("named")==="1");
+
+  // all mutations read the LIVE url, so an in-progress typed query is never lost
+  const cur=()=>readHash().p;
+  const mut=(k,v)=>{const np=cur(); v?np.set(k,v):np.delete(k); feedN=PAGE; go("quotes",np);};
+
+  // search: update only the feed. No shell rebuild, no per-card rewiring, input
+  // element is never replaced (focus + caret preserved). URL updated silently
+  // via replaceState so it stays shareable without triggering the router.
+  const qbox=document.getElementById("q");
+  if(qbox)qbox.oninput=()=>{
+    const np=cur();
+    qbox.value.trim()?np.set("q",qbox.value.trim()):np.delete("q");
+    feedN=PAGE;
+    history.replaceState(null,"","#quotes"+([...np].length?"?"+np.toString():""));
+    renderFeed(np);
+  };
+  if(cat)cat.onchange=()=>mut("cat",cat.value);
+  if(plat)plat.onchange=()=>mut("plat",plat.value);
+  if(sig)sig.onchange=()=>mut("sig",sig.value);
+  if(named)named.onclick=()=>mut("named",cur().get("named")==="1"?"":"1");
+  document.querySelectorAll("[data-setflag]").forEach(c=>c.onclick=()=>{
+    const f=c.dataset.setflag,np=cur();
+    cur().get("flag")===f?np.delete("flag"):np.set("flag",f);feedN=PAGE;go("quotes",np);});
+
+  // event delegation: one listener on the feed, so cards are never individually
+  // rewired on every keystroke.
+  document.getElementById("qfeed").addEventListener("click",e=>{
+    const who=e.target.closest(".who"); if(who){openAuthor(who.dataset.a);return;}
+    const ft=e.target.closest(".ftag"); if(ft){const np=new URLSearchParams();np.set("flag",ft.dataset.flag);feedN=PAGE;go("quotes",np);}
+  });
+
+  renderFeed(p);
+}
+
+// re-render current lens without touching scroll/hash listeners badly
+function renderFromHashSoft(){const {p}=(()=>{const h=readHash();return h;})(); if(LENS==="quotes")viewQuotes(readHash().p); else if(LENS==="people")viewPeople(readHash().p);}
+
+function peopleTeaser(a){
+  const q=Q[a.q[0]]; if(!q)return "";
+  return `<div class="pteaser">${bolded((q.m||q.c).slice(0,150)+((q.m||q.c).length>150?"…":""),q.m&&q.m.length<140?q.m:null)}</div>`;
+}
+function viewPeople(p){
+  const named=p.get("named")==="1", sort=p.get("sort")||"concern";
+  let list=DATA.authors.filter(a=>!named||a.pub);
+  // default "concern" == the build's rank order (crating, then concern mass)
+  if(sort==="quotes")list=[...list].sort((x,y)=>y.nq-x.nq);
+  else if(sort==="name")list=[...list].sort((x,y)=>x.n.localeCompare(y.n));
+  else if(sort==="pub")list=[...list].sort((x,y)=>(y.pub-x.pub)||(x.rank-y.rank));
+  else list=[...list].sort((x,y)=>x.rank-y.rank);
+  const bar=`<div class="filters">
+      <span class="chiptog ${named?'on':''}" id="pnamed">Named / published only</span>
+      <select id="psort">
+        <option value="concern">Sort: most concerning</option>
+        <option value="pub">Sort: published first</option>
+        <option value="quotes">Sort: most quotes</option>
+        <option value="name">Sort: name (A–Z)</option>
+      </select></div>`;
+  const shown=list.slice(0,peopleN);
+  const cards=shown.map(a=>{
+    const img=a.headshot||a.avatar;
+    const cls=a.pub?"named":"";
+    const sub=(a.pub?"published · ":"")+`${a.nq} quotes`;
+    const gl=graphLink(a);
+    const glhtml=gl?`<a class="maplink" href="${gl}" title="Highlight ${esc(a.n)} in the network map">See in the network map ↗</a>`:"";
+    return `<div class="pcard" data-a="${esc(a.aid)}">
+      <div class="phead"><img class="${cls}" src="${img}" alt="">
+        <div><div class="pname">${esc(a.n)}</div><div class="psub">${sub}</div>
+        ${concernBadge(a)}</div></div>
+      ${peopleTeaser(a)}${glhtml}</div>`;}).join("");
+  const more=list.length>peopleN?`<button class="more" id="pmore">Show more (${(list.length-peopleN).toLocaleString()} more)</button>`:"";
+  document.getElementById("main").innerHTML=
+    `<h1 class="view">Who said it</h1>
+     <p class="lede">Ranked by concern — how alarming each author's most-revealing quote is, weighted toward power &amp; governance themes. Named figures are ringed (real names via the main EA map); everyone else appears under their own public handle.</p>
+     ${bar}<div class="people">${cards||'<div class="empty">None.</div>'}</div>${more}`;
+  document.getElementById("count").textContent=`${list.length.toLocaleString()} people`;
+  document.getElementById("psort").value=sort;
+  document.getElementById("pnamed").onclick=()=>{const np=new URLSearchParams(p);named?np.delete("named"):np.set("named","1");peopleN=PAGE;go("people",np);};
+  document.getElementById("psort").onchange=e=>{const np=new URLSearchParams(p);np.set("sort",e.target.value);peopleN=PAGE;go("people",np);};
+  document.querySelectorAll(".pcard").forEach(el=>el.onclick=(e)=>{if(e.target.closest(".maplink"))return;openAuthor(el.dataset.a);});
+  const mb=document.getElementById("pmore"); if(mb)mb.onclick=()=>{peopleN+=PAGE;viewPeople(p);};
+}
+
+// ---- author drawer ----
+function openAuthor(aid){
+  const a=A[aid]; if(!a)return;
+  const img=a.headshot||a.avatar, cls=a.pub?"named":"";
+  const name=a.purl?`<a href="${a.purl}" target="_blank" rel="noopener">${esc(a.n)} ↗</a>`:esc(a.n);
+  const tier=a.pub?"publicly named":(a.purl?"public handle":"handle unavailable");
+  const flags=a.flags.map(([f,c])=>`<span class="ftag" data-flag="${f}">${esc(flabel(f))} · ${c}</span>`).join(" ");
+  const cats=a.cats.map(([c,n])=>`${esc(clabel(c))} (${n})`).join(" · ");
+  const emer=a.emergent&&a.emergent.length?`<div class="dsection">Adjacent topics surfaced</div><div class="dsub">${a.emergent.map(([e,n])=>esc(e)+(n>1?` ×${n}`:"")).join(" · ")}</div>`:"";
+  const gl=graphLink(a);
+  const glblock=gl?`<a class="dmaplink" href="${gl}">See ${esc(a.n)} highlighted in the network map ↗</a>`:"";
+  const qs=a.q.map(id=>Q[id]).filter(Boolean).map(q=>{
+    const src=q.u?`<a class="src" href="${q.u}" target="_blank" rel="noopener">source ↗</a>`:"";
+    const tg=(q.fl||[]).map(f=>`<span class="ftag" data-flag="${f}">${esc(flabel(f))}</span>`).join(" ");
+    const hedge=q.sm?'<span class="hedge" title="The author raised this as a hypothetical or steelman, not stated as a settled belief.">raised as hypothetical / steelman</span>':'';
+    return `<div class="dq"><blockquote>${bolded(q.c,q.m)}</blockquote>
+      <div class="qmeta"><span class="stars">${stars(q.s)}</span>${tg}${hedge}
+       <span>${plabel(q.p)} · ${esc(q.d)}</span>${src}</div>
+      ${q.sum?`<div class="gloss">${esc(q.sum)}</div>`:""}</div>`;}).join("");
+  document.getElementById("drawer").innerHTML=
+    `<button class="dclose" aria-label="close">×</button>
+     <div class="dhead"><img class="${cls}" src="${img}" alt="">
+       <div><div class="dname">${name}</div>
+         <div class="dsub">${tier} · ${a.plats.map(plabel).join(", ")} · ${a.nq} quotes</div>
+         ${concernBadge(a)}</div></div>
+     ${glblock}
+     <div class="dsection">Power flags</div><div>${flags||'<span class="dsub">none</span>'}</div>
+     <div class="dsection">Cause areas</div><div class="dsub">${cats||"—"}</div>
+     ${emer}
+     <div class="dsection">All quotes (${a.nq})</div>${qs}`;
+  document.querySelector(".dclose").onclick=closeDrawer;
+  document.querySelectorAll("#drawer .ftag").forEach(c=>c.onclick=()=>{closeDrawer();const np=new URLSearchParams();np.set("flag",c.dataset.flag);feedN=PAGE;go("quotes",np);});
+  document.getElementById("scrim").classList.add("on");
+  document.getElementById("drawer").classList.add("on");
+}
+function closeDrawer(){document.getElementById("scrim").classList.remove("on");document.getElementById("drawer").classList.remove("on");}
+document.getElementById("scrim").onclick=closeDrawer;
+addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer();});
+
+// ---- router ----
+function render(){
+  const {lens,p}=readHash();
+  LENS=lens; setNav();
+  if(lens==="quotes"){feedN=PAGE;viewQuotes(p);}
+  else if(lens==="people"){peopleN=PAGE;viewPeople(p);
+    // deep-link from the graph sub-project: #people?a=<aid> opens that drawer
+    const a=p.get("a"); if(a&&A[a])openAuthor(a);}
+  else viewTopics();
+  scrollTo(0,0);
+}
+document.querySelectorAll(".ea-lenses button").forEach(b=>b.onclick=()=>go(b.dataset.lens,null));
+addEventListener("hashchange",render);
+
+fetch("data.json").then(r=>r.json()).then(d=>{
+  DATA=d;
+  d.quotes.forEach(q=>Q[q.qid]=q);
+  d.authors.forEach(a=>A[a.aid]=a);
+  buildQuoteIndex();
+  render();
+});
+</script>

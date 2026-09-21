@@ -1,0 +1,662 @@
+{
+"person_source_local:miri:MIRI-P003": {
+"aid": "person:person_source_local:miri:MIRI-P003",
+"nq": 625,
+"name": "Eliezer Yudkowsky",
+"crating": 5
+},
+"person_source_local:forethought:FT-P002": {
+"aid": "person:person_source_local:forethought:FT-P002",
+"nq": 59,
+"name": "William MacAskill",
+"crating": 5
+},
+"discovery_source_local:ND002-016": {
+"aid": "person:discovery_source_local:ND002-016",
+"nq": 27,
+"name": "Tom Davidson",
+"crating": 5
+},
+"registry_source_local_person:ftx-future-fund::FTX-R199:object": {
+"aid": "person:registry_source_local_person:ftx-future-fund::FTX-R199:object",
+"nq": 17,
+"name": "Aaron Scher",
+"crating": 5
+},
+"person_source_local:coefficient-giving:CG-PE044": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE044",
+"nq": 147,
+"name": "Joe Carlsmith",
+"crating": 4
+},
+"discovery_source_local:ND002-007": {
+"aid": "person:discovery_source_local:ND002-007",
+"nq": 85,
+"name": "Daniel Kokotajlo",
+"crating": 4
+},
+"person_source_local:berkeley-existential-risk-initiative:BERI-P003": {
+"aid": "person:person_source_local:berkeley-existential-risk-initiative:BERI-P003",
+"nq": 41,
+"name": "Andrew Critch",
+"crating": 4
+},
+"discovery_source_local:ND002-015": {
+"aid": "person:discovery_source_local:ND002-015",
+"nq": 25,
+"name": "Lukas Finnveden",
+"crating": 4
+},
+"discovery_source_local:ND006-003": {
+"aid": "person:discovery_source_local:ND006-003",
+"nq": 33,
+"name": "Rose Hadshar",
+"crating": 4
+},
+"discovery_source_local:ND006-001": {
+"aid": "person:discovery_source_local:ND006-001",
+"nq": 18,
+"name": "Peter Barnett",
+"crating": 4
+},
+"discovery_source_local:ND004-001": {
+"aid": "person:discovery_source_local:ND004-001",
+"nq": 8,
+"name": "Thomas Larsen",
+"crating": 4
+},
+"discovery_source_local:ND006-002": {
+"aid": "person:discovery_source_local:ND006-002",
+"nq": 3,
+"name": "Robi Rahman",
+"crating": 4
+},
+"discovery_source_local:ND002-005": {
+"aid": "person:discovery_source_local:ND002-005",
+"nq": 168,
+"name": "Richard Ngo",
+"crating": 3
+},
+"person_source_local:coefficient-giving:CG-PE042": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE042",
+"nq": 83,
+"name": "Holden Karnofsky",
+"crating": 3
+},
+"person_source_local:ea-funds:EF-P033": {
+"aid": "person:person_source_local:ea-funds:EF-P033",
+"nq": 85,
+"name": "Evan Hubinger",
+"crating": 3
+},
+"person_source_local:govai:GA-P007": {
+"aid": "person:person_source_local:govai:GA-P007",
+"nq": 1,
+"name": "Allan Dafoe",
+"crating": 3
+},
+"person_source_local:redwood-research:RW-P002": {
+"aid": "person:person_source_local:redwood-research:RW-P002",
+"nq": 82,
+"name": "Ryan Greenblatt",
+"crating": 2
+},
+"person_source_local:institute-for-ai-policy-and-strategy:IAPS-P038": {
+"aid": "person:person_source_local:institute-for-ai-policy-and-strategy:IAPS-P038",
+"nq": 78,
+"name": "Peter Wildeford",
+"crating": 2
+},
+"discovery_source_local:ND006-011": {
+"aid": "person:discovery_source_local:ND006-011",
+"nq": 58,
+"name": "Alex Flint",
+"crating": 2
+},
+"person_source_local:apollo-research:APO-P001": {
+"aid": "person:person_source_local:apollo-research:APO-P001",
+"nq": 54,
+"name": "Marius Hobbhahn",
+"crating": 2
+},
+"person_source_local:80000-hours:H80-P002": {
+"aid": "person:person_source_local:80000-hours:H80-P002",
+"nq": 38,
+"name": "Benjamin Todd",
+"crating": 2
+},
+"person_source_local:centre-for-effective-altruism:CEA-P012": {
+"aid": "person:person_source_local:centre-for-effective-altruism:CEA-P012",
+"nq": 33,
+"name": "Ben West",
+"crating": 2
+},
+"discovery_source_local:ND004-018": {
+"aid": "person:discovery_source_local:ND004-018",
+"nq": 18,
+"name": "Abraham Rowe",
+"crating": 2
+},
+"person_source_local:ea-funds:EF-P005": {
+"aid": "person:person_source_local:ea-funds:EF-P005",
+"nq": 21,
+"name": "Karolina Sarek",
+"crating": 2
+},
+"person_source_local:forethought:FT-P016": {
+"aid": "person:person_source_local:forethought:FT-P016",
+"nq": 18,
+"name": "Toby Ord",
+"crating": 2
+},
+"discovery_source_local:ND003-011": {
+"aid": "person:discovery_source_local:ND003-011",
+"nq": 12,
+"name": "Stefan Torges",
+"crating": 2
+},
+"person_source_local:giving-what-we-can:GWWC-P001": {
+"aid": "person:person_source_local:giving-what-we-can:GWWC-P001",
+"nq": 14,
+"name": "Sjir Hoeijmakers",
+"crating": 2
+},
+"person_source_local:effective-ventures:EV-P010": {
+"aid": "person:person_source_local:effective-ventures:EV-P010",
+"nq": 7,
+"name": "Claire Zabel",
+"crating": 2
+},
+"person_source_local:coefficient-giving:CG-PE037": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE037",
+"nq": 5,
+"name": "Max Daniel",
+"crating": 2
+},
+"person_source_local:manifund:MF-P011": {
+"aid": "person:person_source_local:manifund:MF-P011",
+"nq": 5,
+"name": "Ethan Perez",
+"crating": 2
+},
+"person_source_local:pivotal-research:PIV-P023": {
+"aid": "person:person_source_local:pivotal-research:PIV-P023",
+"nq": 4,
+"name": "Tobias H\u00e4berli",
+"crating": 2
+},
+"person_source_local:rethink-priorities:RP-P001": {
+"aid": "person:person_source_local:rethink-priorities:RP-P001",
+"nq": 4,
+"name": "Marcus A. Davis",
+"crating": 2
+},
+"registry_source_local_person:ftx-future-fund::FTX-R163:object": {
+"aid": "person:registry_source_local_person:ftx-future-fund::FTX-R163:object",
+"nq": 2,
+"name": "Peter Hartree",
+"crating": 2
+},
+"person_source_local:manifund:MF-P008": {
+"aid": "person:person_source_local:manifund:MF-P008",
+"nq": 106,
+"name": "Neel Nanda",
+"crating": 1
+},
+"person_source_local:miri:MIRI-P007": {
+"aid": "person:person_source_local:miri:MIRI-P007",
+"nq": 51,
+"name": "Anna Salamon",
+"crating": 1
+},
+"registry_source_local_person:ftx-future-fund::FTX-R211:object": {
+"aid": "person:registry_source_local_person:ftx-future-fund::FTX-R211:object",
+"nq": 29,
+"name": "Thomas Kwa",
+"crating": 1
+},
+"person_source_local:audacious-project:AP-P004": {
+"aid": "person:person_source_local:audacious-project:AP-P004",
+"nq": 25,
+"name": "Beth Barnes",
+"crating": 1
+},
+"person_source_local:centre-for-effective-altruism:CEA-P007": {
+"aid": "person:person_source_local:centre-for-effective-altruism:CEA-P007",
+"nq": 31,
+"name": "Julia Wise",
+"crating": 1
+},
+"person_source_local:future-of-life-institute:FLI-P004": {
+"aid": "person:person_source_local:future-of-life-institute:FLI-P004",
+"nq": 23,
+"name": "Victoria Krakovna",
+"crating": 1
+},
+"person_source_local:alignment-research-center:ARC-P001": {
+"aid": "person:person_source_local:alignment-research-center:ARC-P001",
+"nq": 20,
+"name": "Paul Christiano",
+"crating": 1
+},
+"person_source_local:epoch-ai:EP-P001": {
+"aid": "person:person_source_local:epoch-ai:EP-P001",
+"nq": 22,
+"name": "Jaime Sevilla",
+"crating": 1
+},
+"discovery_source_local:ND003-008": {
+"aid": "person:discovery_source_local:ND003-008",
+"nq": 18,
+"name": "Justin Shovelain",
+"crating": 1
+},
+"discovery_source_local:ND006-027": {
+"aid": "person:discovery_source_local:ND006-027",
+"nq": 17,
+"name": "Lauren Gilbert",
+"crating": 1
+},
+"person_source_local:frame-fellowship:FRM-P002": {
+"aid": "person:person_source_local:frame-fellowship:FRM-P002",
+"nq": 17,
+"name": "Austin Chen",
+"crating": 1
+},
+"person_source_local:ea-funds:EF-P006": {
+"aid": "person:person_source_local:ea-funds:EF-P006",
+"nq": 16,
+"name": "Neil Dullaghan",
+"crating": 1
+},
+"discovery_source_local:ND003-002": {
+"aid": "person:discovery_source_local:ND003-002",
+"nq": 13,
+"name": "Alex Lawsen",
+"crating": 1
+},
+"discovery_source_local:ND006-016": {
+"aid": "person:discovery_source_local:ND006-016",
+"nq": 13,
+"name": "Cullen O'Keefe",
+"crating": 1
+},
+"discovery_source_local:ND004-026": {
+"aid": "person:discovery_source_local:ND004-026",
+"nq": 13,
+"name": "Eli Rose",
+"crating": 1
+},
+"person_source_local:mats:MATS-P001": {
+"aid": "person:person_source_local:mats:MATS-P001",
+"nq": 12,
+"name": "Ryan Kidd",
+"crating": 1
+},
+"person_source_local:apollo-research:APO-P011": {
+"aid": "person:person_source_local:apollo-research:APO-P011",
+"nq": 13,
+"name": "Owain Evans",
+"crating": 1
+},
+"registry_source_local_person:ftx-future-fund::FTX-R149:object": {
+"aid": "person:registry_source_local_person:ftx-future-fund::FTX-R149:object",
+"nq": 12,
+"name": "Joseph Bloom",
+"crating": 1
+},
+"person_source_local:secure-ai-project:SAP-P001": {
+"aid": "person:person_source_local:secure-ai-project:SAP-P001",
+"nq": 10,
+"name": "Nick Beckstead",
+"crating": 1
+},
+"person_source_local:80000-hours:H80-P017": {
+"aid": "person:person_source_local:80000-hours:H80-P017",
+"nq": 9,
+"name": "Arden Koehler",
+"crating": 1
+},
+"person_source_local:effective-institutions-project:EIP-P001": {
+"aid": "person:person_source_local:effective-institutions-project:EIP-P001",
+"nq": 12,
+"name": "Ian David Moss",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE034": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE034",
+"nq": 11,
+"name": "Ben Goldhaber",
+"crating": 1
+},
+"person_source_local:centre-for-effective-altruism:CEA-P001": {
+"aid": "person:person_source_local:centre-for-effective-altruism:CEA-P001",
+"nq": 9,
+"name": "Zachary Robinson",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE043": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE043",
+"nq": 7,
+"name": "Ajeya Cotra",
+"crating": 1
+},
+"discovery_source_local:ND004-016": {
+"aid": "person:discovery_source_local:ND004-016",
+"nq": 9,
+"name": "Stefan Heimersheim",
+"crating": 1
+},
+"person_source_local:effective-ventures:EV-P003": {
+"aid": "person:person_source_local:effective-ventures:EV-P003",
+"nq": 8,
+"name": "Lincoln Quirk",
+"crating": 1
+},
+"registry_source_local_person:manifund::MF-R0474:subject": {
+"aid": "person:registry_source_local_person:manifund::MF-R0474:subject",
+"nq": 7,
+"name": "Rachel Shu",
+"crating": 1
+},
+"official_profile_source_local:metr:megan-kinniment": {
+"aid": "person:official_profile_source_local:metr:megan-kinniment",
+"nq": 8,
+"name": "Megan Kinniment",
+"crating": 1
+},
+"discovery_source_local:ND004-014": {
+"aid": "person:discovery_source_local:ND004-014",
+"nq": 6,
+"name": "Julian Stastny",
+"crating": 1
+},
+"registry_source_local_person:coefficient-giving::CG-R105:subject": {
+"aid": "person:registry_source_local_person:coefficient-giving::CG-R105:subject",
+"nq": 5,
+"name": "Francis Rhys Ward",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE001": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE001",
+"nq": 6,
+"name": "Alexander Berger",
+"crating": 1
+},
+"person_source_local:redwood-research:RW-P031": {
+"aid": "person:person_source_local:redwood-research:RW-P031",
+"nq": 6,
+"name": "Matt MacDermott",
+"crating": 1
+},
+"person_source_local:future-of-life-institute:FLI-P002": {
+"aid": "person:person_source_local:future-of-life-institute:FLI-P002",
+"nq": 4,
+"name": "Max Tegmark",
+"crating": 1
+},
+"person_source_local:constellation-institute:CI-P001": {
+"aid": "person:person_source_local:constellation-institute:CI-P001",
+"nq": 5,
+"name": "Nicole Ross",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE009": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE009",
+"nq": 4,
+"name": "George Rosenfeld",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE024": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE024",
+"nq": 4,
+"name": "James Snowden",
+"crating": 1
+},
+"person_source_local:govai:GA-P003": {
+"aid": "person:person_source_local:govai:GA-P003",
+"nq": 4,
+"name": "Markus Anderljung",
+"crating": 1
+},
+"person_source_local:ea-funds:EF-P007": {
+"aid": "person:person_source_local:ea-funds:EF-P007",
+"nq": 3,
+"name": "Zo\u00eb Sigle",
+"crating": 1
+},
+"institution_candidate_source_local:NODE017-003": {
+"aid": "person:institution_candidate_source_local:NODE017-003",
+"nq": 3,
+"name": "Peter Singer",
+"crating": 1
+},
+"discovery_source_local:ND004-006": {
+"aid": "person:discovery_source_local:ND004-006",
+"nq": 3,
+"name": "Magdalena Wache",
+"crating": 1
+},
+"discovery_source_local:ND003-004": {
+"aid": "person:discovery_source_local:ND003-004",
+"nq": 3,
+"name": "Jake Mendel",
+"crating": 1
+},
+"discovery_source_local:ND004-017": {
+"aid": "person:discovery_source_local:ND004-017",
+"nq": 3,
+"name": "Abi Olvera",
+"crating": 1
+},
+"person_source_local:convergence-analysis:CA-P001": {
+"aid": "person:person_source_local:convergence-analysis:CA-P001",
+"nq": 3,
+"name": "David Kristoffersson",
+"crating": 1
+},
+"registry_source_local_person:center-for-security-and-emerging-technology::CSET-R127:subject": {
+"aid": "person:registry_source_local_person:center-for-security-and-emerging-technology::CSET-R127:subject",
+"nq": 3,
+"name": "Saif Khan",
+"crating": 1
+},
+"person_source_local:miri:MIRI-P004": {
+"aid": "person:person_source_local:miri:MIRI-P004",
+"nq": 3,
+"name": "Alex Vermeer",
+"crating": 1
+},
+"person_source_local:effective-ventures:EV-P002": {
+"aid": "person:person_source_local:effective-ventures:EV-P002",
+"nq": 3,
+"name": "Rob Gledhill",
+"crating": 1
+},
+"discovery_source_local:ND006-019": {
+"aid": "person:discovery_source_local:ND006-019",
+"nq": 3,
+"name": "Drew Spartz",
+"crating": 1
+},
+"person_source_local:good-food-institute:GFI-P001": {
+"aid": "person:person_source_local:good-food-institute:GFI-P001",
+"nq": 2,
+"name": "Bruce Friedrich",
+"crating": 1
+},
+"discovery_source_local:ND002-003": {
+"aid": "person:discovery_source_local:ND002-003",
+"nq": 2,
+"name": "Hjalmar Wijk",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE015": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE015",
+"nq": 1,
+"name": "Ben Esche",
+"crating": 1
+},
+"person_source_local:apollo-research:APO-P009": {
+"aid": "person:person_source_local:apollo-research:APO-P009",
+"nq": 2,
+"name": "David Duvenaud",
+"crating": 1
+},
+"discovery_source_local:ND004-002": {
+"aid": "person:discovery_source_local:ND004-002",
+"nq": 2,
+"name": "Clara Collier",
+"crating": 1
+},
+"person_source_local:foresight-institute:FI-P019": {
+"aid": "person:person_source_local:foresight-institute:FI-P019",
+"nq": 2,
+"name": "Deger Turan",
+"crating": 1
+},
+"registry_source_local_person:redwood-research::RW-R129:subject": {
+"aid": "person:registry_source_local_person:redwood-research::RW-R129:subject",
+"nq": 2,
+"name": "Akbir Khan",
+"crating": 1
+},
+"discovery_source_local:ND006-021": {
+"aid": "person:discovery_source_local:ND006-021",
+"nq": 1,
+"name": "Jed McCaleb",
+"crating": 1
+},
+"institution_candidate_source_local:NODE017-001": {
+"aid": "person:institution_candidate_source_local:NODE017-001",
+"nq": 1,
+"name": "Yoshua Bengio",
+"crating": 1
+},
+"discovery_source_local:ND004-009": {
+"aid": "person:discovery_source_local:ND004-009",
+"nq": 1,
+"name": "Adam Kaufman",
+"crating": 1
+},
+"discovery_source_local:ND002-010": {
+"aid": "person:discovery_source_local:ND002-010",
+"nq": 1,
+"name": "David Krueger",
+"crating": 1
+},
+"person_source_local:center-for-ai-safety:CAIS-P006": {
+"aid": "person:person_source_local:center-for-ai-safety:CAIS-P006",
+"nq": 1,
+"name": "Mantas Mazeika",
+"crating": 1
+},
+"person_source_local:secure-ai-project:SAP-P002": {
+"aid": "person:person_source_local:secure-ai-project:SAP-P002",
+"nq": 1,
+"name": "Thomas Woodside",
+"crating": 1
+},
+"person_source_local:manifund:MF-P004": {
+"aid": "person:person_source_local:manifund:MF-P004",
+"nq": 1,
+"name": "Barak Gila",
+"crating": 1
+},
+"person_source_local:centre-for-effective-altruism:CEA-P011": {
+"aid": "person:person_source_local:centre-for-effective-altruism:CEA-P011",
+"nq": 1,
+"name": "Max Dalton",
+"crating": 1
+},
+"person_source_local:institute-for-ai-policy-and-strategy:IAPS-P002": {
+"aid": "person:person_source_local:institute-for-ai-policy-and-strategy:IAPS-P002",
+"nq": 1,
+"name": "Renan Araujo",
+"crating": 1
+},
+"discovery_source_local:ND003-012": {
+"aid": "person:discovery_source_local:ND003-012",
+"nq": 1,
+"name": "Howie Lempel",
+"crating": 1
+},
+"registry_source_local_person:redwood-research::RW-R023:subject": {
+"aid": "person:registry_source_local_person:redwood-research::RW-R023:subject",
+"nq": 1,
+"name": "Tyler Tracy",
+"crating": 1
+},
+"person_source_local:longview-philanthropy:LV-P038": {
+"aid": "person:person_source_local:longview-philanthropy:LV-P038",
+"nq": 1,
+"name": "Tyler Whitmer",
+"crating": 1
+},
+"discovery_source_local:ND002-020": {
+"aid": "person:discovery_source_local:ND002-020",
+"nq": 1,
+"name": "Steve Newman",
+"crating": 1
+},
+"discovery_source_local:ND002-002": {
+"aid": "person:discovery_source_local:ND002-002",
+"nq": 1,
+"name": "Lisa Thiergart",
+"crating": 1
+},
+"person_source_local:good-ventures:GV-P001": {
+"aid": "person:person_source_local:good-ventures:GV-P001",
+"nq": 1,
+"name": "Cari Tuna",
+"crating": 1
+},
+"person_source_local:coefficient-giving:CG-PE023": {
+"aid": "person:person_source_local:coefficient-giving:CG-PE023",
+"nq": 1,
+"name": "Abie Rohrig",
+"crating": 1
+},
+"discovery_source_local:ND006-014": {
+"aid": "person:discovery_source_local:ND006-014",
+"nq": 4,
+"name": "Claire Short",
+"crating": 0
+},
+"person_source_local:non-trivial:NT-P002": {
+"aid": "person:person_source_local:non-trivial:NT-P002",
+"nq": 3,
+"name": "Peter McIntyre",
+"crating": 0
+},
+"discovery_source_local:ND004-011": {
+"aid": "person:discovery_source_local:ND004-011",
+"nq": 1,
+"name": "Tao Lin",
+"crating": 0
+},
+"registry_source_local_person:ftx-future-fund::FTX-R109:object": {
+"aid": "person:registry_source_local_person:ftx-future-fund::FTX-R109:object",
+"nq": 1,
+"name": "Noa Nabeshima",
+"crating": 0
+},
+"person_source_local:80000-hours:H80-P010": {
+"aid": "person:person_source_local:80000-hours:H80-P010",
+"nq": 1,
+"name": "Anna Weldon",
+"crating": 0
+},
+"registry_source_local_person:pivotal-research::PIV-R025:subject": {
+"aid": "person:registry_source_local_person:pivotal-research::PIV-R025:subject",
+"nq": 1,
+"name": "Michel Justen",
+"crating": 0
+},
+"discovery_source_local:ND006-026": {
+"aid": "person:discovery_source_local:ND006-026",
+"nq": 1,
+"name": "Katie Glass",
+"crating": 0
+}
+}

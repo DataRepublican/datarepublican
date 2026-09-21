@@ -1,0 +1,145 @@
+{
+ "person_source_local:redwood-research:RW-P001": {
+  "person": "Buck Shlegeris",
+  "works": [
+   {
+    "title": "AI Control: Improving Safety Despite Intentional Subversion",
+    "date": "First posted 2023-12-12; inspected v5 2024-07-23",
+    "url": "https://arxiv.org/abs/2312.06942",
+    "role": "coauthor",
+    "coauthors": [],
+    "quotes": []
+   },
+   {
+    "title": "Adversarial training for high-stakes reliability",
+    "date": "NeurIPS 2022",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2022/file/3c44405d619a6920384a45bce876b41e-Paper-Conference.pdf",
+    "role": "coauthor",
+    "coauthors": [],
+    "quotes": []
+   },
+   {
+    "title": "The case for ensuring that powerful AIs are controlled",
+    "date": "2024-05-07",
+    "url": "https://www.redwoodresearch.org/blog/the-case-for-ensuring-that-powerful",
+    "role": "coauthor",
+    "coauthors": [],
+    "quotes": []
+   }
+  ]
+ },
+ "person_source_local:coefficient-giving:CG-PE042": {
+  "person": "Holden Karnofsky",
+  "works": [
+   {
+    "title": "Claude’s Constitution",
+    "date": "January21,2026; overview and acknowledgments inspected",
+    "url": "https://www-cdn.anthropic.com/9214f02e82c4489fb6cf45441d448a1ecd1a3aca/claudes-constitution.pdf",
+    "role": "listed_coauthor_feedback_and_release_coordination",
+    "coauthors": [
+     "Joe Carlsmith"
+    ],
+    "quotes": []
+   },
+   {
+    "title": "RE-Bench: Evaluating frontier AI R&D capabilities of language model agents against human experts",
+    "date": "arXiv v2: 2025-05-27; not v1 2024-11-22",
+    "url": "https://arxiv.org/html/2411.15114v2",
+    "role": "coauthor_of_version_2",
+    "coauthors": [],
+    "quotes": []
+   }
+  ]
+ },
+ "person_source_local:coefficient-giving:CG-PE044": {
+  "person": "Joe Carlsmith",
+  "works": [
+   {
+    "title": "Claude’s Constitution",
+    "date": "January21,2026; overview and acknowledgments inspected",
+    "url": "https://www-cdn.anthropic.com/9214f02e82c4489fb6cf45441d448a1ecd1a3aca/claudes-constitution.pdf",
+    "role": "listed_lead_coauthor",
+    "coauthors": [
+     "Holden Karnofsky"
+    ],
+    "quotes": []
+   },
+   {
+    "title": "Leaving Open Philanthropy, going to Anthropic",
+    "date": "November3,2025; updatedNovember6",
+    "url": "https://joecarlsmith.com/2025/11/03/leaving-open-philanthropy-going-to-anthropic/",
+    "role": "sole_author",
+    "coauthors": [],
+    "quotes": [
+     {
+      "quote": "I remember, early on, one pithy summary of the hypotheses we were investigating: “AI soon, AI fast, AI big, AI bad.” Looking back, I think this was a prescient point of focus.",
+      "context": "Carlsmith is reflecting on the early framing of Open Philanthropy's AI-focused worldview-investigations work and endorsing it in hindsight.",
+      "reason": "This is a compact, unusually blunt summary of the AI-risk hypotheses he now judges prescient."
+     },
+     {
+      "quote": "Even now, interacting with the farm animal welfare team at Open Phil, I try to remember: maybe, actually, these people are heroes. Maybe, indeed, this is what real heroism often looks like – quiet, humble, doing-the-work.",
+      "context": "After describing evidence that Open Phil's cage-free-eggs funding may have contributed to a large-scale moral achievement, Carlsmith reflects on the people doing that work.",
+      "reason": "It offers a revealing and emphatic personal definition of heroism, grounded in low-profile institutional work rather than public recognition."
+     },
+     {
+      "quote": "Why am I going to Anthropic? Basically: I think working there might be the best way I can help the transition to advanced AI go well right now. I’m not confident Anthropic is the best place for this, but I think it’s plausible enough to be worth getting more direct data on.",
+      "context": "Carlsmith presents his central rationale for joining Anthropic while explicitly retaining uncertainty about whether it is the best venue for his efforts.",
+      "reason": "This is the article's core personal judgment about moving from philanthropy into a frontier AI company, qualified by notable epistemic uncertainty."
+     },
+     {
+      "quote": "And if, as a result, I end up concluding that working at Anthropic is a mistake, I aspire to simply admit that I messed up, and to leave.",
+      "context": "Carlsmith says his views about Anthropic and the ethics of AI-safety-focused people working at AI companies may change over time.",
+      "reason": "This is a candid public commitment to acknowledge error and resign if his assessment of the job changes."
+     }
+    ]
+   }
+  ]
+ },
+ "person_source_local:coefficient-giving:CG-PE043": {
+  "person": "Ajeya Cotra",
+  "works": [
+   {
+    "title": "Brief independent investigation of agents’ behavior, reasoning and collaboration in the OpenAI / Hugging Face hacking incident",
+    "date": "2026-08-26 publication; saved version may contain later updates",
+    "url": "https://metr.org/blog/2026-08-26-openai-hugging-face-incident-investigation/",
+    "role": "coauthor_and_investigator",
+    "coauthors": [],
+    "quotes": []
+   }
+  ]
+ },
+ "discovery_source_local:ND002-004": {
+  "person": "Luke Muehlhauser",
+  "works": [
+   {
+    "title": "Our AI Governance Grantmaking So Far",
+    "date": "December 8, 2020",
+    "url": "https://coefficientgiving.org/research/our-ai-governance-grantmaking-so-far/",
+    "role": "sole_author",
+    "coauthors": [],
+    "quotes": [
+     {
+      "quote": "Our sense is that relatively few people who work on AI governance share our focus on improving likely outcomes from transformative AI, for understandable reasons: such issues are speculative, beyond the planning horizon of most actors, may be intractable until a later time, may be impossible to forecast even in broad strokes, etc.",
+      "context": "Muehlhauser is explaining why Open Philanthropy’s emphasis on transformative-AI outcomes is not widely shared among AI-governance practitioners.",
+      "reason": "It candidly acknowledges the speculative, difficult-to-forecast nature of the organization’s central concern."
+     },
+     {
+      "quote": "Nevertheless, there has been substantial AI governance work that I suspect has increased the odds of good outcomes from transformative AI,[24] Presumably by only a very small amount in each case, and typically with some remaining sign uncertainty.",
+      "context": "He argues that governance work can matter for transformative-AI outcomes even when it was not motivated by such concerns or funded by Open Philanthropy.",
+      "reason": "This is a notably cautious admission that purported benefits are likely tiny and may have uncertain direction."
+     },
+     {
+      "quote": "some of the work we fund will involve explicit analysis of very long-run, potentially transformative impacts of AI, but much of the work we fund will be focused on more immediate, tractable issues of AI governance, so long as we are persuaded that the work has a decent chance of improving the odds of eventual good outcomes from transformative AI",
+      "context": "Muehlhauser describes a funding strategy that connects near-term governance work to the organization’s long-term transformative-AI objectives.",
+      "reason": "It sharply states the organization’s willingness to fund practical near-term work primarily for its possible effect on distant AI outcomes."
+     },
+     {
+      "quote": "Of course, we might never fund anything in AI governance as impactful as the work that led to the Nunn-Lugar Act, but per our commitment to hits-based giving, we are willing to take that risk given the scale of impact we expect from transformative AI.",
+      "context": "He concludes the discussion by justifying uncertain AI-governance grantmaking through Open Philanthropy’s hits-based-giving approach.",
+      "reason": "It is a clear statement of the organization’s high-risk funding rationale and its expectation of transformative AI’s potential scale of impact."
+     }
+    ]
+   }
+  ]
+ }
+}

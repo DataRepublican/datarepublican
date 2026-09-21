@@ -19,13 +19,25 @@
 #   preview      filename under assets/images/products/
 #   feature      true renders the tall card with copy overlaid on the image
 
+- href: /ea-explorer/
+  name: EA explorer
+  tagline: Effective altruism, in their own words
+  description: >-
+    Read what effective altruists actually argue — verbatim, sourced — and map
+    how the people and money behind the movement connect.
+  rank: 1
+  updated: 2026-09-21
+  category: Networks & influence
+  preview: ea-explorer.png
+  feature: true
+
 - href: /dsa-explorer/
   name: DSA explorer
   tagline: Ideology map of the solidarity funding network
   description: >-
     Explore how organizations, people, and funding tie together across
     ideological currents, and country spheres.
-  rank: 1
+  rank: 2
   updated: 2026-08-31
   category: Networks & influence
   preview: dsa-explorer.png
@@ -37,7 +49,7 @@
   description: >-
     Explore where they cluster geographically, whose reading lists overlap,
     and which institutions they cite as authority.
-  rank: 2
+  rank: 3
   updated: 2026-08-31
   category: Networks & influence
   preview: noblogs.png
@@ -49,7 +61,7 @@
   description: >-
     Trace funding between organizations as a Sankey chart. The US government
     is shown as the ultimate NGO — follow the money.
-  rank: 3
+  rank: 4
   updated: 2025-08-23
   category: Charity funding & financials
   preview: charity-browse.png
@@ -60,7 +72,7 @@
   description: >-
     Financial connections among charitable organizations, focused on taxpayer
     funds received.
-  rank: 4
+  rank: 5
   updated: 2025-06-13
   category: Charity funding & financials
   preview: charity-graph.png
@@ -70,7 +82,7 @@
   tagline: The National Endowment for Democracy, indexed
   description: >-
     Search the NED's own grant records and the Journal of Democracy archive.
-  rank: 5
+  rank: 6
   updated: 2025-05-15
   category: Networks & influence
   preview: ned.png
@@ -80,7 +92,7 @@
   tagline: Search NGOs for officers and salaries
   description: >-
     Identify relationships between nonprofits and the people who run them.
-  rank: 6
+  rank: 7
   updated: 2025-03-06
   category: People, officers & salaries
   preview: officer-search.png
@@ -91,7 +103,7 @@
   description: >-
     Cross-reference a whole board at once to find affiliations between
     organizations and their members.
-  rank: 7
+  rank: 8
   updated: 2025-03-01
   category: People, officers & salaries
   preview: bulk-officer-search.png
@@ -102,7 +114,7 @@
   description: >-
     Financial detail on 501(c)(3) organizations, including how much of their
     funding comes from taxpayers.
-  rank: 8
+  rank: 9
   updated: 2025-03-01
   category: Charity funding & financials
   preview: charity-funding.png
@@ -112,7 +124,7 @@
   tagline: Analyze assets & expenses
   description: >-
     Browse nonprofit financials and see how organizations allocate their funds.
-  rank: 9
+  rank: 10
   updated: 2025-03-01
   category: Charity funding & financials
   preview: nonprofit-financials.png
@@ -123,7 +135,7 @@
   description: >-
     Search federal grant awards by keyword and cross-reference them against
     taxpayer funding.
-  rank: 10
+  rank: 11
   updated: 2025-02-14
   category: Political campaign & grant funding
   preview: award-search.png
@@ -133,7 +145,7 @@
   tagline: County-level early voting and registration
   description: >-
     Early voting, mail ballots and registration by county, against prior cycles.
-  rank: 11
+  rank: 12
   updated: 2025-04-01
   category: Voter turnout analysis
   preview: florida.png
@@ -143,7 +155,7 @@
   tagline: County-level mail voting and registration
   description: >-
     Mail voting and registration by county, against prior cycles.
-  rank: 12
+  rank: 13
   updated: 2025-02-04
   category: Voter turnout analysis
   preview: pennsylvania.png
@@ -153,7 +165,7 @@
   tagline: County-level early voting and registration
   description: >-
     Filter 5.3 million voter records by party, method, race, age and more.
-  rank: 13
+  rank: 14
   updated: 2024-10-30
   category: Voter turnout analysis
   preview: northcarolina.png
