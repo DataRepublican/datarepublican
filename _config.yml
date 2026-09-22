@@ -66,6 +66,10 @@ exclude:
   # `start` runs `dev:watchdirs` to mkdir both of these first.
   - test-results
   - playwright-report
+  # The suite itself, which was being PUBLISHED — /tests/ was a browsable
+  # page and every spec was downloadable. It also meant writing a spec
+  # triggered a rebuild, 404-ing whatever page the suite was mid-request on.
+  - tests
   # The design-system skill and its references live here, and they get edited in
   # the same sessions that run the suite. Every write was kicking off a rebuild
   # and 404-ing whatever page a test had just requested — the same cascade as

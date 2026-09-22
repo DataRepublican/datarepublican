@@ -1,9 +1,12 @@
 ---
 layout: default
 title: "Effective Altruism, in their own words"
+permalink: /ea-explorer/tour/
+redirect_from:
+  - /ea-explorer/words/opener.html
 ---
 <style>
-/* The opener — a scroll-through narrative. Scoped to #wopener; reads the site's
+/* The opener – a scroll-through narrative. Scoped to #wopener; reads the site's
    --dr-* tokens so it shares the cool light system with the graph and the
    explorer. Chrome has no hue; money-lines carry a tint highlight, not a color. */
 #wopener{
@@ -100,11 +103,11 @@ figcaption a:hover{color:var(--accent);border-color:var(--accent)}
 #closer .btn:hover{transform:translateY(-3px)}
 #closer .btn b{font-size:1.06rem;letter-spacing:.01em}
 #closer .btn span{font-size:.83rem;font-weight:400;line-height:1.45}
-/* primary path — slate reads as "darker", never as a hue */
+/* primary path – slate reads as "darker", never as a hue */
 #closer .btn.words{color:#fff;background:var(--accent)}
 #closer .btn.words:hover{box-shadow:0 8px 24px rgba(0,0,0,.18)}
 #closer .btn.words span{color:rgba(255,255,255,.82)}
-/* secondary path — a white card on the ground */
+/* secondary path – a white card on the ground */
 #closer .btn.net{color:var(--ink);background:var(--panel);border:1px solid var(--line)}
 #closer .btn.net:hover{border-color:var(--line-strong);box-shadow:0 6px 18px rgba(0,0,0,.08)}
 #closer .btn.net b{color:var(--accent)}
@@ -117,23 +120,23 @@ figcaption a:hover{color:var(--accent);border-color:var(--accent)}
   <div id="prog"></div>
 
   <div class="o-switchrow">
-    <a class="ea-home" href="../index.html" title="EA Explorer — overview">◂ EA&nbsp;Explorer</a>
+    <a class="ea-home" href="/ea-explorer/" title="EA Explorer overview">Overview</a>
     <div class="ea-switch" title="Switch between the two views of the same ecosystem">
-      <a href="index.html">Their words</a>
-      <a href="../network.html">The network</a>
+      <a href="/ea-explorer/words/">Their words</a>
+      <a href="/ea-explorer/network/">The network</a>
     </div>
   </div>
 
   <section id="hero">
     <div class="wrap">
       <h1>Effective Altruism,<br>in their own words.</h1>
-      <p class="sub">A movement that began with charity math. Keep scrolling to see where the reasoning goes — every line below is a real, verbatim quote from its forums.</p>
+      <p class="sub">A movement that began with charity math. Keep scrolling to see where the reasoning goes – every line below is a real, verbatim quote from its forums.</p>
     </div>
     <div class="cue">scroll ↓</div>
   </section>
 
   <section class="frame"><div class="wrap">
-    <p class="reveal">It started reasonably enough. <span class="muted">Do the most good you can. Measure it. Give where a dollar goes furthest — bed nets, vaccines, deworming.</span></p>
+    <p class="reveal">It started reasonably enough. <span class="muted">Do the most good you can. Measure it. Give where a dollar goes furthest – bed nets, vaccines, deworming.</span></p>
   </div></section>
 
   <section class="frame"><div class="wrap">
@@ -147,12 +150,12 @@ figcaption a:hover{color:var(--accent);border-color:var(--accent)}
       <h2 class="reveal">This is effective altruism.</h2>
       <p class="choose reveal">Two ways to go deeper</p>
       <div class="choices reveal">
-        <a class="btn words" href="index.html"><b>Explore their words →</b>
-          <span>Every quote — by topic, by person, searchable. Read what they actually said.</span></a>
-        <a class="btn net" href="../network.html"><b>Investigate the connections →</b>
-          <span>The people, orgs, and money behind the ideas — mapped as a network you can walk.</span></a>
+        <a class="btn words" href="/ea-explorer/words/"><b>Explore their words →</b>
+          <span>Every quote – by topic, by person, searchable. Read what they actually said.</span></a>
+        <a class="btn net" href="/ea-explorer/network/"><b>Investigate the connections →</b>
+          <span>The people, orgs, and money behind the ideas – mapped as a network you can follow.</span></a>
       </div>
-      <p class="note reveal">Every quote is verbatim and links to its source. Blockquotes were stripped before excerpting, so no one is shown saying words they were quoting from someone else. We reviewed each quote against its surrounding paragraphs and aimed to show only lines where the author appears to be stating their <em>own</em> view — rather than steelmanning, forecasting, quoting someone else, or arguing against it — and where a view is conditional, we've tried to keep the condition visible in the surrounding line. The selection is representative, not exhaustive. The full explorer is broader and flags quotes that appear to be weighed rather than firmly held.</p>
+      <p class="note reveal">Every quote links to the post it came from, so you can read it in full. We stripped out anything the author was quoting from someone else, and we read the surrounding post to check they were stating their <em>own</em> view rather than arguing with it. This is a sample of what gets said, not everything.</p>
     </div>
   </section>
 
@@ -178,7 +181,7 @@ function renderBeat(b){
   const quotes = b.quotes.map(renderQuote).join("");
   return `<section class="beat"><div class="wrap">
     <div class="beat-head reveal">
-      <img src="${b.avatar}" alt="">
+      <img src="/ea-explorer/words/${b.avatar}" alt="">
       <div class="t">
         <div class="kicker">${esc(b.title)}</div>
         <div class="tag">${esc(b.tagline)}</div>
@@ -187,7 +190,7 @@ function renderBeat(b){
     ${quotes}
   </div></section>`;
 }
-fetch("opener.json").then(r=>r.json()).then(d=>{
+fetch("/ea-explorer/words/opener.json").then(r=>r.json()).then(d=>{
   document.getElementById("beats").innerHTML = d.beats.map(renderBeat).join("");
   const io = new IntersectionObserver((es)=>{
     es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);}});

@@ -18,11 +18,11 @@ const ALL = [
   '/',
   '/about/',
   '/ea-explorer/',
-  '/ea-explorer/network.html',
+  '/ea-explorer/network/',
   // A node whose relationship labels are full sentences — the case that broke.
-  '/ea-explorer/network.html#' + encodeURIComponent('institution:inst-066'),
+  '/ea-explorer/network/#' + encodeURIComponent('institution:inst-066'),
   '/ea-explorer/words/',
-  '/ea-explorer/words/opener.html',
+  '/ea-explorer/tour/',
   '/noblogs/',
   '/dsa-explorer/',
 ];
@@ -43,7 +43,7 @@ const MATRIX = [
 test('the network detail panel does not scroll sideways', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto(
-    HOST + '/ea-explorer/network.html#' + encodeURIComponent('institution:inst-066'),
+    HOST + '/ea-explorer/network/#' + encodeURIComponent('institution:inst-066'),
     { waitUntil: 'load' });
   await page.waitForSelector('#panel .rel', { timeout: 30000 });
 

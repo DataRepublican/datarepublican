@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (248 specs, ~80s).
+Tests need the dev server running: `npx playwright test` (254 specs, ~85s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -190,6 +190,13 @@ scroll at all: the layout viewport widens, `innerWidth` comes back larger than
 the device, and every other measurement is then taken against a viewport that
 does not exist. `tests/test_no_x_overflow.spec.js` measures the document at
 390px and the panel on its own.
+
+**The EA section uses extensionless URLs**: `/ea-explorer/tour/`,
+`/ea-explorer/words/`, `/ea-explorer/network/`. The tour and the network set a
+`permalink`, so their assets are root-absolute — a directory URL resolves
+`data/…` one level deeper than a `.html` URL did, and the logo manifest stores
+paths relative to `/ea-explorer/`, so `LOGO_BASE` prefixes them. The old
+`.html` paths are kept alive with `redirect_from`.
 
 **Preflight sets `box-sizing: border-box`.** A rule built from `border-t` +
 `height` + `border-b` needs the height to be the *total*, not the gap.

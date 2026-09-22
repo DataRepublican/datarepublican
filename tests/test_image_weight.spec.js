@@ -19,7 +19,7 @@ const HEAVY_BYTES = 120_000;
 const ROUTES = [
   { path: '/', label: 'the tools index' },
   { path: '/ea-explorer/words/', label: 'EA — in their own words' },
-  { path: '/ea-explorer/words/opener.html', label: 'the EA opener' },
+  { path: '/ea-explorer/tour/', label: 'the EA tour' },
   { path: '/about/', label: 'about' },
 ];
 

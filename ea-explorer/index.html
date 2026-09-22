@@ -1,9 +1,9 @@
 ---
 layout: default
-title: "EA Explorer — Effective Altruism in their own words"
+title: "EA Explorer – Effective Altruism in their own words"
 ---
 <style>
-/* EA Explorer hub — neutral landing that frames the project and offers three ways
+/* EA Explorer hub – neutral landing that frames the project and offers three ways
    in (guided tour, explore the quotes, map the network), each with a preview.
    Scoped to #ea-hub; reads the site's --dr-* tokens. Text-color rules are written
    as `#ea-hub .x` so they out-specify `#ea-hub a{color:inherit}`. */
@@ -22,6 +22,13 @@ title: "EA Explorer — Effective Altruism in their own words"
 #ea-hub *{box-sizing:border-box}
 #ea-hub a{color:inherit;text-decoration:none}
 #ea-hub .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+/* main.page-column already carries the gutter; 20px more just narrows the
+   content on the width that has least to spare. */
+@media(max-width:720px){#ea-hub .wrap{padding:0}}
+/* color, because `#ea-hub a{color:inherit}` above is (1,0,1) and beats
+   .dr-btn--solid's (0,1,0) — the button rendered near-black on the dark
+   accent. Same reason every text-color rule in this file is id-scoped. */
+#ea-hub .hub-cta{margin-top:1.6em;color:#fff}
 
 /* hero */
 #ea-hub .hub-hero{text-align:center;padding:6vh 0 1vh}
@@ -48,27 +55,16 @@ title: "EA Explorer — Effective Altruism in their own words"
   font-weight:700;color:var(--accent);margin:0 0 .5em}
 #ea-hub .tile .t-h{font-family:var(--serif);font-size:1.42rem;font-weight:800;letter-spacing:-.02em;line-height:1.12;
   color:var(--ink-strong);margin:0 0 .35em}
-#ea-hub .tile .t-d{font-family:var(--sans);font-size:.92rem;line-height:1.55;color:var(--faint);margin:0 0 .8em}
+/* font-weight, because main.css styles bare `a` with font-semibold and the
+   whole tile is one link – the description inherits 600 without this. */
+#ea-hub .tile .t-d{font-family:var(--sans);font-size:.92rem;line-height:1.55;color:var(--faint);margin:0 0 .8em;font-weight:400}
 #ea-hub .tile .t-go{font-family:var(--sans);font-size:.9rem;font-weight:700;color:var(--accent)}
 #ea-hub .tile:hover .t-go{text-decoration:underline;text-underline-offset:3px}
 
-/* featured tour tile — image left, copy right on desktop */
-#ea-hub .tile.feature{display:grid;grid-template-columns:1.35fr 1fr;align-items:stretch}
-@media(max-width:720px){#ea-hub .tile.feature{grid-template-columns:1fr}}
-#ea-hub .tile.feature .shot{border-bottom:none;border-right:1px solid var(--line);min-height:100%}
-@media(max-width:720px){#ea-hub .tile.feature .shot{border-right:none;border-bottom:1px solid var(--line)}}
-#ea-hub .tile.feature .shot img{object-position:center 42%}
-#ea-hub .tile.feature .body{display:flex;flex-direction:column;justify-content:center;padding:30px 30px}
-#ea-hub .tile.feature .t-h{font-size:1.8rem}
-#ea-hub .tile.feature .t-d{font-size:.98rem}
-/* the "start here" pip on the tour tile */
-#ea-hub .tile.feature .t-k{color:#fff;background:var(--accent);display:inline-block;
-  padding:.32em .7em;border-radius:999px;letter-spacing:.12em}
 
 /* aspect framing for the two lower tiles */
 #ea-hub .tile .shot.wide{aspect-ratio:16/8.2}
 #ea-hub .tile .shot.wide img{object-position:top center}
-#ea-hub .tile.feature .shot{aspect-ratio:auto}
 
 /* method note */
 #ea-hub .hub-note{font-family:var(--sans);color:var(--faint);font-size:.84rem;line-height:1.6;max-width:76ch;
@@ -82,55 +78,42 @@ title: "EA Explorer — Effective Altruism in their own words"
       <p class="kicker">EA Explorer</p>
       <h1>Effective Altruism,<br>in their own words.</h1>
       <p class="lede">A public record of what the effective-altruism and AI-safety community argues
-        for — drawn entirely from their own forum posts, quoted verbatim and linked to source.
-        Three ways in: take the tour, read what they said, or map who is connected to whom.</p>
+        for – drawn entirely from their own forum posts, quoted verbatim and linked to source.</p>
+      <a class="hub-cta dr-btn dr-btn--solid" href="{{ '/ea-explorer/tour/' | relative_url }}">What is effective altruism?</a>
     </section>
 
     <section class="hub-gallery">
-      <!-- featured: the guided tour (what is EA?) -->
-      <a class="tile feature" href="words/opener.html">
-        <span class="shot"><img src="assets/montage/tour.jpg" alt="The guided tour opening — a scroll through Effective Altruism in its own words"></span>
-        <span class="body">
-          <span class="t-k">Start here</span>
-          <span class="t-h">Take the guided tour</span>
-          <span class="t-d">New to all this? Scroll through a short narrative — from charity math to where
-            the reasoning leads — built entirely from the movement's own words. The fastest way to see
-            what Effective Altruism actually argues.</span>
-          <span class="t-go">Take the tour →</span>
-        </span>
-      </a>
-
       <div class="hub-row">
         <!-- explore their words -->
-        <a class="tile" href="words/index.html">
-          <span class="shot wide"><img src="assets/montage/words.jpg" alt="The topics grid — fourteen recurring themes as illustrated cards"></span>
+        <a class="tile" href="{{ '/ea-explorer/words/' | relative_url }}">
+          <span class="shot wide"><img src="assets/montage/words.jpg" alt="The topics grid – fourteen recurring themes as illustrated cards"></span>
           <span class="body">
             <span class="t-k">Their words</span>
             <span class="t-h">Explore their words</span>
-            <span class="t-d">Every verbatim quote — by topic, by person, fully searchable. What they said
+            <span class="t-d">Every verbatim quote – by topic, by person, fully searchable. What they said
               about governing the world, moral patienthood, biting the bullet, and more.</span>
             <span class="t-go">Explore the quotes →</span>
           </span>
         </a>
 
         <!-- map the connections -->
-        <a class="tile" href="network.html">
-          <span class="shot wide"><img src="assets/montage/network.jpg" alt="The network map — people, organizations, and money as a graph"></span>
+        <a class="tile" href="{{ '/ea-explorer/network/' | relative_url }}">
+          <span class="shot wide"><img src="assets/montage/network.jpg" alt="The network map – people, organizations, and money as a graph"></span>
           <span class="body">
             <span class="t-k">The network</span>
             <span class="t-h">Map the connections</span>
-            <span class="t-d">The people, organizations, and money behind the ideas — mapped as a network
-              you can walk, one entity at a time.</span>
+            <span class="t-d">The people, organizations, and money behind the ideas – mapped as a network
+              you can follow, one entity at a time.</span>
             <span class="t-go">Investigate the connections →</span>
           </span>
         </a>
       </div>
     </section>
 
-    <p class="hub-note">Every quote is verbatim and links to its source. Blockquotes were stripped before
-      excerpting, so no one is shown saying words they were quoting from someone else. Quotes were
-      reviewed against their surrounding context to show lines where the author appears to be stating
-      their own view. The selection is representative, not exhaustive.</p>
+    <p class="hub-note">Every quote links to the post it came from, so you can read it in full.
+      We stripped out anything the author was quoting from someone else, and we read the
+      surrounding post to check they were stating their own view rather than arguing with it.
+      This is a sample of what gets said, not everything.</p>
     <p class="hub-credit">Built from public LessWrong / EA&nbsp;Forum / Alignment&nbsp;Forum archives.</p>
   </div>
 </div>

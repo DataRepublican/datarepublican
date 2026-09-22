@@ -1,10 +1,10 @@
 ---
 layout: default
-title: "EA — in their own words"
+title: "EA – in their own words"
 ---
 <style>
-/* EA — in their own words. Scoped to #wapp / #drawer; reads the site's --dr-*
-   tokens so it shares one visual system with the network graph — cool light
+/* EA – in their own words. Scoped to #wapp / #drawer; reads the site's --dr-*
+   tokens so it shares one visual system with the network graph – cool light
    ground, near-ink slate chrome, saturated color reserved for data. */
 #wapp,#drawer{
   --bg:var(--dr-surface,#E5E7EB); --panel:var(--dr-panel,#FFFFFF);
@@ -21,7 +21,7 @@ title: "EA — in their own words"
 #wapp *,#drawer *{box-sizing:border-box}
 #wapp a{color:inherit}
 
-/* tool header — identity row + view switcher, mirrors the graph's #ea-header */
+/* tool header – identity row + view switcher, mirrors the graph's #ea-header */
 #words-header{padding:6px 0 14px;display:flex;flex-direction:column;gap:12px}
 .ea-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .ea-id{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -40,9 +40,6 @@ title: "EA — in their own words"
 .ea-home{font-family:var(--sans);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);
   text-decoration:none;white-space:nowrap;flex:0 0 auto}
 .ea-home:hover{color:var(--ink-strong)}
-.ea-whatis{font-family:var(--sans);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--accent);
-  text-decoration:none;white-space:nowrap;flex:0 0 auto}
-.ea-whatis:hover{text-decoration:underline}
 .ea-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ea-lenses{display:flex;gap:2px;background:var(--fill);border:1px solid var(--line);
   border-radius:var(--rad-sm);padding:3px}
@@ -53,10 +50,13 @@ title: "EA — in their own words"
 .ea-lenses button.on{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .ea-lenses button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 
-/* reading-note callout — in-flow amber notice (the site's legal token), dismissible */
+/* reading-note callout – in-flow amber notice (the site's legal token), dismissible */
 #notice{margin:0 0 22px;background:var(--dr-legal-fill,#FBF6E9);border:1px solid var(--dr-legal-border,#E4D08A);
   border-radius:var(--rad);font-family:var(--sans);font-size:var(--dr-text-meta,13px);color:var(--dr-legal-ink,#5B4B15)}
 #notice>div{display:flex;gap:14px;align-items:flex-start;padding:12px 16px}
+/* The button is flex:none and the text flex:1, so on a phone the row
+   squeezes the note to a few words per line. Stack instead. */
+@media(max-width:720px){#notice>div{flex-direction:column;align-items:flex-start;gap:10px}}
 #notice b{color:var(--dr-legal-ink,#5B4B15)}
 #notice span{flex:1;line-height:1.55}
 #notice button{flex:none;background:var(--panel);border:1px solid var(--dr-legal-border,#E4D08A);
@@ -139,7 +139,7 @@ h1.view{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.8rem);font-weight:
   border-left:2px solid var(--line);padding-left:11px;margin-top:8px}
 .pteaser b{color:var(--ink-strong);font-weight:600;background:var(--tint);border-radius:2px;padding:0 .12em}
 
-/* graph cross-link (named people only) — mirrors the graph's .wordslink */
+/* graph cross-link (named people only) – mirrors the graph's .wordslink */
 .maplink{display:inline-block;margin-top:10px;font-family:var(--sans);font-size:.75rem;font-weight:600;
   color:var(--accent);text-decoration:none;border:1px solid var(--tint-line);background:var(--tint);
   border-radius:var(--dr-radius-pill,9999px);padding:5px 12px}
@@ -193,12 +193,11 @@ h1.view{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.8rem);font-weight:
         <div class="sub" id="count" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
       <div class="ea-idright">
-        <a class="ea-home" href="../index.html" title="EA Explorer — overview">◂ EA&nbsp;Explorer</a>
+        <a class="ea-home" href="/ea-explorer/" title="EA Explorer overview">Overview</a>
         <div class="ea-switch" title="Switch between the two views of the same ecosystem">
-          <a href="index.html" class="on">Their words</a>
-          <a href="../network.html">The network</a>
+          <a href="/ea-explorer/words/" class="on">Their words</a>
+          <a href="/ea-explorer/network/">The network</a>
         </div>
-        <a class="ea-whatis" href="opener.html">What is EA?&nbsp;↗</a>
       </div>
     </div>
     <div class="ea-controls">
@@ -211,7 +210,7 @@ h1.view{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.8rem);font-weight:
   </header>
 
   <div id="notice"><div>
-    <span><b>Reading note.</b> Every line here is a verbatim quote from a public post, shown with its surrounding context and linked to the original. But people think out loud on these forums: some quotes are ideas an author was <em>weighing, forecasting, or steelmanning</em> — not necessarily a settled belief. Read them as "this is a view that circulates in EA," not "this person definitely holds this." Where we could identify quotes in which the author was arguing <em>against</em> the idea, we've excluded them.</span>
+    <span><b>Reading note.</b> Every line here is a verbatim quote from a public post, shown with its surrounding context and linked to the original. But people think out loud on these forums: some quotes are ideas an author was <em>weighing, forecasting, or steelmanning</em> – not necessarily a settled belief. Read them as "this is a view that circulates in EA," not "this person definitely holds this." Where we could identify quotes in which the author was arguing <em>against</em> the idea, we've excluded them.</span>
     <button id="noticeX">Got it</button>
   </div></div>
 
@@ -221,9 +220,9 @@ h1.view{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.8rem);font-weight:
     Every quote is verbatim and links to its source.
     <details><summary>Method &amp; caveats</summary>
       <p><b>Source.</b> Public posts on LessWrong, the EA Forum, and the Alignment Forum. Blockquotes were stripped before excerpting, so no one is ever shown saying words they were quoting from someone else. Multi-speaker dialogue posts were re-attributed to the actual speaker where the transcript made it verifiable.</p>
-      <p><b>Selection.</b> Candidate passages were flagged and then reviewed for which of fourteen recurring "power themes" they express, keeping the most revealing line verbatim. This surfaces the eyebrow-raising veins the taxonomy could reach — it is <em>representative, not exhaustive</em>, and it leans toward the striking over the mundane.</p>
-      <p><b>Context &amp; stance.</b> Every displayed quote was re-verified as an exact substring of its source post. We also reviewed quotes against their surrounding paragraphs to gauge whether the author was endorsing a view or arguing against it, and excluded the clear "arguing-against" cases where we could identify them. Even so, some quotes may be hypotheticals or steelmen — see the reading note above. When in doubt, click through to the full post.</p>
-      <p><b>Editorial.</b> The quotes are theirs; the ranking, the topic names, and the taglines are ours. The searchable <em>Quotes</em> lens is the neutral backstop — read it unfiltered to form your own view.</p>
+      <p><b>Selection.</b> Candidate passages were flagged and then reviewed for which of fourteen recurring "power themes" they express, keeping the most revealing line verbatim. This surfaces the eyebrow-raising veins the taxonomy could reach – it is <em>representative, not exhaustive</em>, and it leans toward the striking over the mundane.</p>
+      <p><b>Context &amp; stance.</b> Every displayed quote was re-verified as an exact substring of its source post. We also reviewed quotes against their surrounding paragraphs to gauge whether the author was endorsing a view or arguing against it, and excluded the clear "arguing-against" cases where we could identify them. Even so, some quotes may be hypotheticals or steelmen – see the reading note above. When in doubt, click through to the full post.</p>
+      <p><b>Editorial.</b> The quotes are theirs; the ranking, the topic names, and the taglines are ours. The searchable <em>Quotes</em> lens is the neutral backstop – read it unfiltered to form your own view.</p>
     </details>
   </div>
 </div>
@@ -290,7 +289,7 @@ function concernBadge(a){
   const r=a.crating||0;
   const col=r>=5?"var(--dr-data-party,#C0392B)":r>=4?"var(--dr-data-state,#B8860B)":r>=3?"var(--dr-data-state,#B8860B)":r>=1?"var(--dr-data-money,#1B7F4B)":"var(--line,#D3D7DE)";
   let dots="";for(let i=1;i<=5;i++)dots+=`<i style="background:${i<=r?col:'var(--line,#D3D7DE)'}"></i>`;
-  return `<div class="concern" title="Concern ${r}/5 — how alarming this author's most-revealing quote is">
+  return `<div class="concern" title="Concern ${r}/5 – how alarming this author's most-revealing quote is">
     <span class="cdots">${dots}</span><span class="clab">concern ${r}/5</span></div>`;}
 function bolded(c,m){let x=esc(c); if(m){const e=esc(m); x=x.replace(e,"<b>"+e+"</b>");} return x;}
 const flabel=f=>DATA.meta.flag_label[f]||f;
@@ -299,7 +298,7 @@ const clabel=c=>DATA.meta.cat_label[c]||c;
 function authorOf(q){return A[q.a];}
 // cross-link to the network-graph sub-project, highlighting this person's node.
 // Only named/published people carry a verified graph node (gnode).
-function graphLink(a){return a&&a.gnode?`../network.html#${encodeURIComponent(a.gnode)}`:null;}
+function graphLink(a){return a&&a.gnode?`/ea-explorer/network/#${encodeURIComponent(a.gnode)}`:null;}
 
 // ---- URL state ----
 function readHash(){
@@ -330,7 +329,7 @@ function viewTopics(){
     </div>`;}).join("");
   document.getElementById("main").innerHTML=
     `<h1 class="view">The ideology, by topic</h1>
-     <p class="lede">Fourteen recurring tells, ordered by how far they sit from ordinary charity talk. Each is a real theme EAs return to — in their own words. Click one to read every quote it fired on.</p>
+     <p class="lede">Fourteen recurring tells, ordered by how far they sit from ordinary charity talk. Each is a real theme EAs return to – in their own words. Click one to read every quote it fired on.</p>
      <div class="topics">${t}</div>`;
   document.querySelectorAll(".tcard").forEach(el=>el.onclick=()=>{
     const p=new URLSearchParams(); p.set("flag",el.dataset.topic); go("quotes",p);});
@@ -399,9 +398,9 @@ function renderFeed(p){
 function viewQuotes(p){
   const flag=p.get("flag");
   const head=flag?`<h1 class="view">${esc(flabel(flag))}</h1>
-      <p class="lede">${esc(DATA.meta.flag_tag[flag]||"")} — every verbatim quote that fired this theme, most revealing first.</p>`
+      <p class="lede">${esc(DATA.meta.flag_tag[flag]||"")} – every verbatim quote that fired this theme, most revealing first.</p>`
     :`<h1 class="view">Search the quotes</h1>
-      <p class="lede">Every theme-tagged quote, searchable — each filed under the one theme it most distinctively fits, so the counts add up. Filter by theme, cause area, platform, or how revealing it is. (A given person's fuller record lives under People.)</p>`;
+      <p class="lede">Every theme-tagged quote, searchable – each filed under the one theme it most distinctively fits, so the counts add up. Filter by theme, cause area, platform, or how revealing it is. (A given person's fuller record lives under People.)</p>`;
   const flagChips=DATA.meta.flag_order.map(f=>
     `<span class="chip ${f===flag?'on':''}" data-setflag="${f}">${esc(flabel(f))}</span>`).join("");
   const cats=Object.keys(DATA.meta.cat_label).map(c=>`<option value="${c}">${esc(clabel(c))}</option>`).join("");
@@ -494,7 +493,7 @@ function viewPeople(p){
   const more=list.length>peopleN?`<button class="more" id="pmore">Show more (${(list.length-peopleN).toLocaleString()} more)</button>`:"";
   document.getElementById("main").innerHTML=
     `<h1 class="view">Who said it</h1>
-     <p class="lede">Ranked by concern — how alarming each author's most-revealing quote is, weighted toward power &amp; governance themes. Named figures are ringed (real names via the main EA map); everyone else appears under their own public handle.</p>
+     <p class="lede">Ranked by concern – how alarming each author's most-revealing quote is, weighted toward power &amp; governance themes. Named figures are ringed (real names via the main EA map); everyone else appears under their own public handle.</p>
      ${bar}<div class="people">${cards||'<div class="empty">None.</div>'}</div>${more}`;
   document.getElementById("count").textContent=`${list.length.toLocaleString()} people`;
   document.getElementById("psort").value=sort;
@@ -531,7 +530,7 @@ function openAuthor(aid){
          ${concernBadge(a)}</div></div>
      ${glblock}
      <div class="dsection">Power flags</div><div>${flags||'<span class="dsub">none</span>'}</div>
-     <div class="dsection">Cause areas</div><div class="dsub">${cats||"—"}</div>
+     <div class="dsection">Cause areas</div><div class="dsub">${cats||"–"}</div>
      ${emer}
      <div class="dsection">All quotes (${a.nq})</div>${qs}`;
   document.querySelector(".dclose").onclick=closeDrawer;

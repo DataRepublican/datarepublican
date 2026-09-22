@@ -1,11 +1,14 @@
 ---
 layout: default
 title: EA Explorer
+permalink: /ea-explorer/network/
+redirect_from:
+  - /ea-explorer/network.html
 ---
 
 <script src="/assets/js/cytoscape.min.js"></script>
 <script src="/assets/js/lib/papaparse-5.5.1.min.js"></script>
-<script src="logos/index.js"></script>
+<script src="/ea-explorer/logos/index.js"></script>
 
 <style>
   /* Tokens are scoped to #app (never :root); the disclaimer <dialog> lives
@@ -21,7 +24,7 @@ title: EA Explorer
      the floating phone nav pill. */
   #app{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;
     height:calc(100dvh - var(--ea-app-top,7rem) - var(--nav-clearance));
-    /* modest floor only — a large min-height would force #app taller than the
+    /* modest floor only – a large min-height would force #app taller than the
        viewport on short windows and push the stage-anchored legend below the
        fold. Keep it small so the map fits the browser height. */
     min-height:14rem;font-family:var(--dr-font-content,"Libre Franklin","Helvetica Neue",Arial,sans-serif);
@@ -39,11 +42,11 @@ title: EA Explorer
   #ea-header .sub{font-size:var(--dr-text-meta,13px);color:var(--dr-ink-faint,#6B7280);line-height:1.35}
   /* right side of the id row: project switcher + disclaimer */
   /* Wraps rather than holding its width: this row of links is wider than a
-     phone, and `flex:0 0 auto` on it widened the LAYOUT VIEWPORT — innerWidth
+     phone, and `flex:0 0 auto` on it widened the LAYOUT VIEWPORT – innerWidth
      came back 559 on a 390px device, so every other element measured against
      a viewport that did not exist. */
   .ea-idright{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:0 1 auto;min-width:0}
-  /* project switcher — graceful move between the two sub-projects (graph / words) */
+  /* project switcher – graceful move between the two sub-projects (graph / words) */
   .ea-switch{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,#D3D7DE);
     border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
   .ea-switch a{padding:6px 11px;border-radius:var(--dr-radius-sm,6px);font-family:var(--dr-font-ui);
@@ -55,9 +58,6 @@ title: EA Explorer
   .ea-home{font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;
     color:var(--dr-ink-faint,#6B7280);text-decoration:none;white-space:nowrap;flex:0 0 auto}
   .ea-home:hover{color:var(--dr-ink-strong,#000)}
-  .ea-whatis{font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;
-    color:var(--dr-accent,#252739);text-decoration:none;white-space:nowrap;flex:0 0 auto}
-  .ea-whatis:hover{text-decoration:underline}
   /* "read their quotes" cross-link into the words sub-project */
   #panel .wordslink{display:block;margin:12px 0 2px;padding:9px 12px;background:var(--dr-accent-tint,#DEE0E8);
     border:1px solid var(--dr-accent-tint-line,#C3C7D6);border-radius:8px;font-family:var(--dr-font-ui);
@@ -66,7 +66,7 @@ title: EA Explorer
   #panel .wordslink .n{color:var(--dr-ink-faint,#6B7280);font-weight:400}
 
   .ea-controls{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
-  /* segmented lens switcher — this tool has three views, so a real toggle
+  /* segmented lens switcher – this tool has three views, so a real toggle
      (dsa-explorer has one view and omits it). Buttons reset off the global
      slate `button{}` rule. */
   .ea-lenses{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);
@@ -77,7 +77,7 @@ title: EA Explorer
   .ea-lenses button.on{background:var(--panel);color:var(--dr-accent,#252739);box-shadow:0 1px 3px rgba(0,0,0,.12)}
   .ea-lenses button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
 
-  /* kind filter — people vs organizations; a secondary segmented control that
+  /* kind filter – people vs organizations; a secondary segmented control that
      composes with whatever the active lens is already showing. */
   .ea-kinds{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
   .ea-kinds button{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;cursor:pointer;padding:6px 10px;border-radius:var(--dr-radius-sm,6px);font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);white-space:nowrap}
@@ -128,7 +128,7 @@ title: EA Explorer
   #app.panel-collapsed{grid-template-columns:1fr 0}
   #app.panel-collapsed #panel{display:none}
 
-  /* legend — slim bottom bar (chips) + full key that expands upward (dsa-explorer style) */
+  /* legend – slim bottom bar (chips) + full key that expands upward (dsa-explorer style) */
   #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
   #legend .legbar{background:rgba(255,255,255,.96);border:1px solid var(--dr-line,#D3D7DE);border-radius:8px;padding:5px 8px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   #legend .legtoggle{appearance:none;border:1px solid var(--dr-line-strong,#878D99);border-radius:6px;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end;background:var(--panel);color:var(--ink);min-width:0}
@@ -156,7 +156,7 @@ title: EA Explorer
   #legend .shapes{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);margin-top:6px;line-height:1.4}
   @media(min-width:768px){ #legend{max-height:none} }
 
-  /* detail panel — scoped to #panel, not a bare `aside` */
+  /* detail panel – scoped to #panel, not a bare `aside` */
   #panel{grid-column:2;grid-row:2;border-left:1px solid var(--dr-line,#E2E2DD);background:var(--panel);overflow:auto}
   #panel-body{padding:16px 16px 24px}
   #panel .empty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;margin-top:20px}
@@ -173,7 +173,7 @@ title: EA Explorer
   #panel a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
   #panel h3{font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);text-transform:none;letter-spacing:normal;margin:18px 0 6px;border-top:1px solid var(--dr-line,#EEE);padding-top:14px}
 
-  /* relationship rows — clickable header + evidence + source */
+  /* relationship rows – clickable header + evidence + source */
   #panel .rel{font-size:12.5px;padding:7px 0;line-height:1.4;border-bottom:1px solid var(--dr-line,#F2F2F2)}
   #panel .rel:last-child{border-bottom:none}
   #panel .rel .head{display:flex;align-items:center;gap:7px;cursor:pointer}
@@ -187,10 +187,10 @@ title: EA Explorer
      and the chip belongs on the first one, not floating at the middle. */
   #panel .rel .subhead{display:flex;align-items:flex-start;gap:6px}
   /* The .verb here is free text out of edges.csv and runs to a full sentence,
-     unlike the "— N ties" .verb in .head, which is short and SHOULD hold its
+     unlike the "– N ties" .verb in .head, which is short and SHOULD hold its
      width. Both matched `.verb{flex:0 0 auto}`, so the sentence kept its
      max-content width and pushed the panel into horizontal scroll.
-     min-width:0 as well as the shrink factor — a flex item's default
+     min-width:0 as well as the shrink factor – a flex item's default
      min-width:auto floors it at min-content and it would still not wrap. */
   #panel .rel .subhead .verb{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
   /* Same floor on the entity name, which is also data and also unbounded. */
@@ -203,7 +203,7 @@ title: EA Explorer
   #panel .rel .srcln a{font-size:11px;color:#1155CC;word-break:break-all;margin-right:8px}
   #panel .rel .srcln .more{color:var(--dr-ink-faint,#6B7280);font-size:11px}
 
-  /* "in their own words" — verified authored quotes */
+  /* "in their own words" – verified authored quotes */
   #panel .quote{margin:10px 0;padding:9px 11px;border-left:3px solid var(--dr-accent,#252739);background:var(--dr-fill-quiet,#F7F8FA);border-radius:0 8px 8px 0}
   #panel .quote .q{font-size:12.5px;line-height:1.5;color:var(--ink);font-style:italic}
   #panel .quote .ctx{font-size:11px;color:var(--dr-ink-faint,#6B7280);line-height:1.4;margin:5px 0 0}
@@ -242,7 +242,7 @@ title: EA Explorer
   .ea-method b{color:var(--dr-ink-strong,#000)}
   .ea-legalbox{margin-top:12px;padding:11px 13px;background:var(--dr-legal-fill,#FBF3E4);border:1px solid var(--dr-legal-border,#E4C9A0);border-radius:8px;color:var(--dr-legal-ink,#6B5A3E);font-size:12.5px;line-height:1.5}
 
-  /* "See list" — a floating card, top-right of the stage, describing what is
+  /* "See list" – a floating card, top-right of the stage, describing what is
      currently shown or highlighted. Coexists with controls (top-left) and
      legend (bottom-left). Rows select the entity into the detail panel. */
   #listpanel{position:absolute;top:12px;right:12px;z-index:var(--dr-z-canvas-ui,20);width:300px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);display:none;flex-direction:column;background:var(--panel);border:1px solid var(--dr-line,#D3D7DE);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.16);overflow:hidden}
@@ -297,12 +297,11 @@ title: EA Explorer
         <div class="sub" id="counts" role="status" aria-live="polite" aria-atomic="true">Loading network…</div>
       </div>
       <div class="ea-idright">
-        <a class="ea-home" href="index.html" title="EA Explorer — overview">◂ EA&nbsp;Explorer</a>
+        <a class="ea-home" href="/ea-explorer/" title="EA Explorer overview">Overview</a>
         <div class="ea-switch" title="Switch between the two views of the same ecosystem">
-          <a href="words/index.html">Their words</a>
-          <a href="network.html" class="on">The network</a>
+          <a href="/ea-explorer/words/">Their words</a>
+          <a href="/ea-explorer/network/" class="on">The network</a>
         </div>
-        <a class="ea-whatis" href="words/opener.html">What is EA?&nbsp;↗</a>
         <button type="button" class="dr-dialog-open" id="ea-disclaimer-open" aria-haspopup="dialog">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
           About &amp; disclaimer
@@ -341,11 +340,11 @@ title: EA Explorer
   </div>
 
   <aside id="panel">
-    <div id="panel-body"><div class="empty">Click a node to see its role, bio, receipts, and connections.<br><br>Click a relationship row to walk the network one entity at a time.</div></div>
+    <div id="panel-body"><div class="empty">Click a node to see its role, bio, receipts, and connections.<br><br>Click a relationship row to follow the network one entity at a time.</div></div>
   </aside>
 </div>
 
-{%- comment -%} showModal(), never show() — see assets/css/components/dialog.css. Outside #app on purpose. {%- endcomment -%}
+{%- comment -%} showModal(), never show() – see assets/css/components/dialog.css. Outside #app on purpose. {%- endcomment -%}
 <dialog class="dr-dialog" id="ea-disclaimer" aria-labelledby="ea-disclaimer-title">
   <div class="dr-dialog__head">
     <h2 id="ea-disclaimer-title">About this map &amp; disclaimer</h2>
@@ -353,11 +352,11 @@ title: EA Explorer
   </div>
   <div class="dr-dialog__body">
     <div class="ea-method">
-      <p>A research map of the effective-altruism / AI-safety ecosystem, compiled from public sources. Nodes are organizations, projects, people, and concepts; edges are documented relationships — each shown on the entity’s card with an evidence excerpt and a source link.</p>
-      <p><b>Lenses.</b> <b>Overview</b> colors nodes by community. <b>Money flow</b> shows publicly reported funding (capital → grantmakers → recipients). <b>EA affiliation</b> places entities by how strong their documented link to EA is — strongest at the center.</p>
-      <p><b>How categories are assigned.</b> A person’s EA affiliation is graded from public evidence and shown with the receipt: self-identification in their own words, a documented role at an EA organization, participation in EA forums or events, or receipt of EA-affiliated funding. Organizations and projects are graded the same way. A large independent institution — a university, a government body, or a major commercial lab — is <b>not</b> labeled EA merely because EA-affiliated people work there or it has received EA money; that is EA reaching into an institution, not the institution being EA. Ideology tags (longtermist, rationalist, AI-safety) are tracked separately and are <b>not</b> folded into EA affiliation.</p>
+      <p>A research map of the effective-altruism / AI-safety ecosystem, compiled from public sources. Nodes are organizations, projects, people, and concepts; edges are documented relationships – each shown on the entity’s card with an evidence excerpt and a source link.</p>
+      <p><b>Lenses.</b> <b>Overview</b> colors nodes by community. <b>Money flow</b> shows publicly reported funding (capital → grantmakers → recipients). <b>EA affiliation</b> places entities by how strong their documented link to EA is – strongest at the center.</p>
+      <p><b>How categories are assigned.</b> A person’s EA affiliation is graded from public evidence and shown with the receipt: self-identification in their own words, a documented role at an EA organization, participation in EA forums or events, or receipt of EA-affiliated funding. Organizations and projects are graded the same way. A large independent institution – a university, a government body, or a major commercial lab – is <b>not</b> labeled EA merely because EA-affiliated people work there or it has received EA money; that is EA reaching into an institution, not the institution being EA. Ideology tags (longtermist, rationalist, AI-safety) are tracked separately and are <b>not</b> folded into EA affiliation.</p>
       <div class="ea-legalbox">
-        <b>Limitations &amp; disclaimer.</b> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered “as is” without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100% accurate. EA-affiliation tiers, ideology tags, funding roles, and other associations are automated analytical interpretations, <b>not statements of fact</b> — a label describes association only, not control or direction, and nothing here alleges unlawful conduct by any named person or organization. Each placement is backed by a citation you can check; please verify before relying on it. Quotes are verbatim from material the person authored, linked to the full source so context is preserved. The author disclaims all liability for any use of, or reliance on, its contents.
+        <b>Limitations &amp; disclaimer.</b> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered “as is” without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100% accurate. EA-affiliation tiers, ideology tags, funding roles, and other associations are automated analytical interpretations, <b>not statements of fact</b> – a label describes association only, not control or direction, and nothing here alleges unlawful conduct by any named person or organization. Each placement is backed by a citation you can check; please verify before relying on it. Quotes are verbatim from material the person authored, linked to the full source so context is preserved. The author disclaims all liability for any use of, or reliance on, its contents.
       </div>
     </div>
   </div>
@@ -382,7 +381,11 @@ title: EA Explorer
     listed_lead_coauthor:'lead co-author', listed_coauthor_feedback_and_release_coordination:'co-author',
     coauthor_and_investigator:'co-author / investigator'};
   const LOGOS = window.LOGOS || {};
-  const EMPTY = '<div class="empty">Click a node to see its role, bio, receipts, and connections.<br><br>Click a relationship row to walk the network one entity at a time.</div>';
+  // The manifest stores 'logos/img/…', written when this page lived at
+  // /ea-explorer/network.html. The page is a directory now, so the base
+  // is explicit rather than relative.
+  const LOGO_BASE = '/ea-explorer/';
+  const EMPTY = '<div class="empty">Click a node to see its role, bio, receipts, and connections.<br><br>Click a relationship row to follow the network one entity at a time.</div>';
 
   const sizeMag  = m => Math.max(22, Math.min(96,  20 + Math.sqrt(Math.max(1,m))*11));
   const sizeThru = t => Math.max(20, Math.min(120, 18 + Math.sqrt(Math.max(1,t))*13));
@@ -430,24 +433,24 @@ title: EA Explorer
     let nodes, edges, overPos, moneyPos, moneyRoles;
     try{
       [nodes, edges, overPos, moneyPos, moneyRoles] = await Promise.all([
-        loadCSV('data/nodes.csv'),
-        loadCSV('data/edges.csv'),
-        fetch('data/positions_overview.json').then(r=>r.json()),
-        fetch('data/positions_money.json').then(r=>r.json()),
-        fetch('data/money_roles.json').then(r=>r.json()),
+        loadCSV('/ea-explorer/data/nodes.csv'),
+        loadCSV('/ea-explorer/data/edges.csv'),
+        fetch('/ea-explorer/data/positions_overview.json').then(r=>r.json()),
+        fetch('/ea-explorer/data/positions_money.json').then(r=>r.json()),
+        fetch('/ea-explorer/data/money_roles.json').then(r=>r.json()),
       ]);
     }catch(err){
       document.getElementById('counts').textContent = 'Could not load data files.';
       console.error(err); return;
     }
     let forumLinks={}, quotes={}, writings={}, reachPos={}, eaReach={};
-    try{ forumLinks = await fetch('data/forum_links.json').then(r=>r.ok?r.json():{}); }catch(e){}
-    try{ quotes     = await fetch('data/quotes.json').then(r=>r.ok?r.json():{}); }catch(e){}
-    try{ writings   = await fetch('data/selected_writings.json').then(r=>r.ok?r.json():{}); }catch(e){}
-    try{ reachPos   = await fetch('data/positions_reach.json').then(r=>r.ok?r.json():{}); }catch(e){}
-    try{ eaReach    = await fetch('data/ea_reach.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ forumLinks = await fetch('/ea-explorer/data/forum_links.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ quotes     = await fetch('/ea-explorer/data/quotes.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ writings   = await fetch('/ea-explorer/data/selected_writings.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ reachPos   = await fetch('/ea-explorer/data/positions_reach.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ eaReach    = await fetch('/ea-explorer/data/ea_reach.json').then(r=>r.ok?r.json():{}); }catch(e){}
     // node_id -> {aid,nq,name} for people who also appear in the "words" (forum-quote) sub-project
-    let forumQuotes={}; try{ forumQuotes = await fetch('data/forum_quote_index.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    let forumQuotes={}; try{ forumQuotes = await fetch('/ea-explorer/data/forum_quote_index.json').then(r=>r.ok?r.json():{}); }catch(e){}
 
     const els = [];
     for(const n of nodes){
@@ -465,7 +468,7 @@ title: EA Explorer
           eaUrl:(eaReach[n.id]||{}).ea_url||'', ideologies:(eaReach[n.id]||{}).ideologies||[],
           eaEvidence:(eaReach[n.id]||{}).ea_evidence||[],
           role:mr?mr.role:null, throughput:mr?mr.throughput:0,
-          img:logo?logo.uri:undefined, color:COMM_COLOR[n.community_primary||'']||COMM_COLOR[''],
+          img:logo?LOGO_BASE+logo.uri:undefined, color:COMM_COLOR[n.community_primary||'']||COMM_COLOR[''],
           shape:KIND_SHAPE[n.kind]||'ellipse', dsize:sizeMag(mag) },
         position: op?{x:op.x,y:op.y}:undefined });
     }
@@ -617,19 +620,19 @@ title: EA Explorer
           onClick:()=>{ moneyIdeo.has(k)?moneyIdeo.delete(k):moneyIdeo.add(k); renderLegend(); applyMoneyIdeo(); }}))});
         if(moneyIdeo.size||moneyEA.size) clearBtn={label:'Clear spotlight',
           onClick:()=>{ moneyIdeo.clear(); moneyEA.clear(); renderLegend(); applyMoneyIdeo(); }};
-        hintHTML='Real capital only — individual philanthropists (Tallinn, Moskovitz, SBF…) and foundations/funds, plus the orgs &amp; projects they fund. Columns run left→right: capital → grantmakers → recipients. Node size = number of financial ties. Spotlight the money nodes by EA affiliation or by ideology (a separate axis) — others dim; the two sets union. Inferred from public sources and may be incomplete.';
+        hintHTML='Real capital only – individual philanthropists (Tallinn, Moskovitz, SBF…) and foundations/funds, plus the orgs &amp; projects they fund. Columns run left→right: capital → grantmakers → recipients. Node size = number of financial ties. Spotlight the money nodes by EA affiliation or by ideology (a separate axis) – others dim; the two sets union. Inferred from public sources and may be incomplete.';
       } else if(lens==='reach'){
-        title='EA affiliation — strongest at center';
+        title='EA affiliation – strongest at center';
         const counts={core:0,embedded:0,adjacent:0,outside:0};
         nodes.forEach(n=>{counts[(eaReach[n.id]||{}).tier||'outside']++;});
         const chipShort={core:'Explicitly EA',embedded:'Funded / staffed',adjacent:'Connected',outside:'No link'};
         primary=['core','embedded','adjacent','outside'].map(k=>({
           key:k,color:EA_TIER_COLOR[k],label:EA_TIER_NAME[k],chip:chipShort[k],count:counts[k],off:tierHidden.has(k),
           onClick:()=>{ tierHidden.has(k)?tierHidden.delete(k):tierHidden.add(k); applyLens(); }}));
-        hintHTML='Tiers reflect <b>documented</b> funding, staffing, and public self-identification — each backed by a citation on the entity’s card. They are best-effort inferences from public sources and <b>may be inaccurate</b>; check the linked source before relying on any placement. A label describes <b>association only</b> — not a claim that any entity is controlled by, directs, or acts on behalf of “EA,” and not an allegation of wrongdoing.';
+        hintHTML='Tiers reflect <b>documented</b> funding, staffing, and public self-identification – each backed by a citation on the entity’s card. They are best-effort inferences from public sources and <b>may be inaccurate</b>; check the linked source before relying on any placement. A label describes <b>association only</b> – not a claim that any entity is controlled by, directs, or acts on behalf of “EA,” and not an allegation of wrongdoing.';
         shapesHTML='Shape = kind: &nbsp;● person &nbsp; ▭ org / project &nbsp; ◆ concept';
       } else {
-        title='Community — color = primary, count = membership';
+        title='Community – color = primary, count = membership';
         const counts={}; nodes.forEach(n=>{const cs=(n.communities||'').split('|').filter(Boolean);
           (cs.length?cs:['']).forEach(c=>counts[c]=(counts[c]||0)+1);});
         primary=Object.keys(COMM_NAME).map(k=>({
@@ -794,19 +797,19 @@ title: EA Explorer
         }).join('');
         return `<div class="rel"><div class="head" data-nid="${esc(r.other.id())}" title="Go to ${esc(r.other.data('label'))}">
           <span class="dot" style="background:${oc}"></span><span class="who">${esc(r.other.data('label'))}</span>
-          ${r.subs.length>1?`<span class="verb">— ${r.subs.length} ties</span>`:''}</div>${subHTML}</div>`;
+          ${r.subs.length>1?`<span class="verb">– ${r.subs.length} ties</span>`:''}</div>${subHTML}</div>`;
       }).join('');
 
       const comms=(d.communities||[]);
       const commHTML = comms.length?`<div class="comms">${comms.map(c=>`<span class="cpill" style="background:${COMM_COLOR[c]||'#888'}">${esc(c)}</span>`).join('')}</div>`:'';
       const notesLong=(d.notes||'').length>320;
       body.innerHTML=`
-        ${logo?`<img class="logo" src="${logo.uri}" alt="">`:''}
+        ${logo?`<img class="logo" src="${LOGO_BASE}${logo.uri}" alt="">`:''}
         <h2>${esc(d.label)}</h2>
         <span class="kind" style="background:${KIND_COLOR[d.kind]||'#555'}">${esc(d.kind)}</span>
         ${commHTML}
         <div class="meta">degree: ${n.degree()}${d.role?' · money role: '+esc(d.role)+' ('+d.throughput+' ties)':''}${d.ein?' · EIN '+esc(d.ein):''}</div>
-        <div class="meta" style="margin-top:2px">EA affiliation: <b style="color:${EA_TIER_COLOR[d.tier]||'#888'}">${esc((EA_TIER_NAME[d.tier]||'—').replace(/ \(.*/,''))}</b>${(!d.eaClass&&d.tierReasons&&d.tierReasons.length)?' — '+esc(d.tierReasons.slice(0,2).join('; ')):''}</div>
+        <div class="meta" style="margin-top:2px">EA affiliation: <b style="color:${EA_TIER_COLOR[d.tier]||'#888'}">${esc((EA_TIER_NAME[d.tier]||'–').replace(/ \(.*/,''))}</b>${(!d.eaClass&&d.tierReasons&&d.tierReasons.length)?' – '+esc(d.tierReasons.slice(0,2).join('; ')):''}</div>
         ${d.eaClass?(()=>{const EA_CLASS_LABEL={self_identifies:'Self-identifies as EA',ea_org_role:'Holds a role at an EA org',ea_community:'Has participated in the EA community',ea_funded:'Has received EA-affiliated funding',none:'No documented EA affiliation',
             movement_org:'Describes itself as part of EA',ea_founded:'Founded by people affiliated with EA',ea_staffed:'Led or staffed by people affiliated with EA'};
           const PROVES_LABEL={self_identifies:'self-identifies as EA',ea_org_role:'role at an EA org',ea_community:'EA-community participation',ea_funded:'received EA funding',ideology_longtermist:'longtermist',ideology_rationalist:'rationalist',ideology_ai_safety:'AI safety',
@@ -834,10 +837,10 @@ title: EA Explorer
         ${d.notes?`<div class="notes${notesLong?' clamp':''}" id="notes">${esc(d.notes)}</div>${notesLong?`<button type="button" class="morebtn" id="morebtn">Expand to see more ▾</button>`:''}`:''}
         ${d.source_url?`<div style="margin-top:8px"><a class="src" href="${esc(d.source_url)}" target="_blank" rel="noopener">${esc(d.source_url)}</a></div>`:''}
         ${(()=>{ const fq=forumQuotes[d.id]; if(!fq) return '';
-          return `<a class="wordslink" href="words/index.html#people?a=${encodeURIComponent(fq.aid)}" title="Open ${esc(fq.name)} in the forum-quote explorer">Read ${fq.nq} quote${fq.nq==1?'':'s'} in their own words → <span class="n">from LessWrong / EA&nbsp;Forum / Alignment&nbsp;Forum</span></a>`;
+          return `<a class="wordslink" href="/ea-explorer/words/#people?a=${encodeURIComponent(fq.aid)}" title="Open ${esc(fq.name)} in the forum-quote explorer">Read ${fq.nq} quote${fq.nq==1?'':'s'} in their own words → <span class="n">from LessWrong / EA&nbsp;Forum / Alignment&nbsp;Forum</span></a>`;
         })()}
         ${(()=>{ const qd=quotes[d.id]; if(!qd||!qd.quotes||!qd.quotes.length) return '';
-          return `<h3>In their own words (${qd.quotes.length})</h3>`+qd.quotes.map(q=>`<div class="quote"><div class="q">“${esc(q.quote)}”</div>${q.context?`<div class="ctx">${esc(q.context)}</div>`:''}<div class="cite">— <a href="${esc(q.page_url)}" target="_blank" rel="noopener">${esc(q.post_title)}</a>${q.post_date?', '+esc(q.post_date):''}</div></div>`).join('')+`<div class="qnote">Verbatim passages from articles they authored (comments excluded); authorship checked, context preserved. Follow the link for the full piece.</div>`;
+          return `<h3>In their own words (${qd.quotes.length})</h3>`+qd.quotes.map(q=>`<div class="quote"><div class="q">“${esc(q.quote)}”</div>${q.context?`<div class="ctx">${esc(q.context)}</div>`:''}<div class="cite">– <a href="${esc(q.page_url)}" target="_blank" rel="noopener">${esc(q.post_title)}</a>${q.post_date?', '+esc(q.post_date):''}</div></div>`).join('')+`<div class="qnote">Verbatim passages from articles they authored (comments excluded); authorship checked, context preserved. Follow the link for the full piece.</div>`;
         })()}
         ${(()=>{ const wr=writings[d.id]; if(!wr||!wr.works||!wr.works.length) return '';
           return `<h3>Selected writings (${wr.works.length})</h3>`+wr.works.map(w=>{
@@ -901,7 +904,7 @@ title: EA Explorer
       relayoutBtn.classList.add('busy');
       const keepZoom=cy.zoom();          // preserve the user's zoom level across grouping
       setTimeout(()=>{
-        // fit:false — don't let cose rescale/refit the viewport (that's the zoom reset
+        // fit:false – don't let cose rescale/refit the viewport (that's the zoom reset
         // the user only wants when turning grouping OFF).
         const lay=cy.elements(':visible').layout({name:'cose', fit:false, animate:false, randomize:true,
           nodeRepulsion:()=>12000, idealEdgeLength:()=>90, edgeElasticity:()=>90,

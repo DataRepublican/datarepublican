@@ -16,7 +16,7 @@ const CONSUMERS = [
   { path: '/noblogs/?view=graph', label: 'the noblogs graph tab' },
   { path: '/noblogs/graph/', label: 'the standalone graph page' },
   { path: '/dsa-explorer/', label: 'dsa-explorer' },
-  { path: '/ea-explorer/network.html', label: 'the EA network' },
+  { path: '/ea-explorer/network/', label: 'the EA network' },
 ];
 
 test('only one cytoscape exists in the tree', () => {
