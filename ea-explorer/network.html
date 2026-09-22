@@ -34,8 +34,7 @@ redirect_from:
      Scoped to #ea-header (not a bare `header`, to avoid the site masthead).
      No horizontal padding of its own: #app sits inside main.page-column,
      which already set the gutter. */
-  /* Top padding is the gap under the site tagline; noblogs is the
-     reference at 32px above md and 26px below. */
+  /* Top padding is the gap under the site tagline: 32px above md, 26px below. */
   #ea-header{grid-column:1/3;padding:22px 0 12px;background:var(--bg);
     display:flex;flex-direction:column;gap:10px}
   .ea-idrow{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
@@ -66,9 +65,8 @@ redirect_from:
   #panel .wordslink .n{color:var(--dr-ink-faint,#6B7280);font-weight:400}
 
   .ea-controls{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
-  /* segmented lens switcher – this tool has three views, so a real toggle
-     (dsa-explorer has one view and omits it). Buttons reset off the global
-     slate `button{}` rule. */
+  /* segmented lens switcher – three views, so a real toggle. Buttons reset
+     off the global slate `button{}` rule. */
   .ea-lenses{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);
     border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
   .ea-lenses button{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;cursor:pointer;
@@ -134,7 +132,7 @@ redirect_from:
   #app.panel-collapsed{grid-template-columns:1fr 0}
   #app.panel-collapsed #panel{display:none}
 
-  /* legend – slim bottom bar (chips) + full key that expands upward (dsa-explorer style) */
+  /* legend – slim bottom bar (chips) + full key that expands upward */
   #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
   #legend .legbar{background:rgba(255,255,255,.96);border:1px solid var(--dr-line,#D3D7DE);border-radius:8px;padding:5px 8px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
   #legend .legtoggle{appearance:none;border:1px solid var(--dr-line-strong,#878D99);border-radius:6px;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end;background:var(--panel);color:var(--ink);min-width:0}
@@ -248,26 +246,6 @@ redirect_from:
   .ea-method b{color:var(--dr-ink-strong,#000)}
   .ea-legalbox{margin-top:12px;padding:11px 13px;background:var(--dr-legal-fill,#FBF3E4);border:1px solid var(--dr-legal-border,#E4C9A0);border-radius:8px;color:var(--dr-legal-ink,#6B5A3E);font-size:12.5px;line-height:1.5}
 
-  /* "See list" – a floating card, top-right of the stage, describing what is
-     currently shown or highlighted. Coexists with controls (top-left) and
-     legend (bottom-left). Rows select the entity into the detail panel. */
-  #listpanel{position:absolute;top:12px;right:12px;z-index:var(--dr-z-canvas-ui,20);width:300px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);display:none;flex-direction:column;background:var(--panel);border:1px solid var(--dr-line,#D3D7DE);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.16);overflow:hidden}
-  #listpanel.open{display:flex}
-  #listpanel .lphead{padding:10px 12px;border-bottom:1px solid var(--dr-line,#E2E2DD);display:flex;align-items:flex-start;gap:8px;flex:0 0 auto}
-  #listpanel .lptitle{font-family:var(--dr-font-ui);font-weight:700;font-size:13px;color:var(--dr-ink-strong,#000);line-height:1.2}
-  #listpanel .lpstate{font-size:11px;color:var(--dr-ink-faint,#6B7280);line-height:1.35;margin-top:2px}
-  #listpanel .lpclose{appearance:none;border:0;background:none;cursor:pointer;font-size:15px;line-height:1;color:var(--dr-ink-faint,#6B7280);margin-left:auto;padding:2px 4px;min-width:0}
-  #listpanel .lpbody{overflow-y:auto;padding:4px 0}
-  #listpanel .lpgroup{font-family:var(--dr-font-ui);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--dr-ink-faint,#6B7280);padding:9px 12px 3px;display:flex;align-items:center;gap:6px}
-  #listpanel .lpgroup .gd{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
-  #listpanel .lprow{appearance:none;border:0;background:none;width:100%;text-align:left;display:flex;align-items:center;gap:8px;padding:5px 12px;cursor:pointer;font:inherit;color:var(--ink)}
-  #listpanel .lprow:hover{background:var(--dr-fill,#F2F2EC)}
-  #listpanel .lprow.sel{background:var(--dr-accent-tint,#DEE0E8)}
-  #listpanel .lprow .rd{width:10px;height:10px;border-radius:50%;flex:0 0 auto;border:1px solid rgba(0,0,0,.15)}
-  #listpanel .lprow .nm{font-size:12.5px;line-height:1.25;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #listpanel .lprow .dg{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);flex:0 0 auto}
-  #listpanel .lpempty{padding:16px 12px;font-size:12px;color:var(--dr-ink-faint,#6B7280);line-height:1.5}
-
   /* ---- Phone ----
      Header sticks, canvas takes what's left, controls become a bottom rail, the
      legend collapses to its toggle, and the detail panel becomes a DRSheet
@@ -288,11 +266,69 @@ redirect_from:
     #legend .row,#legend .chip{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
     #legend .chip{padding:0 12px}
     #legend .legfull{max-width:none;max-height:45dvh}
-    #listpanel{top:8px;right:8px;left:8px;width:auto;max-height:55dvh}
     /* panel is positioned by .dr-sheet in the site stylesheet; undo grid + desktop border */
     #panel{grid-column:1;grid-row:auto;border-left:none}
     #panel-body{padding:0 16px 16px}
   }
+
+  /* ============ print / PDF dossier ============ */
+  #printsheet{position:fixed;inset:0;z-index:9999;display:none;background:rgba(20,22,28,.55);
+    overflow:auto;padding:24px;-webkit-overflow-scrolling:touch}
+  #printsheet.open{display:block}
+  #printsheet .ps-toolbar{position:sticky;top:0;z-index:2;display:flex;gap:8px;justify-content:flex-end;
+    max-width:820px;margin:0 auto 12px;pointer-events:none}
+  #printsheet .ps-toolbar button{pointer-events:auto;font:600 13px/1 var(--dr-font-ui,"Libre Franklin",Arial,sans-serif);
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:8px;padding:9px 14px;cursor:pointer;
+    background:#fff;color:var(--dr-ink-strong,#111);box-shadow:0 2px 10px rgba(0,0,0,.18)}
+  #printsheet .ps-toolbar button.primary{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  #printsheet .paper{max-width:820px;margin:0 auto;background:#fff;color:#14171c;
+    border-radius:8px;box-shadow:0 12px 48px rgba(0,0,0,.32);
+    padding:40px 44px 48px;font-family:var(--dr-font-ui,"Libre Franklin","Helvetica Neue",Arial,sans-serif)}
+  #printsheet .ps-head{border-bottom:2px solid #14171c;padding-bottom:12px;margin-bottom:18px}
+  #printsheet .ps-kicker{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#5b6270}
+  #printsheet .ps-title{font-size:26px;font-weight:800;line-height:1.15;margin:4px 0 6px}
+  #printsheet .ps-sub{font-size:13px;color:#3a3f47;line-height:1.4}
+  #printsheet .ps-src{font-size:11px;color:#6b7280;margin-top:6px}
+  #printsheet .ps-map{width:100%;border:1px solid #D3D7DE;border-radius:6px;margin:0 0 20px;display:block}
+  #printsheet .ps-sect{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;
+    color:#14171c;border-bottom:1px solid #D3D7DE;padding-bottom:5px;margin:22px 0 12px}
+  #printsheet .ps-focus{border:1px solid #D3D7DE;border-left:4px solid var(--dr-accent,#252739);
+    border-radius:6px;padding:14px 16px;margin-bottom:8px;break-inside:avoid}
+  #printsheet .ps-focus h3{font-size:18px;font-weight:800;margin:0 0 4px}
+  #printsheet .ps-card{display:flex;gap:11px;padding:11px 2px;border-bottom:1px solid #E7E9ED;break-inside:avoid}
+  #printsheet .ps-card:last-child{border-bottom:0}
+  #printsheet .ps-dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto;margin-top:4px;border:1px solid rgba(0,0,0,.12)}
+  #printsheet .ps-nm{font-size:14px;font-weight:700;color:#14171c}
+  #printsheet .ps-badge{display:inline-block;font-size:10px;font-weight:700;color:#fff;
+    border-radius:4px;padding:1px 6px;margin-left:7px;vertical-align:1px;text-transform:capitalize}
+  #printsheet .ps-tags{display:inline;font-size:10.5px;color:#5b6270}
+  #printsheet .ps-tag{display:inline-block;background:#eef0f3;border-radius:3px;padding:0 5px;margin:0 3px 0 0}
+  #printsheet .ps-meta{font-size:11px;color:#6b7280;margin:2px 0 3px}
+  #printsheet .ps-bio{font-size:12px;line-height:1.5;color:#2b2f36}
+  #printsheet .ps-rel{font-size:12px;line-height:1.5;padding:7px 0;border-bottom:1px solid #EEF0F3;break-inside:avoid}
+  #printsheet .ps-rel:last-child{border-bottom:0}
+  #printsheet .ps-rel-who{display:flex;align-items:center;gap:6px;margin-bottom:2px}
+  #printsheet .ps-rel-who .ps-dot{flex:0 0 auto;width:9px;height:9px;border-radius:50%}
+  #printsheet .ps-rel .who{font-weight:700;color:#14171c;font-size:13px}
+  #printsheet .ps-tie{padding-left:15px;color:#3a3f47}
+  #printsheet .ps-tie .verb{color:#3a3f47;font-style:italic}
+  #printsheet .ps-rel .ecl{display:inline-block;font-size:9.5px;font-weight:700;color:#fff;border-radius:3px;padding:0 5px;margin-right:5px;text-transform:capitalize}
+  #printsheet .ps-rel .rcpt{color:#6b7280;font-size:11px}
+  #printsheet .ps-foot{margin-top:26px;padding-top:12px;border-top:1px solid #D3D7DE;font-size:10.5px;color:#6b7280;line-height:1.5}
+
+  @media print{
+    :root{--dr-z-canvas-ui:0}
+    body{background:#fff !important}
+    body > *:not(#printsheet){display:none !important}
+    #printsheet{position:static !important;display:block !important;background:#fff !important;
+      overflow:visible !important;padding:0 !important}
+    #printsheet .ps-toolbar{display:none !important}
+    #printsheet .paper{max-width:none !important;margin:0 !important;box-shadow:none !important;
+      border-radius:0 !important;padding:0 !important}
+    #printsheet .ps-map{break-inside:avoid}
+    a[href]{color:#14171c;text-decoration:none}
+  }
+  @page{margin:14mm 14mm 16mm}
 </style>
 
 <div id="app">
@@ -339,10 +375,9 @@ redirect_from:
       <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" data-tip="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
       <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" data-tip-title="Reset view" data-tip="Fit the whole visible graph back into view."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
       <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-pressed="false" aria-label="Group by connections" data-tip-title="Group by connections" data-tip="Re-arrange the visible nodes so tightly-connected ones pull together (does not hide or add any nodes). Press again to restore the default layout."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7 7.5 10.5 16M17 7.5 13.5 16M6.5 6h11"/></svg><span class="dr-btn__dot" id="relayoutState" aria-hidden="true" hidden></span></button>
-      <button type="button" id="seelist" class="dr-btn dr-btn--icon" aria-pressed="false" aria-label="See a list of what's on the map" data-tip-title="See list" data-tip="List the entities currently shown or highlighted on the map. Click a row to open its card."><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+      <button type="button" id="printbtn" class="dr-btn dr-btn--icon" aria-label="Print or save this view as a PDF" data-tip-title="Print / PDF" data-tip="Build a printable dossier of what's on the map — the selected entity, its bio, its relationships, and the people and orgs it connects to. Save as PDF from the print dialog."><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg></button>
     </div>
     <div id="legend"></div>
-    <div id="listpanel" aria-live="polite"></div>
   </div>
 
   <aside id="panel">
@@ -358,7 +393,7 @@ redirect_from:
   </div>
   <div class="dr-dialog__body">
     <div class="ea-method">
-      <p>A research map of the effective-altruism / AI-safety ecosystem, compiled from public sources. Nodes are organizations, projects, people, and concepts; edges are documented relationships – each shown on the entity’s card with an evidence excerpt and a source link.</p>
+      <p>A research map of the effective-altruism / AI-safety ecosystem, compiled from public sources. Nodes are organizations, projects, people, and concepts; edges are relationships drawn from public sources – each shown on the entity’s card with an evidence excerpt and a source link.</p>
       <p><b>Lenses.</b> <b>Overview</b> colors nodes by community. <b>Money flow</b> shows publicly reported funding (capital → grantmakers → recipients). <b>EA affiliation</b> places entities by how strong their documented link to EA is – strongest at the center.</p>
       <p><b>How categories are assigned.</b> A person’s EA affiliation is graded from public evidence and shown with the receipt: self-identification in their own words, a documented role at an EA organization, participation in EA forums or events, or receipt of EA-affiliated funding. Organizations and projects are graded the same way. A large independent institution – a university, a government body, or a major commercial lab – is <b>not</b> labeled EA merely because EA-affiliated people work there or it has received EA money; that is EA reaching into an institution, not the institution being EA. Ideology tags (longtermist, rationalist, AI-safety) are tracked separately and are <b>not</b> folded into EA affiliation.</p>
       <div class="ea-legalbox">
@@ -736,43 +771,101 @@ redirect_from:
       };
     });
 
-    // ================= "See list" floating card =================
-    const listPanel=document.getElementById('listpanel'), seelistBtn=document.getElementById('seelist');
-    let listOpen=false;
+    // lensCat groups a node under the active lens (used by the print dossier)
     function lensCat(n){
       if(lens==='money'){ const r=n.data('role'); return {key:r||'?', name:MONEY_NAME[r]||'Other', color:MONEY_COLOR[r]||'#95a5a6'}; }
       if(lens==='reach'){ const t=n.data('tier'); return {key:t, name:(EA_TIER_NAME[t]||t).replace(/ \(.*/,''), color:EA_TIER_COLOR[t]||EA_TIER_COLOR.outside}; }
       const c=n.data('commPrimary')||''; return {key:c||'_', name:COMM_NAME[c]||'Unclassified', color:COMM_COLOR[c]||COMM_COLOR['']};
     }
-    function refreshList(){
-      if(!listOpen) return;
+    function refreshList(){}
+
+    // ================= print / PDF dossier =================
+    const printBtn=document.getElementById('printbtn');
+    let printSheet=null;
+    function ensurePrintSheet(){
+      if(printSheet) return printSheet;
+      printSheet=document.createElement('div'); printSheet.id='printsheet';
+      document.body.appendChild(printSheet); return printSheet;
+    }
+    function todayStr(){ try{ return new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}); }catch(e){ return ''; } }
+    function clip(s,n){ s=(s||'').trim(); return s.length>n?s.slice(0,n-1).replace(/\s+\S*$/,'')+'…':s; }
+    function tagsHTML(d){ const c=(d.communities||[]); return c.length?`<span class="ps-tags">${c.map(x=>`<span class="ps-tag">${esc(COMM_NAME[x]||x)}</span>`).join('')}</span>`:''; }
+    function eclLabel(e){ return e?e[0]+e.slice(1).toLowerCase():'Other'; }
+    function nodeCard(n){ const d=n.data();
+      return `<div class="ps-card"><span class="ps-dot" style="background:${d.color}"></span><div>
+        <div class="ps-nm">${esc(d.label)}<span class="ps-badge" style="background:${KIND_COLOR[d.kind]||'#555'}">${esc(d.kind)}</span></div>
+        <div class="ps-meta">${tagsHTML(d)} · ${n.degree()} connection${n.degree()===1?'':'s'}</div>
+        ${(d.notes||'').trim()?`<div class="ps-bio">${esc(clip(d.notes,260))}</div>`:''}</div></div>`;
+    }
+    function buildPrintSheet(){
+      const sheet=ensurePrintSheet();
       const vis=cy.nodes(':visible');
       const anyDim=vis.some(n=>n.hasClass('dim'));
       const set=(anyDim?vis.filter(n=>!n.hasClass('dim')):vis);
-      const groups=new Map();
-      set.forEach(n=>{ const cat=lensCat(n); let g=groups.get(cat.key);
-        if(!g){ g={name:cat.name,color:cat.color,items:[]}; groups.set(cat.key,g); } g.items.push(n); });
-      const ordered=[...groups.values()].sort((a,b)=>b.items.length-a.items.length);
-      ordered.forEach(g=>g.items.sort((a,b)=>b.degree()-a.degree() || a.data('label').localeCompare(b.data('label'))));
-      const lensName={overview:'Overview',money:'Money flow',reach:'EA affiliation'}[lens];
+      const focal=selectedId?cy.getElementById(selectedId):null;
+      const hasFocal=focal&&focal.length&&focal.visible();
+      const lensName={overview:'Overview',money:'Money flow',reach:'EA affiliation'}[lens]||'Overview';
       const kn=kindFilter==='all'?'':(kindFilter==='person'?' · people only':' · orgs only');
-      const state=`${set.length} ${anyDim?'highlighted':'shown'} · ${lensName}${kn}`;
-      let html=`<div class="lphead"><div><div class="lptitle">On the map</div><div class="lpstate">${esc(state)}</div></div><button type="button" class="lpclose" aria-label="Close list">✕</button></div><div class="lpbody">`;
-      if(!set.length){ html+=`<div class="lpempty">Nothing matches the current filters.</div>`; }
-      else ordered.forEach(g=>{
-        html+=`<div class="lpgroup"><span class="gd" style="background:${g.color}"></span>${esc(g.name)}<span class="n" style="opacity:.7">&nbsp;·&nbsp;${g.items.length}</span></div>`;
-        g.items.forEach(n=>{ const d=n.data();
-          html+=`<button type="button" class="lprow${n.id()===selectedId?' sel':''}" data-nid="${esc(n.id())}"><span class="rd" style="background:${d.color}"></span><span class="nm">${esc(d.label)}</span><span class="dg" title="connections">${n.degree()}</span></button>`;
+      let mapURI=''; try{ mapURI=cy.png({output:'base64uri',full:false,scale:2,bg:'#ffffff'}); }catch(e){}
+
+      let title,sub;
+      if(hasFocal){ const fd=focal.data(); title=fd.label; sub=`Entity dossier · ${esc(fd.kind)} · ${focal.degree()} direct connection${focal.degree()===1?'':'s'} · ${lensName} lens`; }
+      else{ title='The EA network'; sub=`${set.length} entit${set.length===1?'y':'ies'} on the map · ${lensName} lens${kn}`; }
+
+      let html=`<div class="ps-toolbar"><button type="button" class="ps-close">Close</button><button type="button" class="ps-print primary">Save as PDF ↧</button></div>
+        <div class="paper"><div class="ps-head">
+          <div class="ps-kicker">EA Explorer — The Network</div>
+          <div class="ps-title">${esc(title)}</div>
+          <div class="ps-sub">${sub}</div>
+          <div class="ps-src">Source: datarepublican.com/ea-explorer · ${esc(todayStr())} · ties link to public sources; associations are analytical interpretations, not statements of fact</div>
+        </div>${mapURI?`<img class="ps-map" src="${mapURI}" alt="Network map">`:''}`;
+
+      if(hasFocal){
+        const fd=focal.data();
+        html+=`<div class="ps-focus"><h3>${esc(fd.label)}<span class="ps-badge" style="background:${KIND_COLOR[fd.kind]||'#555'}">${esc(fd.kind)}</span></h3>
+          <div class="ps-meta">${tagsHTML(fd)} · ${focal.degree()} connections${fd.role?' · money role: '+esc(fd.role):''}${fd.ein?' · EIN '+esc(fd.ein):''}</div>
+          ${(fd.notes||'').trim()?`<div class="ps-bio">${esc(fd.notes)}</div>`:''}
+          ${fd.source_url?`<div class="ps-meta" style="margin-top:5px">${esc(fd.source_url)}</div>`:''}</div>`;
+        const rels=focal.connectedEdges().map(e=>{
+          const other=e.source().id()===fd.id?e.target():e.source();
+          const subs=(e.data('rels')||[]).map(s=>({outgoing:s.source===fd.id,verb:prettyRel(s.relation),ecl:s.edge_class||'OTHER',urls:srcUrls(s.receipt,s.source_url)}));
+          return {other,subs};
+        }).sort((a,b)=>b.other.degree()-a.other.degree()||a.other.data('label').localeCompare(b.other.data('label')));
+        const totalTies=rels.reduce((a,r)=>a+r.subs.length,0);
+        html+=`<div class="ps-sect">Relationships — ${totalTies} tie${totalTies===1?'':'s'} across ${rels.length} entit${rels.length===1?'y':'ies'}</div>`;
+        rels.forEach(r=>{
+          const od=r.other.data();
+          html+=`<div class="ps-rel"><div class="ps-rel-who"><span class="ps-dot" style="background:${od.color}"></span><span class="who">${esc(od.label)}</span><span class="ps-badge" style="background:${KIND_COLOR[od.kind]||'#555'}">${esc(od.kind)}</span></div>`;
+          r.subs.forEach(s=>{
+            const arrow=s.outgoing?'→':'←';
+            const src=s.urls.length?` <span class="rcpt">— ${esc(host(s.urls[0]))}</span>`:'';
+            html+=`<div class="ps-tie"><span class="ecl" style="background:${EDGE_COLOR[s.ecl]||'#888'}">${esc(eclLabel(s.ecl))}</span><span class="verb">${arrow} ${esc(s.verb)}</span>${src}</div>`;
+          });
+          html+=`</div>`;
         });
-      });
-      html+=`</div>`;
-      listPanel.innerHTML=html;
-      listPanel.querySelector('.lpclose').onclick=closeList;
-      listPanel.querySelectorAll('.lprow').forEach(r=>{ r.onclick=()=>{ const tn=cy.getElementById(r.dataset.nid); if(tn&&tn.length) selectNode(tn,{fit:true}); }; });
+        const arr=focal.neighborhood('node').filter(n=>n.visible()).toArray().sort((a,b)=>b.degree()-a.degree());
+        html+=`<div class="ps-sect">Connected entities (${arr.length})</div>`;
+        arr.forEach(n=>{ html+=nodeCard(n); });
+      }else{
+        const groups=new Map();
+        set.forEach(n=>{ const cat=lensCat(n); let g=groups.get(cat.key); if(!g){g={name:cat.name,color:cat.color,items:[]};groups.set(cat.key,g);} g.items.push(n); });
+        const ordered=[...groups.values()].sort((a,b)=>b.items.length-a.items.length);
+        ordered.forEach(g=>g.items.sort((a,b)=>b.degree()-a.degree()||a.data('label').localeCompare(b.data('label'))));
+        ordered.forEach(g=>{
+          html+=`<div class="ps-sect"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${g.color};margin-right:6px;vertical-align:0"></span>${esc(g.name)} (${g.items.length})</div>`;
+          g.items.forEach(n=>{ html+=nodeCard(n); });
+        });
+      }
+      html+=`<div class="ps-foot">Generated from the EA Explorer network map at datarepublican.com/ea-explorer. Compiled from publicly available sources for research and educational purposes and offered &ldquo;as is&rdquo; &mdash; it may contain errors or omissions and is not represented as complete or current. Affiliations, funding roles, and other ties are automated analytical interpretations, not statements of fact; a label describes association only, not control or direction, and nothing here alleges unlawful conduct. Each placement links to a citation you can check &mdash; please verify before relying on it. This dossier reflects the map view when it was generated: the active lens, filters, and selection determine which entities appear.</div></div>`;
+      sheet.innerHTML=html;
+      sheet.classList.add('open');
+      sheet.querySelector('.ps-close').onclick=closePrintSheet;
+      sheet.querySelector('.ps-print').onclick=()=>window.print();
+      document.body.style.overflow='hidden';
     }
-    function openList(){ listOpen=true; listPanel.classList.add('open'); seelistBtn.setAttribute('aria-pressed','true'); refreshList(); }
-    function closeList(){ listOpen=false; listPanel.classList.remove('open'); seelistBtn.setAttribute('aria-pressed','false'); }
-    seelistBtn.onclick=()=>{ listOpen?closeList():openList(); };
+    function closePrintSheet(){ if(printSheet) printSheet.classList.remove('open'); document.body.style.overflow=''; }
+    if(printBtn) printBtn.onclick=buildPrintSheet;
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&printSheet&&printSheet.classList.contains('open')) closePrintSheet(); });
 
     // ================= detail panel + mobile sheet =================
     const app=document.getElementById('app');
@@ -943,16 +1036,23 @@ redirect_from:
     relayoutBtn.onclick=()=>{ if(forced){ setForced(false); applyLens(); } else { runForce(); } };
 
     // ---- search: find + glide (never filters) ----
+    // Debounced so it fires after a short typing pause, not on every keystroke,
+    // and it skips re-animating when the match set is unchanged — otherwise
+    // typing more of an already-unique name keeps re-zooming to the same node.
     const search=document.getElementById('q');
-    search.addEventListener('input',()=>{
+    let searchTimer=null, lastSearchSig=null;
+    function runSearch(){
       const q=search.value.trim().toLowerCase();
-      if(!q){ if(selectedId){const n=cy.getElementById(selectedId); if(n&&n.visible()){selectNode(n);return;}} clearFocus(); refreshList(); return; }
+      if(!q){ lastSearchSig=null; if(selectedId){const n=cy.getElementById(selectedId); if(n&&n.visible()){selectNode(n);return;}} clearFocus(); refreshList(); return; }
       const match=cy.nodes(':visible').filter(n=>n.data('label').toLowerCase().includes(q));
+      const sig=match.map(n=>n.id()).sort().join('|');
       cy.elements().addClass('dim'); match.removeClass('dim');
       match.forEach(n=>n.connectedEdges().removeClass('dim'));
-      if(match.length){cy.animate({fit:{eles:match,padding:80},duration:250});}
+      if(match.length && sig!==lastSearchSig){cy.animate({fit:{eles:match,padding:80},duration:250});}
+      lastSearchSig=sig;
       refreshList();
-    });
+    }
+    search.addEventListener('input',()=>{ clearTimeout(searchTimer); searchTimer=setTimeout(runSearch,200); });
 
     // ---- init + deep links ----
     applyLens();

@@ -22,9 +22,8 @@ title: "EA – in their own words"
 #wapp a{color:inherit}
 
 /* tool header – identity row + view switcher, mirrors the graph's #ea-header */
-/* Top padding sets the gap between the site tagline and the tool's h1.
-   noblogs is the reference at 32px above md and 26px below; 6px here put
-   the headline almost against the tagline. */
+/* Top padding sets the gap between the site tagline and the tool's h1:
+   32px above md, 26px below. */
 #words-header{padding:22px 0 14px;display:flex;flex-direction:column;gap:12px}
 @media(min-width:768px){#words-header{padding:28px 0 14px}}
 .ea-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -463,15 +462,46 @@ function peopleTeaser(a){
   const q=Q[a.q[0]]; if(!q)return "";
   return `<div class="pteaser">${bolded((q.m||q.c).slice(0,150)+((q.m||q.c).length>150?"…":""),q.m&&q.m.length<140?q.m:null)}</div>`;
 }
-function viewPeople(p){
+function peopleList(p){
   const named=p.get("named")==="1", sort=p.get("sort")||"concern";
+  const q=norm(p.get("q")||"");
   let list=DATA.authors.filter(a=>!named||a.pub);
+  if(q)list=list.filter(a=>norm(a.n).includes(q));  // name / handle match, accent-insensitive
   // default "concern" == the build's rank order (crating, then concern mass)
   if(sort==="quotes")list=[...list].sort((x,y)=>y.nq-x.nq);
   else if(sort==="name")list=[...list].sort((x,y)=>x.n.localeCompare(y.n));
   else if(sort==="pub")list=[...list].sort((x,y)=>(y.pub-x.pub)||(x.rank-y.rank));
   else list=[...list].sort((x,y)=>x.rank-y.rank);
+  return list;
+}
+function peopleCard(a){
+  const img=a.headshot||a.avatar;
+  const cls=a.pub?"named":"";
+  const sub=(a.pub?"published · ":"")+`${a.nq} quotes`;
+  const gl=graphLink(a);
+  const glhtml=gl?`<a class="maplink" href="${gl}" title="Highlight ${esc(a.n)} in the network map">See in the network map ↗</a>`:"";
+  return `<div class="pcard" data-a="${esc(a.aid)}">
+      <div class="phead"><img class="${cls}" src="${img}" alt="">
+        <div><div class="pname">${esc(a.n)}</div><div class="psub">${sub}</div>
+        ${concernBadge(a)}</div></div>
+      ${peopleTeaser(a)}${glhtml}</div>`;
+}
+// Re-render ONLY the grid + count + more-button (leaves the search box and filter
+// bar untouched, so typing keeps focus and never rebuilds the shell).
+function renderPeople(p){
+  const gridEl=document.getElementById("people"); if(!gridEl)return;
+  const list=peopleList(p);
+  const shown=list.slice(0,peopleN);
+  gridEl.innerHTML=shown.length?shown.map(peopleCard).join(""):'<div class="empty">None.</div>';
+  const mw=document.getElementById("pmorewrap");
+  mw.innerHTML=list.length>peopleN?`<button class="more" id="pmore">Show more (${(list.length-peopleN).toLocaleString()} more)</button>`:"";
+  const mb=document.getElementById("pmore"); if(mb)mb.onclick=()=>{peopleN+=PAGE;renderPeople(p);};
+  document.getElementById("count").textContent=`${list.length.toLocaleString()} people`;
+}
+function viewPeople(p){
+  const named=p.get("named")==="1", sort=p.get("sort")||"concern";
   const bar=`<div class="filters">
+      <input type="search" id="pq" placeholder="Search people by name…" value="${esc(p.get('q')||'')}">
       <span class="chiptog ${named?'on':''}" id="pnamed">Named / published only</span>
       <select id="psort">
         <option value="concern">Sort: most concerning</option>
@@ -479,29 +509,34 @@ function viewPeople(p){
         <option value="quotes">Sort: most quotes</option>
         <option value="name">Sort: name (A–Z)</option>
       </select></div>`;
-  const shown=list.slice(0,peopleN);
-  const cards=shown.map(a=>{
-    const img=a.headshot||a.avatar;
-    const cls=a.pub?"named":"";
-    const sub=(a.pub?"published · ":"")+`${a.nq} quotes`;
-    const gl=graphLink(a);
-    const glhtml=gl?`<a class="maplink" href="${gl}" title="Highlight ${esc(a.n)} in the network map">See in the network map ↗</a>`:"";
-    return `<div class="pcard" data-a="${esc(a.aid)}">
-      <div class="phead"><img class="${cls}" src="${img}" alt="">
-        <div><div class="pname">${esc(a.n)}</div><div class="psub">${sub}</div>
-        ${concernBadge(a)}</div></div>
-      ${peopleTeaser(a)}${glhtml}</div>`;}).join("");
-  const more=list.length>peopleN?`<button class="more" id="pmore">Show more (${(list.length-peopleN).toLocaleString()} more)</button>`:"";
+  // Build the shell ONCE; the grid + more-button live in their own containers.
   document.getElementById("main").innerHTML=
     `<h1 class="view">Who said it</h1>
      <p class="lede">Ranked by concern – how alarming each author's most-revealing quote is, weighted toward power &amp; governance themes. Named figures are ringed (real names via the main EA map); everyone else appears under their own public handle.</p>
-     ${bar}<div class="people">${cards||'<div class="empty">None.</div>'}</div>${more}`;
-  document.getElementById("count").textContent=`${list.length.toLocaleString()} people`;
+     ${bar}<div class="people" id="people"></div><div id="pmorewrap"></div>`;
   document.getElementById("psort").value=sort;
-  document.getElementById("pnamed").onclick=()=>{const np=new URLSearchParams(p);named?np.delete("named"):np.set("named","1");peopleN=PAGE;go("people",np);};
-  document.getElementById("psort").onchange=e=>{const np=new URLSearchParams(p);np.set("sort",e.target.value);peopleN=PAGE;go("people",np);};
-  document.querySelectorAll(".pcard").forEach(el=>el.onclick=(e)=>{if(e.target.closest(".maplink"))return;openAuthor(el.dataset.a);});
-  const mb=document.getElementById("pmore"); if(mb)mb.onclick=()=>{peopleN+=PAGE;viewPeople(p);};
+
+  // all mutations read the LIVE url, so an in-progress typed query is never lost
+  const cur=()=>readHash().p;
+  // search: update only the grid. Input element is never replaced (focus + caret
+  // preserved); URL synced silently via replaceState so it stays shareable.
+  const pq=document.getElementById("pq");
+  if(pq)pq.oninput=()=>{
+    const np=cur();
+    pq.value.trim()?np.set("q",pq.value.trim()):np.delete("q");
+    peopleN=PAGE;
+    history.replaceState(null,"","#people"+([...np].length?"?"+np.toString():""));
+    renderPeople(np);
+  };
+  document.getElementById("pnamed").onclick=()=>{const np=cur();np.get("named")==="1"?np.delete("named"):np.set("named","1");peopleN=PAGE;go("people",np);};
+  document.getElementById("psort").onchange=e=>{const np=cur();np.set("sort",e.target.value);peopleN=PAGE;go("people",np);};
+  // event delegation: one listener on the grid, so cards are never individually
+  // rewired on every keystroke.
+  document.getElementById("people").addEventListener("click",e=>{
+    if(e.target.closest(".maplink"))return;
+    const card=e.target.closest(".pcard"); if(card)openAuthor(card.dataset.a);
+  });
+  renderPeople(p);
 }
 
 // ---- author drawer ----
