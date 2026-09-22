@@ -60,7 +60,7 @@ done
 echo "  done"
 
 echo "=== 4. binary assets match the ref, byte for byte ==="
-for img in assets/images/og.png; do
+for img in assets/images/og-v2.png; do
   remote=$(curl -s --max-time 40 "$BASE/$img" | md5)
   local=$(git -C "$REPO" show "$REF:$img" 2>/dev/null | md5)
   [ "$remote" = "$local" ] || { echo "  MISMATCH /$img remote=$remote ref=$local"; fail=$((fail+1)); }
