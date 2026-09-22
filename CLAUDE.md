@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (233 specs, ~55s).
+Tests need the dev server running: `npx playwright test` (248 specs, ~80s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -174,6 +174,22 @@ each author's top quote, and the author drawer renders every quote that
 person has, up to 625. Splitting means precomputing the index at build time
 and emitting per-author chunks, the way `data:split` already does for noblogs.
 gzip takes it 6.18 MB -> 1.74 MB, which is most of the win for none of the risk.
+
+**`flex: 0 0 auto` on anything whose width comes from data will overflow.** A
+flex item that cannot shrink keeps its max-content width however narrow the
+column is, and `min-width: 0` is needed as well, because a flex item's default
+`min-width: auto` floors it at min-content. Both overflows on the EA pages were
+this: a relationship label out of `edges.csv` in the detail panel, and the
+header's row of links. Reserve `0 0 auto` for fixed chrome — a dot, an arrow, a
+badge.
+
+**Horizontal overflow hides twice.** Inside `.dr-sheet__body` it is contained
+by that element's `overflow-x: auto`, so the panel scrolls and the document
+measures correct — a document-level check never sees it. On a phone it does not
+scroll at all: the layout viewport widens, `innerWidth` comes back larger than
+the device, and every other measurement is then taken against a viewport that
+does not exist. `tests/test_no_x_overflow.spec.js` measures the document at
+390px and the panel on its own.
 
 **Preflight sets `box-sizing: border-box`.** A rule built from `border-t` +
 `height` + `border-b` needs the height to be the *total*, not the gap.

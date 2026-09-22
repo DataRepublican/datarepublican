@@ -33,12 +33,16 @@ title: EA Explorer
      which already set the gutter. */
   #ea-header{grid-column:1/3;padding:10px 0 12px;background:var(--bg);
     display:flex;flex-direction:column;gap:10px}
-  .ea-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .ea-idrow{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
   .ea-id{display:flex;flex-direction:column;gap:2px;min-width:0}
   #ea-header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.2;color:var(--dr-ink-strong,#000)}
   #ea-header .sub{font-size:var(--dr-text-meta,13px);color:var(--dr-ink-faint,#6B7280);line-height:1.35}
   /* right side of the id row: project switcher + disclaimer */
-  .ea-idright{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+  /* Wraps rather than holding its width: this row of links is wider than a
+     phone, and `flex:0 0 auto` on it widened the LAYOUT VIEWPORT — innerWidth
+     came back 559 on a 390px device, so every other element measured against
+     a viewport that did not exist. */
+  .ea-idright{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:0 1 auto;min-width:0}
   /* project switcher — graceful move between the two sub-projects (graph / words) */
   .ea-switch{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,#D3D7DE);
     border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
@@ -179,7 +183,18 @@ title: EA Explorer
   #panel .rel .verb{color:var(--dr-ink-faint,#6B7280);flex:0 0 auto;font-style:italic}
   #panel .rel .who{color:var(--ink);font-weight:600}
   #panel .rel .sub{margin:5px 0 0 16px}
-  #panel .rel .subhead{display:flex;align-items:center;gap:6px}
+  /* align-items:flex-start, not center: .verb below can wrap to several lines
+     and the chip belongs on the first one, not floating at the middle. */
+  #panel .rel .subhead{display:flex;align-items:flex-start;gap:6px}
+  /* The .verb here is free text out of edges.csv and runs to a full sentence,
+     unlike the "— N ties" .verb in .head, which is short and SHOULD hold its
+     width. Both matched `.verb{flex:0 0 auto}`, so the sentence kept its
+     max-content width and pushed the panel into horizontal scroll.
+     min-width:0 as well as the shrink factor — a flex item's default
+     min-width:auto floors it at min-content and it would still not wrap. */
+  #panel .rel .subhead .verb{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
+  /* Same floor on the entity name, which is also data and also unbounded. */
+  #panel .rel .head .who{min-width:0;overflow-wrap:break-word}
   #panel .rel .ecl{font-family:var(--dr-font-ui);font-size:9px;font-weight:700;letter-spacing:.4px;padding:1px 5px;border-radius:4px;color:#fff;flex:0 0 auto}
   #panel .rel .ev{color:var(--ink);opacity:.82;font-size:11.5px;line-height:1.45;margin:4px 0 0}
   #panel .rel .ev.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}

@@ -28,7 +28,9 @@ title: "EA — in their own words"
 #words-header h1{margin:0;font-family:var(--serif);font-weight:700;letter-spacing:-.02em;
   font-size:clamp(1.3rem,3.4vw,1.7rem);color:var(--ink-strong);line-height:1.15}
 #words-header .sub{font-family:var(--sans);font-size:var(--dr-text-meta,13px);color:var(--faint)}
-.ea-idright{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+/* Wraps rather than holding its width: this row of links is wider than a
+   phone, and `flex:0 0 auto` on it pushed the page into horizontal scroll. */
+.ea-idright{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:0 1 auto;min-width:0}
 .ea-switch{display:flex;gap:2px;background:var(--fill);border:1px solid var(--line);
   border-radius:var(--rad-sm);padding:3px}
 .ea-switch a{padding:6px 11px;border-radius:var(--dr-radius-sm,6px);font-family:var(--sans);
