@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (229 specs, ~55s).
+Tests need the dev server running: `npx playwright test` (231 specs, ~55s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -137,11 +137,23 @@ cwebp, ImageMagick or sharp here, and `sips` cannot write WebP on this macOS).
 **Feature cards paint at 768px, standard cards at 438px** — `_data/tools.yml`'s
 `feature: true` picks the shape, so the two want different source widths.
 
-**Vendored libraries live in `assets/js/`, loaded per page, not in the head.**
-jQuery and Cytoscape are both there. Cytoscape is 353 KB and four routes need
-it — `_includes/head-custom.html` would put it on all 34. `noblogs/graph/`
-has no front matter, so it cannot use `relative_url`; `baseurl` is `""`, so a
-root-absolute `/assets/js/…` is what that filter would emit anyway.
+**Vendored libraries are shared, not copied per tool.** `assets/js/` holds the
+two the shell and the redesigned tools load (jQuery 3.5.1, Cytoscape);
+`assets/js/vendor/` holds the rest, version-suffixed because two jszips and
+two papaparses are both in use. Loaded per page, never from
+`_includes/head-custom.html` — Cytoscape is 353 KB and four routes need it,
+not 34. `noblogs/graph/` and the other standalone pages have no front matter,
+so they cannot use `relative_url`; `baseurl` is `""`, so a root-absolute
+`/assets/js/…` is what that filter would emit anyway.
+`tests/test_vendored_libs.spec.js` fails on a re-duplicated library.
+
+Two things to know before moving one: **`importScripts` resolves against the
+WORKER's URL, not the page's** (`officers/unzipWorker.js` loads JSZip that
+way, and `officers/bulk/` runs it from one directory up), and a grep for
+`<script src>` will not find it. **`exclude: vendor` in `_config.yml`** is for
+`bundle install --path vendor/bundle`; it is matched from the source root and
+does not touch `assets/js/vendor/`, which is verified to publish on a clean
+build.
 
 **`ea-explorer/words/data.json` cannot be split by chunking it.** The page
 builds a reverse keyword index over every quote at boot (full text, gloss,
