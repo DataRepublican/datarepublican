@@ -1,7 +1,7 @@
 <html>
 	<title>Simplification demo</title>
 <head>
-	  <script src="./jquery.min.js"></script>
+	  <script src="/assets/js/lib/jquery-3.2.1.min.js"></script>
 	  <script src="./convex.min.js"></script>
 	  <script src="./jquery-timing.min.js"></script>
 	  <script>
@@ -73,7 +73,7 @@
 
 			// treat points like a circular buffer. 
 			// walk forwards and backwards from a start point until you get 
-			// a previous value and a next value that have not been cancelled like Trump
+			// a previous value and a next value that have not been canceled like Trump
 			function getPrevAndNext(pointsToSkip, len, index) {
 		        var prev = index - 1;
 		        if (prev < 0) prev = len - 1;

@@ -1,0 +1,30 @@
+# The build context is sent to the Docker daemon before anything runs, so this
+# file is the difference between a fast deploy and shipping half a gigabyte
+# over the wire on every push.
+#
+# `docs/` alone is 426 MB and 10,011 files. It is the OLD committed build
+# output; the image builds the site from source instead, so it must never enter
+# the context.
+docs
+_site
+.jekyll-metadata
+
+# Installed inside the image, at pinned versions. Copying the host's copies in
+# would both bloat the context and risk mixing platforms.
+node_modules
+vendor
+
+# Local and CI scratch.
+.git
+.github
+.gstack
+.claude
+.cursor
+.vscode
+test-results
+playwright-report
+tests
+
+# Repo docs, not site content.
+README.md
+CLAUDE.md

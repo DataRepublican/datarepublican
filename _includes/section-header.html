@@ -1,0 +1,24 @@
+{%- comment -%}
+  A section label with a rule under it, and an optional control on the right —
+  the `Latest ⌄` slot in the mocks.
+
+  Usage:
+    {% include section-header.html title="Tools" %}
+    {% include section-header.html title="Tools" control=some_html %}
+
+  The title is `ink-strong`, the same black as the wordmark, the card titles and
+  the rule directly under it. It had its own near-navy token for a while, which
+  just read as an accidental blue against an otherwise monochrome page.
+{%- endcomment -%}
+
+<div class="mt-8 first:mt-6">
+  {%- comment -%}
+    Baseline, not bottom edge: the control is smaller than the title now, so
+    aligning the boxes would leave the two words sitting at different heights.
+  {%- endcomment -%}
+  <div class="flex items-baseline justify-between gap-4">
+    <h2 class="m-0 text-title font-bold tracking-title text-ink-strong">{{ include.title }}</h2>
+    {%- if include.control %}<div class="shrink-0">{{ include.control }}</div>{% endif -%}
+  </div>
+  <div class="mt-2 border-t-2 border-ink-strong" aria-hidden="true"></div>
+</div>

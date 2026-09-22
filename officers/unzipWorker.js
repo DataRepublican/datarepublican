@@ -1,5 +1,7 @@
 // unzipWorker.js
-self.importScripts('jszip.min.js'); // Important: load JSZip within the worker
+// Absolute: importScripts resolves against the WORKER's own URL, and the
+// worker is loaded from /officers/ by bulk/index.html one directory down.
+self.importScripts('/assets/js/lib/jszip-3.10.1.min.js');
 
 self.onmessage = async (e) => {
   const { zipUrl, innerFilename } = e.data;

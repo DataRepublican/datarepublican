@@ -1,10 +1,20 @@
 title: DataRepublican
-description: Tracking where the money goes
+tagline: Exposing what you’re not supposed to know
+description: Exposing what you’re not supposed to know
 baseurl: ""
 url: "https://datarepublican.com"
 destination: docs
 
 defaults:
+  # There is no per-page width setting. Every page gets the same shell — see
+  # `.page-column` in assets/css/main.css — and the reading measure is a
+  # property of the CONTENT, not of the page: `.text-column` on /about/ and
+  # /donate/, `.prose max-w-column` in the markdown layout.
+  #
+  # A `width` front-matter key used to pick between a wide shell and a 1024px
+  # one. It meant the masthead, rule and nav visibly shrank when you navigated
+  # from Tools to About, which read as a different site rather than a different
+  # page.
   - scope:
       path: ""
     values:
@@ -13,12 +23,20 @@ defaults:
 social: 
   name: DataRepublican
 
+# Stop the dev server's responses being cached. This lived under
+# `development: server_options: headers:` for a long time and did nothing:
+# Jekyll has no environment-scoped config and no `server_options` key, so the
+# header was never sent. Responses carried only ETag and Last-Modified, which
+# lets a browser apply heuristic caching and serve a stale stylesheet after a
+# rebuild — "my change isn't showing up", with the build being entirely correct.
+# The key Jekyll actually reads is top-level `webrick:`.
+webrick:
+  headers:
+    Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+
 development:
   url: "http://localhost:4000"
-  server_options:
-    headers:
-      Cache-Control: no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0
-    
+
 production:
   url: "https://datarepublican.com"
   
@@ -28,11 +46,78 @@ include:
 favicon: /assets/images/favicon.png
 
 exclude:
+  # Tool scratch directories. Jekyll does not read .gitignore, and its watcher
+  # does not skip dot-directories, so anything written inside the repo while the
+  # dev server runs kicks off a full rebuild — and pages 404 for the second or
+  # two that rebuild takes.
+  #
+  # gstack writes browse-daemon.log, browse-console.log, terminal-port and
+  # friends on every skill invocation.
+  - .gstack
+  # Playwright writes error-context.md and .last-run.json here as tests run.
+  # That turned one failing test into a cascade: the failure wrote a file, the
+  # write triggered a rebuild, the rebuild 404'd the next page under test, that
+  # test failed and wrote another file. Excluding these is what makes the suite
+  # runnable against a live `yarn start`.
+  #
+  # Listing them here is necessary but NOT sufficient. Jekyll's watcher builds
+  # its ignore list with `next unless absolute_path.exist?` — an excluded path
+  # that does not exist when the server boots is watched anyway. That is why
+  # `start` runs `dev:watchdirs` to mkdir both of these first.
+  - test-results
+  - playwright-report
+  # The suite itself, which was being PUBLISHED — /tests/ was a browsable
+  # page and every spec was downloadable. It also meant writing a spec
+  # triggered a rebuild, 404-ing whatever page the suite was mid-request on.
+  - tests
+  # The design-system skill and its references live here, and they get edited in
+  # the same sessions that run the suite. Every write was kicking off a rebuild
+  # and 404-ing whatever page a test had just requested — the same cascade as
+  # test-results above, which is why runs "randomly" failed in batches right
+  # after a doc edit. `.claude` is committed, so it exists at boot and the
+  # watcher will actually honour this (see the note above about `exist?`).
+  - .claude
+  # `bundle install --path vendor/bundle`, which is what ruby/setup-ruby's
+  # bundler-cache does, puts the gems inside the source tree. Jekyll then scans
+  # them and chokes on its own gem's site template, whose front matter has a
+  # literal ERB tag where the date goes:
+  #   Invalid date '<%= Time.now.strftime(...) %>' ... does not have a valid
+  #   date in the YAML front matter
+  # .gitignore already has `vendor`, but Jekyll does not read .gitignore.
+  - vendor
   - node_modules
   - package.json
   - package-lock.json
+  - yarn.lock
   - postcss.config.js
   - tailwind.config.js
+  - .github
+  - scripts
+  # The committed build output. Jekyll excludes its own destination
+  # automatically, so this was a no-op while `destination` was `docs` — it
+  # matters as soon as anything builds to `_site`, or `docs/` gets copied into
+  # the new build and doubles its size.
+  - docs
+  # Built locally but never published: `.gitignore` keeps docs/charity,
+  # docs/pa and docs/990tools out of the commit, so GitHub Pages has never
+  # served them. Excluding them here makes the build match what is live.
+  - charity
+  - pa
+  - 990tools
+  - python
+  # Repo docs, not site content. Without these Jekyll copies them into the
+  # build, which publishes them and adds routes that tests/routes.txt does not
+  # list — failing the deploy's route-contract gate.
+  - README.md
+  - CLAUDE.md
+  # The dsa-explorer logo blobs: pipeline artifacts kept in the repo, but the
+  # page loads logos/index.js and logos/img/ instead. Publishing them would ship
+  # 23.4 MB nothing fetches.
+  - dsa-explorer/logos/logos.embed.js
+  - dsa-explorer/logos/avatars.embed.js
+  - dsa-explorer/logos/emblems.embed.js
+  - dsa-explorer/logos/afgj_logos.embed.js
+  - noblogs/graph/logos.embed.js
 
 plugins:
   - jekyll-seo-tag

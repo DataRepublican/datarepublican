@@ -1,0 +1,2320 @@
+{
+"person_source_local:coefficient-giving:CG-PE043": {
+"person": "Ajeya Cotra",
+"accounts": [
+{
+"platform": "af",
+"slug": "ajeya-cotra",
+"pageUrl": "https://www.alignmentforum.org/users/ajeya-cotra",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "ajeya-cotra",
+"pageUrl": "https://www.lesswrong.com/users/ajeya-cotra",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:good-ventures:GV-P001": {
+"person": "Cari Tuna",
+"accounts": [
+{
+"platform": "ea",
+"slug": "cari_tuna",
+"pageUrl": "https://forum.effectivealtruism.org/users/cari_tuna",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:miri:MIRI-P003": {
+"person": "Eliezer Yudkowsky",
+"accounts": [
+{
+"platform": "lw",
+"slug": "eliezer_yudkowsky",
+"pageUrl": "https://www.lesswrong.com/users/eliezer_yudkowsky",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "af",
+"slug": "eliezer_yudkowsky",
+"pageUrl": "https://www.alignmentforum.org/users/eliezer_yudkowsky",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE042": {
+"person": "Holden Karnofsky",
+"accounts": [
+{
+"platform": "ea",
+"slug": "holdenkarnofsky",
+"pageUrl": "https://forum.effectivealtruism.org/users/holdenkarnofsky",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:future-of-life-institute:FLI-P002": {
+"person": "Max Tegmark",
+"accounts": [
+{
+"platform": "lw",
+"slug": "max-tegmark",
+"pageUrl": "https://www.lesswrong.com/users/max-tegmark",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "max-tegmark",
+"pageUrl": "https://forum.effectivealtruism.org/users/max-tegmark",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:forethought:FT-P016": {
+"person": "Toby Ord",
+"accounts": [
+{
+"platform": "ea",
+"slug": "toby_ord",
+"pageUrl": "https://forum.effectivealtruism.org/users/toby_ord",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "toby_ord",
+"pageUrl": "https://www.lesswrong.com/users/toby_ord",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:forethought:FT-P002": {
+"person": "William MacAskill",
+"accounts": [
+{
+"platform": "ea",
+"slug": "william_macaskill",
+"pageUrl": "https://forum.effectivealtruism.org/users/william_macaskill",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:80000-hours:H80-P010": {
+"person": "Anna Weldon",
+"accounts": [
+{
+"platform": "ea",
+"slug": "anna-weldon-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/anna-weldon-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:80000-hours:H80-P002": {
+"person": "Benjamin Todd",
+"accounts": [
+{
+"platform": "ea",
+"slug": "benjamin_todd",
+"pageUrl": "https://forum.effectivealtruism.org/users/benjamin_todd",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "benjamin_todd",
+"pageUrl": "https://www.lesswrong.com/users/benjamin_todd",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:apollo-research:APO-P009": {
+"person": "David Duvenaud",
+"accounts": [
+{
+"platform": "af",
+"slug": "david-duvenaud",
+"pageUrl": "https://www.alignmentforum.org/users/david-duvenaud",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "david-duvenaud",
+"pageUrl": "https://www.lesswrong.com/users/david-duvenaud",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:audacious-project:AP-P004": {
+"person": "Beth Barnes",
+"accounts": [
+{
+"platform": "af",
+"slug": "beth-barnes",
+"pageUrl": "https://www.alignmentforum.org/users/beth-barnes",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "beth-barnes",
+"pageUrl": "https://forum.effectivealtruism.org/users/beth-barnes",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "beth-barnes",
+"pageUrl": "https://www.lesswrong.com/users/beth-barnes",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:berkeley-existential-risk-initiative:BERI-P003": {
+"person": "Andrew Critch",
+"accounts": [
+{
+"platform": "af",
+"slug": "andrew_critch",
+"pageUrl": "https://www.alignmentforum.org/users/andrew_critch",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "lw",
+"slug": "andrew_critch",
+"pageUrl": "https://www.lesswrong.com/users/andrew_critch",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "ea",
+"slug": "critch",
+"pageUrl": "https://forum.effectivealtruism.org/users/critch",
+"basis": "affiliation-corroborated"
+}
+]
+},
+"person_source_local:centre-for-effective-altruism:CEA-P011": {
+"person": "Max Dalton",
+"accounts": [
+{
+"platform": "lw",
+"slug": "max-dalton",
+"pageUrl": "https://www.lesswrong.com/users/max-dalton",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE037": {
+"person": "Max Daniel",
+"accounts": [
+{
+"platform": "ea",
+"slug": "max_daniel",
+"pageUrl": "https://forum.effectivealtruism.org/users/max_daniel",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "max_daniel",
+"pageUrl": "https://www.lesswrong.com/users/max_daniel",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE010": {
+"person": "Peter Favaloro",
+"accounts": [
+{
+"platform": "af",
+"slug": "peter-favaloro",
+"pageUrl": "https://www.alignmentforum.org/users/peter-favaloro",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "lw",
+"slug": "peter-favaloro",
+"pageUrl": "https://www.lesswrong.com/users/peter-favaloro",
+"basis": "name-slug (self-disclosed real name as handle)"
+}
+]
+},
+"person_source_local:convergence-analysis:CA-P001": {
+"person": "David Kristoffersson",
+"accounts": [
+{
+"platform": "af",
+"slug": "david_kristoffersson",
+"pageUrl": "https://www.alignmentforum.org/users/david_kristoffersson",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "david_kristoffersson",
+"pageUrl": "https://forum.effectivealtruism.org/users/david_kristoffersson",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "david_kristoffersson",
+"pageUrl": "https://www.lesswrong.com/users/david_kristoffersson",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:convergence-analysis:CA-P003": {
+"person": "Gwyn Glasser",
+"accounts": [
+{
+"platform": "ea",
+"slug": "gwyn-glasser",
+"pageUrl": "https://forum.effectivealtruism.org/users/gwyn-glasser",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "gwyn-glasser",
+"pageUrl": "https://www.lesswrong.com/users/gwyn-glasser",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:ea-funds:EF-P003": {
+"person": "Harri Besceli",
+"accounts": [
+{
+"platform": "lw",
+"slug": "harri-besceli",
+"pageUrl": "https://www.lesswrong.com/users/harri-besceli",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "ea",
+"slug": "harri-besceli",
+"pageUrl": "https://forum.effectivealtruism.org/users/harri-besceli",
+"basis": "name-slug (self-disclosed real name as handle)"
+}
+]
+},
+"person_source_local:epoch-ai:EP-P014": {
+"person": "Tamay Besiroglu",
+"accounts": [
+{
+"platform": "af",
+"slug": "tamay-besiroglu",
+"pageUrl": "https://www.alignmentforum.org/users/tamay-besiroglu",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "tamay-besiroglu",
+"pageUrl": "https://www.lesswrong.com/users/tamay-besiroglu",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:foresight-institute:FI-P019": {
+"person": "Deger Turan",
+"accounts": [
+{
+"platform": "af",
+"slug": "deger-turan-1",
+"pageUrl": "https://www.alignmentforum.org/users/deger-turan-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "deger-turan",
+"pageUrl": "https://forum.effectivealtruism.org/users/deger-turan",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "deger-turan-1",
+"pageUrl": "https://www.lesswrong.com/users/deger-turan-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:frame-fellowship:FRM-P002": {
+"person": "Austin Chen",
+"accounts": [
+{
+"platform": "lw",
+"slug": "austin-chen",
+"pageUrl": "https://www.lesswrong.com/users/austin-chen",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:giving-what-we-can:GWWC-P001": {
+"person": "Sjir Hoeijmakers",
+"accounts": [
+{
+"platform": "ea",
+"slug": "sjir-hoeijmakers",
+"pageUrl": "https://forum.effectivealtruism.org/users/sjir-hoeijmakers",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:institute-for-ai-policy-and-strategy:IAPS-P007": {
+"person": "Onni Aarne",
+"accounts": [
+{
+"platform": "ea",
+"slug": "onni_aarne",
+"pageUrl": "https://forum.effectivealtruism.org/users/onni_aarne",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:institute-for-ai-policy-and-strategy:IAPS-P002": {
+"person": "Renan Araujo",
+"accounts": [
+{
+"platform": "ea",
+"slug": "renan-araujo",
+"pageUrl": "https://forum.effectivealtruism.org/users/renan-araujo",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "renan-araujo",
+"pageUrl": "https://www.lesswrong.com/users/renan-araujo",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:non-trivial:NT-P002": {
+"person": "Peter McIntyre",
+"accounts": [
+{
+"platform": "ea",
+"slug": "peter-mcintyre-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/peter-mcintyre-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "peter_mcintyre",
+"pageUrl": "https://www.lesswrong.com/users/peter_mcintyre",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:rethink-priorities:RP-P001": {
+"person": "Marcus A. Davis",
+"accounts": [
+{
+"platform": "ea",
+"slug": "marcus_a_davis",
+"pageUrl": "https://forum.effectivealtruism.org/users/marcus_a_davis",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:survival-and-flourishing-corporation:SFC-P001": {
+"person": "Ethan Ashkie",
+"accounts": [
+{
+"platform": "lw",
+"slug": "ethan-ashkie-1",
+"pageUrl": "https://www.lesswrong.com/users/ethan-ashkie-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-003": {
+"person": "Hjalmar Wijk",
+"accounts": [
+{
+"platform": "af",
+"slug": "hjalmar_wijk",
+"pageUrl": "https://www.alignmentforum.org/users/hjalmar_wijk",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "hjalmar_wijk",
+"pageUrl": "https://www.lesswrong.com/users/hjalmar_wijk",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-005": {
+"person": "Richard Ngo",
+"accounts": [
+{
+"platform": "lw",
+"slug": "ricraz",
+"pageUrl": "https://www.lesswrong.com/users/ricraz",
+"basis": "affiliation-corroborated"
+},
+{
+"platform": "af",
+"slug": "ricraz",
+"pageUrl": "https://www.alignmentforum.org/users/ricraz",
+"basis": "affiliation-corroborated"
+},
+{
+"platform": "ea",
+"slug": "richard_ngo",
+"pageUrl": "https://forum.effectivealtruism.org/users/richard_ngo",
+"basis": "name-slug (self-disclosed real name as handle)"
+}
+]
+},
+"discovery_source_local:ND002-006": {
+"person": "Robert Trager",
+"accounts": [
+{
+"platform": "ea",
+"slug": "robert-trager",
+"pageUrl": "https://forum.effectivealtruism.org/users/robert-trager",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-007": {
+"person": "Daniel Kokotajlo",
+"accounts": [
+{
+"platform": "af",
+"slug": "daniel-kokotajlo",
+"pageUrl": "https://www.alignmentforum.org/users/daniel-kokotajlo",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "daniel-kokotajlo",
+"pageUrl": "https://www.lesswrong.com/users/daniel-kokotajlo",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-010": {
+"person": "David Krueger",
+"accounts": [
+{
+"platform": "ea",
+"slug": "david-krueger-2",
+"pageUrl": "https://forum.effectivealtruism.org/users/david-krueger-2",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-011": {
+"person": "Sam Bankman-Fried",
+"accounts": [
+{
+"platform": "ea",
+"slug": "sambf",
+"pageUrl": "https://forum.effectivealtruism.org/users/sambf",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-014": {
+"person": "Chris Painter",
+"accounts": [
+{
+"platform": "ea",
+"slug": "chris_painter",
+"pageUrl": "https://forum.effectivealtruism.org/users/chris_painter",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "chris_painter",
+"pageUrl": "https://www.lesswrong.com/users/chris_painter",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-015": {
+"person": "Lukas Finnveden",
+"accounts": [
+{
+"platform": "af",
+"slug": "lukas-finnveden",
+"pageUrl": "https://www.alignmentforum.org/users/lukas-finnveden",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "lukas-finnveden",
+"pageUrl": "https://www.lesswrong.com/users/lukas-finnveden",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "lukas-finnveden",
+"pageUrl": "https://forum.effectivealtruism.org/users/lukas-finnveden",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-016": {
+"person": "Tom Davidson",
+"accounts": [
+{
+"platform": "lw",
+"slug": "tom-davidson-1",
+"pageUrl": "https://www.lesswrong.com/users/tom-davidson-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "af",
+"slug": "tom-davidson-1",
+"pageUrl": "https://www.alignmentforum.org/users/tom-davidson-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "tom_davidson",
+"pageUrl": "https://forum.effectivealtruism.org/users/tom_davidson",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND003-002": {
+"person": "Alex Lawsen",
+"accounts": [
+{
+"platform": "ea",
+"slug": "alex-lawsen-previously-alexrjl",
+"pageUrl": "https://forum.effectivealtruism.org/users/alex-lawsen-previously-alexrjl",
+"basis": "affiliation-corroborated"
+},
+{
+"platform": "af",
+"slug": "alex-lawsen",
+"pageUrl": "https://www.alignmentforum.org/users/alex-lawsen",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "lw",
+"slug": "alex-lawsen",
+"pageUrl": "https://www.lesswrong.com/users/alex-lawsen",
+"basis": "name-slug (self-disclosed real name as handle)"
+}
+]
+},
+"discovery_source_local:ND003-004": {
+"person": "Jake Mendel",
+"accounts": [
+{
+"platform": "af",
+"slug": "jake_mendel",
+"pageUrl": "https://www.alignmentforum.org/users/jake_mendel",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "jake_mendel",
+"pageUrl": "https://www.lesswrong.com/users/jake_mendel",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "jake-mendel-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/jake-mendel-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND003-009": {
+"person": "Blake Borgeson",
+"accounts": [
+{
+"platform": "lw",
+"slug": "blake-borgeson",
+"pageUrl": "https://www.lesswrong.com/users/blake-borgeson",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND003-011": {
+"person": "Stefan Torges",
+"accounts": [
+{
+"platform": "ea",
+"slug": "storges",
+"pageUrl": "https://forum.effectivealtruism.org/users/storges",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND003-012": {
+"person": "Howie Lempel",
+"accounts": [
+{
+"platform": "ea",
+"slug": "howie_lempel",
+"pageUrl": "https://forum.effectivealtruism.org/users/howie_lempel",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "howie-lempel",
+"pageUrl": "https://www.lesswrong.com/users/howie-lempel",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-001": {
+"person": "Thomas Larsen",
+"accounts": [
+{
+"platform": "af",
+"slug": "thomas-larsen",
+"pageUrl": "https://www.alignmentforum.org/users/thomas-larsen",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "thomas-larsen",
+"pageUrl": "https://www.lesswrong.com/users/thomas-larsen",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "thomas-larsen",
+"pageUrl": "https://forum.effectivealtruism.org/users/thomas-larsen",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-004": {
+"person": "Gavriel Kleinwaks",
+"accounts": [
+{
+"platform": "lw",
+"slug": "gavriel-kleinwaks",
+"pageUrl": "https://www.lesswrong.com/users/gavriel-kleinwaks",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-002": {
+"person": "Clara Collier",
+"accounts": [
+{
+"platform": "ea",
+"slug": "clara-collier",
+"pageUrl": "https://forum.effectivealtruism.org/users/clara-collier",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-021": {
+"person": "Jed McCaleb",
+"accounts": [
+{
+"platform": "lw",
+"slug": "jed-mccaleb",
+"pageUrl": "https://www.lesswrong.com/users/jed-mccaleb",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-026": {
+"person": "Eli Rose",
+"accounts": [
+{
+"platform": "ea",
+"slug": "reallyeli",
+"pageUrl": "https://forum.effectivealtruism.org/users/reallyeli",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-027": {
+"person": "Lauren Gilbert",
+"accounts": [
+{
+"platform": "ea",
+"slug": "lauren-gilbert-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/lauren-gilbert-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-011": {
+"person": "Alex Flint",
+"accounts": [
+{
+"platform": "af",
+"slug": "alexflint",
+"pageUrl": "https://www.alignmentforum.org/users/alexflint",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "alexflint",
+"pageUrl": "https://www.lesswrong.com/users/alexflint",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-008": {
+"person": "Nuño Sempere",
+"accounts": [
+{
+"platform": "lw",
+"slug": "nuno-sempere-1",
+"pageUrl": "https://www.lesswrong.com/users/nuno-sempere-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-002": {
+"person": "Robi Rahman",
+"accounts": [
+{
+"platform": "lw",
+"slug": "robi-rahman",
+"pageUrl": "https://www.lesswrong.com/users/robi-rahman",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "robirahman",
+"pageUrl": "https://forum.effectivealtruism.org/users/robirahman",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-014": {
+"person": "Claire Short",
+"accounts": [
+{
+"platform": "af",
+"slug": "claire-short",
+"pageUrl": "https://www.alignmentforum.org/users/claire-short",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "claire-short-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/claire-short-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "claire-short",
+"pageUrl": "https://www.lesswrong.com/users/claire-short",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND002-020": {
+"person": "Steve Newman",
+"accounts": [
+{
+"platform": "lw",
+"slug": "steve-newman",
+"pageUrl": "https://www.lesswrong.com/users/steve-newman",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-006": {
+"person": "Magdalena Wache",
+"accounts": [
+{
+"platform": "af",
+"slug": "magdalena-wache",
+"pageUrl": "https://www.alignmentforum.org/users/magdalena-wache",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "magdalena-wache",
+"pageUrl": "https://forum.effectivealtruism.org/users/magdalena-wache",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "magdalena-wache",
+"pageUrl": "https://www.lesswrong.com/users/magdalena-wache",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-009": {
+"person": "Adam Kaufman",
+"accounts": [
+{
+"platform": "af",
+"slug": "eccentricity",
+"pageUrl": "https://www.alignmentforum.org/users/eccentricity",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "eccentricity",
+"pageUrl": "https://www.lesswrong.com/users/eccentricity",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-011": {
+"person": "Tao Lin",
+"accounts": [
+{
+"platform": "lw",
+"slug": "tao-lin",
+"pageUrl": "https://www.lesswrong.com/users/tao-lin",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "af",
+"slug": "tao-lin",
+"pageUrl": "https://www.alignmentforum.org/users/tao-lin",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND004-014": {
+"person": "Julian Stastny",
+"accounts": [
+{
+"platform": "lw",
+"slug": "julian-stastny",
+"pageUrl": "https://www.lesswrong.com/users/julian-stastny",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "af",
+"slug": "julian-stastny",
+"pageUrl": "https://www.alignmentforum.org/users/julian-stastny",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "julian-stastny",
+"pageUrl": "https://forum.effectivealtruism.org/users/julian-stastny",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-005": {
+"person": "Suzy Shepherd",
+"accounts": [
+{
+"platform": "lw",
+"slug": "suzy-shepherd",
+"pageUrl": "https://www.lesswrong.com/users/suzy-shepherd",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-018": {
+"person": "Darryl Wright",
+"accounts": [
+{
+"platform": "ea",
+"slug": "darryl-wright-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/darryl-wright-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-019": {
+"person": "Drew Spartz",
+"accounts": [
+{
+"platform": "ea",
+"slug": "meta",
+"pageUrl": "https://forum.effectivealtruism.org/users/meta",
+"basis": "bio self-disclosure"
+},
+{
+"platform": "lw",
+"slug": "drew-spartz",
+"pageUrl": "https://www.lesswrong.com/users/drew-spartz",
+"basis": "name-slug (self-disclosed real name as handle)"
+}
+]
+},
+"discovery_source_local:ND006-020": {
+"person": "Hazel Browne",
+"accounts": [
+{
+"platform": "ea",
+"slug": "hazel-browne-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/hazel-browne-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:ea-funds::EF-R1855:subject": {
+"person": "Kieran Greig",
+"accounts": [
+{
+"platform": "ea",
+"slug": "kieran-greig",
+"pageUrl": "https://forum.effectivealtruism.org/users/kieran-greig",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:mats::MATS-R009:subject": {
+"person": "Juan Gil",
+"accounts": [
+{
+"platform": "lw",
+"slug": "juan-gil",
+"pageUrl": "https://www.lesswrong.com/users/juan-gil",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "ea",
+"slug": "jgil",
+"pageUrl": "https://forum.effectivealtruism.org/users/jgil",
+"basis": "bio self-disclosure"
+}
+]
+},
+"registry_source_local_person:manifund::MF-R0474:subject": {
+"person": "Rachel Shu",
+"accounts": [
+{
+"platform": "ea",
+"slug": "rachel-shu",
+"pageUrl": "https://forum.effectivealtruism.org/users/rachel-shu",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "rachel-shu",
+"pageUrl": "https://www.lesswrong.com/users/rachel-shu",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:redwood-research::RW-R023:subject": {
+"person": "Tyler Tracy",
+"accounts": [
+{
+"platform": "af",
+"slug": "tyler-tracy",
+"pageUrl": "https://www.alignmentforum.org/users/tyler-tracy",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "tyler-tracy",
+"pageUrl": "https://www.lesswrong.com/users/tyler-tracy",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:coefficient-giving::CG-R105:subject": {
+"person": "Francis Rhys Ward",
+"accounts": [
+{
+"platform": "lw",
+"slug": "francis-rhys-ward",
+"pageUrl": "https://www.lesswrong.com/users/francis-rhys-ward",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "af",
+"slug": "francis-rhys-ward",
+"pageUrl": "https://www.alignmentforum.org/users/francis-rhys-ward",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "francis-rhys-ward-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/francis-rhys-ward-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:center-for-security-and-emerging-technology::CSET-R127:subject": {
+"person": "Saif Khan",
+"accounts": [
+{
+"platform": "lw",
+"slug": "saif-khan",
+"pageUrl": "https://www.lesswrong.com/users/saif-khan",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:ftx-future-fund::FTX-R211:object": {
+"person": "Thomas Kwa",
+"accounts": [
+{
+"platform": "af",
+"slug": "thomas-kwa",
+"pageUrl": "https://www.alignmentforum.org/users/thomas-kwa",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "lw",
+"slug": "thomas-kwa",
+"pageUrl": "https://www.lesswrong.com/users/thomas-kwa",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "ea",
+"slug": "tkwa",
+"pageUrl": "https://forum.effectivealtruism.org/users/tkwa",
+"basis": "affiliation-corroborated"
+}
+]
+},
+"registry_source_local_person:ea-funds::EF-R1711:subject": {
+"person": "Ulisse Mini",
+"accounts": [
+{
+"platform": "af",
+"slug": "ulisse-mini",
+"pageUrl": "https://www.alignmentforum.org/users/ulisse-mini",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "ulisse-mini-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/ulisse-mini-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "ulisse-mini",
+"pageUrl": "https://www.lesswrong.com/users/ulisse-mini",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:redwood-research::RW-R129:subject": {
+"person": "Akbir Khan",
+"accounts": [
+{
+"platform": "af",
+"slug": "akbir-khan",
+"pageUrl": "https://www.alignmentforum.org/users/akbir-khan",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "akbir-khan",
+"pageUrl": "https://www.lesswrong.com/users/akbir-khan",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:ftx-future-fund::FTX-R163:object": {
+"person": "Peter Hartree",
+"accounts": [
+{
+"platform": "lw",
+"slug": "peter_hartree",
+"pageUrl": "https://www.lesswrong.com/users/peter_hartree",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:ftx-future-fund::FTX-R199:object": {
+"person": "Aaron Scher",
+"accounts": [
+{
+"platform": "lw",
+"slug": "aaron_scher",
+"pageUrl": "https://www.lesswrong.com/users/aaron_scher",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "aaron_scher",
+"pageUrl": "https://forum.effectivealtruism.org/users/aaron_scher",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:ftx-future-fund::FTX-R149:object": {
+"person": "Joseph Bloom",
+"accounts": [
+{
+"platform": "af",
+"slug": "joseph-bloom",
+"pageUrl": "https://www.alignmentforum.org/users/joseph-bloom",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "joseph-bloom",
+"pageUrl": "https://www.lesswrong.com/users/joseph-bloom",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "joseph-bloom-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/joseph-bloom-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:ftx-future-fund::FTX-R109:object": {
+"person": "Noa Nabeshima",
+"accounts": [
+{
+"platform": "af",
+"slug": "noa-nabeshima",
+"pageUrl": "https://www.alignmentforum.org/users/noa-nabeshima",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "noa-nabeshima",
+"pageUrl": "https://www.lesswrong.com/users/noa-nabeshima",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"registry_source_local_person:redwood-research::RW-R127:subject": {
+"person": "Vasil Georgiev",
+"accounts": [
+{
+"platform": "lw",
+"slug": "vasil-georgiev",
+"pageUrl": "https://www.lesswrong.com/users/vasil-georgiev",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "vasil-georgiev",
+"pageUrl": "https://forum.effectivealtruism.org/users/vasil-georgiev",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:longview-philanthropy:LV-P038": {
+"person": "Tyler Whitmer",
+"accounts": [
+{
+"platform": "ea",
+"slug": "tyler-whitmer",
+"pageUrl": "https://forum.effectivealtruism.org/users/tyler-whitmer",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:mats:MATS-P002": {
+"person": "Christian Smith",
+"accounts": [
+{
+"platform": "af",
+"slug": "christian-smith",
+"pageUrl": "https://www.alignmentforum.org/users/christian-smith",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "christian-smith",
+"pageUrl": "https://www.lesswrong.com/users/christian-smith",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE017": {
+"person": "Otis Reid",
+"accounts": [
+{
+"platform": "ea",
+"slug": "otis-reid-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/otis-reid-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:good-food-institute:GFI-P001": {
+"person": "Bruce Friedrich",
+"accounts": [
+{
+"platform": "ea",
+"slug": "bruce-friedrich",
+"pageUrl": "https://forum.effectivealtruism.org/users/bruce-friedrich",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:effective-institutions-project:EIP-P001": {
+"person": "Ian David Moss",
+"accounts": [
+{
+"platform": "lw",
+"slug": "ian-david-moss",
+"pageUrl": "https://www.lesswrong.com/users/ian-david-moss",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:longview-philanthropy:LV-P018": {
+"person": "Matthew Gentzel",
+"accounts": [
+{
+"platform": "lw",
+"slug": "matthew-gentzel",
+"pageUrl": "https://www.lesswrong.com/users/matthew-gentzel",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:80000-hours:H80-P017": {
+"person": "Arden Koehler",
+"accounts": [
+{
+"platform": "ea",
+"slug": "arden-koehler",
+"pageUrl": "https://forum.effectivealtruism.org/users/arden-koehler",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:ea-funds:EF-P006": {
+"person": "Neil Dullaghan",
+"accounts": [
+{
+"platform": "ea",
+"slug": "neil_dullaghan",
+"pageUrl": "https://forum.effectivealtruism.org/users/neil_dullaghan",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:ea-funds:EF-P007": {
+"person": "Zoë Sigle",
+"accounts": [
+{
+"platform": "ea",
+"slug": "zoe-sigle",
+"pageUrl": "https://forum.effectivealtruism.org/users/zoe-sigle",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE034": {
+"person": "Ben Goldhaber",
+"accounts": [
+{
+"platform": "af",
+"slug": "bgold",
+"pageUrl": "https://www.alignmentforum.org/users/bgold",
+"basis": "affiliation-corroborated"
+},
+{
+"platform": "lw",
+"slug": "bgold",
+"pageUrl": "https://www.lesswrong.com/users/bgold",
+"basis": "affiliation-corroborated"
+},
+{
+"platform": "ea",
+"slug": "ben-goldhaber-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/ben-goldhaber-1",
+"basis": "name-slug (self-disclosed real name as handle)"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE009": {
+"person": "George Rosenfeld",
+"accounts": [
+{
+"platform": "ea",
+"slug": "george-rosenfeld",
+"pageUrl": "https://forum.effectivealtruism.org/users/george-rosenfeld",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:manifund:MF-P004": {
+"person": "Barak Gila",
+"accounts": [
+{
+"platform": "ea",
+"slug": "barak-gila-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/barak-gila-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE015": {
+"person": "Ben Esche",
+"accounts": [
+{
+"platform": "ea",
+"slug": "ben-esche",
+"pageUrl": "https://forum.effectivealtruism.org/users/ben-esche",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:ea-funds:EF-P028": {
+"person": "Matt Wage",
+"accounts": [
+{
+"platform": "ea",
+"slug": "matt_wage",
+"pageUrl": "https://forum.effectivealtruism.org/users/matt_wage",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:pivotal-research:PIV-P023": {
+"person": "Tobias Häberli",
+"accounts": [
+{
+"platform": "ea",
+"slug": "tobiash",
+"pageUrl": "https://forum.effectivealtruism.org/users/tobiash",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:secure-ai-project:SAP-P008": {
+"person": "Andrew Doris",
+"accounts": [
+{
+"platform": "lw",
+"slug": "andrew-doris",
+"pageUrl": "https://www.lesswrong.com/users/andrew-doris",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE036": {
+"person": "Bastian Stern",
+"accounts": [
+{
+"platform": "ea",
+"slug": "bastian_stern",
+"pageUrl": "https://forum.effectivealtruism.org/users/bastian_stern",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "bastian-stern",
+"pageUrl": "https://www.lesswrong.com/users/bastian-stern",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:asterisk:AS-P008": {
+"person": "Josh Morrison",
+"accounts": [
+{
+"platform": "ea",
+"slug": "josh-morrison",
+"pageUrl": "https://forum.effectivealtruism.org/users/josh-morrison",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"official_profile_source_local:metr:megan-kinniment": {
+"person": "Megan Kinniment",
+"accounts": [
+{
+"platform": "af",
+"slug": "megan-kinniment",
+"pageUrl": "https://www.alignmentforum.org/users/megan-kinniment",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "megan-kinniment",
+"pageUrl": "https://forum.effectivealtruism.org/users/megan-kinniment",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "megan-kinniment",
+"pageUrl": "https://www.lesswrong.com/users/megan-kinniment",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"institution_candidate_source_local:NODE017-001": {
+"person": "Yoshua Bengio",
+"accounts": [
+{
+"platform": "af",
+"slug": "yoshua-bengio",
+"pageUrl": "https://www.alignmentforum.org/users/yoshua-bengio",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "yoshua-bengio",
+"pageUrl": "https://www.lesswrong.com/users/yoshua-bengio",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"institution_candidate_source_local:NODE017-003": {
+"person": "Peter Singer",
+"accounts": [
+{
+"platform": "ea",
+"slug": "peter_singer",
+"pageUrl": "https://forum.effectivealtruism.org/users/peter_singer",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE024": {
+"person": "James Snowden",
+"accounts": [
+{
+"platform": "ea",
+"slug": "james-snowden",
+"pageUrl": "https://forum.effectivealtruism.org/users/james-snowden",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:far-ai:FA-P001": {
+"person": "Adam Gleave",
+"accounts": [
+{
+"platform": "af",
+"slug": "adam-gleave",
+"pageUrl": "https://www.alignmentforum.org/users/adam-gleave",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "adam-gleave",
+"pageUrl": "https://www.lesswrong.com/users/adam-gleave",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE001": {
+"person": "Alexander Berger",
+"accounts": [
+{
+"platform": "ea",
+"slug": "alexander_berger",
+"pageUrl": "https://forum.effectivealtruism.org/users/alexander_berger",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:constellation-institute:CI-P002": {
+"person": "Alexandra Bates",
+"accounts": [
+{
+"platform": "ea",
+"slug": "alexandra-bates-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/alexandra-bates-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "alexandra-bates",
+"pageUrl": "https://www.lesswrong.com/users/alexandra-bates",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:govai:GA-P007": {
+"person": "Allan Dafoe",
+"accounts": [
+{
+"platform": "ea",
+"slug": "allan-dafoe",
+"pageUrl": "https://forum.effectivealtruism.org/users/allan-dafoe",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "allan-dafoe-1",
+"pageUrl": "https://www.lesswrong.com/users/allan-dafoe-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:centre-for-effective-altruism:CEA-P012": {
+"person": "Ben West",
+"accounts": [
+{
+"platform": "ea",
+"slug": "ben_west",
+"pageUrl": "https://forum.effectivealtruism.org/users/ben_west",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:manifund:MF-P011": {
+"person": "Ethan Perez",
+"accounts": [
+{
+"platform": "af",
+"slug": "ethan-perez",
+"pageUrl": "https://www.alignmentforum.org/users/ethan-perez",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "ethan-perez",
+"pageUrl": "https://www.lesswrong.com/users/ethan-perez",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "ethan-perez",
+"pageUrl": "https://forum.effectivealtruism.org/users/ethan-perez",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:epoch-ai:EP-P001": {
+"person": "Jaime Sevilla",
+"accounts": [
+{
+"platform": "ea",
+"slug": "jsevillamol",
+"pageUrl": "https://forum.effectivealtruism.org/users/jsevillamol",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE044": {
+"person": "Joe Carlsmith",
+"accounts": [
+{
+"platform": "af",
+"slug": "joe-carlsmith",
+"pageUrl": "https://www.alignmentforum.org/users/joe-carlsmith",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "joe_carlsmith",
+"pageUrl": "https://forum.effectivealtruism.org/users/joe_carlsmith",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "joe-carlsmith",
+"pageUrl": "https://www.lesswrong.com/users/joe-carlsmith",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:centre-for-effective-altruism:CEA-P007": {
+"person": "Julia Wise",
+"accounts": [
+{
+"platform": "ea",
+"slug": "julia_wise",
+"pageUrl": "https://forum.effectivealtruism.org/users/julia_wise",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:ea-funds:EF-P002": {
+"person": "Lowe Lundin",
+"accounts": [
+{
+"platform": "ea",
+"slug": "lowe-lundin",
+"pageUrl": "https://forum.effectivealtruism.org/users/lowe-lundin",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "lowe-lundin",
+"pageUrl": "https://www.lesswrong.com/users/lowe-lundin",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:ea-funds:EF-P001": {
+"person": "Loïc Watine",
+"accounts": [
+{
+"platform": "ea",
+"slug": "loic-watine-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/loic-watine-1",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:center-for-ai-safety:CAIS-P006": {
+"person": "Mantas Mazeika",
+"accounts": [
+{
+"platform": "af",
+"slug": "mantas-mazeika",
+"pageUrl": "https://www.alignmentforum.org/users/mantas-mazeika",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "mantas-mazeika-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/mantas-mazeika-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "mantas-mazeika",
+"pageUrl": "https://www.lesswrong.com/users/mantas-mazeika",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:apollo-research:APO-P001": {
+"person": "Marius Hobbhahn",
+"accounts": [
+{
+"platform": "af",
+"slug": "marius-hobbhahn",
+"pageUrl": "https://www.alignmentforum.org/users/marius-hobbhahn",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "marius-hobbhahn",
+"pageUrl": "https://www.lesswrong.com/users/marius-hobbhahn",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:manifund:MF-P008": {
+"person": "Neel Nanda",
+"accounts": [
+{
+"platform": "af",
+"slug": "neel-nanda-1",
+"pageUrl": "https://www.alignmentforum.org/users/neel-nanda-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "neel-nanda-1",
+"pageUrl": "https://www.lesswrong.com/users/neel-nanda-1",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "neel-nanda",
+"pageUrl": "https://forum.effectivealtruism.org/users/neel-nanda",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:secure-ai-project:SAP-P001": {
+"person": "Nick Beckstead",
+"accounts": [
+{
+"platform": "af",
+"slug": "nick_beckstead",
+"pageUrl": "https://www.alignmentforum.org/users/nick_beckstead",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "nick_beckstead",
+"pageUrl": "https://forum.effectivealtruism.org/users/nick_beckstead",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "nick_beckstead",
+"pageUrl": "https://www.lesswrong.com/users/nick_beckstead",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:constellation-institute:CI-P001": {
+"person": "Nicole Ross",
+"accounts": [
+{
+"platform": "ea",
+"slug": "nicole_ross",
+"pageUrl": "https://forum.effectivealtruism.org/users/nicole_ross",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "nicole-ross",
+"pageUrl": "https://www.lesswrong.com/users/nicole-ross",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:apollo-research:APO-P011": {
+"person": "Owain Evans",
+"accounts": [
+{
+"platform": "af",
+"slug": "owain_evans",
+"pageUrl": "https://www.alignmentforum.org/users/owain_evans",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "owain_evans",
+"pageUrl": "https://www.lesswrong.com/users/owain_evans",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "owain_evans",
+"pageUrl": "https://forum.effectivealtruism.org/users/owain_evans",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:alignment-research-center:ARC-P001": {
+"person": "Paul Christiano",
+"accounts": [
+{
+"platform": "ea",
+"slug": "paul_christiano",
+"pageUrl": "https://forum.effectivealtruism.org/users/paul_christiano",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:institute-for-ai-policy-and-strategy:IAPS-P038": {
+"person": "Peter Wildeford",
+"accounts": [
+{
+"platform": "ea",
+"slug": "peter_wildeford",
+"pageUrl": "https://forum.effectivealtruism.org/users/peter_wildeford",
+"basis": "name-slug (self-disclosed real name as handle)"
+},
+{
+"platform": "lw",
+"slug": "peter_hurford",
+"pageUrl": "https://www.lesswrong.com/users/peter_hurford",
+"basis": "bio self-disclosure"
+}
+]
+},
+"person_source_local:effective-ventures:EV-P002": {
+"person": "Rob Gledhill",
+"accounts": [
+{
+"platform": "ea",
+"slug": "oldman",
+"pageUrl": "https://forum.effectivealtruism.org/users/oldman",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:redwood-research:RW-P002": {
+"person": "Ryan Greenblatt",
+"accounts": [
+{
+"platform": "af",
+"slug": "ryan_greenblatt",
+"pageUrl": "https://www.alignmentforum.org/users/ryan_greenblatt",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "ryan_greenblatt",
+"pageUrl": "https://www.lesswrong.com/users/ryan_greenblatt",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "ea",
+"slug": "ryan-greenblatt-2",
+"pageUrl": "https://forum.effectivealtruism.org/users/ryan-greenblatt-2",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:mats:MATS-P001": {
+"person": "Ryan Kidd",
+"accounts": [
+{
+"platform": "ea",
+"slug": "ryan-kidd",
+"pageUrl": "https://forum.effectivealtruism.org/users/ryan-kidd",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "af",
+"slug": "ryankidd44",
+"pageUrl": "https://www.alignmentforum.org/users/ryankidd44",
+"basis": "single-slug-across-platforms"
+},
+{
+"platform": "lw",
+"slug": "ryankidd44",
+"pageUrl": "https://www.lesswrong.com/users/ryankidd44",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"person_source_local:centre-for-effective-altruism:CEA-P001": {
+"person": "Zachary Robinson",
+"accounts": [
+{
+"platform": "ea",
+"slug": "zachary-robinson",
+"pageUrl": "https://forum.effectivealtruism.org/users/zachary-robinson",
+"basis": "single-slug-across-platforms"
+}
+]
+},
+"discovery_source_local:ND006-001": {
+"person": "Peter Barnett",
+"accounts": [
+{
+"platform": "lw",
+"slug": "peterbarnett",
+"pageUrl": "https://www.lesswrong.com/users/peterbarnett",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "af",
+"slug": "peterbarnett",
+"pageUrl": "https://www.alignmentforum.org/users/peterbarnett",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "peterbarnett",
+"pageUrl": "https://forum.effectivealtruism.org/users/peterbarnett",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND006-003": {
+"person": "Rose Hadshar",
+"accounts": [
+{
+"platform": "af",
+"slug": "rosehadshar",
+"pageUrl": "https://www.alignmentforum.org/users/rosehadshar",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "rosehadshar",
+"pageUrl": "https://forum.effectivealtruism.org/users/rosehadshar",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "rosehadshar",
+"pageUrl": "https://www.lesswrong.com/users/rosehadshar",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:effective-ventures:EV-P010": {
+"person": "Claire Zabel",
+"accounts": [
+{
+"platform": "lw",
+"slug": "clairezabel",
+"pageUrl": "https://www.lesswrong.com/users/clairezabel",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "clairezabel",
+"pageUrl": "https://forum.effectivealtruism.org/users/clairezabel",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:redwood-research:RW-P031": {
+"person": "Matt MacDermott",
+"accounts": [
+{
+"platform": "af",
+"slug": "mattmacdermott",
+"pageUrl": "https://www.alignmentforum.org/users/mattmacdermott",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "mattmacdermott",
+"pageUrl": "https://www.lesswrong.com/users/mattmacdermott",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND004-018": {
+"person": "Abraham Rowe",
+"accounts": [
+{
+"platform": "ea",
+"slug": "abrahamrowe",
+"pageUrl": "https://forum.effectivealtruism.org/users/abrahamrowe",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND002-002": {
+"person": "Lisa Thiergart",
+"accounts": [
+{
+"platform": "af",
+"slug": "lisathiergart",
+"pageUrl": "https://www.alignmentforum.org/users/lisathiergart",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "lisathiergart",
+"pageUrl": "https://www.lesswrong.com/users/lisathiergart",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND004-017": {
+"person": "Abi Olvera",
+"accounts": [
+{
+"platform": "ea",
+"slug": "abiolvera",
+"pageUrl": "https://forum.effectivealtruism.org/users/abiolvera",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND003-008": {
+"person": "Justin Shovelain",
+"accounts": [
+{
+"platform": "lw",
+"slug": "justinshovelain",
+"pageUrl": "https://www.lesswrong.com/users/justinshovelain",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "af",
+"slug": "justinshovelain",
+"pageUrl": "https://www.alignmentforum.org/users/justinshovelain",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "justinshovelain",
+"pageUrl": "https://forum.effectivealtruism.org/users/justinshovelain",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND006-009": {
+"person": "Akash Wasil",
+"accounts": [
+{
+"platform": "af",
+"slug": "akash-wasil",
+"pageUrl": "https://www.alignmentforum.org/users/akash-wasil",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "akash-wasil",
+"pageUrl": "https://www.lesswrong.com/users/akash-wasil",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND006-016": {
+"person": "Cullen O'Keefe",
+"accounts": [
+{
+"platform": "af",
+"slug": "cullen_okeefe",
+"pageUrl": "https://www.alignmentforum.org/users/cullen_okeefe",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "cullen_okeefe",
+"pageUrl": "https://www.lesswrong.com/users/cullen_okeefe",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:miri:MIRI-P007": {
+"person": "Anna Salamon",
+"accounts": [
+{
+"platform": "lw",
+"slug": "annasalamon",
+"pageUrl": "https://www.lesswrong.com/users/annasalamon",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "annasalamon",
+"pageUrl": "https://forum.effectivealtruism.org/users/annasalamon",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:ea-funds:EF-P005": {
+"person": "Karolina Sarek",
+"accounts": [
+{
+"platform": "ea",
+"slug": "karolinasarek",
+"pageUrl": "https://forum.effectivealtruism.org/users/karolinasarek",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:govai:GA-P003": {
+"person": "Markus Anderljung",
+"accounts": [
+{
+"platform": "af",
+"slug": "markusanderljung",
+"pageUrl": "https://www.alignmentforum.org/users/markusanderljung",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "markusanderljung",
+"pageUrl": "https://forum.effectivealtruism.org/users/markusanderljung",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "markusanderljung",
+"pageUrl": "https://www.lesswrong.com/users/markusanderljung",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:miri:MIRI-P004": {
+"person": "Alex Vermeer",
+"accounts": [
+{
+"platform": "lw",
+"slug": "alexvermeer",
+"pageUrl": "https://www.lesswrong.com/users/alexvermeer",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "alexvermeer",
+"pageUrl": "https://forum.effectivealtruism.org/users/alexvermeer",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:effective-ventures:EV-P003": {
+"person": "Lincoln Quirk",
+"accounts": [
+{
+"platform": "lw",
+"slug": "lincolnquirk",
+"pageUrl": "https://www.lesswrong.com/users/lincolnquirk",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:impact-ops:IOP-P022": {
+"person": "Andrew Leeke",
+"accounts": [
+{
+"platform": "ea",
+"slug": "andrewleeke",
+"pageUrl": "https://forum.effectivealtruism.org/users/andrewleeke",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND004-015": {
+"person": "Kevin Wei",
+"accounts": [
+{
+"platform": "lw",
+"slug": "kevinwei",
+"pageUrl": "https://www.lesswrong.com/users/kevinwei",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "ea",
+"slug": "kevinwei",
+"pageUrl": "https://forum.effectivealtruism.org/users/kevinwei",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:berkeley-existential-risk-initiative:BERI-P001": {
+"person": "Elizabeth Cooper",
+"accounts": [
+{
+"platform": "ea",
+"slug": "elizabethcooper",
+"pageUrl": "https://forum.effectivealtruism.org/users/elizabethcooper",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "elizabethcooper",
+"pageUrl": "https://www.lesswrong.com/users/elizabethcooper",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:secure-ai-project:SAP-P002": {
+"person": "Thomas Woodside",
+"accounts": [
+{
+"platform": "ea",
+"slug": "thomas_woodside",
+"pageUrl": "https://forum.effectivealtruism.org/users/thomas_woodside",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:animal-charity-evaluators:ACE-P004": {
+"person": "Amy Odene",
+"accounts": [
+{
+"platform": "ea",
+"slug": "amyodene",
+"pageUrl": "https://forum.effectivealtruism.org/users/amyodene",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:founders-pledge:FP-P012": {
+"person": "Luke Ding",
+"accounts": [
+{
+"platform": "ea",
+"slug": "lukeding",
+"pageUrl": "https://forum.effectivealtruism.org/users/lukeding",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND006-026": {
+"person": "Katie Glass",
+"accounts": [
+{
+"platform": "ea",
+"slug": "katieglass-1",
+"pageUrl": "https://forum.effectivealtruism.org/users/katieglass-1",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"registry_source_local_person:pivotal-research::PIV-R025:subject": {
+"person": "Michel Justen",
+"accounts": [
+{
+"platform": "lw",
+"slug": "micheljusten",
+"pageUrl": "https://www.lesswrong.com/users/micheljusten",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:givewell:GW-P001": {
+"person": "Elie Hassenfeld",
+"accounts": [
+{
+"platform": "ea",
+"slug": "eliehassenfeld",
+"pageUrl": "https://forum.effectivealtruism.org/users/eliehassenfeld",
+"basis": "name-slug (bio-recall grep)"
+},
+{
+"platform": "lw",
+"slug": "eliehassenfeld",
+"pageUrl": "https://www.lesswrong.com/users/eliehassenfeld",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:coefficient-giving:CG-PE023": {
+"person": "Abie Rohrig",
+"accounts": [
+{
+"platform": "lw",
+"slug": "abierohrig",
+"pageUrl": "https://www.lesswrong.com/users/abierohrig",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"discovery_source_local:ND004-012": {
+"person": "Alex Zhu",
+"accounts": [
+{
+"platform": "ea",
+"slug": "alexzhu",
+"pageUrl": "https://forum.effectivealtruism.org/users/alexzhu",
+"basis": "name-slug (bio-recall grep)"
+}
+]
+},
+"person_source_local:ea-funds:EF-P033": {
+"person": "Evan Hubinger",
+"accounts": [
+{
+"platform": "af",
+"slug": "evhub",
+"pageUrl": "https://www.alignmentforum.org/users/evhub",
+"basis": "bio-self-disclosure"
+},
+{
+"platform": "lw",
+"slug": "evhub",
+"pageUrl": "https://www.lesswrong.com/users/evhub",
+"basis": "bio-self-disclosure"
+},
+{
+"platform": "ea",
+"slug": "evhub",
+"pageUrl": "https://forum.effectivealtruism.org/users/evhub",
+"basis": "bio-self-disclosure"
+}
+]
+},
+"person_source_local:future-of-life-institute:FLI-P004": {
+"person": "Victoria Krakovna",
+"accounts": [
+{
+"platform": "af",
+"slug": "vika",
+"pageUrl": "https://www.alignmentforum.org/users/vika",
+"basis": "bio-self-disclosure"
+},
+{
+"platform": "lw",
+"slug": "vika",
+"pageUrl": "https://www.lesswrong.com/users/vika",
+"basis": "bio-self-disclosure"
+}
+]
+},
+"discovery_source_local:ND004-016": {
+"person": "Stefan Heimersheim",
+"accounts": [
+{
+"platform": "lw",
+"slug": "stefan42",
+"pageUrl": "https://www.lesswrong.com/users/stefan42",
+"basis": "bio-self-disclosure"
+},
+{
+"platform": "af",
+"slug": "stefan42",
+"pageUrl": "https://www.alignmentforum.org/users/stefan42",
+"basis": "bio-self-disclosure"
+}
+]
+}
+}

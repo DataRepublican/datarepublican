@@ -1,0 +1,165 @@
+# The tools index — the single source of truth for what the site offers.
+#
+# This replaces a structure that used to be written out three times: the link
+# list in _includes/header.html, the `page.url contains` active-state
+# conditions next to it, and the product-category blocks in index.html. Adding
+# a tool now means adding one entry here.
+#
+# Fields
+#   href         route, with a trailing slash
+#   name         card title
+#   tagline      one line under the title, sentence case, no full stop
+#   description  two lines at most; shown on feature cards and as the
+#                meta description hint
+#   rank         manual order for the "Featured" sort
+#   updated      ISO date, taken from the last commit touching the tool's
+#                directory. `git log -1 --format=%ad --date=short -- <dir>`
+#                Keep it honest — it drives the default sort.
+#   category     grouping for the "Category" sort. Mirrors the old subnav.
+#   preview      filename under assets/images/products/
+#   feature      true renders the tall card with copy overlaid on the image
+
+- href: /ea-explorer/
+  name: EA explorer
+  tagline: Effective altruism, in their own words
+  description: >-
+    Read what effective altruists actually argue — verbatim, sourced — and map
+    how the people and money behind the movement connect.
+  rank: 1
+  updated: 2026-09-21
+  category: Networks & influence
+  preview: ea-explorer.webp
+  feature: true
+
+- href: /dsa-explorer/
+  name: DSA explorer
+  tagline: Ideology map of the solidarity funding network
+  description: >-
+    Explore how organizations, people, and funding tie together across
+    ideological currents, and country spheres.
+  rank: 2
+  updated: 2026-08-31
+  category: Networks & influence
+  preview: dsa-explorer.webp
+  feature: true
+
+- href: /noblogs/
+  name: TrumpBlogs
+  tagline: Map of the anarchist & antifascist blog network
+  description: >-
+    Explore where they cluster geographically, whose reading lists overlap,
+    and which institutions they cite as authority.
+  rank: 3
+  updated: 2026-08-31
+  category: Networks & influence
+  preview: noblogs.webp
+  feature: true
+
+- href: /browse/
+  name: Charity explorer
+  tagline: Browse the money flows visually
+  description: >-
+    Trace funding between organizations as a Sankey chart. The US government
+    is shown as the ultimate NGO — follow the money.
+  rank: 4
+  updated: 2025-08-23
+  category: Charity funding & financials
+  preview: charity-browse.webp
+  # The fourth feature card, so the top block reads as an even 2x2 on desktop
+  # rather than three big cards and one half-width one wrapping beside them.
+  # charity-browse.webp is 900x499, which covers the 768px feature box.
+  feature: true
+- href: /expose/
+  name: Charity graph
+  tagline: Visualize how the money flows
+  description: >-
+    Financial connections among charitable organizations, focused on taxpayer
+    funds received.
+  rank: 5
+  updated: 2025-06-13
+  category: Charity funding & financials
+  preview: charity-graph.webp
+- href: /ned/
+  name: NED explorer
+  tagline: The National Endowment for Democracy, indexed
+  description: >-
+    Search the NED's own grant records and the Journal of Democracy archive.
+  rank: 6
+  updated: 2025-05-15
+  category: Networks & influence
+  preview: ned.webp
+- href: /officers/
+  name: Principal officer search
+  tagline: Search NGOs for officers and salaries
+  description: >-
+    Identify relationships between nonprofits and the people who run them.
+  rank: 7
+  updated: 2025-03-06
+  category: People, officers & salaries
+  preview: officer-search.webp
+- href: /officers/bulk/
+  name: Bulk officer search
+  tagline: Search and cross-reference names
+  description: >-
+    Cross-reference a whole board at once to find affiliations between
+    organizations and their members.
+  rank: 8
+  updated: 2025-03-01
+  category: People, officers & salaries
+  preview: bulk-officer-search.webp
+- href: /nonprofit/
+  name: Charity funding
+  tagline: Discover the percentage of taxpayer funds used
+  description: >-
+    Financial detail on 501(c)(3) organizations, including how much of their
+    funding comes from taxpayers.
+  rank: 9
+  updated: 2025-03-01
+  category: Charity funding & financials
+  preview: charity-funding.webp
+- href: /nonprofit/assets/
+  name: Nonprofit financials
+  tagline: Analyze assets & expenses
+  description: >-
+    Browse nonprofit financials and see how organizations allocate their funds.
+  rank: 10
+  updated: 2025-03-01
+  category: Charity funding & financials
+  preview: nonprofit-financials.webp
+- href: /award_search/
+  name: Federal grant search
+  tagline: Map funds to connected orgs
+  description: >-
+    Search federal grant awards by keyword and cross-reference them against
+    taxpayer funding.
+  rank: 11
+  updated: 2025-02-14
+  category: Political campaign & grant funding
+  preview: award-search.webp
+- href: /florida/
+  name: Florida turnout
+  tagline: County-level early voting and registration
+  description: >-
+    Early voting, mail ballots and registration by county, against prior cycles.
+  rank: 12
+  updated: 2025-04-01
+  category: Voter turnout analysis
+  preview: florida.webp
+- href: /pennsylvania/
+  name: Pennsylvania turnout
+  tagline: County-level mail voting and registration
+  description: >-
+    Mail voting and registration by county, against prior cycles.
+  rank: 13
+  updated: 2025-02-04
+  category: Voter turnout analysis
+  preview: pennsylvania.webp
+- href: /northcarolina/
+  name: North Carolina turnout
+  tagline: County-level early voting and registration
+  description: >-
+    Filter 5.3 million voter records by party, method, race, age and more.
+  rank: 14
+  updated: 2024-10-30
+  category: Voter turnout analysis
+  preview: northcarolina.webp

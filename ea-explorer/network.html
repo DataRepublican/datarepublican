@@ -1,0 +1,971 @@
+---
+layout: default
+title: EA Explorer
+permalink: /ea-explorer/network/
+redirect_from:
+  - /ea-explorer/network.html
+---
+
+<script src="/assets/js/cytoscape.min.js"></script>
+<script src="/assets/js/lib/papaparse-5.5.1.min.js"></script>
+<script src="/ea-explorer/logos/index.js"></script>
+
+<style>
+  /* Tokens are scoped to #app (never :root); the disclaimer <dialog> lives
+     outside #app and reads only the site --dr-* tokens. */
+  #app{
+    --bg:    var(--dr-surface, #E5E7EB);
+    --panel: var(--dr-panel, #FFFFFF);
+    --ink:   #1A1A1A;
+  }
+  *{box-sizing:border-box}
+  /* dvh tracks the real viewport; --ea-app-top is measured at runtime (the site
+     masthead is also a <header> and comes first in the DOM); --nav-clearance is
+     the floating phone nav pill. */
+  #app{display:grid;grid-template-columns:1fr 340px;grid-template-rows:auto 1fr;
+    height:calc(100dvh - var(--ea-app-top,7rem) - var(--nav-clearance));
+    /* modest floor only – a large min-height would force #app taller than the
+       viewport on short windows and push the stage-anchored legend below the
+       fold. Keep it small so the map fits the browser height. */
+    min-height:14rem;font-family:var(--dr-font-content,"Libre Franklin","Helvetica Neue",Arial,sans-serif);
+    color:var(--ink);background:var(--bg)}
+
+  /* ---- Tool header: identity + legal, then the lens/search controls.
+     Scoped to #ea-header (not a bare `header`, to avoid the site masthead).
+     No horizontal padding of its own: #app sits inside main.page-column,
+     which already set the gutter. */
+  /* Top padding is the gap under the site tagline; noblogs is the
+     reference at 32px above md and 26px below. */
+  #ea-header{grid-column:1/3;padding:22px 0 12px;background:var(--bg);
+    display:flex;flex-direction:column;gap:10px}
+  .ea-idrow{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+  .ea-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+  #ea-header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.2;color:var(--dr-ink-strong,#000)}
+  #ea-header .sub{font-size:var(--dr-text-meta,13px);color:var(--dr-ink-faint,#6B7280);line-height:1.35}
+  #ea-header .sub[data-tip]{cursor:help;text-decoration:underline dotted;text-underline-offset:3px}
+  /* right side of the id row: project switcher + disclaimer */
+  /* Wraps rather than holding its width: this row of links is wider than a
+     phone, and `flex:0 0 auto` on it widened the LAYOUT VIEWPORT – innerWidth
+     came back 559 on a 390px device, so every other element measured against
+     a viewport that did not exist. */
+  .ea-idright{display:flex;flex-wrap:wrap;align-items:center;gap:10px;flex:0 1 auto;min-width:0}
+  /* project switcher – graceful move between the two sub-projects (graph / words) */
+  .ea-switch{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,#D3D7DE);
+    border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
+  .ea-switch a{padding:6px 11px;border-radius:var(--dr-radius-sm,6px);font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);
+    white-space:nowrap;text-decoration:none}
+  .ea-switch a:hover{color:var(--dr-ink-strong,#000)}
+  .ea-switch a.on{background:var(--panel);color:var(--dr-accent,#252739);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  /* home breadcrumb back to the hub, and the "What is EA?" guided-intro link */
+  /* "read their quotes" cross-link into the words sub-project */
+  #panel .wordslink{display:block;margin:12px 0 2px;padding:9px 12px;background:var(--dr-accent-tint,#DEE0E8);
+    border:1px solid var(--dr-accent-tint-line,#C3C7D6);border-radius:8px;font-family:var(--dr-font-ui);
+    font-size:12.5px;font-weight:600;color:var(--dr-accent,#252739);text-decoration:none}
+  #panel .wordslink:hover{background:var(--dr-fill,#EFF1F4)}
+  #panel .wordslink .n{color:var(--dr-ink-faint,#6B7280);font-weight:400}
+
+  .ea-controls{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+  /* segmented lens switcher – this tool has three views, so a real toggle
+     (dsa-explorer has one view and omits it). Buttons reset off the global
+     slate `button{}` rule. */
+  .ea-lenses{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
+  .ea-lenses button{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;cursor:pointer;
+    padding:6px 11px;border-radius:var(--dr-radius-sm,6px);font-family:var(--dr-font-ui);
+    font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);white-space:nowrap}
+  .ea-lenses button.on{background:var(--panel);color:var(--dr-accent,#252739);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .ea-lenses button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+
+  /* kind filter – people vs organizations; a secondary segmented control that
+     composes with whatever the active lens is already showing. */
+  .ea-kinds{display:flex;gap:2px;background:var(--dr-fill,#EFF1F4);border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-control,.625rem);padding:3px;flex:0 0 auto}
+  .ea-kinds button{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;cursor:pointer;padding:6px 10px;border-radius:var(--dr-radius-sm,6px);font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);white-space:nowrap}
+  .ea-kinds button.on{background:var(--panel);color:var(--dr-accent,#252739);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .ea-kinds button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+
+  /* The search is a LABEL wrapping the input, magnifier inside the field.
+     Scoped `.ea-search #q`, never a bare `#q`. */
+  .ea-search{display:flex;align-items:center;gap:8px;flex:1 1 14rem;min-width:0;
+    height:var(--dr-tap,2.75rem);padding:0 14px;background:var(--panel);
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-pill,9999px)}
+  .ea-search:focus-within{border-color:var(--dr-line-strong,#878D99);outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  .ea-search svg{flex:none;color:var(--dr-ink-faint,#6B7280)}
+  .ea-search #q{flex:1 1 auto;min-width:0;appearance:none;border:0;background:none;padding:0;margin:0;
+    color:var(--ink);font-family:inherit;font-size:var(--dr-text-body,16px)}
+  .ea-search #q:focus{outline:none}
+  .ea-search #q::placeholder{color:var(--dr-ink-faint,#6B7280)}
+
+  @media(min-width:768px){
+    #ea-header{padding:28px 0 14px;gap:12px}
+    /* Desktop order: lenses, kinds, search, then the disclaimer pushed to
+       the right edge. The DOM keeps it next to .ea-kinds so that on a
+       phone the two wrap onto the same row instead of it taking a row of
+       its own under the search. */
+    .ea-search{order:3}
+    #ea-disclaimer-open{order:4;margin-left:auto}
+    #ea-header h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
+    .ea-id{flex-direction:row;align-items:baseline;gap:12px}
+    .ea-search{flex:0 1 22rem;height:2.25rem}
+    .ea-search #q{font-size:var(--dr-text-dense,14px)}
+  }
+
+  #cy{width:100%;height:100%;background:radial-gradient(circle at 50% 42%, var(--dr-panel,#fff) 0%, var(--dr-fill-quiet,#F2F2EE) 72%)}
+  /* isolation:isolate contains Cytoscape's z-index. */
+  #stage{position:relative;overflow:hidden;isolation:isolate;grid-column:1;grid-row:2;
+    border:1px solid var(--dr-line,#D3D7DE);border-radius:var(--dr-radius-lg,.75rem)}
+  /* Canvas + panel are two grid children making one band; draw the box in halves. */
+  @media(min-width:768px){
+    #app:not(.panel-collapsed) #stage{border-right:0;border-radius:var(--dr-radius-lg,.75rem) 0 0 var(--dr-radius-lg,.75rem)}
+    #app:not(.panel-collapsed) #panel{border-block:1px solid var(--dr-line,#D3D7DE);
+      border-right:1px solid var(--dr-line,#D3D7DE);border-radius:0 var(--dr-radius-lg,.75rem) var(--dr-radius-lg,.75rem) 0}
+  }
+  /* the site's global button{} rule paints slate bg + white text; restore
+     readable dark-on-light for the canvas controls. */
+  #stage button{color:var(--ink);background:var(--panel);min-width:0;margin:0;font-weight:500}
+  #controls button[aria-pressed="true"]{background:var(--dr-accent,#252739);color:#fff;border-color:var(--dr-accent,#252739)}
+  #controls button:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:2px}
+  #controls{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:6px;z-index:var(--dr-z-canvas-ui,20)}
+  #controls .dr-btn{box-shadow:0 2px 8px rgba(0,0,0,.08);border-radius:var(--dr-radius-control,.625rem)}
+  @media(min-width:768px){
+    #controls .dr-btn{min-height:var(--dr-tap-sm,2rem);padding:0 12px;font-size:12px}
+    #controls .dr-btn--icon{width:var(--dr-tap-sm,2rem);padding:0}
+  }
+  #app.panel-collapsed{grid-template-columns:1fr 0}
+  #app.panel-collapsed #panel{display:none}
+
+  /* legend – slim bottom bar (chips) + full key that expands upward (dsa-explorer style) */
+  #legend{position:absolute;left:12px;bottom:12px;z-index:var(--dr-z-canvas-ui,20);display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 24px);font-size:12px}
+  #legend .legbar{background:rgba(255,255,255,.96);border:1px solid var(--dr-line,#D3D7DE);border-radius:8px;padding:5px 8px;display:flex;align-items:flex-end;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  #legend .legtoggle{appearance:none;border:1px solid var(--dr-line-strong,#878D99);border-radius:6px;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);padding:4px 8px;cursor:pointer;white-space:nowrap;font-weight:600;flex:0 0 auto;align-self:flex-end;background:var(--panel);color:var(--ink);min-width:0}
+  #legend .legtoggle:hover{background:var(--dr-fill,#EFF1F4)}
+  #legend .legchips{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1 1 auto;min-width:0}
+  #legend .chip{appearance:none;border:0;margin:0;min-width:0;background:none;font:inherit;color:inherit;display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:var(--dr-radius-pill,9999px);cursor:pointer;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);white-space:nowrap}
+  #legend .chip:hover{background:var(--dr-fill,#F2F2EC)}
+  #legend .chip.sel{font-weight:700;background:var(--dr-accent-tint,#DEE0E8)}
+  #legend .chip.off{opacity:.34}
+  #legend .chip:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px}
+  #legend .chip .sw{width:11px;height:11px;border-radius:50%;flex:0 0 auto}
+  #legend .legfull{background:rgba(255,255,255,.97);border:1px solid var(--dr-line,#D3D7DE);border-radius:8px;padding:10px 12px;max-width:280px;max-height:clamp(140px, calc(100dvh - 300px), 70vh);overflow-y:auto;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+  #legend:not(.expanded) .legfull{display:none}
+  #legend h4{margin:0 0 6px;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);text-transform:none;letter-spacing:normal}
+  #legend .row{appearance:none;border:0;margin:3px 0;min-width:0;background:none;font:inherit;color:inherit;text-align:left;width:100%;padding:2px 4px;display:flex;align-items:center;gap:8px;cursor:pointer}
+  #legend .row.off{opacity:.35}
+  #legend .row.sel{font-weight:700}
+  #legend .row:hover{background:var(--dr-fill,#F2F2EC);border-radius:4px}
+  #legend .row:focus-visible{outline:2px solid var(--dr-accent,#252739);outline-offset:1px;border-radius:4px}
+  #legend .dot{width:12px;height:12px;border-radius:50%;flex:0 0 auto}
+  #legend .n{color:var(--dr-ink-faint,#6B7280);margin-left:4px}
+  #legend .divider{height:1px;background:var(--dr-line,#E2E2DD);margin:8px 0}
+  #legend .clear{appearance:none;border:0;background:none;min-width:0;font:inherit;margin:7px 0 0;padding:2px 4px;color:var(--dr-accent,#252739);font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;cursor:pointer;text-decoration:underline}
+  #legend .hint{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);margin-top:6px;line-height:1.45}
+  #legend .shapes{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-label,12px);margin-top:6px;line-height:1.4}
+  @media(min-width:768px){ #legend{max-height:none} }
+
+  /* detail panel – scoped to #panel, not a bare `aside` */
+  #panel{grid-column:2;grid-row:2;border-left:1px solid var(--dr-line,#E2E2DD);background:var(--panel);overflow:auto}
+  #panel-body{padding:16px 16px 24px}
+  #panel .empty{color:var(--dr-ink-faint,#6B7280);font-size:var(--dr-text-body,16px);line-height:1.5;margin-top:20px}
+  #panel .logo{width:64px;height:64px;object-fit:contain;background:var(--panel);border:1px solid var(--dr-line,#D3D7DE);border-radius:10px;padding:6px;margin-bottom:10px}
+  #panel h2{font-size:17px;margin:6px 0 4px;line-height:1.25;color:var(--dr-ink-strong,#000)}
+  #panel .kind{display:inline-block;font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:#fff;padding:2px 7px;border-radius:var(--dr-radius-sm,6px);margin:0 5px 5px 0;text-transform:none;letter-spacing:normal}
+  #panel .comms{margin:0 0 10px;display:flex;flex-wrap:wrap;gap:5px}
+  #panel .cpill{font-family:var(--dr-font-ui);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:20px;color:#fff}
+  #panel .meta{font-size:12.5px;color:var(--dr-ink-faint,#6B7280);margin:6px 0;line-height:1.4}
+  #panel .meta b{color:var(--ink)}
+  #panel .notes{font-size:13px;line-height:1.5;margin:12px 0;padding:10px 12px;background:var(--dr-fill-quiet,#F7F7F3);border-left:3px solid var(--dr-line,#ddd);border-radius:0 6px 6px 0;white-space:pre-wrap}
+  #panel .notes.clamp{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+  #panel .morebtn{appearance:none;display:inline-block;background:none;border:0;padding:0;margin:2px 0 0;color:var(--dr-accent,#252739);font-family:var(--dr-font-ui);font-size:12px;font-weight:600;cursor:pointer}
+  #panel a.src{display:inline-block;font-size:12.5px;color:#1155CC;word-break:break-all;margin-top:4px}
+  #panel h3{font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--dr-ink-faint,#6B7280);text-transform:none;letter-spacing:normal;margin:18px 0 6px;border-top:1px solid var(--dr-line,#EEE);padding-top:14px}
+
+  /* relationship rows – clickable header + evidence + source */
+  #panel .rel{font-size:12.5px;padding:7px 0;line-height:1.4;border-bottom:1px solid var(--dr-line,#F2F2F2)}
+  #panel .rel:last-child{border-bottom:none}
+  #panel .rel .head{display:flex;align-items:center;gap:7px;cursor:pointer}
+  #panel .rel .head:hover .who{color:#1155CC}
+  #panel .rel .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  #panel .rel .arrow{color:var(--dr-ink-faint,#999);flex:0 0 auto;font-size:11px}
+  #panel .rel .verb{color:var(--dr-ink-faint,#6B7280);flex:0 0 auto;font-style:italic}
+  #panel .rel .who{color:var(--ink);font-weight:600}
+  #panel .rel .sub{margin:5px 0 0 16px}
+  /* align-items:flex-start, not center: .verb below can wrap to several lines
+     and the chip belongs on the first one, not floating at the middle. */
+  #panel .rel .subhead{display:flex;align-items:flex-start;gap:6px}
+  /* The .verb here is free text out of edges.csv and runs to a full sentence,
+     unlike the "– N ties" .verb in .head, which is short and SHOULD hold its
+     width. Both matched `.verb{flex:0 0 auto}`, so the sentence kept its
+     max-content width and pushed the panel into horizontal scroll.
+     min-width:0 as well as the shrink factor – a flex item's default
+     min-width:auto floors it at min-content and it would still not wrap. */
+  #panel .rel .subhead .verb{flex:0 1 auto;min-width:0;overflow-wrap:break-word}
+  /* Same floor on the entity name, which is also data and also unbounded. */
+  #panel .rel .head .who{min-width:0;overflow-wrap:break-word}
+  #panel .rel .ecl{font-family:var(--dr-font-ui);font-size:9px;font-weight:700;letter-spacing:.4px;padding:1px 5px;border-radius:4px;color:#fff;flex:0 0 auto}
+  #panel .rel .ev{color:var(--ink);opacity:.82;font-size:11.5px;line-height:1.45;margin:4px 0 0}
+  #panel .rel .ev.clamp{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  #panel .rel .evmore{appearance:none;display:inline-block;background:none;border:0;padding:0;margin:1px 0 0;color:var(--dr-accent,#252739);font-family:var(--dr-font-ui);font-size:11px;font-weight:600;cursor:pointer}
+  #panel .rel .srcln{margin:4px 0 0}
+  #panel .rel .srcln a{font-size:11px;color:#1155CC;word-break:break-all;margin-right:8px}
+  #panel .rel .srcln .more{color:var(--dr-ink-faint,#6B7280);font-size:11px}
+
+  /* "in their own words" – verified authored quotes */
+  #panel .quote{margin:10px 0;padding:9px 11px;border-left:3px solid var(--dr-accent,#252739);background:var(--dr-fill-quiet,#F7F8FA);border-radius:0 8px 8px 0}
+  #panel .quote .q{font-size:12.5px;line-height:1.5;color:var(--ink);font-style:italic}
+  #panel .quote .ctx{font-size:11px;color:var(--dr-ink-faint,#6B7280);line-height:1.4;margin:5px 0 0}
+  #panel .quote .cite{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);margin:5px 0 0}
+  #panel .qnote{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);line-height:1.4;margin:6px 0 0}
+
+  /* EA-affiliation receipt (per-entity, receipted) */
+  #panel .earcpt{margin:6px 0 2px;padding:7px 10px;background:var(--dr-fill,#EFF1F4);border-radius:6px}
+  #panel .earung{font-family:var(--dr-font-ui);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--ink)}
+  #panel .eafound{font-size:11px;color:var(--dr-ink-faint,#6B7280);margin-top:3px;font-style:italic}
+  #panel .eaevlist{margin:5px 0 0}
+  #panel .eaev{margin:6px 0 0;padding:5px 0 0;border-top:1px dotted var(--dr-line,#D3D7DE)}
+  #panel .eaev:first-child{border-top:none;padding-top:0}
+  #panel .eaevtag{font-family:var(--dr-font-ui);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--dr-accent,#252739)}
+  #panel .eakind{font-weight:600;color:var(--dr-data-state,#B8860B);letter-spacing:0;text-transform:none}
+  #panel .eaq{font-size:11.5px;line-height:1.45;color:var(--dr-ink-faint,#6B7280);font-style:italic;margin:4px 0 0}
+  #panel .eaq a{font-style:normal;font-size:10.5px;color:#1155CC}
+  #panel .eaideo{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);margin:5px 0 0}
+  #panel .ideopill{display:inline-block;font-family:var(--dr-font-ui);font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:1px 6px;border-radius:10px;background:#7c6fb0;color:#fff}
+
+  /* selected writings (non-forum published works) */
+  #panel .work{margin:9px 0;padding:8px 0;border-bottom:1px solid var(--dr-line,#EEE)}
+  #panel .work:last-of-type{border-bottom:none}
+  #panel .work .wt a{font-size:12.5px;font-weight:600;color:#1155CC;word-break:normal}
+  #panel .work .wmeta{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);margin:2px 0 0}
+  #panel .work .quote{margin:8px 0 0}
+
+  /* forum presence chips */
+  #panel .forum{display:flex;flex-wrap:wrap;gap:6px}
+  #panel .fchip{display:inline-block;padding:4px 10px;border:1px solid var(--dr-line,#D3D7DE);border-radius:16px;font-family:var(--dr-font-ui);font-size:11.5px;font-weight:600;color:var(--dr-accent,#252739);text-decoration:none;background:var(--panel)}
+  #panel .fchip:hover{background:var(--dr-fill,#EFF1F4)}
+  #panel .fnote{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);line-height:1.4;margin:6px 0 0}
+
+  /* methodology block inside the disclaimer dialog */
+  .ea-method p{margin:10px 0;font-size:var(--dr-text-meta,13px);line-height:1.55}
+  .ea-method b{color:var(--dr-ink-strong,#000)}
+  .ea-legalbox{margin-top:12px;padding:11px 13px;background:var(--dr-legal-fill,#FBF3E4);border:1px solid var(--dr-legal-border,#E4C9A0);border-radius:8px;color:var(--dr-legal-ink,#6B5A3E);font-size:12.5px;line-height:1.5}
+
+  /* "See list" – a floating card, top-right of the stage, describing what is
+     currently shown or highlighted. Coexists with controls (top-left) and
+     legend (bottom-left). Rows select the entity into the detail panel. */
+  #listpanel{position:absolute;top:12px;right:12px;z-index:var(--dr-z-canvas-ui,20);width:300px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);display:none;flex-direction:column;background:var(--panel);border:1px solid var(--dr-line,#D3D7DE);border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.16);overflow:hidden}
+  #listpanel.open{display:flex}
+  #listpanel .lphead{padding:10px 12px;border-bottom:1px solid var(--dr-line,#E2E2DD);display:flex;align-items:flex-start;gap:8px;flex:0 0 auto}
+  #listpanel .lptitle{font-family:var(--dr-font-ui);font-weight:700;font-size:13px;color:var(--dr-ink-strong,#000);line-height:1.2}
+  #listpanel .lpstate{font-size:11px;color:var(--dr-ink-faint,#6B7280);line-height:1.35;margin-top:2px}
+  #listpanel .lpclose{appearance:none;border:0;background:none;cursor:pointer;font-size:15px;line-height:1;color:var(--dr-ink-faint,#6B7280);margin-left:auto;padding:2px 4px;min-width:0}
+  #listpanel .lpbody{overflow-y:auto;padding:4px 0}
+  #listpanel .lpgroup{font-family:var(--dr-font-ui);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--dr-ink-faint,#6B7280);padding:9px 12px 3px;display:flex;align-items:center;gap:6px}
+  #listpanel .lpgroup .gd{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  #listpanel .lprow{appearance:none;border:0;background:none;width:100%;text-align:left;display:flex;align-items:center;gap:8px;padding:5px 12px;cursor:pointer;font:inherit;color:var(--ink)}
+  #listpanel .lprow:hover{background:var(--dr-fill,#F2F2EC)}
+  #listpanel .lprow.sel{background:var(--dr-accent-tint,#DEE0E8)}
+  #listpanel .lprow .rd{width:10px;height:10px;border-radius:50%;flex:0 0 auto;border:1px solid rgba(0,0,0,.15)}
+  #listpanel .lprow .nm{font-size:12.5px;line-height:1.25;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #listpanel .lprow .dg{font-size:10.5px;color:var(--dr-ink-faint,#6B7280);flex:0 0 auto}
+  #listpanel .lpempty{padding:16px 12px;font-size:12px;color:var(--dr-ink-faint,#6B7280);line-height:1.5}
+
+  /* ---- Phone ----
+     Header sticks, canvas takes what's left, controls become a bottom rail, the
+     legend collapses to its toggle, and the detail panel becomes a DRSheet
+     bottom sheet (assets/js/sheet.js) rising over the canvas. */
+  @media(max-width:767px){
+    #app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
+    #ea-header{padding:22px 0 12px;position:sticky;top:0;z-index:var(--dr-z-sticky,30)}
+    #stage{grid-column:1;grid-row:2;height:calc(100dvh - var(--ea-stage-top,7rem) - var(--nav-clearance));min-height:20rem}
+    #cy{touch-action:pan-y}
+    #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
+    #controls::-webkit-scrollbar{display:none}
+    #controls .dr-btn{flex:0 0 auto}
+    #legend{left:8px;right:8px;bottom:60px;max-width:none}
+    #legend .legbar{padding:0;background:none;border:0;box-shadow:none}
+    #legend .legchips{display:none}
+    #legend.expanded .legchips{display:flex}
+    #legend .legtoggle{min-height:var(--dr-tap,2.75rem);border-radius:9999px;background:rgba(255,255,255,.95);padding:0 14px}
+    #legend .row,#legend .chip{min-height:var(--dr-tap,2.75rem);font-size:var(--dr-text-meta,13px)}
+    #legend .chip{padding:0 12px}
+    #legend .legfull{max-width:none;max-height:45dvh}
+    #listpanel{top:8px;right:8px;left:8px;width:auto;max-height:55dvh}
+    /* panel is positioned by .dr-sheet in the site stylesheet; undo grid + desktop border */
+    #panel{grid-column:1;grid-row:auto;border-left:none}
+    #panel-body{padding:0 16px 16px}
+  }
+</style>
+
+<div id="app">
+  <header id="ea-header">
+    <div class="ea-idrow">
+      <div class="ea-id">
+        <h1>EA Explorer</h1>
+        <div class="sub" id="counts" role="status" aria-live="polite" aria-atomic="true">Loading network…</div>
+      </div>
+      <div class="ea-idright">
+        <div class="ea-switch" title="Switch between the overview and the two views of the same ecosystem">
+          <a href="/ea-explorer/">Overview</a>
+          <a href="/ea-explorer/words/">Their words</a>
+          <a href="/ea-explorer/network/" class="on">The network</a>
+        </div>
+      </div>
+    </div>
+    <div class="ea-controls">
+      <div class="ea-lenses" role="tablist" aria-label="Map lens">
+        <button type="button" data-lens="overview" class="on" role="tab" aria-selected="true">Overview</button>
+        <button type="button" data-lens="money" role="tab" aria-selected="false">Money flow</button>
+        <button type="button" data-lens="reach" role="tab" aria-selected="false">EA affiliation</button>
+      </div>
+      <div class="ea-kinds" role="group" aria-label="Filter by entity type">
+        <button type="button" data-kind="all" class="on" aria-pressed="true">All</button>
+        <button type="button" data-kind="person" aria-pressed="false">People</button>
+        <button type="button" data-kind="org" aria-pressed="false">Orgs</button>
+      </div>
+      <button type="button" class="dr-dialog-open" id="ea-disclaimer-open" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        About &amp; disclaimer
+      </button>
+      <label class="ea-search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="text" placeholder="Find an org or person…" autocomplete="off" aria-label="Find an org or person on the graph">
+      </label>
+    </div>
+  </header>
+
+  <div id="stage">
+    <div id="cy"></div>
+    <div id="controls">
+      <button type="button" id="zin" class="dr-btn dr-btn--icon" aria-label="Zoom in" data-tip="Zoom in"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+      <button type="button" id="zout" class="dr-btn dr-btn--icon" aria-label="Zoom out" data-tip="Zoom out"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+      <button type="button" id="fit" class="dr-btn dr-btn--icon" aria-label="Reset view" data-tip-title="Reset view" data-tip="Fit the whole visible graph back into view."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+      <button type="button" id="relayout" class="dr-btn dr-btn--icon" aria-pressed="false" aria-label="Group by connections" data-tip-title="Group by connections" data-tip="Re-arrange the visible nodes so tightly-connected ones pull together (does not hide or add any nodes). Press again to restore the default layout."><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="6" r="2.5"/><circle cx="19" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7 7.5 10.5 16M17 7.5 13.5 16M6.5 6h11"/></svg><span class="dr-btn__dot" id="relayoutState" aria-hidden="true" hidden></span></button>
+      <button type="button" id="seelist" class="dr-btn dr-btn--icon" aria-pressed="false" aria-label="See a list of what's on the map" data-tip-title="See list" data-tip="List the entities currently shown or highlighted on the map. Click a row to open its card."><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+    </div>
+    <div id="legend"></div>
+    <div id="listpanel" aria-live="polite"></div>
+  </div>
+
+  <aside id="panel">
+    <div id="panel-body"><div class="empty">Click a node to see its role, bio, receipts, and connections.<br><br>Click a relationship row to follow the network one entity at a time.</div></div>
+  </aside>
+</div>
+
+{%- comment -%} showModal(), never show() – see assets/css/components/dialog.css. Outside #app on purpose. {%- endcomment -%}
+<dialog class="dr-dialog" id="ea-disclaimer" aria-labelledby="ea-disclaimer-title">
+  <div class="dr-dialog__head">
+    <h2 id="ea-disclaimer-title">About this map &amp; disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="ea-disclaimer-close" aria-label="Close" data-tip="Close">✕</button>
+  </div>
+  <div class="dr-dialog__body">
+    <div class="ea-method">
+      <p>A research map of the effective-altruism / AI-safety ecosystem, compiled from public sources. Nodes are organizations, projects, people, and concepts; edges are documented relationships – each shown on the entity’s card with an evidence excerpt and a source link.</p>
+      <p><b>Lenses.</b> <b>Overview</b> colors nodes by community. <b>Money flow</b> shows publicly reported funding (capital → grantmakers → recipients). <b>EA affiliation</b> places entities by how strong their documented link to EA is – strongest at the center.</p>
+      <p><b>How categories are assigned.</b> A person’s EA affiliation is graded from public evidence and shown with the receipt: self-identification in their own words, a documented role at an EA organization, participation in EA forums or events, or receipt of EA-affiliated funding. Organizations and projects are graded the same way. A large independent institution – a university, a government body, or a major commercial lab – is <b>not</b> labeled EA merely because EA-affiliated people work there or it has received EA money; that is EA reaching into an institution, not the institution being EA. Ideology tags (longtermist, rationalist, AI-safety) are tracked separately and are <b>not</b> folded into EA affiliation.</p>
+      <div class="ea-legalbox">
+        <b>Limitations &amp; disclaimer.</b> Provided for research, educational, and journalistic purposes only. Compiled from publicly available sources and offered “as is” without warranty of any kind; it may contain errors or omissions and is not represented as complete, current, or 100% accurate. EA-affiliation tiers, ideology tags, funding roles, and other associations are automated analytical interpretations, <b>not statements of fact</b> – a label describes association only, not control or direction, and nothing here alleges unlawful conduct by any named person or organization. Each placement is backed by a citation you can check; please verify before relying on it. Quotes are verbatim from material the person authored, linked to the full source so context is preserved. The author disclaims all liability for any use of, or reliance on, its contents.
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  const KIND_COLOR = {person:'#2b6cb0', org:'#c0392b', project:'#2e8b57', concept:'#8e44ad'};
+  const KIND_SHAPE = {person:'ellipse', org:'round-rectangle', project:'round-rectangle', concept:'diamond'};
+  const COMM_COLOR = {ea:'#e67e22', safety:'#e74c3c', gov:'#2f80c9', rat:'#9b59b6', fund:'#16a085', '':'#aeb6bf'};
+  const COMM_NAME  = {ea:'Effective altruism', safety:'AI safety / alignment', gov:'AI governance / policy', rat:'Rationalist', fund:'Funder / philanthropy'};
+  const MONEY_COLOR = {capital:'#27ae60', grantmaker:'#f39c12', recipient:'#3a7bd5'};
+  const MONEY_NAME  = {capital:'Capital provider', grantmaker:'Grantmaker / pass-through', recipient:'Recipient'};
+  const EA_TIER_COLOR = {core:'#c0392b', embedded:'#e67e22', adjacent:'#5dade2', outside:'#aeb6bf'};
+  const EA_TIER_NAME  = {core:'Explicitly EA', embedded:'EA-funded, -staffed, or -founded',
+                         adjacent:'EA-connected (one step out)', outside:'No documented EA link'};
+  const EDGE_COLOR = {FINANCIAL:'#16a085', COLLAB:'#8e44ad', EMPLOYMENT:'#2f80c9', GOVERNANCE:'#e67e22', STRUCTURAL:'#7f8c8d', OTHER:'#b0b7c0'};
+  const IDEO_COLOR = {longtermist:'#8e44ad', rationalist:'#e67e22', ai_safety:'#e74c3c'};
+  const IDEO_NAME  = {longtermist:'Longtermist', rationalist:'Rationalist', ai_safety:'AI safety'};
+  const FORUM_NAME = {lw:'LessWrong', ea:'EA Forum', af:'Alignment Forum'};
+  const ROLE_LABEL = {sole_author:'sole author', coauthor:'co-author', coauthor_of_version_2:'co-author (v2)',
+    listed_lead_coauthor:'lead co-author', listed_coauthor_feedback_and_release_coordination:'co-author',
+    coauthor_and_investigator:'co-author / investigator'};
+  const LOGOS = window.LOGOS || {};
+  // The manifest stores 'logos/img/…', written when this page lived at
+  // /ea-explorer/network.html. The page is a directory now, so the base
+  // is explicit rather than relative.
+  const LOGO_BASE = '/ea-explorer/';
+  const EMPTY = '<div class="empty">Click a node to see its role, bio, receipts, and connections.<br><br>Click a relationship row to follow the network one entity at a time.</div>';
+
+  const sizeMag  = m => Math.max(22, Math.min(96,  20 + Math.sqrt(Math.max(1,m))*11));
+  const sizeThru = t => Math.max(20, Math.min(120, 18 + Math.sqrt(Math.max(1,t))*13));
+  const prettyRel = r => (r||'').replace(/_/g,' ').replace(/\b\w/g, c=>c.toUpperCase());
+  function hash(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))|0;}return h;}
+  function esc(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  function srcUrls(receipt, source_url){
+    const out=[], seen=new Set();
+    const add=u=>{ u=(u||'').replace(/[.,;)\]]+$/,'').trim(); if(u&&/^https?:\/\//.test(u)&&!seen.has(u)){seen.add(u);out.push(u);} };
+    (String(receipt||'').match(/https?:\/\/[^\s'"|<>)\]]+/g)||[]).forEach(add);
+    add(source_url);
+    return out;
+  }
+  function host(u){ try{ const x=new URL(u); return x.host.replace(/^www\./,'')+(x.pathname.replace(/\/$/,'')?'…':''); }catch(e){ return u; } }
+  async function loadCSV(path){
+    const txt = await (await fetch(path)).text();
+    return Papa.parse(txt.trim(), {header:true, skipEmptyLines:true}).data;
+  }
+
+  // ---- measured header/canvas top (the site masthead is a <header> too) ----
+  (function(){
+    const app=document.getElementById('app'), st=document.getElementById('stage'), h=document.getElementById('ea-header');
+    const docTop=el=>{let y=0;for(let n=el;n;n=n.offsetParent)y+=n.offsetTop;return y;};
+    function setTop(){ const s=document.documentElement.style;
+      if(app) s.setProperty('--ea-app-top',docTop(app)+'px');
+      if(st)  s.setProperty('--ea-stage-top',docTop(st)+'px'); }
+    setTop();
+    if(window.ResizeObserver && h) new ResizeObserver(setTop).observe(h);
+    window.addEventListener('resize', setTop);
+    window.addEventListener('load', setTop);
+  })();
+
+  // ---- disclaimer dialog (showModal, never show) ----
+  (function(){
+    const dlg=document.getElementById('ea-disclaimer');
+    const open=document.getElementById('ea-disclaimer-open');
+    const close=document.getElementById('ea-disclaimer-close');
+    if(!dlg||!open) return;
+    open.addEventListener('click',()=>dlg.showModal());
+    if(close) close.addEventListener('click',()=>dlg.close());
+    dlg.addEventListener('click',e=>{ if(e.target===dlg) dlg.close(); });
+  })();
+
+  (async function(){
+    let nodes, edges, overPos, moneyPos, moneyRoles;
+    try{
+      [nodes, edges, overPos, moneyPos, moneyRoles] = await Promise.all([
+        loadCSV('/ea-explorer/data/nodes.csv'),
+        loadCSV('/ea-explorer/data/edges.csv'),
+        fetch('/ea-explorer/data/positions_overview.json').then(r=>r.json()),
+        fetch('/ea-explorer/data/positions_money.json').then(r=>r.json()),
+        fetch('/ea-explorer/data/money_roles.json').then(r=>r.json()),
+      ]);
+    }catch(err){
+      document.getElementById('counts').textContent = 'Could not load data files.';
+      console.error(err); return;
+    }
+    let forumLinks={}, quotes={}, writings={}, reachPos={}, eaReach={};
+    try{ forumLinks = await fetch('/ea-explorer/data/forum_links.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ quotes     = await fetch('/ea-explorer/data/quotes.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ writings   = await fetch('/ea-explorer/data/selected_writings.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ reachPos   = await fetch('/ea-explorer/data/positions_reach.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    try{ eaReach    = await fetch('/ea-explorer/data/ea_reach.json').then(r=>r.ok?r.json():{}); }catch(e){}
+    // node_id -> {aid,nq,name} for people who also appear in the "words" (forum-quote) sub-project
+    let forumQuotes={}; try{ forumQuotes = await fetch('/ea-explorer/data/forum_quote_index.json').then(r=>r.ok?r.json():{}); }catch(e){}
+
+    const els = [];
+    for(const n of nodes){
+      const logo = LOGOS[n.logo] || LOGOS[n.id];
+      const comms = (n.communities||'').split('|').filter(Boolean);
+      const mr = moneyRoles[n.id];
+      const mag = Math.max(1, parseInt(n.magnitude||'1',10));
+      const op = overPos[n.id];
+      els.push({ group:'nodes',
+        data:{ id:n.id, label:n.label, kind:n.kind, notes:n.notes, source_url:n.source_url, ein:n.ein, mag,
+          communities:comms, commPrimary:n.community_primary||'',
+          tier:(eaReach[n.id]||{}).tier||'outside', tierReasons:(eaReach[n.id]||{}).reasons||[],
+          eaClass:(eaReach[n.id]||{}).ea_class||null, foundedBy:(eaReach[n.id]||{}).founded_by||null,
+          backfillNote:(eaReach[n.id]||{}).backfill_note||null, eaReceipt:(eaReach[n.id]||{}).ea_receipt||'',
+          eaUrl:(eaReach[n.id]||{}).ea_url||'', ideologies:(eaReach[n.id]||{}).ideologies||[],
+          eaEvidence:(eaReach[n.id]||{}).ea_evidence||[],
+          role:mr?mr.role:null, throughput:mr?mr.throughput:0,
+          img:logo?LOGO_BASE+logo.uri:undefined, color:COMM_COLOR[n.community_primary||'']||COMM_COLOR[''],
+          shape:KIND_SHAPE[n.kind]||'ellipse', dsize:sizeMag(mag) },
+        position: op?{x:op.x,y:op.y}:undefined });
+    }
+    const pairMap=new Map(); let tieCount=0;
+    for(const e of edges){
+      if(!e.source||!e.target) continue;
+      tieCount++;
+      const key=[e.source,e.target].sort().join(' ');
+      let m=pairMap.get(key);
+      if(!m){ m={source:e.source, target:e.target, rels:[], fin:false}; pairMap.set(key,m); }
+      if(e.edge_class==='FINANCIAL') m.fin=true;
+      m.rels.push({relation:e.relation, label:prettyRel(e.label||e.relation), edge_class:e.edge_class||'OTHER',
+        evidence:e.evidence, receipt:e.receipt, source_url:e.source_url, source:e.source, target:e.target});
+    }
+    for(const m of pairMap.values()){
+      els.push({group:'edges', data:{ id:'e_'+Math.abs(hash(m.source+' '+m.target)),
+        source:m.source, target:m.target, fin:m.fin,
+        label:(m.rels.length===1?m.rels[0].label:m.rels.length+' ties'), rels:m.rels }});
+    }
+
+    const cy = cytoscape({
+      container:document.getElementById('cy'), elements:els, layout:{name:'preset'},
+      minZoom:0.05, maxZoom:3, wheelSensitivity:0.25,
+      style:[
+        {selector:'node', style:{
+          'width':'data(dsize)','height':'data(dsize)','shape':'data(shape)','background-color':'#ffffff',
+          'background-image':'data(img)','background-fit':'contain','background-clip':'node',
+          'border-width':3,'border-color':'data(color)','label':'data(label)','font-size':8,
+          'font-family':'"Libre Franklin","Helvetica Neue",Arial,sans-serif','color':'#1a1d21',
+          'text-valign':'bottom','text-margin-y':3,'text-wrap':'wrap','text-max-width':90,
+          'text-background-color':'#f6f7f9','text-background-opacity':0.7,'text-background-padding':1,'min-zoomed-font-size':7 }},
+        {selector:'node[!img]', style:{'background-color':'data(color)','background-opacity':0.18}},
+        {selector:'edge', style:{ 'width':1.4,'line-color':'#c3c9d1','target-arrow-color':'#c3c9d1',
+          'target-arrow-shape':'triangle','arrow-scale':0.8,'curve-style':'bezier','opacity':0.5 }},
+        {selector:'edge.finline', style:{'line-color':'#16a085','target-arrow-color':'#16a085','width':1.8,'opacity':0.65}},
+        {selector:'edge:selected,edge.hl', style:{ 'width':2.6,'line-color':'#16a085','target-arrow-color':'#16a085','opacity':1,
+          'label':'data(label)','font-size':9,'color':'#0f7a68','text-rotation':'autorotate',
+          'text-background-color':'#fff','text-background-opacity':0.9,'text-background-padding':2 }},
+        {selector:'.dim', style:{'opacity':0.07}},
+        {selector:'node:selected,node.focus', style:{ 'border-width':4,'border-color':'data(color)',
+          'underlay-color':'#16a085','underlay-padding':9,'underlay-opacity':0.4,'underlay-shape':'ellipse' }},
+      ],
+    });
+
+    // ================= LENS SYSTEM =================
+    let lens='overview';
+    let selectedId=null;
+    let kindFilter='all';   // 'all' | 'person' | 'org' (org+project)
+    const commHidden=new Set(), tierHidden=new Set(), moneyIdeo=new Set(), moneyEA=new Set();
+    const legend=document.getElementById('legend');
+    const countEl=document.getElementById('counts');
+    /* The EA-affiliation breakdown is longer than the other two lenses' lines
+       and wrapped the identity row, pushing the view switch down. Summary
+       stays visible, detail goes to the tooltip. tabindex only while there is
+       one, so it is not a tab stop on the lenses that have nothing to show. */
+    function setCount(text, detail){
+      countEl.textContent = text;
+      if(detail){
+        countEl.setAttribute('data-tip', detail);
+        countEl.setAttribute('data-tip-title', 'EA affiliation');
+        countEl.setAttribute('tabindex', '0');
+      } else {
+        countEl.removeAttribute('data-tip');
+        countEl.removeAttribute('data-tip-title');
+        countEl.removeAttribute('tabindex');
+      }
+    }
+
+    function nodeVisibleOverview(n){
+      const cs=n.data('communities')||[]; const mem=cs.length?cs:[''];
+      return mem.some(c=>!commHidden.has(c));
+    }
+    function kindVisible(n){
+      if(kindFilter==='all') return true;
+      const k=n.data('kind');
+      if(kindFilter==='person') return k==='person';
+      if(kindFilter==='org') return k==='org'||k==='project';
+      return true;
+    }
+    function applyLens(){
+      cy.batch(()=>{
+        cy.nodes().forEach(n=>{
+          const id=n.id();
+          if(lens==='money'){
+            const mp=moneyPos[id];
+            if(mp && kindVisible(n)){ n.style('display','element'); n.position({x:mp.x,y:mp.y});
+              n.data('color', MONEY_COLOR[n.data('role')]||'#95a5a6'); n.data('dsize', sizeThru(n.data('throughput'))); }
+            else n.style('display','none');
+          } else if(lens==='reach'){
+            const rp=reachPos[id]; const t=n.data('tier');
+            if(rp) n.position({x:rp.x,y:rp.y});
+            n.data('color', EA_TIER_COLOR[t]||EA_TIER_COLOR.outside); n.data('dsize', sizeMag(n.data('mag')));
+            n.style('display', (!tierHidden.has(t)&&kindVisible(n))?'element':'none');
+          } else {
+            const op=overPos[id]; if(op) n.position({x:op.x,y:op.y});
+            n.data('color', COMM_COLOR[n.data('commPrimary')]||COMM_COLOR['']); n.data('dsize', sizeMag(n.data('mag')));
+            n.style('display', (nodeVisibleOverview(n)&&kindVisible(n))?'element':'none');
+          }
+        });
+        cy.edges().forEach(e=>{
+          e.removeClass('finline');
+          if(lens==='money'){
+            const vis = e.data('fin') && e.source().style('display')==='element' && e.target().style('display')==='element';
+            e.style('display', vis?'element':'none'); if(vis) e.addClass('finline');
+          } else {
+            const vis = e.source().style('display')==='element' && e.target().style('display')==='element';
+            e.style('display', vis?'element':'none');
+          }
+        });
+      });
+      cy.elements().removeClass('dim');
+      renderLegend(); updateCount();
+      cy.fit(cy.elements(':visible'), 60);
+      if(lens==='money' && (moneyIdeo.size||moneyEA.size)) applyMoneyIdeo();
+      refreshList();
+    }
+    function applyMoneyIdeo(){
+      if(!moneyIdeo.size && !moneyEA.size){ cy.elements().removeClass('dim'); refreshList(); return; }
+      cy.batch(()=>{
+        cy.nodes().forEach(n=>{
+          if(n.style('display')!=='element') return;
+          const ids=n.data('ideologies')||[];
+          const hitIdeo = moneyIdeo.size && [...moneyIdeo].some(i=>ids.includes(i));
+          const hitEA   = moneyEA.size && moneyEA.has(n.data('tier'));
+          n.toggleClass('dim', !(hitIdeo||hitEA));
+        });
+        cy.edges().forEach(e=>{ e.toggleClass('dim', e.source().hasClass('dim')||e.target().hasClass('dim')); });
+      });
+      refreshList();
+    }
+    function updateCount(){
+      const vis=cy.nodes(':visible').length, ve=cy.edges(':visible').length;
+      const kn = kindFilter==='all' ? '' : (kindFilter==='person'?' · people only':' · orgs only');
+      if(lens==='money'){
+        setCount(`${vis} money-connected entities · ${ve} financial ties${kn}`);
+      } else if(lens==='reach'){
+        if(kindFilter!=='all'){ setCount(`${vis} shown${kn} · EA affiliation`); return; }
+        const c={core:0,embedded:0,adjacent:0,outside:0};
+        nodes.forEach(n=>{c[(eaReach[n.id]||{}).tier||'outside']++;});
+        const reached=c.core+c.embedded+c.adjacent;
+        setCount(`${reached} of ${nodes.length} have a documented EA link`,
+          `${c.core} explicitly EA · ${c.embedded} funded or staffed by EA orgs · ${c.adjacent} connected`);
+      } else {
+        setCount((kindFilter==='all'&&!commHidden.size)
+          ? `${nodes.length} entities · ${pairMap.size} connections · ${tieCount} ties`
+          : `${vis} of ${nodes.length} entities shown${kn} · ${ve} connections`);
+      }
+    }
+
+    function renderLegend(){
+      const wasExpanded = legend.classList.contains('expanded');
+      legend.innerHTML='';
+      let title='', primary=[], sections=[], hintHTML='', shapesHTML='', clearBtn=null;
+      if(lens==='money'){
+        title='Money flow → (color = role)';
+        primary = Object.entries(MONEY_COLOR).map(([k,c])=>({key:k,color:c,label:MONEY_NAME[k],clickable:false}));
+        const ecounts={core:0,embedded:0,adjacent:0};
+        cy.nodes().forEach(n=>{ if(moneyPos[n.id()]){ const t=n.data('tier'); if(t in ecounts) ecounts[t]++; } });
+        sections.push({title:'Spotlight by EA affiliation', items:['core','embedded','adjacent'].map(k=>({
+          key:k,color:EA_TIER_COLOR[k],label:EA_TIER_NAME[k].replace(/ \(.*/,''),count:ecounts[k],sel:moneyEA.has(k),
+          onClick:()=>{ moneyEA.has(k)?moneyEA.delete(k):moneyEA.add(k); renderLegend(); applyMoneyIdeo(); }}))});
+        const icounts={longtermist:0,rationalist:0,ai_safety:0};
+        cy.nodes().forEach(n=>{ if(moneyPos[n.id()]) (n.data('ideologies')||[]).forEach(i=>{ if(i in icounts) icounts[i]++; }); });
+        sections.push({title:'Spotlight by ideology', items:['longtermist','rationalist','ai_safety'].map(k=>({
+          key:k,color:IDEO_COLOR[k],label:IDEO_NAME[k],count:icounts[k],sel:moneyIdeo.has(k),
+          onClick:()=>{ moneyIdeo.has(k)?moneyIdeo.delete(k):moneyIdeo.add(k); renderLegend(); applyMoneyIdeo(); }}))});
+        if(moneyIdeo.size||moneyEA.size) clearBtn={label:'Clear spotlight',
+          onClick:()=>{ moneyIdeo.clear(); moneyEA.clear(); renderLegend(); applyMoneyIdeo(); }};
+        hintHTML='Real capital only – individual philanthropists (Tallinn, Moskovitz, SBF…) and foundations/funds, plus the orgs &amp; projects they fund. Columns run left→right: capital → grantmakers → recipients. Node size = number of financial ties. Spotlight the money nodes by EA affiliation or by ideology (a separate axis) – others dim; the two sets union. Inferred from public sources and may be incomplete.';
+      } else if(lens==='reach'){
+        title='EA affiliation – strongest at center';
+        const counts={core:0,embedded:0,adjacent:0,outside:0};
+        nodes.forEach(n=>{counts[(eaReach[n.id]||{}).tier||'outside']++;});
+        const chipShort={core:'Explicitly EA',embedded:'Funded / staffed',adjacent:'Connected',outside:'No link'};
+        primary=['core','embedded','adjacent','outside'].map(k=>({
+          key:k,color:EA_TIER_COLOR[k],label:EA_TIER_NAME[k],chip:chipShort[k],count:counts[k],off:tierHidden.has(k),
+          onClick:()=>{ tierHidden.has(k)?tierHidden.delete(k):tierHidden.add(k); applyLens(); }}));
+        hintHTML='Tiers reflect <b>documented</b> funding, staffing, and public self-identification – each backed by a citation on the entity’s card. They are best-effort inferences from public sources and <b>may be inaccurate</b>; check the linked source before relying on any placement. A label describes <b>association only</b> – not a claim that any entity is controlled by, directs, or acts on behalf of “EA,” and not an allegation of wrongdoing.';
+        shapesHTML='Shape = kind: &nbsp;● person &nbsp; ▭ org / project &nbsp; ◆ concept';
+      } else {
+        title='Community – color = primary, count = membership';
+        const counts={}; nodes.forEach(n=>{const cs=(n.communities||'').split('|').filter(Boolean);
+          (cs.length?cs:['']).forEach(c=>counts[c]=(counts[c]||0)+1);});
+        primary=Object.keys(COMM_NAME).map(k=>({
+          key:k,color:COMM_COLOR[k],label:COMM_NAME[k],count:counts[k]||0,off:commHidden.has(k),
+          onClick:()=>{ commHidden.has(k)?commHidden.delete(k):commHidden.add(k); applyLens(); }}));
+        if(counts['']) primary.push({key:'',color:COMM_COLOR[''],label:'unclassified',count:counts[''],off:commHidden.has(''),
+          onClick:()=>{ commHidden.has('')?commHidden.delete(''):commHidden.add(''); applyLens(); }});
+        shapesHTML='Shape = kind: &nbsp;● person &nbsp; ▭ org / project &nbsp; ◆ concept';
+      }
+
+      const rowOf=it=>{
+        const row=document.createElement(it.onClick?'button':'div');
+        row.className='row'+(it.off?' off':'')+(it.sel?' sel':'');
+        if(it.onClick) row.type='button'; else row.style.cursor='default';
+        row.innerHTML=`<span class="dot" style="background:${it.color}"></span>${it.label}`+(it.count!=null?`<span class="n">${it.count}</span>`:'');
+        if(it.onClick) row.onclick=it.onClick;
+        return row;
+      };
+      const full=document.createElement('div'); full.className='legfull';
+      const h=document.createElement('h4'); h.textContent=title; full.appendChild(h);
+      primary.forEach(it=>full.appendChild(rowOf(it)));
+      sections.forEach(sec=>{
+        full.appendChild(Object.assign(document.createElement('div'),{className:'divider'}));
+        const sh=document.createElement('h4'); sh.textContent=sec.title; full.appendChild(sh);
+        sec.items.forEach(it=>full.appendChild(rowOf(it)));
+      });
+      if(clearBtn){ const b=document.createElement('button'); b.type='button'; b.className='clear'; b.textContent=clearBtn.label; b.onclick=clearBtn.onClick; full.appendChild(b); }
+      if(hintHTML){ full.appendChild(Object.assign(document.createElement('div'),{className:'divider'}));
+        const hh=document.createElement('div'); hh.className='hint'; hh.innerHTML=hintHTML; full.appendChild(hh); }
+      if(shapesHTML){ const sh=document.createElement('div'); sh.className='shapes'; sh.innerHTML=shapesHTML; full.appendChild(sh); }
+      legend.appendChild(full);
+
+      const bar=document.createElement('div'); bar.className='legbar';
+      const toggle=document.createElement('button'); toggle.type='button'; toggle.className='legtoggle';
+      toggle.textContent=(wasExpanded?'⌄':'⌃')+' Legend';
+      toggle.onclick=()=>{ const now=legend.classList.toggle('expanded'); toggle.textContent=(now?'⌄':'⌃')+' Legend'; };
+      bar.appendChild(toggle);
+      const chips=document.createElement('div'); chips.className='legchips';
+      primary.forEach(it=>{
+        const chip=document.createElement(it.onClick?'button':'span');
+        chip.className='chip'+(it.off?' off':'')+(it.sel?' sel':'');
+        if(it.onClick) chip.type='button'; else chip.style.cursor='default';
+        const short=it.chip || it.label.replace(/ \/.*/,'').replace(/ \(.*/,'');
+        chip.innerHTML=`<span class="sw" style="background:${it.color}"></span>${short}`;
+        if(it.onClick) chip.onclick=it.onClick;
+        chips.appendChild(chip);
+      });
+      bar.appendChild(chips);
+      legend.appendChild(bar);
+      if(wasExpanded) legend.classList.add('expanded');
+    }
+
+    document.querySelectorAll('.ea-lenses button').forEach(b=>{
+      b.onclick=()=>{
+        document.querySelectorAll('.ea-lenses button').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-selected','false');});
+        b.classList.add('on'); b.setAttribute('aria-selected','true'); lens=b.dataset.lens;
+        setForced(false);
+        applyLens();
+        if(selectedId){
+          const n=cy.getElementById(selectedId);
+          if(n && n.length && n.visible()) selectNode(n, {fit:true});
+          else cy.elements().removeClass('hl focus');
+        }
+      };
+    });
+
+    // ---- kind filter (people / orgs), composes with the active lens ----
+    document.querySelectorAll('.ea-kinds button').forEach(b=>{
+      b.onclick=()=>{
+        document.querySelectorAll('.ea-kinds button').forEach(x=>{x.classList.remove('on');x.setAttribute('aria-pressed','false');});
+        b.classList.add('on'); b.setAttribute('aria-pressed','true'); kindFilter=b.dataset.kind;
+        applyLens();
+        if(selectedId){
+          const n=cy.getElementById(selectedId);
+          if(n && n.length && n.visible()) selectNode(n);
+          else cy.elements().removeClass('hl focus');
+        }
+      };
+    });
+
+    // ================= "See list" floating card =================
+    const listPanel=document.getElementById('listpanel'), seelistBtn=document.getElementById('seelist');
+    let listOpen=false;
+    function lensCat(n){
+      if(lens==='money'){ const r=n.data('role'); return {key:r||'?', name:MONEY_NAME[r]||'Other', color:MONEY_COLOR[r]||'#95a5a6'}; }
+      if(lens==='reach'){ const t=n.data('tier'); return {key:t, name:(EA_TIER_NAME[t]||t).replace(/ \(.*/,''), color:EA_TIER_COLOR[t]||EA_TIER_COLOR.outside}; }
+      const c=n.data('commPrimary')||''; return {key:c||'_', name:COMM_NAME[c]||'Unclassified', color:COMM_COLOR[c]||COMM_COLOR['']};
+    }
+    function refreshList(){
+      if(!listOpen) return;
+      const vis=cy.nodes(':visible');
+      const anyDim=vis.some(n=>n.hasClass('dim'));
+      const set=(anyDim?vis.filter(n=>!n.hasClass('dim')):vis);
+      const groups=new Map();
+      set.forEach(n=>{ const cat=lensCat(n); let g=groups.get(cat.key);
+        if(!g){ g={name:cat.name,color:cat.color,items:[]}; groups.set(cat.key,g); } g.items.push(n); });
+      const ordered=[...groups.values()].sort((a,b)=>b.items.length-a.items.length);
+      ordered.forEach(g=>g.items.sort((a,b)=>b.degree()-a.degree() || a.data('label').localeCompare(b.data('label'))));
+      const lensName={overview:'Overview',money:'Money flow',reach:'EA affiliation'}[lens];
+      const kn=kindFilter==='all'?'':(kindFilter==='person'?' · people only':' · orgs only');
+      const state=`${set.length} ${anyDim?'highlighted':'shown'} · ${lensName}${kn}`;
+      let html=`<div class="lphead"><div><div class="lptitle">On the map</div><div class="lpstate">${esc(state)}</div></div><button type="button" class="lpclose" aria-label="Close list">✕</button></div><div class="lpbody">`;
+      if(!set.length){ html+=`<div class="lpempty">Nothing matches the current filters.</div>`; }
+      else ordered.forEach(g=>{
+        html+=`<div class="lpgroup"><span class="gd" style="background:${g.color}"></span>${esc(g.name)}<span class="n" style="opacity:.7">&nbsp;·&nbsp;${g.items.length}</span></div>`;
+        g.items.forEach(n=>{ const d=n.data();
+          html+=`<button type="button" class="lprow${n.id()===selectedId?' sel':''}" data-nid="${esc(n.id())}"><span class="rd" style="background:${d.color}"></span><span class="nm">${esc(d.label)}</span><span class="dg" title="connections">${n.degree()}</span></button>`;
+        });
+      });
+      html+=`</div>`;
+      listPanel.innerHTML=html;
+      listPanel.querySelector('.lpclose').onclick=closeList;
+      listPanel.querySelectorAll('.lprow').forEach(r=>{ r.onclick=()=>{ const tn=cy.getElementById(r.dataset.nid); if(tn&&tn.length) selectNode(tn,{fit:true}); }; });
+    }
+    function openList(){ listOpen=true; listPanel.classList.add('open'); seelistBtn.setAttribute('aria-pressed','true'); refreshList(); }
+    function closeList(){ listOpen=false; listPanel.classList.remove('open'); seelistBtn.setAttribute('aria-pressed','false'); }
+    seelistBtn.onclick=()=>{ listOpen?closeList():openList(); };
+
+    // ================= detail panel + mobile sheet =================
+    const app=document.getElementById('app');
+    const panel=document.getElementById('panel'), body=document.getElementById('panel-body');
+    const drSheet = (window.DRSheet ? window.DRSheet.attach(panel, {label:'Entity details', detent:'half'}) : null);
+
+    function clearFocus(){ cy.elements().removeClass('hl focus dim'); }
+    function clearSelection(){
+      selectedId=null; body.innerHTML=EMPTY; clearFocus();
+      if(drSheet) drSheet.close();
+      history.replaceState(null,'',location.pathname+location.search);
+      refreshList();
+    }
+
+    function selectNode(n, {fit=false}={}){
+      const d=n.data();
+      selectedId=d.id;
+      cy.elements().removeClass('hl focus');
+      const hood=n.closedNeighborhood();
+      cy.elements().addClass('dim'); hood.removeClass('dim'); n.addClass('focus');
+      n.connectedEdges().addClass('hl');
+
+      const logo=LOGOS[d.id];
+      const rels=n.connectedEdges().map(e=>{
+        const other=e.source().id()===d.id?e.target():e.source();
+        const subs=(e.data('rels')||[]).map(s=>({
+          outgoing:s.source===d.id, verb:prettyRel(s.relation), ecl:s.edge_class||'OTHER',
+          evidence:(s.evidence||'').trim(), urls:srcUrls(s.receipt, s.source_url)
+        })).sort((a,b)=>a.verb.localeCompare(b.verb));
+        return {other, subs};
+      }).sort((a,b)=>a.other.data('label').localeCompare(b.other.data('label')));
+      const totalTies=rels.reduce((a,r)=>a+r.subs.length,0);
+
+      let ec=0;
+      const relHTML=rels.map(r=>{
+        const oc=KIND_COLOR[r.other.data('kind')]||'#555';
+        const subHTML=r.subs.map(s=>{
+          const i=ec++;
+          const arrow=s.outgoing?'→':'←';
+          const tag=`<span class="ecl" style="background:${EDGE_COLOR[s.ecl]||EDGE_COLOR.OTHER}">${esc(s.ecl[0]+s.ecl.slice(1).toLowerCase())}</span>`;
+          const evLong=s.evidence.length>150;
+          const ev=s.evidence?`<div class="ev${evLong?' clamp':''}" id="ev${i}">${esc(s.evidence)}</div>${evLong?`<button type="button" class="evmore" data-ev="${i}">more ▾</button>`:''}`:'';
+          const src=s.urls.length?`<div class="srcln">${s.urls.slice(0,3).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(host(u))}</a>`).join('')}${s.urls.length>3?`<span class="more">+${s.urls.length-3} more</span>`:''}</div>`:'';
+          return `<div class="sub"><div class="subhead">${tag}<span class="arrow">${arrow}</span><span class="verb">${esc(s.verb)}</span></div>${ev}${src}</div>`;
+        }).join('');
+        return `<div class="rel"><div class="head" data-nid="${esc(r.other.id())}" title="Go to ${esc(r.other.data('label'))}">
+          <span class="dot" style="background:${oc}"></span><span class="who">${esc(r.other.data('label'))}</span>
+          ${r.subs.length>1?`<span class="verb">– ${r.subs.length} ties</span>`:''}</div>${subHTML}</div>`;
+      }).join('');
+
+      const comms=(d.communities||[]);
+      const commHTML = comms.length?`<div class="comms">${comms.map(c=>`<span class="cpill" style="background:${COMM_COLOR[c]||'#888'}">${esc(c)}</span>`).join('')}</div>`:'';
+      const notesLong=(d.notes||'').length>320;
+      body.innerHTML=`
+        ${logo?`<img class="logo" src="${LOGO_BASE}${logo.uri}" alt="">`:''}
+        <h2>${esc(d.label)}</h2>
+        <span class="kind" style="background:${KIND_COLOR[d.kind]||'#555'}">${esc(d.kind)}</span>
+        ${commHTML}
+        <div class="meta">degree: ${n.degree()}${d.role?' · money role: '+esc(d.role)+' ('+d.throughput+' ties)':''}${d.ein?' · EIN '+esc(d.ein):''}</div>
+        <div class="meta" style="margin-top:2px">EA affiliation: <b style="color:${EA_TIER_COLOR[d.tier]||'#888'}">${esc((EA_TIER_NAME[d.tier]||'–').replace(/ \(.*/,''))}</b>${(!d.eaClass&&d.tierReasons&&d.tierReasons.length)?' – '+esc(d.tierReasons.slice(0,2).join('; ')):''}</div>
+        ${d.eaClass?(()=>{const EA_CLASS_LABEL={self_identifies:'Self-identifies as EA',ea_org_role:'Holds a role at an EA org',ea_community:'Has participated in the EA community',ea_funded:'Has received EA-affiliated funding',none:'No documented EA affiliation',
+            movement_org:'Describes itself as part of EA',ea_founded:'Founded by people affiliated with EA',ea_staffed:'Led or staffed by people affiliated with EA'};
+          const PROVES_LABEL={self_identifies:'self-identifies as EA',ea_org_role:'role at an EA org',ea_community:'EA-community participation',ea_funded:'received EA funding',ideology_longtermist:'longtermist',ideology_rationalist:'rationalist',ideology_ai_safety:'AI safety',
+            movement_org:'self-describes as EA',ea_founded:'founded within EA',ea_staffed:'EA-affiliated leadership/staff'};
+          const hst=u=>{try{return new URL(u).hostname.replace(/^www\./,'');}catch(e){return 'source';}};
+          const ev=d.eaEvidence||[];
+          let inner;
+          if(ev.length){
+            inner=`<div class="eaevlist">`+ev.map(e=>{
+              const kd=e.source_kind==='incidental'?' <span class="eakind">incidental source</span>':'';
+              return `<div class="eaev"><div class="eaevtag">${esc(PROVES_LABEL[e.proves]||e.proves||'evidence')}${kd}</div><div class="eaq">&ldquo;${esc(e.excerpt)}&rdquo; <a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(hst(e.url))}</a></div></div>`;
+            }).join('')+`</div>`;
+          } else {
+            inner=(d.eaReceipt?`<div class="eaq">&ldquo;${esc(d.eaReceipt)}&rdquo;${d.eaUrl?` <a href="${esc(d.eaUrl)}" target="_blank" rel="noopener">source</a>`:''}</div>`:'');
+          }
+          const foundedNote=(d.foundedBy&&(d.eaClass==='ea_founded'||d.eaClass==='movement_org'))?`<div class="eafound">${esc(d.foundedBy)}</div>`:'';
+          const ideoHTML=(d.ideologies&&d.ideologies.length)?`<div class="eaideo">also: ${d.ideologies.map(i=>`<span class="ideopill">${esc(i)}</span>`).join(' ')}</div>`:'';
+          if(d.eaClass==='none'&&d.backfillNote){
+            return `<div class="earcpt"><span class="earung">Placed by association (not self-identified)</span><div class="eafound">${esc(d.backfillNote)}</div>${ideoHTML}</div>`;
+          }
+          if(d.eaClass==='none'){
+            return `<div class="earcpt"><span class="earung">No documented EA affiliation</span>${ideoHTML}</div>`;
+          }
+          return `<div class="earcpt"><span class="earung">${esc(EA_CLASS_LABEL[d.eaClass]||d.eaClass)}</span>${foundedNote}${inner}${ideoHTML}</div>`;})():''}
+        ${d.notes?`<div class="notes${notesLong?' clamp':''}" id="notes">${esc(d.notes)}</div>${notesLong?`<button type="button" class="morebtn" id="morebtn">Expand to see more ▾</button>`:''}`:''}
+        ${d.source_url?`<div style="margin-top:8px"><a class="src" href="${esc(d.source_url)}" target="_blank" rel="noopener">${esc(d.source_url)}</a></div>`:''}
+        ${(()=>{ const fq=forumQuotes[d.id]; if(!fq) return '';
+          return `<a class="wordslink" href="/ea-explorer/words/#people?a=${encodeURIComponent(fq.aid)}" title="Open ${esc(fq.name)} in the forum-quote explorer">Read ${fq.nq} quote${fq.nq==1?'':'s'} in their own words → <span class="n">from LessWrong / EA&nbsp;Forum / Alignment&nbsp;Forum</span></a>`;
+        })()}
+        ${(()=>{ const qd=quotes[d.id]; if(!qd||!qd.quotes||!qd.quotes.length) return '';
+          return `<h3>In their own words (${qd.quotes.length})</h3>`+qd.quotes.map(q=>`<div class="quote"><div class="q">“${esc(q.quote)}”</div>${q.context?`<div class="ctx">${esc(q.context)}</div>`:''}<div class="cite">– <a href="${esc(q.page_url)}" target="_blank" rel="noopener">${esc(q.post_title)}</a>${q.post_date?', '+esc(q.post_date):''}</div></div>`).join('')+`<div class="qnote">Verbatim passages from articles they authored (comments excluded); authorship checked, context preserved. Follow the link for the full piece.</div>`;
+        })()}
+        ${(()=>{ const wr=writings[d.id]; if(!wr||!wr.works||!wr.works.length) return '';
+          return `<h3>Selected writings (${wr.works.length})</h3>`+wr.works.map(w=>{
+            const role=ROLE_LABEL[w.role]||(w.role||'').replace(/_/g,' ');
+            const co=(w.coauthors&&w.coauthors.length)?' · with '+w.coauthors.map(esc).join(', '):'';
+            const qs=(w.quotes||[]).map(q=>`<div class="quote"><div class="q">“${esc(q.quote)}”</div>${q.context?`<div class="ctx">${esc(q.context)}</div>`:''}</div>`).join('');
+            return `<div class="work"><div class="wt"><a href="${esc(w.url)}" target="_blank" rel="noopener">${esc(w.title)}</a></div><div class="wmeta">${esc(role)}${w.date?' · '+esc(w.date):''}${co}</div>${qs}</div>`;
+          }).join('')+`<div class="qnote">Published works they authored or co-authored (not forum posts); authorship double-checked. Pull quotes are verbatim, sole-authored only.</div>`;
+        })()}
+        ${(()=>{ const fl=forumLinks[d.id]; if(!fl||!fl.accounts||!fl.accounts.length) return '';
+          return `<h3>Forum presence (${fl.accounts.length})</h3><div class="forum">`+fl.accounts.map(a=>`<a class="fchip" href="${esc(a.pageUrl||'#')}" target="_blank" rel="noopener" title="${esc(a.basis||'')}">${esc(FORUM_NAME[a.platform]||a.platform)}</a>`).join('')+`</div><div class="fnote">Linked on self-disclosed identity only (real-name handle, self-stated affiliation, or documented name change). Posts are never used.</div>`;
+        })()}
+        ${relHTML?`<h3>Relationships (${rels.length}${totalTies>rels.length?' · '+totalTies+' ties':''})</h3>${relHTML}`:''}
+      `;
+
+      const mb=document.getElementById('morebtn');
+      if(mb){ mb.onclick=()=>{ const nt=document.getElementById('notes'); const clamped=nt.classList.toggle('clamp');
+        mb.textContent=clamped?'Expand to see more ▾':'Show less ▴'; };}
+      body.querySelectorAll('.rel .head').forEach(hd=>{
+        hd.onclick=()=>{ const tn=cy.getElementById(hd.dataset.nid); if(tn && tn.length){ selectNode(tn, {fit:true}); } };
+      });
+      body.querySelectorAll('.evmore').forEach(bt=>{
+        bt.onclick=()=>{ const el=document.getElementById('ev'+bt.dataset.ev);
+          const clamped=el.classList.toggle('clamp'); bt.textContent=clamped?'more ▾':'less ▴'; };
+      });
+
+      if(app.classList.contains('panel-collapsed')) app.classList.remove('panel-collapsed');
+      if(drSheet && window.DRSheet.isMobile()) drSheet.open();
+      body.scrollTop=0;
+      history.replaceState(null,'','#'+encodeURIComponent(d.id));
+      if(fit){ cy.animate({fit:{eles:n.closedNeighborhood(),padding:90},duration:250}); }
+      refreshList();
+    }
+
+    cy.on('tap','node', ev=>selectNode(ev.target));
+    cy.on('tap', ev=>{ if(ev.target===cy) clearSelection(); });
+
+    // ---- canvas controls ----
+    document.getElementById('zin').onclick =()=>cy.zoom({level:cy.zoom()*1.3, renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
+    document.getElementById('zout').onclick=()=>cy.zoom({level:cy.zoom()/1.3, renderedPosition:{x:cy.width()/2,y:cy.height()/2}});
+    document.getElementById('fit').onclick =()=>{ clearSelection(); cy.fit(cy.elements(':visible'),60); };
+
+    // ---- keep the canvas sized to its container ----
+    // Cytoscape caches its canvas dimensions, so a browser/window resize leaves
+    // the graph drawn against stale bounds (content + legend clipped) until we
+    // tell it to recompute. Observe the stage box and re-sync + refit (debounced).
+    (function(){
+      const stage=document.getElementById('stage'); let t=null;
+      function sync(){ cy.resize(); cy.fit(cy.elements(':visible'),60); }
+      function schedule(){ clearTimeout(t); t=setTimeout(sync,150); }
+      if(window.ResizeObserver){ new ResizeObserver(schedule).observe(stage); }
+      else { window.addEventListener('resize', schedule); }
+    })();
+
+    // ---- force layout (cose over currently-visible nodes) ----
+    const relayoutBtn=document.getElementById('relayout'), relayoutDot=document.getElementById('relayoutState');
+    let forced=false;
+    function setForced(v){ forced=v; relayoutBtn.setAttribute('aria-pressed', v?'true':'false');
+      if(relayoutDot) relayoutDot.hidden=!v; }
+    function runForce(){
+      relayoutBtn.classList.add('busy');
+      const keepZoom=cy.zoom();          // preserve the user's zoom level across grouping
+      setTimeout(()=>{
+        // fit:false – don't let cose rescale/refit the viewport (that's the zoom reset
+        // the user only wants when turning grouping OFF).
+        const lay=cy.elements(':visible').layout({name:'cose', fit:false, animate:false, randomize:true,
+          nodeRepulsion:()=>12000, idealEdgeLength:()=>90, edgeElasticity:()=>90,
+          gravity:0.3, numIter:1200, nestingFactor:0.1, componentSpacing:120, nodeDimensionsIncludeLabels:true});
+        // Nodes reflow, but keep the same zoom level; just recenter pan on the
+        // regrouped graph so it stays in view. The full fit (map reset) happens
+        // only when turning grouping OFF, via applyLens() below.
+        lay.one('layoutstop',()=>{ setForced(true); relayoutBtn.classList.remove('busy');
+          cy.zoom(keepZoom); cy.center(cy.elements(':visible')); });
+        lay.run();
+      },30);
+    }
+    relayoutBtn.onclick=()=>{ if(forced){ setForced(false); applyLens(); } else { runForce(); } };
+
+    // ---- search: find + glide (never filters) ----
+    const search=document.getElementById('q');
+    search.addEventListener('input',()=>{
+      const q=search.value.trim().toLowerCase();
+      if(!q){ if(selectedId){const n=cy.getElementById(selectedId); if(n&&n.visible()){selectNode(n);return;}} clearFocus(); refreshList(); return; }
+      const match=cy.nodes(':visible').filter(n=>n.data('label').toLowerCase().includes(q));
+      cy.elements().addClass('dim'); match.removeClass('dim');
+      match.forEach(n=>n.connectedEdges().removeClass('dim'));
+      if(match.length){cy.animate({fit:{eles:match,padding:80},duration:250});}
+      refreshList();
+    });
+
+    // ---- init + deep links ----
+    applyLens();
+    const qp=new URLSearchParams(location.search);
+    if(qp.get('lens')){
+      const btn=document.querySelector(`.ea-lenses button[data-lens="${qp.get('lens')}"]`); if(btn) btn.click();
+      if(qp.get('lens')==='reach' && qp.get('hide')){
+        qp.get('hide').split(',').map(s=>s.trim()).filter(t=>EA_TIER_NAME[t]).forEach(t=>tierHidden.add(t));
+        applyLens();
+      }
+    }
+    const hashId=decodeURIComponent(location.hash.replace(/^#/,''));
+    if(hashId){ const tn=cy.getElementById(hashId); if(tn && tn.length){ selectNode(tn, {fit:true}); } }
+  })();
+})();
+</script>

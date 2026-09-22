@@ -1,0 +1,64 @@
+{%- comment -%}
+  The wordmark block: heavy grotesk name, a double rule, then the tagline.
+  Geometry is from the Figma frames — 55px wordmark at 402px wide, tight
+  tracking, the rule sitting directly under the baseline.
+
+  The wordmark is an <h1> on the home page and a <p> everywhere else, so tool
+  pages keep their own <h1> and the document outline stays honest. Which TAG is
+  the only difference; the type is .dr-wordmark either way, and it has to be one
+  class rather than two copies of the same utilities — see the note in
+  components/wordmark.css for the weight that drifted while it was two.
+
+  There used to be a `compact` variant that dropped the rule and the tagline on
+  tool pages to buy back phone height; it made internal pages look like a
+  different site, so it is gone.
+
+  The primary nav is included INSIDE the wordmark row, so at md the links sit
+  across from the wordmark on its baseline. See the long note in nav.html for
+  what that costs (sticky) and why the phone pill is unaffected.
+
+  The flex lives on this inner row, never on <header> itself. The header has to
+  stay `display: block` and `position: static` — tests/test_review_regressions.
+  spec.js asserts both on five routes, because two tools once styled a bare
+  `header` and reshaped the masthead from across the page. Keeping the flex one
+  level in also leaves the rule and the tagline as full-width siblings, so the
+  5/3/2 rule still spans the container rather than stopping at the wordmark.
+{%- endcomment -%}
+
+<div class="pt-5 pb-1">
+  <div class="flex items-end justify-between gap-6">
+    {%- assign wordmark = site.title | replace: 'DataRepublican', 'Data Republican' -%}
+    {%- if page.url == '/' -%}
+    <h1 class="dr-wordmark">{{ wordmark }}</h1>
+    {%- else -%}
+    <p class="dr-wordmark"><a href="{{ '/' | relative_url }}">{{ wordmark }}</a></p>
+    {%- endif -%}
+
+    {% include nav.html %}
+  </div>
+
+  {%- comment -%}
+    The rule from the mock, stated exactly: a 5px bar, a 3px gap, a 2px bar,
+    spanning the container. One element — the two bars are the top and bottom
+    borders and the 3px height is the gap between them.
+
+    This was `border-y-[3px] border-double`, which is not the same shape at all:
+    CSS renders a 3px double border as 1px / 1px / 1px, so it drew four hairlines
+    around a 5px gap instead of two bars of different weights.
+
+    The height is the 10px TOTAL, not the 3px gap: Tailwind's preflight sets
+    `box-sizing: border-box`, so the borders are drawn inside the height. Asking
+    for h-[3px] gives 7px of border and no gap at all — one solid bar.
+  {%- endcomment -%}
+  {%- comment -%}
+    `data-masthead-rule` is a test hook, not a style hook. The spec used to find
+    this element with `header div[aria-hidden="true"]` — the first decorative
+    div in the header — which stopped being this one the moment the nav moved
+    inside the masthead and brought its phone scrim with it. The scrim is
+    md:hidden, so the assertion read a width of 0 and the failure pointed at the
+    rule rather than at the selector.
+  {%- endcomment -%}
+  <div class="mt-2 h-[10px] border-t-[5px] border-b-2 border-ink-strong" data-masthead-rule aria-hidden="true"></div>
+
+  <p class="mt-2 mb-0 text-lede font-semibold tracking-body text-ink-strong">{{ site.tagline | default: 'Exposing what you&rsquo;re not supposed to know' }}</p>
+</div>

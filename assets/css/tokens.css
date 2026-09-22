@@ -1,0 +1,116 @@
+/* Design tokens, published once to :root.
+ *
+ * Two surfaces need the same numbers and only one of them can use a Tailwind
+ * utility:
+ *
+ *   _includes/ chrome  -> utilities (bg-surface, text-meta, px-gutter)
+ *   tool CSS, graph.css, every class built at runtime by JS  -> var(--dr-*)
+ *
+ * THE DIRECTION MATTERS. tailwind.config.js `theme` is the source; this file is
+ * derived from it with theme(). Never type a literal hex or px below — if you
+ * do, the two surfaces drift and a restyle moves half the page. The one
+ * exception is --dr-data-*, which is not themeable at all (see the note there).
+ *
+ * main.css already proved this pattern with
+ *   :root { --column-max: theme('maxWidth.snug'); }
+ * and this file is the same idea applied to everything else.
+ *
+ * Outside @layer, deliberately: Tailwind drops a layered rule whose selector it
+ * cannot find in the scanned HTML, and `:root` is not a class it looks for. The
+ * same reasoning as the blocks at the end of main.css.
+ *
+ * The values are drawn on `system-foundations` in Paper. Read them there.
+ * See .claude/skills/dr-design-system.
+ */
+:root {
+  /* ---- Ground and ink ---------------------------------------------------- */
+  --dr-surface:      theme('colors.surface');       /* #E5E7EB page ground     */
+  --dr-panel:        theme('colors.card');          /* #FFFFFF cards, drawers  */
+  --dr-ink:          theme('colors.ink');           /* #111111 body            */
+  --dr-ink-strong:   theme('colors.ink-strong');    /* #000000 titles          */
+  --dr-ink-muted:    theme('colors.ink-muted');     /* #5A5A5A meta            */
+  --dr-ink-faint:    theme('colors.ink-faint');     /* #6B7280 counts, hints   */
+
+  /* ---- Lines and fills. Cool, replacing seven near-duplicate warm grays. -- */
+  --dr-line:         theme('colors.line');          /* decorative hairlines    */
+  --dr-line-strong:  theme('colors.line-strong');   /* interactive borders     */
+  --dr-fill:         theme('colors.fill');          /* tracks, hover           */
+  --dr-fill-quiet:   theme('colors.fill-quiet');
+
+  /* ---- Chrome accent. Near-ink, not a hue — see the note in the config. --- */
+  --dr-accent:           theme('colors.accent');
+  --dr-accent-tint:      theme('colors.accent-tint');
+  --dr-accent-tint-line: theme('colors.accent-tint-line');
+
+  /* The one hue in the chrome: "this mode is on". Used by .dr-btn__dot, where
+     an icon-only toggle has no room to say so in words. */
+  --dr-on: theme('colors.green');
+
+  /* ---- The legal callout ------------------------------------------------- */
+  --dr-legal-border: theme('colors.legal-border');
+  --dr-legal-fill:   theme('colors.legal-fill');
+  --dr-legal-ink:    theme('colors.legal-ink');
+
+  /* ---- Type -------------------------------------------------------------- */
+  --dr-font-content: theme('fontFamily.content');
+  --dr-font-ui:      theme('fontFamily.ui');
+
+  /* fontSize entries are [size, { lineHeight }] tuples, so they are indexed.
+   * theme('fontSize.label') on its own would emit the whole tuple. */
+  --dr-text-label:   theme('fontSize.label[0]');     /* 12px every interface label */
+  --dr-text-caption: theme('fontSize.caption[0]');   /* 12px empty states, hints   */
+  --dr-text-meta:    theme('fontSize.meta[0]');      /* 13px the floor for a sentence */
+  --dr-text-body:    theme('fontSize.body[0]');      /* 16px                       */
+
+  /* ---- Space and shape --------------------------------------------------- */
+  --dr-gutter:       theme('spacing.gutter');       /* 20px */
+  --dr-tap:          theme('spacing.tap');          /* 44px */
+  --dr-tap-sm:       theme('spacing.tap-sm');       /* 32px */
+  --dr-radius-sm:    theme('borderRadius.sm');
+  --dr-radius-card:  theme('borderRadius.card');
+  --dr-radius-lg:    theme('borderRadius.lg');
+  --dr-radius-sheet: theme('borderRadius.sheet');
+  --dr-radius-pill:  theme('borderRadius.pill');
+  /* Canvas toolbars. A column of full pills reads as a row of dots; these are
+     square controls with the corners taken off. */
+  --dr-radius-control: 0.625rem;
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --dr-dur-fast:     120ms;
+  --dr-dur-sheet:    240ms;
+  --dr-ease-sheet:   cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* ---- Stacking ---------------------------------------------------------- *
+   * Literals on purpose: these have no useful Tailwind home, and they are the
+   * one set where the NUMBER is the contract. Nothing this repo authors may go
+   * above 100. A vendored z-index is contained with `isolation: isolate`, never
+   * out-bid. */
+  --dr-z-raised:      10;
+  --dr-z-canvas-ui:   20;   /* toolbar, legend inside an isolated canvas */
+  --dr-z-sticky:      30;   /* tool header */
+  --dr-z-nav-veil:    40;
+  --dr-z-nav:         50;
+  --dr-z-scrim:       55;
+  --dr-z-panel:       60;   /* sheet / drawer */
+  --dr-z-popover:     70;
+  --dr-z-modal-scrim: 80;
+  --dr-z-modal:       90;
+  --dr-z-skip:       100;   /* the skip link. Must beat everything. */
+}
+
+/* Data-encoding colors.
+ *
+ * A restyle must NOT touch these. The map legend, the pin colors and the
+ * LAYER/IDEOLOGY palettes inside noblogs/graph/graph.js and
+ * dsa-explorer/index.html all agree on these hexes; changing one here without
+ * changing the JS makes the legend lie about the picture it labels.
+ *
+ * Listed so they are visible and versioned, not so they are themeable. They are
+ * literals because they are data, not design — which is also why they are the
+ * only saturated color the system permits on screen. */
+:root {
+  --dr-data-money:  #1B7F4B;
+  --dr-data-party:  #C0392B;
+  --dr-data-state:  #B8860B;
+  --dr-data-veneer: #4A6FA5;
+}
