@@ -8,6 +8,12 @@
 /convex/
 /donate/
 /dsa-explorer/
+/ea-explorer/
+/ea-explorer/network.html
+/ea-explorer/network/
+/ea-explorer/tour/
+/ea-explorer/words/
+/ea-explorer/words/opener.html
 /expose/
 /florida/
 /florida/has.html
@@ -28,7 +34,6 @@
 /philadelphia/
 /policies/
 /predictor/
-/tests/
 /tip.html
 /wisconsin/
 /wordle/
