@@ -225,97 +225,99 @@ paths relative to `/ea-explorer/`, so `LOGO_BASE` prefixes them. The old
   a tool header or putting anything on top of a map or a graph. `noblogs` and
   `dsa-explorer` both follow it.
 
-## Deploying — read this before touching `docs/`
+## Deploying
 
-**`docs/` IS production. Do not delete it.** Verified 2026-09-18 by comparing
-bytes and response headers:
+**Production is Coolify**, at `datarepublican.com`, behind Cloudflare. It builds
+from source with this repo's `Dockerfile` and serves `_site` out of
+`nginx:alpine` using `deploy/nginx.conf`.
 
-- `datarepublican.com` is Cloudflare in front of **Coolify**, and what Coolify
-  serves is byte-identical to `docs/` on `master`
-  (`assets/css/styles.css` md5 `d2344d57…` on all three). Production responses
-  carry **no** GitHub Pages headers (`etag`, `x-github-request-id`), so Pages is
-  not the origin.
-- `datarepublican.github.io/datarepublican/` is a **second, parallel** Pages
-  deployment of the same content. Its Source is set to "GitHub Actions" but
-  `master` has no workflow, so nothing can ever publish there — it is frozen on
-  a Sep 3 artifact.
-- Coolify also builds per-PR previews at `<PR#>.datarepublican.com`
-  (`preview_url_template` is `{{pr_id}}.{{domain}}`). **Every preview deploy
-  fails** — 27 of 27 — so the 526 that Cloudflare returns is a symptom: there is
-  no container behind the hostname, not a certificate problem.
+**Push to `master` and it deploys.** There is no manual step and nothing to
+commit into `docs/`. Cutover happened 2026-09-22 (merge `5412172a`); before
+that, production served the committed `docs/` directory and had been frozen on
+an Aug 31 build.
 
-  The cause is in the build, and it is a Coolify bug, not a repo problem. The
-  `static` build pack generates a small Dockerfile into the base directory and
-  builds it. On a production deploy that works (`transferring dockerfile: 436B`).
-  On a preview deploy the file is never written (`transferring dockerfile: 2B`,
-  then `failed to read dockerfile: open Dockerfile: no such file or directory`),
-  because `base_directory` is `/docs` rather than `/`. Production deploys are
-  unaffected: all 8 have succeeded, the last on 2026-09-03.
+| | |
+|---|---|
+| app uuid | `qw4koc0gkcwgs8wwckkcc8cc` |
+| build pack | `dockerfile`, `base_directory: /`, `dockerfile_location: /Dockerfile` |
+| branch | `master` |
+| previews | `pr-{{pr_id}}.datarepublican-site.americancloud.dev` |
 
-So the live site is a committed build artifact. It is not stale because deploys
-are broken — production deploys work fine and the last one matches `master`
-exactly. It is stale because **nobody has regenerated `docs/` since 2026-08-31**,
-and `master` has not moved since 2026-09-02. Coolify runs no build: its config is
-`build_pack: static`, `base_directory: /docs`, no install/build/start command. It
-copies `docs/` into `nginx:alpine` and serves it.
+Things that follow from this, and have already cost time once each:
 
-Consequences for anything you do here:
+- **Any push to `master` rebuilds production**, including a README-only commit —
+  `watch_paths` is unset. Harmless, just slow (the build is several minutes,
+  most of it `bundle install`).
+- **`health_check_enabled` is false**, so the container swap is not gated on the
+  new container being ready. The build completes first, so the exposed window is
+  the swap itself — seconds — but it is not strictly zero-downtime.
+- **The build resolves gems from scratch every time.** `Gemfile.lock` is
+  gitignored, so the Dockerfile copies `Gemfile` only; copying the lock would
+  fail the build outright in a fresh clone. `github-pages` pins the transitive
+  set, which is what stops that drifting.
+- **Rolling back is a config change, not a revert.** `docs/` is still on `master`
+  and still what GitHub Pages serves, so:
 
-- `_config.yml` still says `destination: docs`, so a **bare `jekyll build` or
-  `jekyll serve` with no `--destination` rewrites production's artifact.**
-  Always go through the npm scripts, which pass `--destination _site`.
-- Coolify's build configuration lives in its own UI, not in this repo. There is
-  no Dockerfile, nixpacks config or compose file here. You cannot review or
-  reproduce the deploy from the source tree.
-- `.github/workflows/deploy.yml` exists on `redesign-v2` only. Merging it adds a
-  *third* publishing path. Decide the architecture first.
+      curl -X PATCH -H "Authorization: Bearer $T" -H 'Content-Type: application/json' \
+        -d '{"build_pack":"static","base_directory":"/docs"}' \
+        "$CB/api/v1/applications/qw4koc0gkcwgs8wwckkcc8cc"
 
-After a deploy, verify by content: the domain returns 200 for any path, so a
-status code proves nothing.
+  That restores the pre-cutover site exactly. It stops being available the day
+  `docs/` is deleted.
 
-**And fetch the host's own path, not a URL the page hands you.** `url:` in
-`_config.yml` is `https://datarepublican.com`, and jekyll-seo-tag builds
-absolute URLs from it, so *every* environment — localhost, a staging app, a PR
-preview — serves `<meta property="og:image" content="https://datarepublican.com/…">`.
-Following that tag to check a deploy measures production and reports the
-environment you are actually testing as broken. Request
-`<host>/assets/images/og.png` directly and compare md5 against
-`git show <ref>:assets/images/og.png`. Same failure shape as the 200: a correct
-build that reads as a bad one.
+### Verify by content, never by status code
 
-### Going live: the cutover runbook
+    scripts/verify-deploy.sh https://datarepublican.com <git-ref>
 
-The repo side of this is already done and sitting on this branch — `Dockerfile`,
-`.dockerignore` and `deploy/nginx.conf` build the site from source instead of
-serving `docs/`. Both halves are verified on real infrastructure (a throwaway
-Coolify app built from `infra/dockerfile-build`): a production-style deploy and
-a per-PR preview both succeeded and served the v2 chrome.
+Five checks: the route contract, every referenced asset's content-type, gzip,
+`og.png` byte-identical to the ref, and the v2 chrome present. Run it after a
+deploy. Three traps it exists to defeat — each one makes a broken deploy look
+fine, or a fine deploy look broken:
 
-**Nothing is live until someone changes Coolify.** The order below matters;
-each step is reversible, and step 4 is not.
+1. **`try_files $uri $uri/ /index.html` answers a missing asset with the home
+   page, at 200.** A missing script reports `Unexpected token '<'` and whatever
+   it defined reports as undefined. Check `content-type`, not the status code.
+2. **`url:` in `_config.yml` is always `https://datarepublican.com`**, so
+   jekyll-seo-tag emits absolute production URLs from *every* environment.
+   Following `og:image` off a staging host measures production and reports the
+   environment you are actually testing as broken.
+3. **`/ea-explorer/network.html` and `/ea-explorer/words/opener.html` are
+   `jekyll-redirect-from` stubs** that redirect to production from everywhere.
+   Excluded from the sweep on purpose.
 
-1. **Merge this branch to `master`.** Production does not change — Coolify is
-   still on `build_pack: static` reading `docs/`, and `docs/` is still there.
-2. **Switch the production app** (`qw4koc0gkcwgs8wwckkcc8cc`) to:
-   `build_pack: dockerfile`, `base_directory: /`, `dockerfile_location:
-   /Dockerfile`. Reversible — set the fields back to `static` and `/docs`.
-   This is the first deploy that publishes what `master` actually contains.
-3. **Verify by content**, not status code. `/`, `/noblogs/`, `/dsa-explorer/`,
-   `/browse/`, `/officers/bulk/`, `/about/`. Compare against the throwaway app
-   if it still exists.
-4. **Only then** `git rm -r docs/`, set `_config.yml`'s `destination` to
-   `_site`, and drop `docs` from `exclude`. 426 MB and 10,011 files, and the
-   "a bare `jekyll build` overwrites production" trap goes with them.
+Also confirm gzip: it comes from `deploy/nginx.conf`, and Coolify's own
+`custom_nginx_configuration` stops applying under the dockerfile build pack.
 
-**GitHub Pages reads `master:/docs` too.** Step 4 breaks it. Decide before then
-whether Pages stays; if it does, it needs its own source, and it should get a
-`docs/.nojekyll` (it currently re-runs Jekyll over already-built HTML, which
-Coolify does not).
+### `docs/` is no longer production, but it is not dead yet
 
-Known and deliberate: `/nope-xyz/` returns **200**, not 404. `try_files $uri
-$uri/ /index.html` in `deploy/nginx.conf` makes the `error_page 404` block dead
-code. That is exactly what production does today and was reproduced on purpose
-rather than changed mid-migration. Worth fixing as its own commit afterwards.
+It is **still what GitHub Pages serves**, and still the rollback surface.
+
+    gh api repos/DataRepublican/datarepublican/pages
+    build_type  legacy
+    source      {branch: master, path: /docs}
+
+Pages is on the *legacy branch build* reading `master:/docs`, and it rebuilds on
+every push to `master`. It is a second, independent publisher —
+`datarepublican.github.io/datarepublican/` — and it shows the old site, because
+`docs/` has not been regenerated since Aug 31. That is expected, not a symptom.
+
+`.github/workflows/deploy.yml` was deliberately **not** merged (removed in
+`e88f1ae2`). It published `_site` to Pages on every push to `master`; against a
+`legacy` site it either fails outright or silently converts a public site's
+publishing source as a side effect of an unrelated merge. If it is ever wanted,
+Pages needs `build_type=workflow` first, or the workflow needs
+`enablement: true` on `configure-pages`. It is recoverable from history.
+
+**Before deleting `docs/`** (445 MB, 10,011 files), decide what Pages is for.
+Deleting it breaks Pages and removes the config-only rollback. The rest of the
+cleanup is: `git rm -r docs/`, set `_config.yml`'s `destination` to `_site`, drop
+`docs` from `exclude` — and the "a bare `jekyll build` overwrites production"
+trap goes with it.
+
+Known and deliberate: `/nope-xyz/` returns **200**, not 404, because `try_files`
+makes `deploy/nginx.conf`'s `error_page 404` block dead code. That is what
+production did before the cutover and was reproduced on purpose rather than
+changed mid-migration. Worth fixing as its own commit.
 
 ## House style
 
