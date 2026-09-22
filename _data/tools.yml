@@ -65,6 +65,10 @@
   updated: 2025-08-23
   category: Charity funding & financials
   preview: charity-browse.webp
+  # The fourth feature card, so the top block reads as an even 2x2 on desktop
+  # rather than three big cards and one half-width one wrapping beside them.
+  # charity-browse.webp is 900x499, which covers the 768px feature box.
+  feature: true
 - href: /expose/
   name: Charity graph
   tagline: Visualize how the money flows

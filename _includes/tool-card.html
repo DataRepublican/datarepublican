@@ -27,7 +27,11 @@
     <div class="absolute inset-x-0 bottom-0 bg-gradient-to-b from-transparent via-white/75 to-white/95 px-4 pb-4 pt-10 backdrop-blur-[2px]">
       <h3 class="m-0 text-card-title font-bold tracking-title !text-ink-strong">{{ t.name }}</h3>
       <p class="m-0 mt-0.5 text-lede font-bold tracking-body !text-ink-strong">{{ t.tagline }}</p>
-      <p class="m-0 mt-1 text-body !text-ink">{{ t.description }}</p>
+      {%- comment -%} font-normal is not redundant: the whole card is an <a>, and
+        main.css styles bare `a` as font-semibold, so every line in here inherits
+        it. Without this the description sets at the same weight as the tagline
+        above it and the two stop reading as different things. {%- endcomment -%}
+      <p class="m-0 mt-1 text-dense font-normal !text-ink">{{ t.description }}</p>
     </div>
   </div>
 
@@ -40,7 +44,9 @@
   <div class="px-4 pb-4 pt-3">
     <h3 class="m-0 text-card-title font-bold tracking-title !text-ink-strong">{{ t.name }}</h3>
     <p class="m-0 mt-0.5 text-body font-bold tracking-body !text-ink-strong">{{ t.tagline }}</p>
-    <p class="m-0 mt-1 text-body !text-ink">{{ t.description }}</p>
+    {%- comment -%} See the note on the feature card's description above — the
+      card is an <a>, so font-normal is what stops this inheriting semibold. {%- endcomment -%}
+    <p class="m-0 mt-1 text-dense font-normal !text-ink">{{ t.description }}</p>
   </div>
   {%- endif -%}
 </a>
