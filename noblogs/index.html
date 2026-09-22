@@ -1404,7 +1404,7 @@ async function showGraph(){
   const loading=document.getElementById('graphloading');
   try{
     await loadStyle('graph/graph.css');
-    await loadScript('graph/cytoscape.min.js');
+    await loadScript('/assets/js/cytoscape.min.js');
     await loadScript('graph/graph_data.js');
     await loadScript('graph/logos.index.js');
     await loadScript('graph/graph.js');

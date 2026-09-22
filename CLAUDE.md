@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (224 specs, ~55s).
+Tests need the dev server running: `npx playwright test` (229 specs, ~55s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -136,6 +136,21 @@ cwebp, ImageMagick or sharp here, and `sips` cannot write WebP on this macOS).
 
 **Feature cards paint at 768px, standard cards at 438px** — `_data/tools.yml`'s
 `feature: true` picks the shape, so the two want different source widths.
+
+**Vendored libraries live in `assets/js/`, loaded per page, not in the head.**
+jQuery and Cytoscape are both there. Cytoscape is 353 KB and four routes need
+it — `_includes/head-custom.html` would put it on all 34. `noblogs/graph/`
+has no front matter, so it cannot use `relative_url`; `baseurl` is `""`, so a
+root-absolute `/assets/js/…` is what that filter would emit anyway.
+
+**`ea-explorer/words/data.json` cannot be split by chunking it.** The page
+builds a reverse keyword index over every quote at boot (full text, gloss,
+post title, author name), and `Q[qid]` is random access across the whole
+corpus — the topics view previews each topic's lead quote, the people view
+each author's top quote, and the author drawer renders every quote that
+person has, up to 625. Splitting means precomputing the index at build time
+and emitting per-author chunks, the way `data:split` already does for noblogs.
+gzip takes it 6.18 MB -> 1.74 MB, which is most of the win for none of the risk.
 
 **Preflight sets `box-sizing: border-box`.** A rule built from `border-t` +
 `height` + `border-b` needs the height to be the *total*, not the gap.
