@@ -240,51 +240,69 @@ git checkout -- docs/ && git clean -fd docs/
 
 > `_config.yml` still says `destination: docs` and that is deliberate — Jekyll
 > excludes whatever that names from the *source scan*, which is what keeps the
-> 632 MB committed tree from being read as source. The `--destination _site` on
+> 445 MB committed tree from being read as source. The `--destination _site` on
 > the command line is what decides where output actually goes. Changing the
 > config value instead makes a build start rewriting `docs/`. It goes away when
 > `docs/` does.
 
 ## Promoting to production
 
-> **This section is out of date and is being rewritten.** It describes a
-> GitHub-Pages-only pipeline. As verified on 2026-09-18, `datarepublican.com` is
-> served by **Coolify** (behind Cloudflare) from the committed `docs/`
-> directory, and GitHub Pages is a second parallel deployment that can no longer
-> publish. See "Deploying" in `CLAUDE.md` for what is actually true, and do not
-> delete `docs/` until the pipeline is settled.
+**Merge to `master` and it deploys.** Coolify builds the site from source with
+this repo's `Dockerfile` and serves `_site` from `nginx:alpine`. There is no
+manual build step and nothing to commit into `docs/`.
 
-Deployment is automatic: **merge to `master` and GitHub Actions builds and
-publishes.** There is no manual build step and nothing to commit into `docs/`.
+`datarepublican.com` sits behind Cloudflare; the origin is Coolify, app
+`qw4koc0gkcwgs8wwckkcc8cc`, tracking `master`. Pull requests get a preview at
+`pr-<PR#>.datarepublican-site.americancloud.dev`.
 
-`.github/workflows/deploy.yml` runs two gates before anything uploads:
+`.github/workflows/ci.yml` runs the build plus the full test suite on every pull
+request. Two of its gates matter more than the rest:
 
-- **Size.** The build is ~449 MB against a 1 GB GitHub Pages ceiling. It fails
-  with a message naming the cause rather than at upload time with an opaque one.
-- **The route contract.** `tests/routes.txt` lists every published URL; a build
-  whose routes differ never reaches production. Removing a page deliberately
-  means editing that file in the same commit, so it shows up in review.
-
-`.github/workflows/ci.yml` runs the same build plus the full test suite on every
-pull request.
+- **The route contract.** `tests/routes.txt` lists every published URL, and a
+  build that drops one fails. Removing a page deliberately means editing that
+  file in the same commit, so the deletion shows up in review. This gate is what
+  caught `/tests/` disappearing when `tests` was added to `_config.yml`'s
+  exclude — and note that the route step *gates* Playwright, so a red route
+  check means the suite did not run at all rather than that it passed.
+- **Build size.** The build is ~462 MB. Watch it: `docs/` still ships alongside
+  it in the repo.
 
 ### After a deploy, verify by content — not by status code
 
+```bash
+scripts/verify-deploy.sh https://datarepublican.com <git-ref>
+```
+
 `datarepublican.com` returns **200 for any path**, including ones that do not
-exist, so "it returns 200" proves nothing. Open the pages and look:
+exist — `try_files $uri $uri/ /index.html` answers a missing asset with the home
+page. So "it returns 200" proves nothing, and a missing script reports
+`Unexpected token '<'` rather than a 404.
 
-`/` &middot; `/noblogs/` &middot; `/dsa-explorer/` &middot; `/browse/` &middot; `/officers/bulk/` &middot; `/about/`
+The script checks the route contract, every referenced asset's content-type,
+gzip, `og.png` byte-for-byte against the ref, and that the v2 chrome is present.
+Its header documents the two other traps it works around: `url:` in
+`_config.yml` is always the production domain, so SEO tags point at production
+from every environment; and the old `/ea-explorer/*.html` paths are redirect
+stubs that do the same.
 
-### Finishing the cutover (one time)
+### `docs/` — still load-bearing, for two other things
 
-Pages **Source** is already set to *GitHub Actions*. Two steps remain:
+It is no longer what `datarepublican.com` serves, but do not delete it yet:
 
-1. Merge the redesign branch, then confirm a deploy serves the live site.
-2. Remove `docs/` from git (10,011 files, 632 MB) and set
-   `_config.yml`'s `destination` to `_site`.
+- **GitHub Pages still builds from it.** `build_type: legacy`, source
+  `{branch: master, path: /docs}`. That is a second publisher at
+  `datarepublican.github.io/datarepublican/`, and it shows the pre-cutover site
+  because `docs/` has not been regenerated since Aug 31.
+- **It is the rollback.** Setting the Coolify app back to `build_pack: static`
+  and `base_directory: /docs` restores the old site in one API call.
 
-Until step 2, `docs/` is dead weight: committed, and no longer what is served.
-Rollback at any point is **Settings &rarr; Pages &rarr; Source &rarr; `master /docs`**.
+Deleting it is a deliberate follow-up: decide what Pages is for, then
+`git rm -r docs/`, set `_config.yml`'s `destination` to `_site`, and drop `docs`
+from `exclude`. That also retires the trap where a bare `jekyll build` — one
+without `--destination` — overwrites production's artifact.
+
+`.github/workflows/deploy.yml` was **not** merged, on purpose. See "Deploying"
+in `CLAUDE.md`.
 
 ## What is generated, and when to regenerate it
 

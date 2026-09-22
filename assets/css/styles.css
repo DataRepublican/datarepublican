@@ -4406,6 +4406,12 @@ select {
   line-height:      1rem;
 }
 
+.text-dense {
+  font-size:      0.875rem;
+  line-height:      1.45;
+  letter-spacing:      -0.005em;
+}
+
 .\!font-semibold {
   font-weight:      600 !important;
 }
