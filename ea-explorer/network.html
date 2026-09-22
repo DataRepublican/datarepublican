@@ -34,12 +34,15 @@ redirect_from:
      Scoped to #ea-header (not a bare `header`, to avoid the site masthead).
      No horizontal padding of its own: #app sits inside main.page-column,
      which already set the gutter. */
-  #ea-header{grid-column:1/3;padding:10px 0 12px;background:var(--bg);
+  /* Top padding is the gap under the site tagline; noblogs is the
+     reference at 32px above md and 26px below. */
+  #ea-header{grid-column:1/3;padding:22px 0 12px;background:var(--bg);
     display:flex;flex-direction:column;gap:10px}
   .ea-idrow{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
   .ea-id{display:flex;flex-direction:column;gap:2px;min-width:0}
   #ea-header h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em;line-height:1.2;color:var(--dr-ink-strong,#000)}
   #ea-header .sub{font-size:var(--dr-text-meta,13px);color:var(--dr-ink-faint,#6B7280);line-height:1.35}
+  #ea-header .sub[data-tip]{cursor:help;text-decoration:underline dotted;text-underline-offset:3px}
   /* right side of the id row: project switcher + disclaimer */
   /* Wraps rather than holding its width: this row of links is wider than a
      phone, and `flex:0 0 auto` on it widened the LAYOUT VIEWPORT – innerWidth
@@ -55,9 +58,6 @@ redirect_from:
   .ea-switch a:hover{color:var(--dr-ink-strong,#000)}
   .ea-switch a.on{background:var(--panel);color:var(--dr-accent,#252739);box-shadow:0 1px 3px rgba(0,0,0,.12)}
   /* home breadcrumb back to the hub, and the "What is EA?" guided-intro link */
-  .ea-home{font-family:var(--dr-font-ui);font-size:var(--dr-text-label,12px);font-weight:600;
-    color:var(--dr-ink-faint,#6B7280);text-decoration:none;white-space:nowrap;flex:0 0 auto}
-  .ea-home:hover{color:var(--dr-ink-strong,#000)}
   /* "read their quotes" cross-link into the words sub-project */
   #panel .wordslink{display:block;margin:12px 0 2px;padding:9px 12px;background:var(--dr-accent-tint,#DEE0E8);
     border:1px solid var(--dr-accent-tint-line,#C3C7D6);border-radius:8px;font-family:var(--dr-font-ui);
@@ -97,7 +97,13 @@ redirect_from:
   .ea-search #q::placeholder{color:var(--dr-ink-faint,#6B7280)}
 
   @media(min-width:768px){
-    #ea-header{padding:12px 0 14px;gap:12px}
+    #ea-header{padding:28px 0 14px;gap:12px}
+    /* Desktop order: lenses, kinds, search, then the disclaimer pushed to
+       the right edge. The DOM keeps it next to .ea-kinds so that on a
+       phone the two wrap onto the same row instead of it taking a row of
+       its own under the search. */
+    .ea-search{order:3}
+    #ea-disclaimer-open{order:4;margin-left:auto}
     #ea-header h1{font-size:var(--dr-text-title,24px);letter-spacing:-.02em}
     .ea-id{flex-direction:row;align-items:baseline;gap:12px}
     .ea-search{flex:0 1 22rem;height:2.25rem}
@@ -268,7 +274,7 @@ redirect_from:
      bottom sheet (assets/js/sheet.js) rising over the canvas. */
   @media(max-width:767px){
     #app{grid-template-columns:1fr;grid-template-rows:auto 1fr;height:auto}
-    #ea-header{padding:10px 0 12px;position:sticky;top:0;z-index:var(--dr-z-sticky,30)}
+    #ea-header{padding:22px 0 12px;position:sticky;top:0;z-index:var(--dr-z-sticky,30)}
     #stage{grid-column:1;grid-row:2;height:calc(100dvh - var(--ea-stage-top,7rem) - var(--nav-clearance));min-height:20rem}
     #cy{touch-action:pan-y}
     #controls{position:absolute;left:0;right:0;bottom:8px;top:auto;flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:6px;padding:2px 8px;scrollbar-width:none;z-index:calc(var(--dr-z-canvas-ui,20) + 1)}
@@ -297,15 +303,11 @@ redirect_from:
         <div class="sub" id="counts" role="status" aria-live="polite" aria-atomic="true">Loading network…</div>
       </div>
       <div class="ea-idright">
-        <a class="ea-home" href="/ea-explorer/" title="EA Explorer overview">Overview</a>
-        <div class="ea-switch" title="Switch between the two views of the same ecosystem">
+        <div class="ea-switch" title="Switch between the overview and the two views of the same ecosystem">
+          <a href="/ea-explorer/">Overview</a>
           <a href="/ea-explorer/words/">Their words</a>
           <a href="/ea-explorer/network/" class="on">The network</a>
         </div>
-        <button type="button" class="dr-dialog-open" id="ea-disclaimer-open" aria-haspopup="dialog">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-          About &amp; disclaimer
-        </button>
       </div>
     </div>
     <div class="ea-controls">
@@ -319,6 +321,10 @@ redirect_from:
         <button type="button" data-kind="person" aria-pressed="false">People</button>
         <button type="button" data-kind="org" aria-pressed="false">Orgs</button>
       </div>
+      <button type="button" class="dr-dialog-open" id="ea-disclaimer-open" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        About &amp; disclaimer
+      </button>
       <label class="ea-search">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input id="q" type="text" placeholder="Find an org or person…" autocomplete="off" aria-label="Find an org or person on the graph">
@@ -520,6 +526,22 @@ redirect_from:
     const commHidden=new Set(), tierHidden=new Set(), moneyIdeo=new Set(), moneyEA=new Set();
     const legend=document.getElementById('legend');
     const countEl=document.getElementById('counts');
+    /* The EA-affiliation breakdown is longer than the other two lenses' lines
+       and wrapped the identity row, pushing the view switch down. Summary
+       stays visible, detail goes to the tooltip. tabindex only while there is
+       one, so it is not a tab stop on the lenses that have nothing to show. */
+    function setCount(text, detail){
+      countEl.textContent = text;
+      if(detail){
+        countEl.setAttribute('data-tip', detail);
+        countEl.setAttribute('data-tip-title', 'EA affiliation');
+        countEl.setAttribute('tabindex', '0');
+      } else {
+        countEl.removeAttribute('data-tip');
+        countEl.removeAttribute('data-tip-title');
+        countEl.removeAttribute('tabindex');
+      }
+    }
 
     function nodeVisibleOverview(n){
       const cs=n.data('communities')||[]; const mem=cs.length?cs:[''];
@@ -587,17 +609,18 @@ redirect_from:
       const vis=cy.nodes(':visible').length, ve=cy.edges(':visible').length;
       const kn = kindFilter==='all' ? '' : (kindFilter==='person'?' · people only':' · orgs only');
       if(lens==='money'){
-        countEl.textContent = `${vis} money-connected entities · ${ve} financial ties${kn}`;
+        setCount(`${vis} money-connected entities · ${ve} financial ties${kn}`);
       } else if(lens==='reach'){
-        if(kindFilter!=='all'){ countEl.textContent = `${vis} shown${kn} · EA affiliation`; return; }
+        if(kindFilter!=='all'){ setCount(`${vis} shown${kn} · EA affiliation`); return; }
         const c={core:0,embedded:0,adjacent:0,outside:0};
         nodes.forEach(n=>{c[(eaReach[n.id]||{}).tier||'outside']++;});
         const reached=c.core+c.embedded+c.adjacent;
-        countEl.textContent = `${reached} of ${nodes.length} entities have a documented EA link · ${c.core} explicitly EA · ${c.embedded} funded/staffed · ${c.adjacent} connected`;
+        setCount(`${reached} of ${nodes.length} have a documented EA link`,
+          `${c.core} explicitly EA · ${c.embedded} funded or staffed by EA orgs · ${c.adjacent} connected`);
       } else {
-        countEl.textContent = (kindFilter==='all'&&!commHidden.size)
+        setCount((kindFilter==='all'&&!commHidden.size)
           ? `${nodes.length} entities · ${pairMap.size} connections · ${tieCount} ties`
-          : `${vis} of ${nodes.length} entities shown${kn} · ${ve} connections`;
+          : `${vis} of ${nodes.length} entities shown${kn} · ${ve} connections`);
       }
     }
 

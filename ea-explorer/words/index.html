@@ -22,7 +22,11 @@ title: "EA – in their own words"
 #wapp a{color:inherit}
 
 /* tool header – identity row + view switcher, mirrors the graph's #ea-header */
-#words-header{padding:6px 0 14px;display:flex;flex-direction:column;gap:12px}
+/* Top padding sets the gap between the site tagline and the tool's h1.
+   noblogs is the reference at 32px above md and 26px below; 6px here put
+   the headline almost against the tagline. */
+#words-header{padding:22px 0 14px;display:flex;flex-direction:column;gap:12px}
+@media(min-width:768px){#words-header{padding:28px 0 14px}}
 .ea-idrow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .ea-id{display:flex;flex-direction:column;gap:2px;min-width:0}
 #words-header h1{margin:0;font-family:var(--serif);font-weight:700;letter-spacing:-.02em;
@@ -37,9 +41,6 @@ title: "EA – in their own words"
   font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);white-space:nowrap;text-decoration:none}
 .ea-switch a:hover{color:var(--ink-strong)}
 .ea-switch a.on{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
-.ea-home{font-family:var(--sans);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);
-  text-decoration:none;white-space:nowrap;flex:0 0 auto}
-.ea-home:hover{color:var(--ink-strong)}
 .ea-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ea-lenses{display:flex;gap:2px;background:var(--fill);border:1px solid var(--line);
   border-radius:var(--rad-sm);padding:3px}
@@ -193,8 +194,8 @@ h1.view{font-family:var(--serif);font-size:clamp(1.4rem,3vw,1.8rem);font-weight:
         <div class="sub" id="count" role="status" aria-live="polite" aria-atomic="true"></div>
       </div>
       <div class="ea-idright">
-        <a class="ea-home" href="/ea-explorer/" title="EA Explorer overview">Overview</a>
-        <div class="ea-switch" title="Switch between the two views of the same ecosystem">
+        <div class="ea-switch" title="Switch between the overview and the two views of the same ecosystem">
+          <a href="/ea-explorer/">Overview</a>
           <a href="/ea-explorer/words/" class="on">Their words</a>
           <a href="/ea-explorer/network/">The network</a>
         </div>

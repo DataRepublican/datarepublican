@@ -32,27 +32,31 @@ html{scroll-behavior:smooth}
 .wrap{max-width:820px;margin:0 auto;padding:0 8px}
 
 /* a small in-flow switcher at the very top of the piece */
-.o-switchrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 8px 0}
-.ea-home{font-family:var(--sans);font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);
-  text-decoration:none;white-space:nowrap}
-.ea-home:hover{color:var(--ink-strong)}
-.ea-switch{display:flex;gap:2px;background:var(--fill);border:1px solid var(--line);
-  border-radius:var(--dr-radius-control,.625rem);padding:3px}
-.ea-switch a{padding:6px 11px;border-radius:var(--dr-radius-sm,6px);font-family:var(--sans);
-  font-size:var(--dr-text-label,12px);font-weight:600;color:var(--faint);white-space:nowrap;text-decoration:none}
-.ea-switch a:hover{color:var(--ink-strong)}
-.ea-switch a.on{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
 
 /* ---- hero ---- */
-#hero{min-height:82vh;display:flex;flex-direction:column;justify-content:center;
-  align-items:center;text-align:center;position:relative;padding:6vh 0}
+/* --ea-hero-top is the hero's distance from the top of the document, measured
+   at runtime. 82vh was a guess that ignored the promo band and the masthead
+   above it, so the hero ran past the fold and took the scroll cue with it.
+   The band can also be switched off in _data/banner.yml, which moves
+   everything up — hence measured rather than assumed. */
+#hero{min-height:calc(100dvh - var(--ea-hero-top, 22rem));display:flex;flex-direction:column;
+  justify-content:center;align-items:center;text-align:center;position:relative;padding:3vh 0}
 #hero h1{font-family:var(--serif);font-size:clamp(2.4rem,6.5vw,4.6rem);line-height:1.03;margin:0 0 .3em;
   font-weight:800;letter-spacing:-.03em;color:var(--ink-strong)}
-#hero .sub{font-family:var(--sans);color:var(--muted);font-size:1.05rem;max-width:36ch;line-height:1.5}
+#hero .sub{font-family:var(--sans);color:var(--muted);font-size:1.05rem;max-width:36ch;line-height:1.5;
+  margin-inline:auto}
 .cue{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:var(--faint);
   font-family:var(--sans);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;
   animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+@media(max-width:720px){
+  /* Stop short of the fixed phone nav, so the cue sits above it rather than
+     behind it. */
+  #hero{min-height:calc(100dvh - var(--ea-hero-top, 16rem) - var(--nav-clearance, 5.5rem));
+    padding:2vh 0 0}
+  .cue{bottom:10px}
+}
 
 /* ---- interstitial framing ---- */
 .frame{min-height:60vh;display:flex;align-items:center}
@@ -119,14 +123,6 @@ figcaption a:hover{color:var(--accent);border-color:var(--accent)}
 <div id="wopener">
   <div id="prog"></div>
 
-  <div class="o-switchrow">
-    <a class="ea-home" href="/ea-explorer/" title="EA Explorer overview">Overview</a>
-    <div class="ea-switch" title="Switch between the two views of the same ecosystem">
-      <a href="/ea-explorer/words/">Their words</a>
-      <a href="/ea-explorer/network/">The network</a>
-    </div>
-  </div>
-
   <section id="hero">
     <div class="wrap">
       <h1>Effective Altruism,<br>in their own words.</h1>
@@ -190,6 +186,20 @@ function renderBeat(b){
     ${quotes}
   </div></section>`;
 }
+/* The hero sizes itself against this. A height is not a position: the banner
+   and the masthead sit above it and the banner can be turned off, so the
+   offset is measured rather than assumed. */
+(function(){
+  var hero=document.getElementById("hero");
+  if(!hero) return;
+  var set=function(){document.documentElement.style.setProperty(
+    "--ea-hero-top", Math.round(hero.getBoundingClientRect().top+window.scrollY)+"px");};
+  set();
+  addEventListener("resize",set);
+  if(window.ResizeObserver){var h=document.querySelector("header.page-column");
+    if(h) new ResizeObserver(set).observe(h);}
+})();
+
 fetch("/ea-explorer/words/opener.json").then(r=>r.json()).then(d=>{
   document.getElementById("beats").innerHTML = d.beats.map(renderBeat).join("");
   const io = new IntersectionObserver((es)=>{

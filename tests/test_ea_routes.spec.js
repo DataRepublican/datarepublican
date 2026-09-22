@@ -18,7 +18,9 @@ for (const route of ROUTES) {
     expect(res.status(), `${route} is not a page`).toBe(200);
     // A marker, not a byte count: writing into the repo triggers a Jekyll
     // rebuild, and a length check reads a mid-rebuild response as a failure.
-    expect(await res.text(), `${route} did not render the section`).toContain('EA Explorer');
+    // Every page in the section links to another one, so this survives copy
+    // edits in a way a visible string does not.
+    expect(await res.text(), `${route} did not render the section`).toContain('/ea-explorer/');
   });
 }
 
