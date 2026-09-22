@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (231 specs, ~55s).
+Tests need the dev server running: `npx playwright test` (233 specs, ~55s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -139,7 +139,7 @@ cwebp, ImageMagick or sharp here, and `sips` cannot write WebP on this macOS).
 
 **Vendored libraries are shared, not copied per tool.** `assets/js/` holds the
 two the shell and the redesigned tools load (jQuery 3.5.1, Cytoscape);
-`assets/js/vendor/` holds the rest, version-suffixed because two jszips and
+`assets/js/lib/` holds the rest, version-suffixed because two jszips and
 two papaparses are both in use. Loaded per page, never from
 `_includes/head-custom.html` — Cytoscape is 353 KB and four routes need it,
 not 34. `noblogs/graph/` and the other standalone pages have no front matter,
@@ -147,13 +147,24 @@ so they cannot use `relative_url`; `baseurl` is `""`, so a root-absolute
 `/assets/js/…` is what that filter would emit anyway.
 `tests/test_vendored_libs.spec.js` fails on a re-duplicated library.
 
-Two things to know before moving one: **`importScripts` resolves against the
-WORKER's URL, not the page's** (`officers/unzipWorker.js` loads JSZip that
-way, and `officers/bulk/` runs it from one directory up), and a grep for
-`<script src>` will not find it. **`exclude: vendor` in `_config.yml`** is for
-`bundle install --path vendor/bundle`; it is matched from the source root and
-does not touch `assets/js/vendor/`, which is verified to publish on a clean
-build.
+**Do not name a shared directory `vendor`.** `.gitignore` has a bare `vendor`,
+and gitignore matches a bare name **at any depth** — `assets/js/vendor/` was
+silently skipped by `git add -A` while the same commit deleted the 24 per-tool
+copies it replaced. Everything built and every spec passed locally, because
+the dev server reads the working tree; the files simply were not in the deploy.
+`.dockerignore` and `_config.yml` carry the same bare `vendor`, for
+`bundle install --path vendor/bundle`. The shared directory is `assets/js/lib/`
+for that reason, and `tests/test_assets_committed.spec.js` fails on any
+`/assets/…` reference that git is not tracking.
+
+**A missing asset does not 404 in production.** `try_files $uri $uri/
+/index.html` answers it with the home page, so a missing script reports
+`Unexpected token '<'` and whatever it defined reports as undefined. Check
+`content-type`, not the status code.
+
+**`importScripts` resolves against the WORKER's URL, not the page's**
+(`officers/unzipWorker.js` loads JSZip that way, and `officers/bulk/` runs it
+from one directory up), and a grep for `<script src>` will not find it.
 
 **`ea-explorer/words/data.json` cannot be split by chunking it.** The page
 builds a reverse keyword index over every quote at boot (full text, gloss,

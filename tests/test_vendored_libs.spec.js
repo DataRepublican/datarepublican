@@ -4,7 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const ROOT = path.join(__dirname, '..');
-const SHARED = path.join(ROOT, 'assets', 'js', 'vendor');
+const SHARED = path.join(ROOT, 'assets', 'js', 'lib');
 const SKIP = /^(docs|node_modules|_site|\.git|test-results|playwright-report|vendor)$/;
 
 /* Two copies of one library is two things to patch, and the second is always
@@ -56,7 +56,7 @@ test('every shared copy is actually referenced', () => {
     .map((p) => fs.readFileSync(p, 'utf8'));
 
   const unreferenced = shared.filter(
-    (f) => !consumers.some((src) => src.includes(`/assets/js/vendor/${f}`))
+    (f) => !consumers.some((src) => src.includes(`/assets/js/lib/${f}`))
   );
 
   expect(unreferenced, `nothing references: ${unreferenced.join(', ')}`).toEqual([]);
