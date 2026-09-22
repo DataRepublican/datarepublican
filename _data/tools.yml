@@ -28,7 +28,7 @@
   rank: 1
   updated: 2026-09-21
   category: Networks & influence
-  preview: ea-explorer.png
+  preview: ea-explorer.webp
   feature: true
 
 - href: /dsa-explorer/
@@ -40,7 +40,7 @@
   rank: 2
   updated: 2026-08-31
   category: Networks & influence
-  preview: dsa-explorer.png
+  preview: dsa-explorer.webp
   feature: true
 
 - href: /noblogs/
@@ -52,7 +52,7 @@
   rank: 3
   updated: 2026-08-31
   category: Networks & influence
-  preview: noblogs.png
+  preview: noblogs.webp
   feature: true
 
 - href: /browse/
@@ -64,8 +64,7 @@
   rank: 4
   updated: 2025-08-23
   category: Charity funding & financials
-  preview: charity-browse.png
-
+  preview: charity-browse.webp
 - href: /expose/
   name: Charity graph
   tagline: Visualize how the money flows
@@ -75,8 +74,7 @@
   rank: 5
   updated: 2025-06-13
   category: Charity funding & financials
-  preview: charity-graph.png
-
+  preview: charity-graph.webp
 - href: /ned/
   name: NED explorer
   tagline: The National Endowment for Democracy, indexed
@@ -85,8 +83,7 @@
   rank: 6
   updated: 2025-05-15
   category: Networks & influence
-  preview: ned.png
-
+  preview: ned.webp
 - href: /officers/
   name: Principal officer search
   tagline: Search NGOs for officers and salaries
@@ -95,8 +92,7 @@
   rank: 7
   updated: 2025-03-06
   category: People, officers & salaries
-  preview: officer-search.png
-
+  preview: officer-search.webp
 - href: /officers/bulk/
   name: Bulk officer search
   tagline: Search and cross-reference names
@@ -106,8 +102,7 @@
   rank: 8
   updated: 2025-03-01
   category: People, officers & salaries
-  preview: bulk-officer-search.png
-
+  preview: bulk-officer-search.webp
 - href: /nonprofit/
   name: Charity funding
   tagline: Discover the percentage of taxpayer funds used
@@ -117,8 +112,7 @@
   rank: 9
   updated: 2025-03-01
   category: Charity funding & financials
-  preview: charity-funding.png
-
+  preview: charity-funding.webp
 - href: /nonprofit/assets/
   name: Nonprofit financials
   tagline: Analyze assets & expenses
@@ -127,8 +121,7 @@
   rank: 10
   updated: 2025-03-01
   category: Charity funding & financials
-  preview: nonprofit-financials.png
-
+  preview: nonprofit-financials.webp
 - href: /award_search/
   name: Federal grant search
   tagline: Map funds to connected orgs
@@ -138,8 +131,7 @@
   rank: 11
   updated: 2025-02-14
   category: Political campaign & grant funding
-  preview: award-search.png
-
+  preview: award-search.webp
 - href: /florida/
   name: Florida turnout
   tagline: County-level early voting and registration
@@ -148,8 +140,7 @@
   rank: 12
   updated: 2025-04-01
   category: Voter turnout analysis
-  preview: florida.png
-
+  preview: florida.webp
 - href: /pennsylvania/
   name: Pennsylvania turnout
   tagline: County-level mail voting and registration
@@ -158,8 +149,7 @@
   rank: 13
   updated: 2025-02-04
   category: Voter turnout analysis
-  preview: pennsylvania.png
-
+  preview: pennsylvania.webp
 - href: /northcarolina/
   name: North Carolina turnout
   tagline: County-level early voting and registration
@@ -168,4 +158,4 @@
   rank: 14
   updated: 2024-10-30
   category: Voter turnout analysis
-  preview: northcarolina.png
+  preview: northcarolina.webp

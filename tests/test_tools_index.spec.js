@@ -1,6 +1,15 @@
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
 
 const HOST = process.env.HOST || 'http://localhost:4000';
+
+// A regex, not a YAML parser: the repo has no YAML dependency. `- href:` at
+// the start of a line is the shape of every entry.
+const TOOL_COUNT = (
+  fs.readFileSync(path.join(__dirname, '..', '_data', 'tools.yml'), 'utf8')
+    .match(/^- href:/gm) || []
+).length;
 
 // The home page is the tools index. These guard the two things most likely to
 // break silently: a typo'd href in _data/tools.yml, which renders a perfectly
@@ -13,7 +22,8 @@ test('every tool in the registry resolves', async ({ page, request }) => {
     els.map((e) => new URL(e.getAttribute('href'), location.origin).pathname)
   );
 
-  expect(hrefs.length).toBe(13);
+  expect(TOOL_COUNT, 'no tools parsed out of _data/tools.yml').toBeGreaterThan(5);
+  expect(hrefs.length, 'a tool in the registry is not rendering a card').toBe(TOOL_COUNT);
 
   const broken = [];
   for (const href of hrefs) {
@@ -44,10 +54,10 @@ test('each sort mode reorders the cards', async ({ page }) => {
   await page.selectOption('#tool-sort', 'latest');
   const latest = await visualOrder();
   expect(latest[0]).not.toBe(alpha[0]);
-  expect(latest).toHaveLength(13);
+  expect(latest).toHaveLength(TOOL_COUNT);
 
   await page.selectOption('#tool-sort', 'featured');
-  expect(await visualOrder()).toHaveLength(13);
+  expect(await visualOrder()).toHaveLength(TOOL_COUNT);
 });
 
 test('category headers appear only in category mode', async ({ page }) => {

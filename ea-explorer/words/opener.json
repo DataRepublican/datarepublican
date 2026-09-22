@@ -8,7 +8,7 @@
    "key": "moral_expansion_radical",
    "title": "The moral circle",
    "tagline": "Won't somebody think of the shrimp?",
-   "avatar": "topic-avatars/moral_expansion_radical.png",
+   "avatar": "topic-avatars/moral_expansion_radical.webp",
    "quotes": [
     {
      "context": "I think the arguments that infinite shrimp matter more than a single person are pretty decisive! Sparing enough shrimp really is better than sparing one human. Now, it turns out that in practice, for five thousand dollars, you can save about 75 million shrimp from an agonizing torture . I don’t know exactly how many shrimp being tortured is as bad as one human dying, but it’s probably less than 75 million! So if you bought the arguments I’ve given, I’d encourage you to give some money to the shrimp welfare project !",
@@ -40,7 +40,7 @@
    "key": "digital_minds",
    "title": "Digital minds",
    "tagline": "Is the server suffering?",
-   "avatar": "topic-avatars/digital_minds.png",
+   "avatar": "topic-avatars/digital_minds.webp",
    "quotes": [
     {
      "context": "I am willing to hand the keys of the universe over to an AI society that can implement my SNoW better than humans can. If it turns out that humans run up against the physical limits of how much higher-order their freedoms can be faster or with more friction than the AIs, then I think the AIs should inherit the cosmic endowment , and if they meet or create a civilization that can seize higher-order freedoms with less friction than they can then they ought to hand over the keys in turn.",
@@ -72,7 +72,7 @@
    "key": "repugnant_bullet",
    "title": "Biting the bullet",
    "tagline": "The math says it's fine, actually.",
-   "avatar": "topic-avatars/repugnant_bullet.png",
+   "avatar": "topic-avatars/repugnant_bullet.webp",
    "quotes": [
     {
      "context": "People have done rigorous (and controversial) work on this: Rethink Priorities puts pigs at around 50% the moral weight of a human . This link doesn’t speak to mice and dogs, but presumably they would get similar treatment. Given this, if it’s the case that utility demands we experiment on either a mouse or a human, it seems we should choose a mouse. But that assumes that both experiments are equally effective. In reality, it is likely that human experiments model human results more than twice as well as mouse results – remember that 5% from above! And so utility demands we actually experiment on humans instead of animals.",
@@ -104,7 +104,7 @@
    "key": "value_lock_in",
    "title": "Value lock-in",
    "tagline": "Freeze the good values. Forever.",
-   "avatar": "topic-avatars/value_lock_in.png",
+   "avatar": "topic-avatars/value_lock_in.webp",
    "quotes": [
     {
      "context": "For this reason, we should deliberate before we take over space in pursuit of some goal. We should spend a long time getting superintelligent AI philosophers to think about ethics—about what things are worth optimizing for. We should have something like a long reflection : a time to pause and think, to make sure that we’re getting ethics right.",
@@ -124,7 +124,7 @@
    "key": "religious_moral",
    "title": "Faith & morals",
    "tagline": "A religion for people who did the math.",
-   "avatar": "topic-avatars/religious_moral.png",
+   "avatar": "topic-avatars/religious_moral.webp",
    "quotes": [
     {
      "context": "So far as I can tell, she is completely wrong about that. Always throughout our conversation, she said, over and over, \"I believe in God\", never once, \"There is a God.\" When I asked her why she was religious, she never once talked about the consequences of God existing, only about the consequences of believing in God. Never, \"God will help me\", always, \"my belief in God helps me\". When I put to her, \"Someone who just wanted the truth and looked at our universe would not even invent God as a hypothesis,\" she agreed outright.",
@@ -144,7 +144,7 @@
    "key": "partisan_political",
    "title": "Politics",
    "tagline": "Is your enemy evil, or just wrong?",
-   "avatar": "topic-avatars/partisan_political.png",
+   "avatar": "topic-avatars/partisan_political.webp",
    "quotes": [
     {
      "context": "However, effective altruists should not limit themselves to advocacy on global health issues. Significantly attention should be paid to issues that don’t have highly entrenched constituencies or party-line views, such as pandemic prevention, existential risk mitigation, and more. Although we run the risk of hitting quickly diminishing returns, effective altruists should also consider ways to disrupt the Trump administration, as it represents a uniquely existential threat to American institutions and the world. Collaborating with existing social justice movements here, while attempting to pursue the strategies that are most likely to be impactful, is key.",
@@ -164,7 +164,7 @@
    "key": "elite_vanguard",
    "title": "The vanguard",
    "tagline": "Leave the future to the experts.",
-   "avatar": "topic-avatars/elite_vanguard.png",
+   "avatar": "topic-avatars/elite_vanguard.webp",
    "quotes": [
     {
      "context": "This need not result in compromised epistemics; the direction can still be set by the cool-headed moral vanguard and their various sacred texts and EV calculations, but physical doors could be flung open to wider participation beyond the typical EA crowd.",
@@ -184,7 +184,7 @@
    "key": "democracy_tension",
    "title": "Democracy, reconsidered",
    "tagline": "Democracy, or the optimal future. Pick one.",
-   "avatar": "topic-avatars/democracy_tension.png",
+   "avatar": "topic-avatars/democracy_tension.webp",
    "quotes": [
     {
      "context": "More informally, High Stakes Instrumentalism is the idea that if we can use undemocratic procedures to prevent high stakes political errors, then we ought to do so, even though those procedures are undemocratic.",
@@ -216,7 +216,7 @@
    "key": "world_governance",
    "title": "World governance",
    "tagline": "Someone has to drive the planet.",
-   "avatar": "topic-avatars/world_governance.png",
+   "avatar": "topic-avatars/world_governance.webp",
    "quotes": [
     {
      "context": "I want to maximize my chances of living forever by motivating humanity to immediately coordinate as a singleton society that agrees to rules enforced by a single world government.",
@@ -248,7 +248,7 @@
    "key": "centralized_control",
    "title": "Seizing control",
    "tagline": "Let one group seize power. Temporarily, of course.",
-   "avatar": "topic-avatars/centralized_control.png",
+   "avatar": "topic-avatars/centralized_control.webp",
    "quotes": [
     {
      "context": "Here’s a related question — what would happen if you gave some billionaire 10 squillion dollars? If you gave most billionaires in America 10 squillion dollars and they could just rule the world now, I think there's like at least a 70% chance that this goes really solidly well, especially if they know that one of the things they can do with their AGI is ask it what they should do or whatever. I think that prevents some of the moral risk. That's where I'm at.",
@@ -280,7 +280,7 @@
    "key": "benevolent_dictator",
    "title": "The benevolent dictator",
    "tagline": "Hopefully it's a benevolent one.",
-   "avatar": "topic-avatars/benevolent_dictator.png",
+   "avatar": "topic-avatars/benevolent_dictator.webp",
    "quotes": [
     {
      "context": "If an AGI really does take over, then I believe we need it to embody all the characteristics of the most compassionate benevolent dictator, so that it strives to eradicate extreme suffering while not posing a threat to humans or unduly constrain their liberties. (Whether it can truly be benevolent is another question; Schmachtenberger describes this idea as messianic.) But even if an AGI doesn’t actually take over, we still need to find a way to design a multipolar system in which all players are stably incentivised to cooperate and malign urges are thwarted.",

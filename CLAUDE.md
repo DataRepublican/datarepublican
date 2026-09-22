@@ -20,7 +20,7 @@ step is load-bearing. Do not hand-roll `jekyll serve`.
 - **Never run `npm run build:css` while the server is up.** Two processes write
   `assets/css/styles.css` and a request can catch it mid-write.
 
-Tests need the dev server running: `npx playwright test` (215 specs, ~45s).
+Tests need the dev server running: `npx playwright test` (224 specs, ~55s).
 
 ## Access — how to reach the tools, so nobody re-derives this
 
@@ -125,6 +125,17 @@ server boots**, which is why `start` mkdirs the two Playwright directories.
 the scanned HTML.** Anything whose class is created at runtime by JS, or is a
 bare element selector, belongs *outside* the layer. `assets/css/main.css` says
 which blocks and why.
+
+**Ship an image at the size it is painted.** A 1024px PNG drawn into a 62px
+circle passes every other spec here — it is on screen, in the right place, and
+looks correct. `/ea-explorer/words/` shipped 12.7 MB of avatars that way and
+the tools index 5 MB of screenshots. `tests/test_image_weight.spec.js` fails a
+route that sends a file over 120 KB into a box less than a third its width, and
+holds the tools index under a 2.5 MB image budget. Convert with Pillow (no
+cwebp, ImageMagick or sharp here, and `sips` cannot write WebP on this macOS).
+
+**Feature cards paint at 768px, standard cards at 438px** — `_data/tools.yml`'s
+`feature: true` picks the shape, so the two want different source widths.
 
 **Preflight sets `box-sizing: border-box`.** A rule built from `border-t` +
 `height` + `border-b` needs the height to be the *total*, not the gap.

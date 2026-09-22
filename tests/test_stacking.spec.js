@@ -145,7 +145,7 @@ test.describe('the map chrome is above the map', () => {
 test.describe('the z-index scale holds', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  for (const path of ['/', '/noblogs/?view=map', '/noblogs/?view=graph', '/dsa-explorer/', '/about/']) {
+  for (const path of ['/', '/noblogs/?view=map', '/noblogs/?view=graph', '/dsa-explorer/', '/ea-explorer/', '/ea-explorer/words/', '/about/']) {
     test(`${path} authors nothing above 100`, async ({ page }) => {
       await page.goto(HOST + path, { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(2500);

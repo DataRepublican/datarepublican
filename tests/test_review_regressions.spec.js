@@ -134,7 +134,7 @@ test.describe('standalone map popup', () => {
 test.describe('the promo band is not restyled by a tool', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  for (const path of ['/', '/noblogs/', '/dsa-explorer/', '/browse/', '/about/']) {
+  for (const path of ['/', '/noblogs/', '/dsa-explorer/', '/ea-explorer/', '/browse/', '/about/']) {
     test(`${path} leaves the band's own box alone`, async ({ page }) => {
       await page.goto(HOST + path, { waitUntil: 'domcontentloaded' });
 
@@ -161,7 +161,7 @@ test.describe('the masthead is not restyled by a tool', () => {
 
   // Every page kind: the tools index, a tool that styles `header` (noblogs and
   // dsa-explorer both did), one that does not, and a narrative page.
-  for (const path of ['/', '/noblogs/', '/dsa-explorer/', '/browse/', '/about/']) {
+  for (const path of ['/', '/noblogs/', '/dsa-explorer/', '/ea-explorer/', '/browse/', '/about/']) {
     test(`${path} keeps the masthead a plain block`, async ({ page }) => {
       await page.goto(HOST + path, { waitUntil: 'domcontentloaded' });
 
@@ -235,7 +235,7 @@ test.describe('the masthead is not restyled by a tool', () => {
     expect(home.weight).toBe('700');
     expect(home.underline).toBe('none');
 
-    for (const path of ['/noblogs/', '/dsa-explorer/', '/about/', '/browse/']) {
+    for (const path of ['/noblogs/', '/dsa-explorer/', '/ea-explorer/', '/about/', '/browse/']) {
       expect(await read(path), `${path} draws the wordmark differently`).toEqual(home);
     }
   });

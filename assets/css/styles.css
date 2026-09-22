@@ -3338,12 +3338,12 @@ select {
   max-width:      none;
 }
 
-.max-w-sm {
-  max-width:      24rem;
-}
-
 .max-w-prose {
   max-width:      52rem;
+}
+
+.max-w-sm {
+  max-width:      24rem;
 }
 
 .flex-1 {
@@ -6056,12 +6056,12 @@ select {
     width:      calc(33.333% - 0.834rem);
   }
 
-  .lg\:max-w-sm {
-    max-width:      24rem;
-  }
-
   .lg\:max-w-none {
     max-width:      none;
+  }
+
+  .lg\:max-w-sm {
+    max-width:      24rem;
   }
 
   .lg\:columns-3 {
