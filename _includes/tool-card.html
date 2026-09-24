@@ -15,6 +15,7 @@
 
 {%- assign t = include.tool -%}
 {%- assign img = '/assets/images/products/' | append: t.preview -%}
+{%- assign badge_cls = 'mb-1.5 inline-block rounded-pill bg-green px-2.5 py-0.5 text-meta font-bold uppercase tracking-body !text-white' -%}
 
 <a href="{{ t.href | relative_url }}"
    class="group relative block overflow-hidden rounded-card border border-rule/70 bg-card !no-underline shadow-[0_1px_2px_rgba(0,0,0,0.06)] transition-shadow hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong">
@@ -25,6 +26,7 @@
          class="absolute inset-0 size-full object-cover object-top transition-transform duration-300 group-hover:scale-[1.02] motion-reduce:transform-none"
          loading="lazy" decoding="async">
     <div class="absolute inset-x-0 bottom-0 bg-gradient-to-b from-transparent via-white/75 to-white/95 px-4 pb-4 pt-10 backdrop-blur-[2px]">
+      {%- if t.badge %}<span class="{{ badge_cls }}">{{ t.badge }}</span>{% endif -%}
       <h3 class="m-0 text-card-title font-bold tracking-title !text-ink-strong">{{ t.name }}</h3>
       <p class="m-0 mt-0.5 text-lede font-bold tracking-body !text-ink-strong">{{ t.tagline }}</p>
       {%- comment -%} font-normal is not redundant: the whole card is an <a>, and
@@ -42,6 +44,7 @@
          loading="lazy" decoding="async">
   </div>
   <div class="px-4 pb-4 pt-3">
+    {%- if t.badge %}<span class="{{ badge_cls }}">{{ t.badge }}</span>{% endif -%}
     <h3 class="m-0 text-card-title font-bold tracking-title !text-ink-strong">{{ t.name }}</h3>
     <p class="m-0 mt-0.5 text-body font-bold tracking-body !text-ink-strong">{{ t.tagline }}</p>
     {%- comment -%} See the note on the feature card's description above — the
