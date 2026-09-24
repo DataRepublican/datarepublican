@@ -108,22 +108,32 @@ const AGE_ENCODING = new EncodedAttribute('Age', 'Age', 19, 3, {
 	"65" : "65+ years old"
 });
 
-const METHOD_2024_ENCODING = new EncodedAttribute('Method2024', '2024 Voting Method', 7, 3, {
+// One row set per election; the page picks 2026 as the numerator and one baseline as the denominator.
+const ELECTION_ENCODING = new EncodedAttribute('Election', 'Election', 11, 2, {
+	'2026' : 0,
+	'2024' : 1,
+	'2022' : 2
+}, {
+	'2026' : '2026 general',
+	'2024' : '2024 general',
+	'2022' : '2022 general'
+});
+
+const METHOD_ENCODING = new EncodedAttribute('Method', 'Voting Method', 9, 2, {
 	'VBM' : 1,
 	'IPEV' : 2
 }, {
-	'VBM' : '2024 Mail voter (VBM)',
-	'IPEV' : '2024 In-Person Early voter (IPEV)',
+	'VBM' : 'Mail voter (VBM)',
+	'IPEV' : 'In-Person Early voter (IPEV)',
 });
 
-const METHOD_2022_ENCODING = new EncodedAttribute('Method2022', '2022 Voting Method', 10, 3, {
-	'VBM' : 1,
-	'IPEV' : 2,
-	'ED' : 3
+// Returned by the same number of days before Election Day as the latest 2026 return. Always 1 for 2026.
+const SAME_POINT_ENCODING = new EncodedAttribute('SamePoint', 'Same point', 8, 1, {
+	'True' : 1,
+	'False' : 0
 }, {
-	'VBM' : '2022 Mail voter (VBM)',
-	'IPEV' : '2022 In-Person Early voter (IPEV)',
-	'ED' : '2022 Election Day voter'
+	'True' : 'Returned by the same point',
+	'False' : 'Returned later'
 });
 
 const BITMAP_BOOLEAN = {
@@ -171,8 +181,9 @@ function dumpRow(encoded) {
 	const r = RACE_ENCODING.extract_readable(encoded);
 	const e = ETHNICITY_ENCODING.extract_readable(encoded);
 	const a = AGE_ENCODING.extract_readable(encoded);
-	const v22 = METHOD_2022_ENCODING.extract_readable(encoded);
-	const v24 = METHOD_2024_ENCODING.extract_readable(encoded);
+	const el = ELECTION_ENCODING.extract_readable(encoded);
+	const m = METHOD_ENCODING.extract_readable(encoded);
+	const sp = SAME_POINT_ENCODING.extract_readable(encoded);
 	const d16 = VOTED_2016_ENCODING.extract_readable(encoded);
 	const d18 = VOTED_2018_ENCODING.extract_readable(encoded);
 	const d20 = VOTED_2020_ENCODING.extract_readable(encoded);
@@ -180,7 +191,7 @@ function dumpRow(encoded) {
 	const d24 = VOTED_2024_ENCODING.extract_readable(encoded);
 	
 	const debug_str = "decoded: p:" + p + " g:" + g + 
-		" r:" + r + " e:" + e + " a:" + a + " v22" + v22 + " v24:" + v24 + 
+		" r:" + r + " e:" + e + " a:" + a + " el:" + el + " m:" + m + " sp:" + sp + 
 		" d16:" + d16 + " d18:" + d18 + " d20:" + d20 + " d22:" + d22 + 
 		" d24:" + d24;
 	console.log(debug_str); 
@@ -217,6 +228,7 @@ function initializeEncoded(sortedCounties) {
 	encodings[VOTED_2018_ENCODING['id']] = VOTED_2018_ENCODING;
 	encodings[VOTED_2020_ENCODING['id']] = VOTED_2020_ENCODING;
 	encodings[VOTED_2022_ENCODING['id']] = VOTED_2022_ENCODING;
+	encodings[VOTED_2024_ENCODING['id']] = VOTED_2024_ENCODING;
 	
 	/*
 	// testing code... 

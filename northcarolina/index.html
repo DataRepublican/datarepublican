@@ -1,43 +1,567 @@
 ---
 layout: default
-title: North Carolina interactive map
+title: North Carolina 2026 general election map
 
 ---
 <link href="./map-style.css" rel="stylesheet" type="text/css" />
 <style>
-	table {
+	/* Scoped to #nc-map: the site masthead and footer share this page. Nothing here may set
+	   position on an ancestor of #usncjstip — map-interact.js places it with page coordinates. */
+	#nc-map {
+		/* The light steps sit under 3:1 on white, so every bar segment is direct-labeled and the
+		   table repeats the numbers. */
+		--nc-dem: #2456c9;
+		--nc-dem-light: #7f9ee6;
+		--nc-dem-tint: #edf2fc;
+		--nc-rep: #c4312a;
+		--nc-rep-light: #e8837a;
+		--nc-rep-tint: #fcefee;
+		--nc-ind: #6d5a9c;
+		--nc-ind-tint: #f3f0f8;
+		font-family: var(--dr-font-ui);
+		color: var(--dr-ink);
+	}
+
+	#nc-map .nc-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		margin: 0 0 0.75rem;
+	}
+
+	#nc-map .nc-title {
+		font-family: var(--dr-font-content);
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	#nc-map .nc-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		column-gap: 0.75rem;
+		color: var(--dr-ink-muted);
+		font-size: var(--dr-text-meta);
+	}
+
+	#nc-map .nc-layout {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	#nc-map .nc-main {
+		display: grid;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+
+	#nc-map .nc-card {
+		background: var(--dr-panel);
+		border: 1px solid var(--dr-line);
+		border-radius: var(--dr-radius-lg);
+		padding: 0.75rem;
+		min-width: 0;
+	}
+
+	#nc-map .nc-label,
+	#nc-map .nc-filters summary {
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		margin: 0 0 0.375rem;
+	}
+
+	#nc-map .nc-group + .nc-group {
+		margin-top: 0.75rem;
+	}
+
+	#nc-map .nc-note {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+		line-height: 1.35;
+		margin: 0.375rem 0 0;
+	}
+
+	#nc-map .nc-warn {
+		padding: 0.375rem 0.5rem;
+		border: 1px solid var(--dr-legal-border);
+		border-radius: var(--dr-radius-sm);
+		background: var(--dr-legal-fill);
+		color: var(--dr-legal-ink);
+	}
+
+	/* ---- Chips: every checkbox and radio on the page ---- */
+	#nc-map .nc-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+
+	#nc-map .nc-seg {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.375rem;
+	}
+
+	#nc-map .nc-chip {
+		position: relative;
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: center;
+		min-width: 0;
+		min-height: var(--dr-tap-sm);
+		padding: 0.25rem 0.75rem;
+		border: 1px solid var(--dr-line-strong);
+		border-radius: var(--dr-radius-pill);
+		background: var(--dr-panel);
+		font-size: var(--dr-text-meta);
+		line-height: 1.2;
+		cursor: pointer;
+		user-select: none;
+	}
+
+	#nc-map .nc-seg .nc-chip {
+		border-radius: var(--dr-radius-sm);
+		padding: 0.375rem 0.625rem;
+	}
+
+	#nc-map .nc-chip[hidden] {
+		display: none;
+	}
+
+	#nc-map .nc-chips .nc-chip span::first-letter {
+		text-transform: uppercase;
+	}
+
+	#nc-map .nc-chip small {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	/* Visually hidden, still focusable and still the label's control. */
+	#nc-map .nc-chip input {
+		position: absolute;
+		opacity: 0;
+		width: 1px;
+		height: 1px;
+		margin: 0;
+		pointer-events: none;
+	}
+
+	#nc-map .nc-chip:hover {
+		background: var(--dr-fill);
+	}
+
+	#nc-map .nc-chip:has(input:checked) {
+		background: var(--dr-accent);
+		border-color: var(--dr-accent);
+		color: var(--dr-panel);
+	}
+
+	#nc-map .nc-chip:has(input:checked) small {
+		color: var(--dr-accent-tint);
+	}
+
+	#nc-map .nc-chip:has(input:focus-visible) {
+		outline: 2px solid var(--dr-accent);
+		outline-offset: 2px;
+	}
+
+	#nc-map .nc-chip:has(input:disabled) {
+		border-style: dashed;
+		background: var(--dr-fill-quiet);
+		color: var(--dr-ink-faint);
+		cursor: not-allowed;
+	}
+
+	/* ---- Filters ---- */
+	#nc-map .nc-filters summary {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		min-height: var(--dr-tap-sm);
+		margin: 0;
+		cursor: pointer;
+	}
+
+	#nc-map .nc-filters[open] summary {
+		margin-bottom: 0.5rem;
+	}
+
+	#nc-map .nc-badge:not([hidden]) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.25rem;
+		height: 1.25rem;
+		padding: 0 0.375rem;
+		border-radius: var(--dr-radius-pill);
+		background: var(--dr-accent);
+		color: var(--dr-panel);
+		font-size: var(--dr-text-label);
+	}
+
+	#nc-map .nc-history {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		gap: 0.375rem 0.75rem;
+	}
+
+	#nc-map .nc-history .nc-year {
+		font-size: var(--dr-text-meta);
+		color: var(--dr-ink-muted);
+		font-variant-numeric: tabular-nums;
+	}
+
+	#nc-map .nc-clear {
+		margin-top: 0.75rem;
+	}
+
+	/* ---- Results ---- */
+	#nc-map .nc-results-title {
+		font-family: var(--dr-font-ui);
+		font-size: var(--dr-text-meta);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		margin: 0 0 0.5rem;
+	}
+
+	#nc-map .nc-kpis {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+
+	#nc-map .nc-kpi {
+		padding: 0.5rem 0.625rem;
+		border-top: 3px solid var(--dr-line-strong);
+		border-radius: var(--dr-radius-card);
+		background: var(--dr-fill-quiet);
+		min-width: 0;
+	}
+
+	#nc-map .nc-kpi--dem {
+		border-top-color: var(--nc-dem);
+		background: var(--nc-dem-tint);
+	}
+
+	#nc-map .nc-kpi--rep {
+		border-top-color: var(--nc-rep);
+		background: var(--nc-rep-tint);
+	}
+
+	#nc-map .nc-bars {
+		margin-top: 0.75rem;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: 0.375rem 0.5rem;
+		align-items: center;
+		font-size: var(--dr-text-label);
+	}
+
+	#nc-map .nc-bar-name {
+		color: var(--dr-ink-muted);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	#nc-map .nc-bar {
+		display: flex;
+		gap: 2px;
+		height: 1.375rem;
+		min-width: 0;
+	}
+
+	#nc-map .nc-bar span {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		overflow: hidden;
+		padding: 0 0.3125rem;
+		color: #fff;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+
+	#nc-map .nc-bar span:first-child {
+		border-radius: 4px 0 0 4px;
+	}
+
+	#nc-map .nc-bar span:last-child {
+		justify-content: flex-end;
+		border-radius: 0 4px 4px 0;
+	}
+
+	#nc-map .nc-bar .nc-seg-d { background: var(--nc-dem); }
+	#nc-map .nc-bar .nc-seg-id { background: var(--nc-dem-light); color: var(--dr-ink); }
+	#nc-map .nc-bar .nc-seg-ir { background: var(--nc-rep-light); color: var(--dr-ink); justify-content: flex-end; }
+	#nc-map .nc-bar .nc-seg-r { background: var(--nc-rep); }
+
+	#nc-map .nc-bar-key {
+		grid-column: 1 / -1;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.125rem 0.75rem;
+		color: var(--dr-ink-muted);
+	}
+
+	#nc-map .nc-kpi-label,
+	#nc-map .nc-kpi-sub {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	#nc-map .nc-kpi-label {
+		font-weight: 600;
+	}
+
+	#nc-map .nc-kpi-value {
+		font-family: var(--dr-font-content);
+		font-size: 1.375rem;
+		font-weight: 700;
+		line-height: 1.25;
+		font-variant-numeric: tabular-nums;
+	}
+
+	#nc-map .nc-dem,
+	#nc-map .nc-rep {
+		white-space: nowrap;
+	}
+
+	#nc-map .nc-dem {
+		color: var(--nc-dem);
+	}
+
+	#nc-map .nc-rep {
+		color: var(--nc-rep);
+	}
+
+	#nc-map .nc-table {
+		width: 100%;
 		border-collapse: collapse;
+		font-size: var(--dr-text-meta);
+		font-variant-numeric: tabular-nums;
 	}
 
-	table,
-	th,
-	td {
-		border: 1px solid black;
+	#nc-map .nc-table th,
+	#nc-map .nc-table td {
+		padding: 0.3125rem 0.375rem;
+		border: 0;
+		border-bottom: 1px solid var(--dr-line);
+		background: none;
+		text-align: right;
+		vertical-align: top;
 	}
 
-	td {
-		padding: 5px;
+	#nc-map .nc-table th[scope="row"],
+	#nc-map .nc-table thead th:first-child {
+		text-align: left;
+		font-weight: 400;
+		white-space: normal;
 	}
 
-	table {
-		margin-bottom: 5px;
+	#nc-map .nc-table thead th {
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		vertical-align: bottom;
 	}
 
-	.numerator {
-		padding-bottom: 10px;
-		margin: 3px 0px;
+	#nc-map .nc-table small {
+		display: block;
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-faint);
+		font-weight: 400;
 	}
 
-	.column {
-		float: left;
-		width: 50%;
+	#nc-map .nc-table .nc-section th {
+		padding-top: 0.75rem;
+		text-align: left;
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
 	}
 
-	/* Clear floats after the columns */
-	.row:after {
+	#nc-map .nc-table .nc-margin th,
+	#nc-map .nc-table .nc-margin td {
+		font-weight: 700;
+		border-bottom: 0;
+		background: var(--dr-fill-quiet);
+	}
+
+	#nc-map .nc-table .nc-row-dem th[scope="row"],
+	#nc-map .nc-table .nc-row-dem td:not(:last-child) {
+		color: var(--nc-dem);
+	}
+
+	#nc-map .nc-table .nc-row-dem th[scope="row"] {
+		font-weight: 600;
+	}
+
+	#nc-map .nc-table .nc-row-rep th[scope="row"],
+	#nc-map .nc-table .nc-row-rep td:not(:last-child) {
+		color: var(--nc-rep);
+	}
+
+	#nc-map .nc-table .nc-row-rep th[scope="row"] {
+		font-weight: 600;
+	}
+
+	#nc-map .nc-table .nc-row-ind th[scope="row"] {
+		color: var(--nc-ind);
+		font-weight: 600;
+	}
+
+	#nc-map .nc-table .nc-row-dem th[scope="row"]::before,
+	#nc-map .nc-table .nc-row-rep th[scope="row"]::before,
+	#nc-map .nc-table .nc-row-ind th[scope="row"]::before {
 		content: "";
-		display: table;
-		clear: both;
+		display: inline-block;
+		width: 0.625rem;
+		height: 0.625rem;
+		margin-right: 0.375rem;
+		border-radius: 2px;
+		background: currentColor;
+	}
+
+	#nc-map .nc-table .nc-row-dem td:first-of-type { background: var(--nc-dem-tint); font-weight: 700; }
+	#nc-map .nc-table .nc-row-rep td:first-of-type { background: var(--nc-rep-tint); font-weight: 700; }
+
+	#nc-map .nc-up-dem { color: var(--nc-dem); }
+	#nc-map .nc-up-rep { color: var(--nc-rep); }
+
+	#nc-map .nc-foot {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+		line-height: 1.4;
+		margin: 0.5rem 0 0;
+	}
+
+	/* ---- Map ---- */
+	#nc-map #mapbase svg {
+		display: block;
+		height: auto;
+	}
+
+	#nc-map .nc-legend {
+		margin-top: 0.5rem;
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	#nc-map .nc-legend-bar {
+		display: flex;
+		height: 0.75rem;
+		border-radius: var(--dr-radius-sm);
+		overflow: hidden;
+		margin: 0.25rem 0;
+	}
+
+	#nc-map .nc-legend-bar span {
+		flex: 1 1 0;
+	}
+
+	#nc-map .nc-legend-ends {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	#nc-map .nc-swatch {
+		display: inline-block;
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 2px;
+		vertical-align: -0.125rem;
+		margin-right: 0.25rem;
+		border: 1px solid var(--dr-line);
+	}
+
+	/* map-style.css ships z-index 1000 and a Trebuchet box; bring it onto the site's scale. */
+	#nc-map #usncjstip {
+		z-index: var(--dr-z-popover);
+		max-width: min(22rem, 85vw);
+		padding: 0.5rem 0.625rem;
+		border: 1px solid var(--dr-line);
+		border-radius: var(--dr-radius-card);
+		background: var(--dr-panel);
+		color: var(--dr-ink);
+		font: var(--dr-text-meta)/1.4 var(--dr-font-ui);
+		box-shadow: 0 4px 16px rgb(0 0 0 / 0.14);
+	}
+
+	@media (max-width: 767px) {
+		#nc-map .nc-title {
+			font-size: 1.25rem;
+		}
+
+		#nc-map .nc-card {
+			padding: 0.625rem;
+		}
+
+		#nc-map .nc-chip {
+			min-height: var(--dr-tap);
+		}
+
+		#nc-map .nc-kpis {
+			gap: 0.375rem;
+		}
+
+		#nc-map .nc-kpi {
+			padding: 0.375rem 0.5rem;
+		}
+
+		#nc-map .nc-kpi-value {
+			font-size: 1.125rem;
+		}
+
+		#nc-map .nc-table th,
+		#nc-map .nc-table td {
+			padding-left: 0.25rem;
+			padding-right: 0.25rem;
+		}
+
+		#nc-map .nc-table th[scope="row"]::before {
+			display: none;
+		}
+	}
+
+	/* Controls and filters stack in a left column; the results take the rest. */
+	@media (min-width: 1024px) {
+		#nc-map .nc-layout {
+			grid-template-columns: 19rem minmax(0, 1fr);
+			grid-template-areas: "controls main" "filters main";
+			grid-template-rows: auto 1fr;
+			align-items: start;
+		}
+
+		#nc-map .nc-controls {
+			grid-area: controls;
+		}
+
+		#nc-map .nc-main {
+			grid-area: main;
+		}
+
+		#nc-map .nc-filters {
+			grid-area: filters;
+		}
+	}
+
+	/* Wide enough for the table to sit beside the map instead of under it. */
+	@media (min-width: 1280px) {
+		#nc-map .nc-main {
+			grid-template-columns: minmax(0, 1fr) 23rem;
+			align-items: start;
+		}
+
+		#nc-map .nc-results {
+			grid-column: 1 / -1;
+		}
 	}
 </style>
 
@@ -68,7 +592,7 @@ title: North Carolina interactive map
 	var queryResult = [];
 
 	function resetHover() {
-		const defaultColor = "#FFFFF3";
+		const defaultColor = NO_DATA_COLOR;
 		$.each(counties, function (county, myid) {
 			usncjsconfig[myid].hover = county;
 			usncjsconfig[myid].upColor = defaultColor;
@@ -96,8 +620,8 @@ title: North Carolina interactive map
 		return false;
 	}
 
-	/** Performs query and groups by counties/parties */
-	function query(methodEncoding, methodFilter, rawFilters) {
+	/** Performs query for one election and groups by counties/parties */
+	function query(election, samePointOnly, methodFilter, rawFilters) {
 		countyResults = {};
 
 		$.each(counties, function (county, mapid) {
@@ -108,22 +632,15 @@ title: North Carolina interactive map
 			};
 		});
 
-
-
-
-		// Queries the rows
-		queryResult.fill(true);
-		// uhhh... 
-
-		// Filter by method.
 		for (var i = 0; i < encodedRows.length; ++i) {
-			queryResult[i] = matchFilters(methodEncoding, methodFilter, encodedRows[i]);
+			const encoded = encodedRows[i];
+			queryResult[i] = ELECTION_ENCODING.decode(encoded) == election &&
+				(!samePointOnly || SAME_POINT_ENCODING.decode(encoded) == 1) &&
+				matchFilters(METHOD_ENCODING, methodFilter, encoded);
 		}
 
 		$.each(rawFilters, function (id, filterList) {
 			// empty filters get a pass
-			//console.log("id: " + id + " " + filterList);
-
 			if (filterList.length == 0) {
 				return;
 			}
@@ -156,203 +673,254 @@ title: North Carolina interactive map
 		return Number(pct).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 });
 	}
 
+	// Shift in the county's D-R margin vs the baseline, most Republican first. The first bin whose
+	// floor the Republican shift clears wins; exactly 0 counts as R.
+	const ADV_BINS = [
+		[0.07, '#9e241e', 'R 7+'],
+		[0.05, '#c4312a', 'R 5–7'],
+		[0.025, '#e8837a', 'R 2.5–5'],
+		[0.01, '#f3b5ae', 'R 1–2.5'],
+		[0.00, '#f9e0dd', 'R 0–1'],
+		[-0.01, '#dfe7f9', 'D 0–1'],
+		[-0.05, '#bccdf3', 'D 1–5'],
+		[-0.08, '#98b2ec', 'D 5–8'],
+		[-0.10, '#6d8fe2', 'D 8–10'],
+		[-0.20, '#2456c9', 'D 10–20'],
+		[-Infinity, '#183d94', 'D 20+']
+	];
+	const NO_DATA_COLOR = '#EBECED';
+
 	function getSplitAdvantageColor(gap) {
 		const difference = gap * -1.0;
-		if (difference > 0.07) {
-			return '#cc0000'; // dark red
-		} else if (difference > 0.5) {
-			return '#ff0000'; // bright red
-		} else if (difference > 0.025) {
-			return '#ff8080'; // pinkish red
-		} else if (difference > 0.01) {
-			return '#ffb3b3'; // pinky
-		} else if (difference >= 0.00) {
-			return '#ffe6e6'; // light pink
-		} else if (difference > -0.01) {
-			return '#ffffe0'; // cream
-		} else if (difference > -0.05) {
-			return '#e6e6ff'; // light blue
-		} else if (difference > -0.08) {
-			return '#CCCCFF'; // light blue
-		} else if (difference > -0.10) {
-			return '#8080ff'; // medium blue
-		} else if (difference > -0.20) {
-			return '#0000ff'; // bright blue
-		} else {
-			return '#0000cc'; // dark blue
+		for (var i = 0; i < ADV_BINS.length; ++i) {
+			if (difference > ADV_BINS[i][0] || (ADV_BINS[i][0] === 0 && difference === 0)) {
+				return ADV_BINS[i][1];
+			}
 		}
 	}
 
-	const turnoutTotal2022 = 1247425 + 1232887 + 1309386;
-	const demTurnoutTotal2022 = 1247425;
-	const repTurnoutTotal2022 = 1309386;
+	function renderLegend() {
+		var bar = '';
+		$.each(ADV_BINS, function (ignore, b) {
+			bar += '<span style="background:' + b[1] + '" data-tip-title="' + b[2] + ' pts" ' +
+				'data-tip="County margin moved this far toward the party vs the baseline."></span>';
+		});
+		$('#ncLegend').html(
+			'<div>County shift in D−R margin vs baseline (party registration, no I split)</div>' +
+			'<div class="nc-legend-bar">' + bar + '</div>' +
+			'<div class="nc-legend-ends"><span class="nc-rep">R 7+ pts</span><span>even</span>' +
+			'<span class="nc-dem">D 20+ pts</span></div>' +
+			'<div><span class="nc-swatch" style="background:' + NO_DATA_COLOR + '"></span>No ballots to compare</div>');
+	}
 
-	const trumpTotal2022 = 2758775;
-	const clintonTotal2022 = 2684292;
-	function updateTotals(methodType, numerator, denominator) {
+	// General-election turnout by voted party (D + UNA + R), from NCSBE voter history.
+	const TURNOUT = {
+		2024: { 'Dem': 1804153, 'Una': 1987333, 'Rep': 1882516 },
+		2022: { 'Dem': 1285385, 'Una': 1184368, 'Rep': 1304744 }
+	};
 
-		// countMethod countDEM countREP countIND countTOTAL
-		var methodText = "Vote totals (IPEV + VBM)";
-		var methodShort = "EV";
-		if (methodType === "MAIL") {
-			methodText = "Vote totals (VBM only)";
-			methodShort = "VBM";
+	// Labels and dates get the cutoff dates from the data file once it loads.
+	const BASELINES = {
+		'2024sp': { 'year': 2024, 'election': 1, 'samePoint': true, 'label': '2024 same point', 'short': '2024 same point', 'date': '' },
+		'2024f': { 'year': 2024, 'election': 1, 'samePoint': false, 'label': '2024 final', 'short': '2024 final', 'date': 'all ballots' },
+		'2022sp': { 'year': 2022, 'election': 2, 'samePoint': true, 'label': '2022 same point', 'short': '2022 same point', 'date': '' },
+		'2022f': { 'year': 2022, 'election': 2, 'samePoint': false, 'label': '2022 final', 'short': '2022 final', 'date': 'all ballots' }
+	};
+
+	/**
+	 * I = every voter not registered D or R. Each county's I ballots are split by that county's
+	 * R:D ratio; a county with no D or R ballots uses the statewide ratio. Same as mail_breakdown.sql.
+	 */
+	function splitIndependents(results) {
+		var s = { 'Rep': 0, 'Dem': 0, 'total': 0, 'iRep': 0, 'iDem': 0 };
+		$.each(results, function (ignore, res) {
+			s['Rep'] += res['Rep'];
+			s['Dem'] += res['Dem'];
+			s['total'] += res['total'];
+		});
+		// Nothing to split by at all (e.g. a filter that leaves only unaffiliated voters): split evenly.
+		const stateRepShare = (s['Rep'] + s['Dem']) > 0 ? s['Rep'] / (s['Rep'] + s['Dem']) : 0.5;
+		$.each(results, function (ignore, res) {
+			const ind = res['total'] - res['Rep'] - res['Dem'];
+			const repShare = (res['Rep'] + res['Dem']) > 0 ? res['Rep'] / (res['Rep'] + res['Dem']) : stateRepShare;
+			s['iRep'] += ind * repShare;
+			s['iDem'] += ind * (1.0 - repShare);
+		});
+		s['Ind'] = s['total'] - s['Rep'] - s['Dem'];
+		s['adjRep'] = s['Rep'] + s['iRep'];
+		s['adjDem'] = s['Dem'] + s['iDem'];
+		return s;
+	}
+
+	function fmt(n) {
+		return Math.round(n).toLocaleString();
+	}
+
+	function pct1(n, d) {
+		return d > 0 ? (100.0 * n / d).toFixed(1) + '%' : '–';
+	}
+
+	/** A D-R margin (a fraction) as "D +34.9" / "R +2.1", colored by side. */
+	function lean(m) {
+		const side = m < 0 ? 'rep' : 'dem';
+		return '<span class="nc-' + side + '">' + (m < 0 ? 'R' : 'D') + ' +' + (Math.abs(m) * 100).toFixed(1) + '</span>';
+	}
+
+	function updateTotals(methodType, numerator, denominator, baseline) {
+		const baseLabel = baseline['label'];
+		const turnout = TURNOUT[baseline['year']];
+		const methodName = methodType === 'MAIL' ? 'Mail ballots' :
+			methodType === 'IPEV' ? 'In-person early votes' : 'Early votes (mail + in person)';
+
+		const now = splitIndependents(numerator);
+		const base = splitIndependents(denominator);
+		const allNow = allEV(0, false);
+
+		function frac(s, key) {
+			return s['total'] > 0 ? s[key] / s['total'] : 0;
 		}
-		if (methodType === "IPEV") {
-			methodText = "Vote totals (IPEV only)";
-			methodShort = "IPEV";
+		function margin(s, dem, rep) {
+			return frac(s, dem) - frac(s, rep);
+		}
+		const rawNow = margin(now, 'Dem', 'Rep'), rawBase = margin(base, 'Dem', 'Rep');
+		const adjNow = margin(now, 'adjDem', 'adjRep'), adjBase = margin(base, 'adjDem', 'adjRep');
+
+		function kpi(label, value, sub, m) {
+			const side = m === undefined || m === 0 ? '' : ' nc-kpi--' + (m < 0 ? 'rep' : 'dem');
+			return '<div class="nc-kpi' + side + '"><div class="nc-kpi-label">' + label + '</div>' +
+				'<div class="nc-kpi-value">' + value + '</div><div class="nc-kpi-sub">' + sub + '</div></div>';
+		}
+		$('#countMethod').text(methodName + ' · 2026 vs ' + baseLabel);
+		$('#ncKpis').html(
+			kpi('2026 ballots', now['total'].toLocaleString(), base['total'].toLocaleString() + ' in baseline') +
+			kpi('Shift, with I split', lean(adjNow - adjBase), lean(adjNow) + ' now, ' + lean(adjBase) + ' then', adjNow - adjBase) +
+			kpi('Shift, raw', lean(rawNow - rawBase), lean(rawNow) + ' now, ' + lean(rawBase) + ' then', rawNow - rawBase));
+
+		// Labels print only where a segment is wide enough to hold one; the tooltip and table carry the rest.
+		function seg(cls, n, s, tip) {
+			const share = s['total'] > 0 ? 100.0 * n / s['total'] : 0;
+			return '<span class="' + cls + '" style="flex:' + share.toFixed(3) + ' 1 0" data-tip-title="' + tip + '" data-tip="' +
+				fmt(n) + ' ballots, ' + share.toFixed(1) + '%">' + (share >= 9 ? share.toFixed(0) + '%' : '') + '</span>';
+		}
+		function bar(name, s) {
+			return '<div class="nc-bar-name">' + name + '</div><div class="nc-bar">' +
+				seg('nc-seg-d', s['Dem'], s, 'Democrat') + seg('nc-seg-id', s['iDem'], s, 'I share to D') +
+				seg('nc-seg-ir', s['iRep'], s, 'I share to R') + seg('nc-seg-r', s['Rep'], s, 'Republican') + '</div>';
+		}
+		function key(cls, label) {
+			return '<span><span class="nc-swatch" style="background:var(' + cls + ');border:0"></span>' + label + '</span>';
+		}
+		$('#ncBars').html(bar('2026', now) + bar(baseline['short'], base) +
+			'<div class="nc-bar-key">' + key('--nc-dem', 'Democrat') + key('--nc-dem-light', 'I → D') +
+			key('--nc-rep-light', 'I → R') + key('--nc-rep', 'Republican') + '</div>');
+
+		function cells(key) {
+			return '<td>' + fmt(now[key]) + '<small>' + pct1(now[key], now['total']) + '</small></td>' +
+				'<td>' + fmt(base[key]) + '<small>' + pct1(base[key], base['total']) + '</small></td>';
+		}
+		// A gain for a party row is colored for that party; I rows stay neutral.
+		function change(key, side) {
+			const d = (frac(now, key) - frac(base, key)) * 100;
+			const cls = side && d > 0 ? ' class="nc-up-' + side + '"' : '';
+			return '<td' + cls + '>' + (d < 0 ? '−' : '+') + Math.abs(d).toFixed(1) + '</td>';
+		}
+		function row(label, key, side) {
+			return '<tr class="nc-row-' + (side || 'ind') + '"><th scope="row">' + label + '</th>' + cells(key) + change(key, side) + '</tr>';
+		}
+		function marginRow(m0, m1) {
+			return '<tr class="nc-margin"><th scope="row">D − R margin</th><td>' + lean(m0) + '</td><td>' +
+				lean(m1) + '</td><td>' + lean(m0 - m1) + '</td></tr>';
 		}
 
-		//console.log("set: " + allEV2024 + " " + repAllEV2024 + " " + demAllEV2024);
+		$('#ncTable').html(
+			'<thead><tr><th>Registered party</th><th>2026</th><th>' + baseline['short'] +
+			(baseline['date'] ? '<small>' + baseline['date'] + '</small>' : '') + '</th><th>Change<small>pts</small></th></tr></thead>' +
+			'<tbody>' + row('Democrat', 'Dem', 'dem') + row('Republican', 'Rep', 'rep') + row('Unaffiliated &amp; other (I)', 'Ind') +
+			'<tr><th scope="row">Total</th><td>' + fmt(now['total']) + '</td><td>' + fmt(base['total']) + '</td><td></td></tr>' +
+			marginRow(rawNow, rawBase) + '</tbody>' +
+			'<tbody><tr class="nc-section"><th colspan="4">With I split by county</th></tr>' +
+			row('Democrat + I share', 'adjDem', 'dem') + row('Republican + I share', 'adjRep', 'rep') +
+			'<tr><th scope="row">I to D / to R</th><td>' + fmt(now['iDem']) + ' / ' + fmt(now['iRep']) + '</td><td>' +
+			fmt(base['iDem']) + ' / ' + fmt(base['iRep']) + '</td><td></td></tr>' +
+			marginRow(adjNow, adjBase) + '</tbody>');
 
-		var total2024 = 0;
-		var repTotal2024 = 0;
-		var demTotal2024 = 0;
-		$.each(numerator, function (ignore, res) {
-			total2024 += res['total'];
-			repTotal2024 += res['Rep'];
-			demTotal2024 += res['Dem'];
-		});
-
-		const totalPct2024Desc = pctToString((total2024 + 0.0) / (allEV2024 + 0.0)) + " of all 2024 EV";
-		const repPct2024Desc = pctToString((repTotal2024 + 0.0) / (repAllEV2024 + 0.0)) + " of Republican 2024 EV";
-		const demPct2024Desc = pctToString((demTotal2024 + 0.0) / (demAllEV2024 + 0.0)) + " of Democrat 2024 EV";
-
-		var total2022 = 0;
-		var repTotal2022 = 0;
-		var demTotal2022 = 0;
-		$.each(numerator, function (ignore, res) {
-			total2022 += res['total'];
-			repTotal2022 += res['Rep'];
-			demTotal2022 += res['Dem'];
-		});
-
-		const totalPct2022Desc = pctToString((total2022 + 0.0) / (allEV2022 + 0.0)) + " of all 2022 EV";
-		const repPct2022Desc = pctToString((repTotal2022 + 0.0) / (repAllEV2022 + 0.0)) + " of Republican 2022 EV";
-		const demPct2022Desc = pctToString((demTotal2022 + 0.0) / (demAllEV2022 + 0.0)) + " of Democrat 2022 EV";
-
-		var total2022 = 0;
-		var repTotal2022 = 0;
-		var demTotal2022 = 0;
-		$.each(denominator, function (ignore, res) {
-			total2022 += res['total'];
-			repTotal2022 += res['Rep'];
-			demTotal2022 += res['Dem'];
-		});
-
-		const repPct = pctToString((repTotal2024 + 0.0) / (total2024 + 0.0));
-		const demPct = pctToString((demTotal2024 + 0.0) / (total2024 + 0.0));
-
-		const totalTurnoutPct = pctToString((total2024 + 0.0) / (turnoutTotal2022 + 0.0));
-		const totalTurnoutDesc = totalTurnoutPct + " of 2022 total turnout";
-		const repTurnoutPct = pctToString((repTotal2024 + 0.0) / (repTurnoutTotal2022 + 0.0));
-		const repTurnoutDesc = repTurnoutPct + " of 2022 registered R turnout";
-		const demTurnoutPct = pctToString((demTotal2024 + 0.0) / (demTurnoutTotal2022 + 0.0));
-		const demTurnoutDesc = demTurnoutPct + " of 2022 registered D turnout";
-
-		const gap = demTotal2024 - repTotal2024;
-
-		const earlyPct = pctToString((total2024 + 0.0) / (total2022 + 0.0));
-		const repEarlyPct = pctToString((repTotal2024 + 0.0) / (repTotal2022 + 0.0));
-		const demEarlyPct = pctToString((demTotal2024 + 0.0) / (demTotal2022 + 0.0));
-
-		const pctGap = pctToString((demTotal2024 + 0.0) / (total2024 + 0.0) - (repTotal2024 + 0.0) / (total2024 + 0.0));
-		const pctEarlyGap = pctToString((demTotal2022 + 0.0) / (total2022 + 0.0) - (repTotal2022 + 0.0) / (total2022 + 0.0));
-		var pctPctGap = (
-			((demTotal2024 + 0.0) / (total2024 + 0.0) - (repTotal2024 + 0.0) / (total2024 + 0.0)) -
-			((demTotal2022 + 0.0) / (total2022 + 0.0) - (repTotal2022 + 0.0) / (total2022 + 0.0))
-		);
-
-		var pctGapDesc = pctPctGap < 0 ? "Advantage Trump" : "Advantage Harris";
-		var gap2022Desc = "2022 EV D-R ratio: " + pctToString((demTotal2022 + 0.0) / (total2022 + 0.0)) + " D - " +
-			pctToString((repTotal2022 + 0.0) / (total2022 + 0.0)) + " R, Gap:" +
-			pctEarlyGap;
-		var gap2024Desc = "2024 " + methodShort + " D-R ratio:" + demPct + " D - " + repPct + " R, Gap: " + pctGap;
-		var gapAdvantage = pctToString(Math.abs(pctPctGap)) + " " + pctGapDesc;
-
-		const addendum = "<br /><br /><small>" + gap2022Desc + "<br />" + gap2024Desc + "<br />" + gapAdvantage + "</small>";
-
-		$('#countMethod').text(methodText);
-		$('#countTOTAL').html(total2024 + "</b><br/>" + "D-R gap (raw): <b>" + gap + "</b><br/>" + totalPct2024Desc + "<br/>" + totalPct2022Desc + "<br/>" + totalTurnoutDesc + addendum);
-		$('#countDEM').html(demTotal2024 + " (" + demPct + ")<br />" + demPct2024Desc + "<br/>" + demPct2022Desc + "<br/>" + demTurnoutDesc);
-		$('#countREP').html(repTotal2024 + " (" + repPct + ")<br />" + repPct2024Desc + "<br/>" + repPct2022Desc + "<br/>" + repTurnoutDesc);
+		var foot = '2026 so far is ' + pct1(now['total'], turnout['Dem'] + turnout['Una'] + turnout['Rep']) + ' of ' +
+			baseline['year'] + ' general turnout (D ' + pct1(now['Dem'], turnout['Dem']) + ', R ' +
+			pct1(now['Rep'], turnout['Rep']) + ' of their registered turnout).';
+		if (now['total'] < allNow['total']) {
+			foot += ' Filters keep ' + pct1(now['total'], allNow['total']) + ' of all 2026 early votes.';
+		}
+		foot += ' I split: each county\'s I ballots go to D and R in that county\'s D:R ratio. A heuristic, not a measurement.';
+		$('#ncFoot').text(foot);
 	}
 
 
 	/** Do a split, a la Florida map. */
-	function doSplit(methodStr, numerator, denominator) {
-		$.each(numerator, function (county, results2024) {
+	function doSplit(methodStr, numerator, denominator, baseLabel) {
+		$.each(numerator, function (county, results2026) {
+			const countyid = counties[county];
+			const resultsBase = denominator[county];
+			const total2026 = results2026['total'];
+			const repTotal2026 = results2026['Rep'];
+			const demTotal2026 = results2026['Dem'];
+			const totalBase = resultsBase['total'];
+			const repTotalBase = resultsBase['Rep'];
+			const demTotalBase = resultsBase['Dem'];
 
+			// A zero total makes the gap NaN, and NaN falls through getSplitAdvantageColor to dark blue.
+			if (total2026 == 0 || totalBase == 0) {
+				usncjsconfig[countyid].hover = county + "<br /><small>" +
+					methodStr + ": " + total2026 + " in 2026, " + totalBase + " in " + baseLabel + "<br />" +
+					"Not enough ballots to compare</small>";
+				return;
+			}
 
-			const results2022 = denominator[county];
-			const total2024 = results2024['total'];
-			const repTotal2024 = results2024['Rep'];
-			const demTotal2024 = results2024['Dem'];
-			const demPct2024 = (demTotal2024 + 0.0) / (total2024 + 0.0);
-			const repPct2024 = (repTotal2024 + 0.0) / (total2024 + 0.0);
+			const demPct2026 = (demTotal2026 + 0.0) / (total2026 + 0.0);
+			const repPct2026 = (repTotal2026 + 0.0) / (total2026 + 0.0);
+			const demPctBase = (demTotalBase + 0.0) / (totalBase + 0.0);
+			const repPctBase = (repTotalBase + 0.0) / (totalBase + 0.0);
+			const otherPctBase = 1.0 - demPctBase - repPctBase;
 
-			const total2022 = results2022['total'];
-			const repTotal2022 = results2022['Rep'];
-			const demTotal2022 = results2022['Dem'];
-			const demPct2022 = (demTotal2022 + 0.0) / (total2022 + 0.0);
-			const repPct2022 = (repTotal2022 + 0.0) / (total2022 + 0.0);
-			const otherPct2022 = 1.0 - demPct2022 - repPct2022;
-
-			const partyDiff2024 = demTotal2024 - demTotal2022;
-			var partyDiffDesc = partyDiff2024 < 0.0 ? ("" + partyDiff2024) : ("+" + partyDiff2024);
+			const partyDiff2026 = demTotal2026 - demTotalBase;
+			var partyDiffDesc = partyDiff2026 < 0.0 ? ("" + partyDiff2026) : ("+" + partyDiff2026);
 			partyDiffDesc = " (" + partyDiffDesc + ")";
 
-			var gap = (demPct2024 - repPct2024) - (demPct2022 - repPct2024);
-			var gapDesc = gap <= 0.0 ? " Advantage Trump" : "Advantage Harris";
-			var gapRaw = Math.ceil((gap * total2024)) * -1;
+			var gap = (demPct2026 - repPct2026) - (demPctBase - repPctBase);
+			var gapDesc = gap <= 0.0 ? "Republican advantage" : "Democratic advantage";
+			var gapRaw = Math.ceil((gap * total2026)) * -1;
 			gapDesc += " (";
 			gapDesc += gap <= 0.0 ? ("+" + gapRaw) : ("" + gapRaw);
 			gapDesc += " votes)";
 
 			const splitColor = getSplitAdvantageColor(gap);
-			const countyid = counties[county];
 			usncjsconfig[countyid].upColor = splitColor;
 			usncjsconfig[countyid].downColor = splitColor;
 			$('#' + countyid).attr({ fill: splitColor });
 
 			usncjsconfig[countyid].hover = county + "<br /><small>" +
-				methodStr + ", Democrat:<b>" + demTotal2024 + " (" + pctToString(demPct2024) + ")</b><br />" +
-				methodStr + ", Republican:<b>" + repTotal2024 + " (" + pctToString(repPct2024) + ")</b><br />" +
-				"2024 Difference (D-R): <b>" + pctToString(demPct2024 - repPct2024) + "</b> " + partyDiffDesc + "<br />" +
-				"2022 EV: Dem: " + pctToString(demPct2022) + " Rep: " + pctToString(repPct2022) + " Other:" + pctToString(otherPct2022) + "<br />" +
-				"2022 EV Difference (D-R): <b>" + pctToString(demPct2022 - repPct2022) + "</b><br />" +
-				"2024-2022 EV Gap: <b>" + pctToString(Math.abs(gap)) + "</b>, " + gapDesc + "<br />" +
-
+				methodStr + ", Democrat:<b>" + demTotal2026 + " (" + pctToString(demPct2026) + ")</b><br />" +
+				methodStr + ", Republican:<b>" + repTotal2026 + " (" + pctToString(repPct2026) + ")</b><br />" +
+				"2026 Difference (D-R): <b>" + pctToString(demPct2026 - repPct2026) + "</b> " + partyDiffDesc + "<br />" +
+				baseLabel + ": Dem: " + pctToString(demPctBase) + " Rep: " + pctToString(repPctBase) + " Other:" + pctToString(otherPctBase) + "<br />" +
+				baseLabel + " Difference (D-R): <b>" + pctToString(demPctBase - repPctBase) + "</b><br />" +
+				"2026 vs " + baseLabel + " Gap: <b>" + pctToString(Math.abs(gap)) + "</b>, " + gapDesc + "<br />" +
 				"</small>";
-
-			/*
-					usfljsconfig[myid].hover = k + "<br /><small>" + 
-						methodStr + ", Democrat:<b>" + v + " (" + pctToString(demPct) + ")</b><br />" + 
-						methodStr + ", Republican:<b>" + repNums[k] + " (" + pctToString(repPct) + ")</b><br />" + 
-						"2024 Difference (D-R): <b>" + pctToString(demPct - repPct) + "</b> " + partyDiffDesc + "<br />" + 
-						"2022 comparison: Clinton: " + pctToString(demPct2022) + " Trump: " + pctToString(repPct2022) +  "<br />" + 
-						"2022 EV: Dem: " + pctToString(demEarlyPct) + " Rep: " + pctToString(repEarlyPct) + " NPA:" + pctToString(npaEarlyPct) + "<br />" + 
-						"2022 EV Difference (D-R): <b>" + pctToString(demEarlyPct - repEarlyPct) + "</b><br />" + 
-						"2024-2022 EV Gap: <b>" + pctToString(Math.abs(gap)) + "</b>, " + gapDesc + "<br />" + 
-							
-						"</small>";			
-			*/
 		});
 	}
 
-	var repAllEV2024 = 0;
-	var demAllEV2024 = 0;
-	var allEV2024 = 0;
-
-	var repAllEV2022 = 0;
-	var demAllEV2022 = 0;
-	var allEV2022 = 0;
+	// Statewide, both methods, no demographic filters. Keyed by election and same-point.
+	var allEVCache = {};
+	function allEV(election, samePointOnly) {
+		const key = election + '-' + samePointOnly;
+		if (!(key in allEVCache)) {
+			allEVCache[key] = splitIndependents(query(election, samePointOnly, [1, 2], {}));
+		}
+		return allEVCache[key];
+	}
 
 	function doUpdate(checkboxId) {
 		resetHover();
 
-		// Detect the method filters we'll be using. 
-		// We will default to both. 
 		methodFilter = [];
 		if ($('#methodMAIL').prop('checked')) {
 			methodFilter.push(1);
@@ -360,82 +928,77 @@ title: North Carolina interactive map
 		if ($('#methodIPEV').prop('checked')) {
 			methodFilter.push(2);
 		}
-
-		// Filter away... 
 		if (methodFilter.length == 0) {
 			methodFilter.push(1);
-			methodFilter.push(2);
+			if (!$('#methodIPEV').prop('disabled')) {
+				methodFilter.push(2);
+			}
 		}
+
+		const baselineKey = $('input[name=baseline]:checked').val();
+		const baseline = BASELINES[baselineKey];
+		$('#ncWarn2024').prop('hidden', baselineKey !== '2024sp');
+
+		// Every baseline ballot was cast in the baseline year, so "did not vote" in that year leaves
+		// an empty denominator. Unchecked as well as hidden, or it keeps filtering out of sight.
+		$.each([2022, 2024], function (ignore, year) {
+			const isBase = year === baseline['year'];
+			if (isBase) {
+				$('#numeratorVoted' + year + 'False').prop('checked', false);
+			}
+			$('#numeratorVoted' + year + 'FalseOption').prop('hidden', isBase);
+		});
+		const nFilters = $('#numerator input:checked').length;
+		$('#ncFilterCount').text(nFilters).prop('hidden', nFilters === 0);
+		$('#ncClear').prop('disabled', nFilters === 0);
 
 		// Go through each attr filter. 
 		rawFilters = {};
-		attrFilters = {};
 		$.each(encodings, function (id, encoding) {
-			// Is something checked? 
 			var filters = [];
-			var attrs = [];
 			$.each(encoding.bit_map, function (attr, raw_value) {
-				const boxId = "numerator" + id + attr;
-				const checked = $('#' + boxId).prop('checked');
-				if (checked) {
+				if ($('#numerator' + id + attr).prop('checked')) {
 					filters.push(raw_value);
-					attrs.push[attr];
 				}
 			});
 			rawFilters[id] = filters;
-			attrFilters[id] = attrs;
 		});
 
-		// Perform query - this is advantage split only, so do method 2024
-		const countyNumerators = query(METHOD_2024_ENCODING, methodFilter, rawFilters);
-
-		// Now calculate denominators. we calculate via method 2022
-		const countyDenominators = query(METHOD_2022_ENCODING, methodFilter, rawFilters);
-
-		// If this is the first time, initialize the EV numbers
-		if (allEV2024 == 0) {
-			$.each(countyNumerators, function (ignore, v) {
-				allEV2024 += v['total'];
-				repAllEV2024 += v['Rep'];
-				demAllEV2024 += v['Dem'];
-			});
-			$.each(countyDenominators, function (ignore, v) {
-				allEV2022 += v['total'];
-				repAllEV2022 += v['Rep'];
-				demAllEV2022 += v['Dem'];
-			});
-			//console.log("set: " + allEV2024 + " " + repAllEV2024 + " " + demAllEV2024);
-		}
+		const countyNumerators = query(0, false, methodFilter, rawFilters);
+		const countyDenominators = query(baseline['election'], baseline['samePoint'], methodFilter, rawFilters);
 
 		const methodStr = methodFilter.length == 2 ? 'All early votes' :
 			methodFilter[0] == 1 ? 'Mail votes' : 'In-person votes';
-		doSplit(methodStr, countyNumerators, countyDenominators);
+		doSplit(methodStr, countyNumerators, countyDenominators, baseline['label']);
 		const methodType = methodFilter.length == 2 ? 'EV' :
 			methodFilter[0] == 1 ? 'MAIL' : 'IPEV';
-		updateTotals(methodType, countyNumerators, countyDenominators);
+		updateTotals(methodType, countyNumerators, countyDenominators, baseline);
 
 		$.each(counties, function (k, v) {
 			$('#' + v).mouseenter().mouseleave();
 		});
-
-		/*
-		$('input[type=checkbox]').each( function() {
-		
-			// this.checked
-			//console.log("Id: " + this.id + " " + this.checked);
-		});*/
-		// clear all
-		/*$("#checkAll").click(function(){
-		$('input:checkbox').not(this).prop('checked', this.checked);
-	});*/
-
 	}
-
-	//	    $.getJSON('../json/northcarolina_optimized.json', function(data) {
-	$.getJSON('https://raw.githubusercontent.com/joeisdone/joeisdone.github.io/master/json/northcarolina_optimized.json', function (data) {
+	// Bit layout in nc_encoding.js.
+	$.getJSON('./nc_2026_general.json', function (data) {
 		encodedRows = data['rows'];
 		countRows = data['counts'];
 		$('#timestamp').text(data['timestamp']);
+
+		const cutoffLabel = function (iso) {
+			return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+		};
+		$.each({ '2024sp': data['cutoff_2024'], '2022sp': data['cutoff_2022'] }, function (key, iso) {
+			BASELINES[key]['date'] = 'by ' + cutoffLabel(iso);
+			BASELINES[key]['label'] = BASELINES[key]['short'] + ' (' + BASELINES[key]['date'] + ')';
+		});
+
+		var has2026Ipev = false;
+		for (var i = 0; i < encodedRows.length; ++i) {
+			if (ELECTION_ENCODING.decode(encodedRows[i]) == 0 && METHOD_ENCODING.decode(encodedRows[i]) == 2) {
+				has2026Ipev = true;
+				break;
+			}
+		}
 
 		queryResult = new Array(encodedRows.length).fill(true);
 
@@ -456,116 +1019,98 @@ title: North Carolina interactive map
 		sortedCounties.sort();
 		initializeEncoded(sortedCounties);
 
-		var groupCount = 0;
-		const groupHalf = Math.ceil(Object.keys(encodings).length / 2);
+		function chip(id, main, sub, attrs) {
+			return '<label class="nc-chip" id="' + id + 'Option"><input ' + attrs + ' id="' + id + '"><span>' + main +
+				'</span>' + (sub ? '<small>' + sub + '</small>' : '') + '</label>\n';
+		}
 
-		var allHtml = '<div class="row">\n<div class="column">\n';
+		var ctl = '<div class="nc-group"><div class="nc-label">Ballots</div><div class="nc-seg">\n';
+		ctl += chip('methodMAIL', 'Mail', '', 'type="checkbox" checked="checked"');
+		ctl += has2026Ipev ? chip('methodIPEV', 'In person', 'early voting', 'type="checkbox"') :
+			chip('methodIPEV', 'In person', 'none yet in 2026', 'type="checkbox" disabled="disabled"');
+		ctl += '</div></div>\n';
 
-		// Handle the EV method separately. 
-		allHtml += '<div id="numeratorMethod" class="numerator">\n';
-		allHtml += '   <span style="font-size: larger; font-weight: bold;">Early voting method</span><br /><br />\n';
-		allHtml += '    <table>';
-		allHtml += '        <tr>';
-		allHtml += '            <td><input type="checkbox" id="methodIPEV" checked="checked">In-Person early voting (IPEV)</td>\n';
-		allHtml += '            <td><input type="checkbox" id="methodMAIL" checked="checked">Mail voting (mail)</td>\n';
-		allHtml += '        </tr>\n';
-		allHtml += '    </table>\n';
-		allHtml += '</div>\n';
-
-		$.each(encodings, function (id, encoding) {
-			var parentHtml = "";
-
-			if (++groupCount == groupHalf) {
-				parentHtml += '</div><div class="column">';
-			}
-
-			const parentDivId = "numerator" + id;
-			parentHtml += "<div id=\"" + parentDivId + "\" class=\"numerator\">";
-			parentHtml += '<span style="font-size: larger; font-weight: bold;">' + encoding.name + '</span><br /><br />';
-
-			// checkboxes... 
-			var count = 0;
-			parentHtml += '<table>'
-
-			$.each(encoding['bit_map'], function (attr, ignore) {
-				const checkboxId = 'numerator' + encoding.id + attr;
-				if (checkboxId === 'numeratorVoted2022False') {
-					return;
-				}
-				if ((count % 2) == 0) {
-					parentHtml += '<tr>';
-				}
-
-				parentHtml += '<td>';
-
-				parentHtml += '<input type="checkbox" id="' + checkboxId + '">';
-				parentHtml += " " + encoding.readable(attr);
-
-				parentHtml += '</td>\n';
-
-				if ((++count % 2) == 0) {
-					parentHtml += '</tr>\n';
-				}
-			});
-
-			if ((count % 2) != 0) {
-				parentHtml += '</tr>\n';
-			}
-
-			parentHtml += '</table>\n';
-
-			parentHtml += '</div>\n';
-
-
-			allHtml += parentHtml
+		ctl += '<div class="nc-group"><div class="nc-label">Compare 2026 against</div><div class="nc-seg">\n';
+		$.each(['2022sp', '2022f', '2024sp', '2024f'], function (ignore, key) {
+			const checked = key === '2022sp' ? ' checked="checked"' : '';
+			ctl += chip('baseline' + key, BASELINES[key]['short'], BASELINES[key]['date'],
+				'type="radio" name="baseline" value="' + key + '"' + checked);
 		});
-		allHtml += '</div></div>';
-		$('#numerator').html(allHtml);
-		$('input[type=checkbox]').click(function () {
+		ctl += '</div>\n';
+		ctl += '<p class="nc-note">"Same point" = returned by ' + data['days_before_election'] +
+			' days before Election Day, where 2026 is now.</p>\n';
+		ctl += '<p class="nc-note nc-warn" id="ncWarn2024" hidden><b>2024 same point is unrepresentative:</b> NC mailed ' +
+			'2024 civilian ballots 18 days late (Sep 24, after reprinting to remove RFK Jr.), so almost every ballot back ' +
+			'by this point came from military and overseas voters.</p>\n';
+		ctl += '</div>\n';
+		$('#ncControls').html(ctl);
+
+		// Voting history reads as one grid of years; everything else is a labeled row of chips.
+		var demo = '', history = '';
+		$.each(encodings, function (id, encoding) {
+			if (id.indexOf('Voted') === 0) {
+				const year = id.substring(5);
+				history += '<span class="nc-year">' + year + '</span><div class="nc-chips" id="numerator' + id + '">' +
+					chip('numerator' + id + 'True', 'Voted', '', 'type="checkbox"') +
+					chip('numerator' + id + 'False', 'Did not vote', '', 'type="checkbox"') + '</div>\n';
+				return;
+			}
+			demo += '<div class="nc-group" id="numerator' + id + '"><div class="nc-label">' + encoding.name + '</div>' +
+				'<div class="nc-chips">\n';
+			$.each(encoding['bit_map'], function (attr, ignore) {
+				demo += chip('numerator' + id + attr, encoding.readable(attr), '', 'type="checkbox"');
+			});
+			demo += '</div></div>\n';
+		});
+		$('#numerator').html(demo + '<div class="nc-group"><div class="nc-label">General-election history</div>' +
+			'<div class="nc-history">' + history + '</div></div>' +
+			'<p class="nc-note">Checking several boxes in one group includes any of them. Not every group adds to ' +
+			'100%: many voters leave demographics blank.</p>');
+
+		// Open beside the map on desktop; below it on a phone, where it would push the map off screen.
+		if (window.matchMedia('(max-width: 1023px)').matches) {
+			$('#ncFilters').prop('open', false);
+		}
+
+		$('#ncControls input, #numerator input').on('change', function () {
 			doUpdate(this.id);
 		});
+		$('#ncClear').on('click', function () {
+			$('#numerator input').prop('checked', false);
+			doUpdate('');
+		});
+		renderLegend();
 		doUpdate('');
 	});	
 </script>
 
-<h1>North Carolina voting statistics</h1>
-<small>Manually updated:<span id="timestamp"></span></small><br />
-<span style="background-color:#faffc4;"><b>Have patience, please do not refresh!!!</b></span> North Carolina updates
-its data once-daily and does not push out continuously like Florida SOS does.
-<br /><br />
-<span style="background-color:#faffc4; font-weight:bold; font-size:larger;">This map is meant to explore demographics,
-	not serve as a 100% accurate count. Here's why:</span> <br />
-The map is compiled from the entire NC voter history records, which is not always consistent.<br /><br />
+<div id="nc-map">
+<div class="nc-head">
+	<h1 class="nc-title">North Carolina 2026 general: early vote</h1>
+	<div class="nc-meta">
+		<span>Data as of <span id="timestamp">…</span> · NC posts new files once a day</span>
+		<button type="button" class="dr-dialog-open" id="ncAboutOpen" aria-haspopup="dialog">
+			<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+			About this map
+		</button>
+	</div>
+</div>
 
-<a href="https://twitter.com/DataRepublican">How this map was implemented.</a> It took me a long time just to figure
-out how to encode the entire 5+gig NC voter history on the client - so it'll be a little slow.<br />
+<div class="nc-layout">
+<div class="nc-card nc-controls" id="ncControls"></div>
 
-Alter checkboxes to enable filtering over demographics. Multiple checkboxes within a category act as inclusive
-operators.<br /><br />
+<div class="nc-main">
+<div class="nc-card nc-results">
+	<h2 class="nc-results-title" id="countMethod">Loading ballot data (about 1.5 MB)…</h2>
+	<div class="nc-kpis" id="ncKpis"></div>
+	<div class="nc-bars" id="ncBars"></div>
+</div>
 
-<b><span style="background-color:#faffc4;">NOTE: Not every category adds up to 100%!</span></b> (E.g., many voters do
-not give out demographic data.) This is why "all categories checked" will look different than "none checked."
-<br /><br />
-
-<span style="font-size: larger;">Defaults to "Advantage Split" view where you see comparative advantage versus
-	2022.</span><br />
-<table>
-	<tr>
-		<td><b><span id="countMethod"></span></b></td>
-		<td><b>Democrat</b></td>
-		<td><b>Republican</b></td>
-	</tr>
-	<tr>
-		<td><span id="countTOTAL"></span></td>
-		<td><span id="countDEM"></span></td>
-		<td><span id="countREP"></span></td>
-	</tr>
-</table>
-
+<div class="nc-card nc-mapcard">
 <span id="usncjstip"></span>
 <div id="mapwrapper">
 	<div id="mapbase"><!-- V4.1 -->
-		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730 300" xml:space="preserve">
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="10 20 706 268" xml:space="preserve">
 			<g>
 				<path id="usncjs1" fill="#EBECED" stroke="#FFFFFF" vector-effect="non-scaling-stroke"
 					d="M389.313,94.341h24.045c0,0-1.681-1.487-0.905-2.813c-0.969-1.357-2.521-1.163-2.133-3.781c0.389-2.618,0.971-7.272,0.971-8.242s0.193-22.689,0.193-22.689h-21.138l-1.033,32.063V94.341z" />
@@ -877,7 +1422,49 @@ not give out demographic data.) This is why "all categories checked" will look d
 		</svg>
 	</div>
 </div>
-<div class="clear"></div>
-
-<div id="numerator">
+<div class="nc-legend" id="ncLegend"></div>
 </div>
+
+<div class="nc-card">
+	<table class="nc-table" id="ncTable"></table>
+	<p class="nc-foot" id="ncFoot"></p>
+</div>
+</div>
+
+<details class="nc-card nc-filters" id="ncFilters" open>
+	<summary>Filter voters <span class="nc-badge" id="ncFilterCount" hidden>0</span></summary>
+	<div id="numerator"></div>
+	<button type="button" class="dr-btn nc-clear" id="ncClear" disabled>Clear all filters</button>
+</details>
+</div>
+
+<dialog class="dr-dialog" id="ncAbout" aria-labelledby="ncAboutTitle">
+	<div class="dr-dialog__head">
+		<h2 id="ncAboutTitle">About this map</h2>
+		<button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="ncAboutClose" aria-label="Close">✕</button>
+	</div>
+	<div class="dr-dialog__body">
+		<p>This map is for exploring who has voted early, not an exact count. It is built from NC State Board of
+			Elections absentee files for 2026, 2024 and 2022, which are not always consistent. NC posts new files once
+			a day, so refreshing more often will not change the numbers.</p>
+		<p>Each county is colored by how far its D−R margin among early ballots has moved since the baseline you
+			pick. "Same point" compares against ballots the baseline year had back by the same number of days before
+			Election Day; "final" compares against every early ballot that year.</p>
+		<p>"I" is every voter not registered D or R. The I split assigns each county's I ballots to R and D in that
+			county's R:D ratio for the same ballots, then sums the counties. It is a heuristic, not a measurement.</p>
+		<p>Filters check against each voter's record. Several boxes in one group include any of them. Not every group
+			adds up to 100%, because many voters leave demographics blank, so "all boxes checked" differs from "none
+			checked".</p>
+		<p>All the ballot data is loaded into your browser, so the page is slow to start.
+			<a href="https://twitter.com/DataRepublican">How this map was built.</a></p>
+	</div>
+</dialog>
+</div>
+<script>
+	(function () {
+		const dlg = document.getElementById('ncAbout');
+		document.getElementById('ncAboutOpen').addEventListener('click', function () { dlg.showModal(); });
+		document.getElementById('ncAboutClose').addEventListener('click', function () { dlg.close(); });
+		dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+	})();
+</script>
