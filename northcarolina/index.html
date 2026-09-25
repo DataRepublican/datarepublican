@@ -774,7 +774,9 @@ title: North Carolina 2026 general election map
 
 		const now = splitIndependents(numerator);
 		const base = splitIndependents(denominator);
-		const allNow = allEV(0, false);
+		const allNow = allEV(0, false, methodFilter);
+		const allBase = allEV(baseline['election'], baseline['samePoint'], methodFilter);
+		const filtered = $('#numerator input:checked').length > 0;
 
 		function frac(s, key) {
 			return s['total'] > 0 ? s[key] / s['total'] : 0;
@@ -791,8 +793,30 @@ title: North Carolina 2026 general election map
 				'<div class="nc-kpi-value">' + value + '</div><div class="nc-kpi-sub">' + sub + '</div></div>';
 		}
 		$('#countMethod').text(methodName + ' · 2026 vs ' + baseLabel);
+		// With filters on, show the filtered group's share of all ballots for the selected method.
+		var countTile;
+		if (filtered) {
+			const shareNow = allNow['total'] > 0 ? now['total'] / allNow['total'] : 0;
+			var baseSub;
+			if ($('#numeratorVoted' + baseline['year'] + 'True').prop('checked')) {
+				baseSub = 'No baseline share: every ' + baseline['year'] + ' ballot voted in ' + baseline['year'];
+			} else if (allBase['total'] === 0) {
+				baseSub = 'No baseline ballots for this method';
+			} else {
+				const shareBase = base['total'] / allBase['total'];
+				const d = (shareNow - shareBase) * 100;
+				const sign = function (x) { return (x < 0 ? '−' : '+') + Math.abs(x).toFixed(1); };
+				const rel = shareBase > 0 ? ' (' + sign((shareNow / shareBase - 1) * 100) + '%)' : '';
+				baseSub = 'Baseline ' + pct1(base['total'], allBase['total']) + ' (' + fmt(base['total']) + ' of ' +
+					fmt(allBase['total']) + ')<br><b>' + sign(d) + ' pts' + rel + '</b> vs baseline';
+			}
+			countTile = kpi('Share of 2026 ballots', pct1(now['total'], allNow['total']),
+				fmt(now['total']) + ' of ' + fmt(allNow['total']) + '<br>' + baseSub);
+		} else {
+			countTile = kpi('2026 ballots', now['total'].toLocaleString(), base['total'].toLocaleString() + ' in baseline');
+		}
 		$('#ncKpis').html(
-			kpi('2026 ballots', now['total'].toLocaleString(), base['total'].toLocaleString() + ' in baseline') +
+			countTile +
 			kpi('Shift, with I split', lean(adjNow - adjBase), lean(adjNow) + ' now, ' + lean(adjBase) + ' then', adjNow - adjBase) +
 			kpi('Shift, raw', lean(rawNow - rawBase), lean(rawNow) + ' now, ' + lean(rawBase) + ' then', rawNow - rawBase));
 
@@ -847,9 +871,6 @@ title: North Carolina 2026 general election map
 		var foot = '2026 so far is ' + pct1(now['total'], turnout['Dem'] + turnout['Una'] + turnout['Rep']) + ' of ' +
 			baseline['year'] + ' general turnout (D ' + pct1(now['Dem'], turnout['Dem']) + ', R ' +
 			pct1(now['Rep'], turnout['Rep']) + ' of their registered turnout).';
-		if (now['total'] < allNow['total']) {
-			foot += ' Filters keep ' + pct1(now['total'], allNow['total']) + ' of all 2026 early votes.';
-		}
 		foot += ' I split: each county\'s I ballots go to D and R in that county\'s D:R ratio. A heuristic, not a measurement.';
 		$('#ncFoot').text(foot);
 	}
@@ -908,12 +929,12 @@ title: North Carolina 2026 general election map
 		});
 	}
 
-	// Statewide, both methods, no demographic filters. Keyed by election and same-point.
+	// Statewide, no demographic filters. Keyed by election, same-point and method.
 	var allEVCache = {};
-	function allEV(election, samePointOnly) {
-		const key = election + '-' + samePointOnly;
+	function allEV(election, samePointOnly, methods) {
+		const key = election + '-' + samePointOnly + '-' + methods.join(',');
 		if (!(key in allEVCache)) {
-			allEVCache[key] = splitIndependents(query(election, samePointOnly, [1, 2], {}));
+			allEVCache[key] = splitIndependents(query(election, samePointOnly, methods, {}));
 		}
 		return allEVCache[key];
 	}
