@@ -1,708 +1,1007 @@
 ---
 layout: default
-title: Florida Early Voting Statistics
-image: https://joeisdone.github.io/assets/images/og-fl.png
-redirect_from: /florida/has
+title: Florida 2026 general election map
+
 ---
+<link href="./map-style.css" rel="stylesheet" type="text/css" />
+<style>
+	/* Scoped to #fl-map: the site masthead and footer share this page. Nothing here may set
+	   position on an ancestor of #usfljstip — map-interact.js places it with page coordinates. */
+	#fl-map {
+		/* The light steps sit under 3:1 on white, so every bar segment is direct-labeled and the
+		   table repeats the numbers. */
+		--fl-dem: #2456c9;
+		--fl-dem-light: #7f9ee6;
+		--fl-dem-tint: #edf2fc;
+		--fl-rep: #c4312a;
+		--fl-rep-light: #e8837a;
+		--fl-rep-tint: #fcefee;
+		--fl-ind: #6d5a9c;
+		--fl-ind-tint: #f3f0f8;
+		font-family: var(--dr-font-ui);
+		color: var(--dr-ink);
+	}
+
+	#fl-map .fl-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		margin: 0 0 0.75rem;
+	}
+
+	#fl-map .fl-title {
+		font-family: var(--dr-font-content);
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	#fl-map .fl-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		column-gap: 0.75rem;
+		color: var(--dr-ink-muted);
+		font-size: var(--dr-text-meta);
+	}
+
+	#fl-map .fl-layout {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	#fl-map .fl-main {
+		display: grid;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+
+	#fl-map .fl-card {
+		background: var(--dr-panel);
+		border: 1px solid var(--dr-line);
+		border-radius: var(--dr-radius-lg);
+		padding: 0.75rem;
+		min-width: 0;
+	}
+
+	#fl-map .fl-label {
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		margin: 0 0 0.375rem;
+	}
+
+	#fl-map .fl-group + .fl-group {
+		margin-top: 0.75rem;
+	}
+
+	#fl-map .fl-note {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+		line-height: 1.35;
+		margin: 0.375rem 0 0;
+	}
+
+	#fl-map .fl-early {
+		margin-top: 0.75rem;
+		padding: 0.5rem 0.625rem;
+		border: 1px solid var(--dr-legal-border);
+		border-radius: var(--dr-radius-sm);
+		background: var(--dr-legal-fill);
+		color: var(--dr-legal-ink);
+		font-size: var(--dr-text-label);
+		line-height: 1.4;
+	}
+
+	#fl-map .fl-early .fl-label {
+		color: inherit;
+	}
+
+	#fl-map .fl-early p {
+		margin: 0.375rem 0 0;
+	}
+
+	/* ---- Chips: the baseline radios ---- */
+	#fl-map .fl-seg {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.375rem;
+	}
+
+	#fl-map .fl-chip {
+		position: relative;
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: center;
+		min-width: 0;
+		min-height: var(--dr-tap-sm);
+		padding: 0.25rem 0.75rem;
+		border: 1px solid var(--dr-line-strong);
+		border-radius: var(--dr-radius-pill);
+		background: var(--dr-panel);
+		font-size: var(--dr-text-meta);
+		line-height: 1.2;
+		cursor: pointer;
+		user-select: none;
+	}
+
+	#fl-map .fl-seg .fl-chip {
+		border-radius: var(--dr-radius-sm);
+		padding: 0.375rem 0.625rem;
+	}
+
+	#fl-map .fl-chip small {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	/* Visually hidden, still focusable and still the label's control. */
+	#fl-map .fl-chip input {
+		position: absolute;
+		opacity: 0;
+		width: 1px;
+		height: 1px;
+		margin: 0;
+		pointer-events: none;
+	}
+
+	#fl-map .fl-chip:hover {
+		background: var(--dr-fill);
+	}
+
+	#fl-map .fl-chip:has(input:checked) {
+		background: var(--dr-accent);
+		border-color: var(--dr-accent);
+		color: var(--dr-panel);
+	}
+
+	#fl-map .fl-chip:has(input:checked) small {
+		color: var(--dr-accent-tint);
+	}
+
+	#fl-map .fl-chip:has(input:focus-visible) {
+		outline: 2px solid var(--dr-accent);
+		outline-offset: 2px;
+	}
+
+	/* ---- Results ---- */
+	#fl-map .fl-results-title {
+		font-family: var(--dr-font-ui);
+		font-size: var(--dr-text-meta);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		margin: 0 0 0.5rem;
+	}
+
+	#fl-map .fl-kpis {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+
+	#fl-map .fl-kpi {
+		padding: 0.5rem 0.625rem;
+		border-top: 3px solid var(--dr-line-strong);
+		border-radius: var(--dr-radius-card);
+		background: var(--dr-fill-quiet);
+		min-width: 0;
+	}
+
+	#fl-map .fl-kpi--dem {
+		border-top-color: var(--fl-dem);
+		background: var(--fl-dem-tint);
+	}
+
+	#fl-map .fl-kpi--rep {
+		border-top-color: var(--fl-rep);
+		background: var(--fl-rep-tint);
+	}
+
+	#fl-map .fl-bars {
+		margin-top: 0.75rem;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: 0.375rem 0.5rem;
+		align-items: center;
+		font-size: var(--dr-text-label);
+	}
+
+	#fl-map .fl-bar-name {
+		color: var(--dr-ink-muted);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	#fl-map .fl-bar {
+		display: flex;
+		gap: 2px;
+		height: 1.375rem;
+		min-width: 0;
+	}
+
+	#fl-map .fl-bar span {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		overflow: hidden;
+		padding: 0 0.3125rem;
+		color: #fff;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+
+	#fl-map .fl-bar span:first-child {
+		border-radius: 4px 0 0 4px;
+	}
+
+	#fl-map .fl-bar span:last-child {
+		justify-content: flex-end;
+		border-radius: 0 4px 4px 0;
+	}
+
+	#fl-map .fl-bar .fl-seg-d { background: var(--fl-dem); }
+	#fl-map .fl-bar .fl-seg-id { background: var(--fl-dem-light); color: var(--dr-ink); }
+	#fl-map .fl-bar .fl-seg-ir { background: var(--fl-rep-light); color: var(--dr-ink); justify-content: flex-end; }
+	#fl-map .fl-bar .fl-seg-r { background: var(--fl-rep); }
+
+	#fl-map .fl-bar-key {
+		grid-column: 1 / -1;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.125rem 0.75rem;
+		color: var(--dr-ink-muted);
+	}
+
+	#fl-map .fl-kpi-label,
+	#fl-map .fl-kpi-sub {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	#fl-map .fl-kpi-label {
+		font-weight: 600;
+	}
+
+	#fl-map .fl-kpi-value {
+		font-family: var(--dr-font-content);
+		font-size: 1.375rem;
+		font-weight: 700;
+		line-height: 1.25;
+		font-variant-numeric: tabular-nums;
+	}
+
+	#fl-map .fl-dem,
+	#fl-map .fl-rep {
+		white-space: nowrap;
+	}
+
+	#fl-map .fl-dem {
+		color: var(--fl-dem);
+	}
+
+	#fl-map .fl-rep {
+		color: var(--fl-rep);
+	}
+
+	#fl-map .fl-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: var(--dr-text-meta);
+		font-variant-numeric: tabular-nums;
+	}
+
+	#fl-map .fl-table th,
+	#fl-map .fl-table td {
+		padding: 0.3125rem 0.375rem;
+		border: 0;
+		border-bottom: 1px solid var(--dr-line);
+		background: none;
+		text-align: right;
+		vertical-align: top;
+	}
+
+	#fl-map .fl-table th[scope="row"],
+	#fl-map .fl-table thead th:first-child {
+		text-align: left;
+		font-weight: 400;
+		white-space: normal;
+	}
+
+	#fl-map .fl-table thead th {
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		vertical-align: bottom;
+	}
+
+	#fl-map .fl-reg {
+		table-layout: fixed;
+	}
+
+	#fl-map .fl-reg th[scope="row"],
+	#fl-map .fl-reg thead th:first-child {
+		width: 38%;
+		white-space: nowrap;
+	}
+
+	#fl-map .fl-reg th,
+	#fl-map .fl-reg td {
+		padding-left: 0.25rem;
+		padding-right: 0.25rem;
+	}
+
+	#fl-map .fl-reg thead small {
+		white-space: normal;
+	}
+
+	#fl-map .fl-table small {
+		display: block;
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-faint);
+		font-weight: 400;
+	}
+
+	#fl-map .fl-table .fl-section th {
+		padding-top: 0.75rem;
+		text-align: left;
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+	}
+
+	#fl-map .fl-table .fl-margin th,
+	#fl-map .fl-table .fl-margin td {
+		font-weight: 700;
+		border-bottom: 0;
+		background: var(--dr-fill-quiet);
+	}
+
+	#fl-map .fl-table .fl-row-dem th[scope="row"],
+	#fl-map .fl-table .fl-row-dem td:not(:last-child) {
+		color: var(--fl-dem);
+	}
+
+	#fl-map .fl-table .fl-row-dem th[scope="row"] {
+		font-weight: 600;
+	}
+
+	#fl-map .fl-table .fl-row-rep th[scope="row"],
+	#fl-map .fl-table .fl-row-rep td:not(:last-child) {
+		color: var(--fl-rep);
+	}
+
+	#fl-map .fl-table .fl-row-rep th[scope="row"] {
+		font-weight: 600;
+	}
+
+	#fl-map .fl-table .fl-row-ind th[scope="row"] {
+		color: var(--fl-ind);
+		font-weight: 600;
+	}
+
+	#fl-map .fl-table .fl-row-dem th[scope="row"]::before,
+	#fl-map .fl-table .fl-row-rep th[scope="row"]::before,
+	#fl-map .fl-table .fl-row-ind th[scope="row"]::before {
+		content: "";
+		display: inline-block;
+		width: 0.625rem;
+		height: 0.625rem;
+		margin-right: 0.375rem;
+		border-radius: 2px;
+		background: currentColor;
+	}
+
+	#fl-map .fl-table .fl-row-dem td:first-of-type { background: var(--fl-dem-tint); font-weight: 700; }
+	#fl-map .fl-table .fl-row-rep td:first-of-type { background: var(--fl-rep-tint); font-weight: 700; }
+
+	#fl-map .fl-up-dem { color: var(--fl-dem); }
+	#fl-map .fl-up-rep { color: var(--fl-rep); }
+
+	#fl-map .fl-foot {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+		line-height: 1.4;
+		margin: 0.5rem 0 0;
+	}
+
+	/* ---- Map ---- */
+	#fl-map #mapbase svg {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+
+	#fl-map .fl-legend {
+		margin-top: 0.5rem;
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	#fl-map .fl-legend-bar {
+		display: flex;
+		height: 0.75rem;
+		border-radius: var(--dr-radius-sm);
+		overflow: hidden;
+		margin: 0.25rem 0;
+	}
+
+	#fl-map .fl-legend-bar span {
+		flex: 1 1 0;
+	}
+
+	#fl-map .fl-legend-ends {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	#fl-map .fl-swatch {
+		display: inline-block;
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 2px;
+		vertical-align: -0.125rem;
+		margin-right: 0.25rem;
+		border: 1px solid var(--dr-line);
+	}
+
+	/* map-style.css ships z-index 1000 and a Trebuchet box; bring it onto the site's scale. */
+	#fl-map #usfljstip {
+		z-index: var(--dr-z-popover);
+		max-width: min(22rem, 85vw);
+		padding: 0.5rem 0.625rem;
+		border: 1px solid var(--dr-line);
+		border-radius: var(--dr-radius-card);
+		background: var(--dr-panel);
+		color: var(--dr-ink);
+		font: var(--dr-text-meta)/1.4 var(--dr-font-ui);
+		box-shadow: 0 4px 16px rgb(0 0 0 / 0.14);
+	}
+
+	@media (max-width: 767px) {
+		#fl-map .fl-title {
+			font-size: 1.25rem;
+		}
+
+		#fl-map .fl-card {
+			padding: 0.625rem;
+		}
+
+		#fl-map .fl-chip {
+			min-height: var(--dr-tap);
+		}
+
+		#fl-map .fl-kpis {
+			gap: 0.375rem;
+		}
+
+		#fl-map .fl-kpi {
+			padding: 0.375rem 0.5rem;
+		}
+
+		#fl-map .fl-kpi-value {
+			font-size: 1.125rem;
+		}
+
+		#fl-map .fl-table th,
+		#fl-map .fl-table td {
+			padding-left: 0.25rem;
+			padding-right: 0.25rem;
+		}
+
+		#fl-map .fl-table th[scope="row"]::before {
+			display: none;
+		}
+	}
+
+	/* Controls and context stack in a left column; the results take the rest. */
+	@media (min-width: 1024px) {
+		#fl-map .fl-layout {
+			grid-template-columns: 19rem minmax(0, 1fr);
+			grid-template-areas: "controls main" "context main";
+			grid-template-rows: auto 1fr;
+			align-items: start;
+		}
+
+		#fl-map .fl-controls {
+			grid-area: controls;
+		}
+
+		#fl-map .fl-main {
+			grid-area: main;
+		}
+
+		#fl-map .fl-context {
+			grid-area: context;
+		}
+	}
+
+	/* Wide enough for the table to sit beside the map instead of under it. */
+	@media (min-width: 1280px) {
+		#fl-map .fl-main {
+			grid-template-columns: minmax(0, 1fr) 23rem;
+			align-items: start;
+		}
+
+		#fl-map .fl-results {
+			grid-column: 1 / -1;
+		}
+	}
+</style>
 
 <script src="./map-config.js"></script>
 <script src="./map-interact.js"></script>
 <script src="./pins-config.js"></script>
 <script>
+	var DATA = null;
+	const NO_DATA_COLOR = '#EBECED';
+	// Counties with fewer ballots than this in either year stay gray: a handful of ballots swings the margin wildly.
+	const MIN_BALLOTS = 10;
+	// The largest counties by the baseline's final mail count: about 64% of Florida's mail ballots.
+	const BIG_COUNTIES = 11;
 
-	{% include colors.html %}
+	// Shift in the county's D-R margin vs the baseline, most Republican first. The first bin whose
+	// floor the Republican shift clears wins; exactly 0 counts as R.
+	const ADV_BINS = [
+		[0.07, '#9e241e', 'R 7+'],
+		[0.05, '#c4312a', 'R 5–7'],
+		[0.025, '#e8837a', 'R 2.5–5'],
+		[0.01, '#f3b5ae', 'R 1–2.5'],
+		[0.00, '#f9e0dd', 'R 0–1'],
+		[-0.01, '#dfe7f9', 'D 0–1'],
+		[-0.05, '#bccdf3', 'D 1–5'],
+		[-0.08, '#98b2ec', 'D 5–8'],
+		[-0.10, '#6d8fe2', 'D 8–10'],
+		[-0.20, '#2456c9', 'D 10–20'],
+		[-Infinity, '#183d94', 'D 20+']
+	];
 
-	var counties = {};
+	const BASELINES = {
+		'2024f': { 'year': 2024, 'label': '2024 mail ballots', 'short': '2024', 'date': 'all mail ballots' },
+		'2022f': { 'year': 2022, 'label': '2022 mail ballots', 'short': '2022', 'date': 'all mail ballots' }
+	};
+	const BASELINE_ORDER = ['2024f', '2022f'];
+	const RACE = { 2024: 'President', 2022: 'Governor' };
 
-	// Formatted like: 
-	// "Highlands" : { "trumpVotes": 29565, "trumpPct": 0.6471, "clintonVotes": 14937, "clintonPct": 0.3269 }, 	
+	function pctToString(pct) {
+		return Number(pct).toLocaleString(undefined, { style: 'percent', minimumFractionDigits: 2 });
+	}
 
-	var early2016Data = {};
-	var election2016Data = {};
-	var liveData = {};
+	function fmt(n) {
+		return Math.round(n).toLocaleString();
+	}
 
-	/*
-			'#cc0000'; // dark red
-			'#ff0000'; // bright red
-			'#ff8080'; // pinkish red
-			'#ffb3b3'; // pinky
-			'#ffe6e6'; // light pink
-			'#e6e6ff'; // light blue
-			'#8080ff'; // less light blue
-			'#4d4dff'; // medium blue
-			'#0000ff'; // bright blue
-			'#0000cc'; // dark blue
-	*/
+	function pct1(n, d) {
+		return d > 0 ? (100.0 * n / d).toFixed(1) + '%' : '–';
+	}
 
-	// TOTAL, NPA, REP, DEM
-	var partyType = "TOTAL";
+	/** A D-R margin (a fraction) as "D +34.9" / "R +2.1", colored by side. */
+	function lean(m) {
+		const side = m < 0 ? 'rep' : 'dem';
+		return '<span class="fl-' + side + '">' + (m < 0 ? 'R' : 'D') + ' +' + (Math.abs(m) * 100).toFixed(1) + '</span>';
+	}
 
-	// total, EarlyVoting, Mail, ElectionDay
-	var methodType = "ElectionDay";
-
-	// turnout2016, turnout2016Clinton, turnout2016Trump, ev, split
-	// early2016TOTAL, early2016REP, early2016DEM, early2016NPA
-	var turnoutType = "split";
-
-	// Numerators: 
-	// NPA -> No Party
-	// TOTAL -> Total
-	// REP -> Republican
-	// DEM -> Democrat
-	// Denominators:
-	// ev -> early votes (mail + early, total)
-	// trumpVotes -> Trump votes 2016
-	// clintonVotes -> Clinton votes 2016
-	// total -> 2016 votes
-	function setHover(county, numeratorType, nVal, denominatorType, dVal, pct) {
-		const hoverId = counties[county];
-		if (!hoverId) {
-			console.log("Unable to set hover for " + county);
-			return;
-		}
-		// Numerator type should be formatted like this: 
-		// All early votes, all parties: <num>
-		// Mail-in votes, Republican: <num>
-		var methodStr = "All votes";
-		if (methodType === "Mail") {
-			methodStr = "Mail votes";
-		} else if (methodType === "EarlyVoting") {
-			methodStr = "In-person votes";
-		} else if (methodType === "ElectionDay") {
-			methodStr = "Election Day votes";
-		}
-
-		var partyStr = "all parties";
-		if (numeratorType === "NPA") {
-			partyStr = "unaffliated";
-		} else if (numeratorType === "DEM") {
-			partyStr = "Democrat";
-		} else if (numeratorType === "REP") {
-			partyStr = "Republican";
-		}
-		var numeratorStr = methodStr + ", " + partyStr + ":<b>" + nVal + "</b>";
-		//console.log(numeratorStr);
-
-		var denominatorStr = "";
-		if ("ev" === denominatorType) {
-			denominatorStr = methodStr + ", all parties:<b>" + dVal + "</b>";
-		} else {
-			denominatorStr = denominatorType.includes("2024") ? "2024 " : "2016 ";
-			if ("trumpVotes" === denominatorType) {
-				denominatorStr += "Trump";
-			} else if ("clintonVotes" === denominatorType) {
-				denominatorStr += "Clinton";
-			} else if ("total" === denominatorType) {
-				denominatorStr += "total";
-			} else if ("earlyNPA" === denominatorType) {
-				denominatorStr += "unaffiliated early";
-			} else if ("earlyDEM" === denominatorType) {
-				denominatorStr += "Democrat early";
-			} else if ("earlyREP" === denominatorType) {
-				denominatorStr += "Republican early";
-			} else if ("earlyTOTAL" === denominatorType) {
-				denominatorStr += "total early";
-			} else if ("reg2024DEM" === denominatorType) {
-				denominatorStr += "Democrat registered";
-			} else if ("reg2024REP" === denominatorType) {
-				denominatorStr += "Republican registered";
-			} else if ("reg2024NPA" === denominatorType) {
-				denominatorStr += "unaffiliated registered";
-			} else if ("reg2024TOTAL" === denominatorType) {
-				denominatorStr += "registered";
+	function getSplitAdvantageColor(gap) {
+		const difference = gap * -1.0;
+		for (var i = 0; i < ADV_BINS.length; ++i) {
+			if (difference > ADV_BINS[i][0] || (ADV_BINS[i][0] === 0 && difference === 0)) {
+				return ADV_BINS[i][1];
 			}
-			else {
-				console.log("Unknown denominator " + denominatorType);
-			}
-
-			denominatorStr += denominatorType.includes("reg2024") ? " active voters" : " votes";
-			denominatorStr += ":<b>" + dVal + "</b>";
 		}
-		usfljsconfig[hoverId].hover = county + "<br /><small>" +
-			numeratorStr + "<br />" +
-			denominatorStr + "<br />" +
-			"Percent: <b>" + pctToString(pct) + "</b>" +
-			"</small>";
-		//console.log("setHover called " + county + ":" + nVal + ":" + dVal + ":" + pctToString(pct));
 	}
 
-	function updateTotals() {
-		// countMethod countDEM countREP countIND countTOTAL
-		// var methodText = "Vote totals (IPEV + VBM + Election Day)";
-		var methodText = "Total votes counted";
-		var methodTextDetails = "See @DataRepublican pinned post on explanation";
-		var methodShort = "IPEV+VBM";
-		// var methodShort = "cumulative";
-		if (methodType === "Mail") {
-			methodText = "Vote totals (VBM only)";
-			methodShort = "VBM";
-		}
-		if (methodType === "EarlyVoting") {
-			methodText = "Vote totals (IPEV only)";
-			methodShort = "IPEV";
-		}
-		if (methodType == "Election Day") {
-			methodText = "Vote totals (Election Day only)";
-			methodShort = "ED";
-		}
-
-		const total = liveData['TOTAL']['TOTAL'][methodType];
-		const demTotal = liveData['TOTAL']['DEM'][methodType];
-		const repTotal = liveData['TOTAL']['REP'][methodType];
-		const npaTotal = liveData['TOTAL']['NPA'][methodType];
-
-		const repPct = pctToString((repTotal + 0.0) / (total + 0.0));
-		const demPct = pctToString((demTotal + 0.0) / (total + 0.0));
-		const npaPct = pctToString((npaTotal + 0.0) / (total + 0.0));
-
-		//  "TOTAL" : { "trumpVotes": 4617886, "trumpPct": 0.4902, "clintonVotes": 4504975, "clintonPct": 0.4782, "total": 9420039 }}
-		const turnout2016Total = election2016Data['TOTAL']['total'];
-		const clinton2016Total = election2016Data['TOTAL']['clintonVotes'];
-		const trump2016Total = election2016Data['TOTAL']['trumpVotes'];
-
-		const early2016Total = early2016Data['TOTAL']['TOTAL'];
-		const repEarly2016Total = early2016Data['TOTAL']['REP'];
-		const demEarly2016Total = early2016Data['TOTAL']['DEM'];
-		const npaEarly2016Total = early2016Data['TOTAL']['NPA'];
-
-		const turnoutPct = pctToString((total + 0.0) / (turnout2016Total + 0.0));
-		const clintonPct = pctToString((demTotal + 0.0) / (clinton2016Total + 0.0));
-		const trumpPct = pctToString((repTotal + 0.0) / (trump2016Total + 0.0));
-		const gap = demTotal - repTotal;
-
-		const earlyPct = pctToString((total + 0.0) / (early2016Total + 0.0));
-		const repEarlyPct = pctToString((repTotal + 0.0) / (repEarly2016Total + 0.0));
-		const demEarlyPct = pctToString((demTotal + 0.0) / (demEarly2016Total + 0.0));
-		const npaEarlyPct = pctToString((npaTotal + 0.0) / (npaEarly2016Total + 0.0));
-
-		const pctGap = pctToString((demTotal + 0.0) / (total + 0.0) - (repTotal + 0.0) / (total + 0.0));
-		const pctEarlyGap = pctToString((demEarly2016Total + 0.0) / (early2016Total + 0.0) - (repEarly2016Total + 0.0) / (early2016Total + 0.0));
-		var pctPctGap = (
-			((demTotal + 0.0) / (total + 0.0) - (repTotal + 0.0) / (total + 0.0)) -
-			((demEarly2016Total + 0.0) / (early2016Total + 0.0) - (repEarly2016Total + 0.0) / (early2016Total + 0.0))
-		);
-
-		// Number of NPA votes in red counties
-		var numNpaRedCounties = 0.0;
-		var numNpaBlueCounties = 0.0;
-		// Number of NPA votes if splitting proportionally between D-R ratios
-		var numNpaSplitR = 0.0;
-		var numNpaSplitD = 0.0;
-		var numNpaTotal = 0.0;
-
-		$.each(liveData, function (county, data) {
-			if (county === "TOTAL" || county === "TIMESTAMP") return;
-
-			// Get the NPA total for that county and method. 
-			const npaCountyLevel = getTotalWithFallback(data, 'NPA', methodType);
-
-			// Get dem share for that county
-			const demCountyLevel = getTotalWithFallback(data, 'DEM', methodType);
-			const repCountyLevel = getTotalWithFallback(data, 'REP', methodType);;
-
-			const demCountySharePct = (demCountyLevel + 0.0) / (demCountyLevel + repCountyLevel + 0.0);
-			if (isNaN(demCountySharePct)) return;
-
-			const repCountySharePct = 1.0 - demCountySharePct;
-			numNpaSplitR += repCountySharePct * npaCountyLevel;
-			numNpaSplitD += demCountySharePct * npaCountyLevel;
-			numNpaTotal += npaCountyLevel;
+	function renderLegend() {
+		var bar = '';
+		$.each(ADV_BINS, function (ignore, b) {
+			bar += '<span style="background:' + b[1] + '" data-tip-title="' + b[2] + ' pts" ' +
+				'data-tip="County margin moved this far toward the party vs the baseline."></span>';
 		});
+		$('#flLegend').html(
+			'<div>County shift in D−R margin vs baseline (party registration, no I split)</div>' +
+			'<div class="fl-legend-bar">' + bar + '</div>' +
+			'<div class="fl-legend-ends"><span class="fl-rep">R 7+ pts</span><span>even</span>' +
+			'<span class="fl-dem">D 20+ pts</span></div>' +
+			'<div><span class="fl-swatch" style="background:' + NO_DATA_COLOR + '"></span>Fewer than ' + MIN_BALLOTS +
+			' ballots in 2026 or the baseline</div>');
+	}
 
-		const numNpaSplitRPct = pctToString(numNpaSplitR / numNpaTotal);
-		const numNpaSplitDPct = pctToString(numNpaSplitD / numNpaTotal);
-		const npaSplitGapPctRaw = (numNpaSplitD / numNpaTotal) - (numNpaSplitR / numNpaTotal);
-		const npaSplitGapPct = pctToString(npaSplitGapPctRaw);
-
-		// Get the 2016 equivalents. 
-		var numNpaSplitR2016 = 0.0;
-		var numNpaSplitD2016 = 0.0;
-		var numNpaTotal2016 = 0.0;
-
-		$.each(early2016Data, function (county, data) {
-			if (county === "TOTAL" || county === "TIMESTAMP") return;
-			const demCountyLevel = data['DEM'];
-			const repCountyLevel = data['REP'];
-			const npaCountyLevel = data['NPA'];
-
-			const demCountySharePct = (demCountyLevel + 0.0) / (demCountyLevel + repCountyLevel + 0.0);
-			const repCountySharePct = 1.0 - demCountySharePct;
-			numNpaSplitR2016 += repCountySharePct * npaCountyLevel;
-			numNpaSplitD2016 += demCountySharePct * npaCountyLevel;
-			numNpaTotal2016 += npaCountyLevel;
+	function total(results) {
+		var n = 0;
+		$.each(results, function (ignore, v) {
+			n += v['total'];
 		});
-		const numNpaSplitRPct2016 = pctToString(numNpaSplitR2016 / numNpaTotal2016);
-		const numNpaSplitDPct2016 = pctToString(numNpaSplitD2016 / numNpaTotal2016);
-		const npaSplitGapPct2016Raw = (numNpaSplitD2016 / numNpaTotal2016) - (numNpaSplitR2016 / numNpaTotal2016);
-		const npaSplitGapPct2016 = pctToString(npaSplitGapPct2016Raw);
-
-		// omg, gap of gaps... 
-		const npaGapGap = pctToString(npaSplitGapPctRaw - npaSplitGapPct2016Raw);
-
-
-		const npaSplitStr = "<div class='bg-gray-100 border border-gray-200 mt-2 p-2 rounded text-sm max-w-sm'>" +
-			"<strong>Split estimate</strong><br/>" + "Democrats: " + Math.floor(numNpaSplitD) + " (" + numNpaSplitDPct + ")<br/>" +
-			"Republicans: " + Math.floor(numNpaSplitR) + " (" + numNpaSplitRPct + ")<br/>" +
-			"Difference: (D-R) <b>" + Math.floor(numNpaSplitD - numNpaSplitR) + " (<span style=\"background-color:#faffc4;\">" + npaSplitGapPct + "</span>) </b><br/>" +
-			"2016 overall split: " + numNpaSplitDPct2016 + "D - " + numNpaSplitRPct2016 + "R, gap " + npaSplitGapPct2016 +
-			"<div class='border-t border-gray-200 pt-2 mt-2 text-xs text-opacity-75'>Estimated by proportional assignment of NPAs by county R/D share</div></div>";
-
-		var pctGapDesc = pctPctGap < 0 ? "Trump" : "Harris";
-		var pctGapColor = pctPctGap < 0 ? "bg-red/10 border-red" : "bg-blue/10 border-blue";
-		var gap2016Desc = "2016 D-R ratio: " + pctToString((demEarly2016Total + 0.0) / (early2016Total + 0.0)) + " D - " +
-			pctToString((repEarly2016Total + 0.0) / (early2016Total + 0.0)) + " R, Gap: " +
-			pctEarlyGap;
-		var gap2024Desc = "2024 " + methodShort + " D-R ratio: " + demPct + " D - " + repPct + " R, Gap: " + pctGap;
-		var gapAdvantage = "Advantage: <strong>" + pctGapDesc + " by " + pctToString(Math.abs(pctPctGap)) + "</strong>";
-
-		const addendum = "<div class='rounded px-4 py-2 border " + pctGapColor + "'>" + gapAdvantage + "</div>";
-
-		$('#countMethod').text(methodText);
-		$('#countMethodDetails').text(methodTextDetails);
-		$('#countTOTAL').html("<strong>" + formatNumber(total) + "</strong>");
-		$('#countTOTALdetails').html("<div class='text-sm'>" + turnoutPct + " of 2016 total turnout</div><div class='text-sm'>" + earlyPct + " of 2016 early turnout</div>" + "<div class='mt-4 text-sm'>D-R gap (raw): <b>" + gap + "</b></div>");
-		$('#addendum').html(addendum);
-		$('#countDEM').html("<strong>" + formatNumber(demTotal) + "</strong> (" + demPct + ")<div class='text-sm'>" + clintonPct + " of 2016 Clinton votes</div><div class='text-sm'>" + demEarlyPct + " of 2016 Democrat votes" + cannibalizationBlurb('DEM'));
-		$('#countNPA').html("<strong>" + formatNumber(npaTotal) + "</strong> (" + npaPct + ")<div class='text-sm'>" + npaEarlyPct + " of 2016 NPA votes</div>" + cannibalizationBlurb('NPA') + npaSplitStr);
-		$('#countREP').html("<strong>" + formatNumber(repTotal) + "</strong> (" + repPct + ")<div class='text-sm'>" + trumpPct + " of 2016 Trump votes</div><div class='text-sm'>" + repEarlyPct + " of 2016 Republican votes" + cannibalizationBlurb('REP'));
+		return n;
 	}
 
+	/** County x party counts for one series, every county present, in the {Dem, Rep, total} shape. */
+	function series(key) {
+		var out = {};
+		const s = DATA['series'][key];
+		$.each(county_to_id, function (county, ignore) {
+			const c = s[county] || { 'DEM': 0, 'REP': 0, 'TOTAL': 0 };
+			out[county] = { 'Dem': c['DEM'], 'Rep': c['REP'], 'total': c['TOTAL'] };
+		});
+		return out;
+	}
 
-	// Get denominator from county given type
-	// Possible types are: 
-	// ev -> early votes (mail + early, total)
-	// trumpVotes -> Trump votes 2016
-	// clintonVotes -> Clinton votes 2016
-	// total -> 2016 votes
-	// earlyTOTAL -> early 2016 votes
-	// earlyDEM -> early 2016 dem votes
-	// earlyREP -> early 2016 rep votes
-	// earlyNPA -> early 2016 npa votes
-	function getDenominator(type) {
-		console.log("getDenominator called for " + type);
-		var lookup = {};
-		if (type === "ev") {
-			$.each(liveData, function (k, v) {
-				if (k === "TIMESTAMP") return;
-				if ('TOTAL' in v) {
-					if (methodType in v['TOTAL']) {
-						lookup[k] = v['TOTAL'][methodType];
-					} else {
-						console.log(methodType + " not available for " + k);
-					}
-				} else {
-					console.log("Error looking up total for " + k);
-				}
-			});
-		} else if (type.includes("early")) {
-			const party = type.replace("early", "");
-			$.each(early2016Data, function (k, v) {
-				lookup[k] = v[party];
-			});
-		} else if (type.includes("reg2024")) {
-			const party = type.replace("reg2024", "");
-			$.each(election2016Data, function (county, v) {
-				lookup[county] = v["registration2020"][party]
-			});
-		} else {
-			$.each(election2016Data, function (k, v) {
-				lookup[k] = v[type];
-			});
+	/**
+	 * I = every voter not registered D or R. Each county's I ballots are split by that county's
+	 * R:D ratio; a county with no D or R ballots uses the statewide ratio.
+	 */
+	function splitIndependents(results) {
+		var s = { 'Rep': 0, 'Dem': 0, 'total': 0, 'iRep': 0, 'iDem': 0 };
+		$.each(results, function (ignore, res) {
+			s['Rep'] += res['Rep'];
+			s['Dem'] += res['Dem'];
+			s['total'] += res['total'];
+		});
+		const stateRepShare = (s['Rep'] + s['Dem']) > 0 ? s['Rep'] / (s['Rep'] + s['Dem']) : 0.5;
+		$.each(results, function (ignore, res) {
+			const ind = res['total'] - res['Rep'] - res['Dem'];
+			const repShare = (res['Rep'] + res['Dem']) > 0 ? res['Rep'] / (res['Rep'] + res['Dem']) : stateRepShare;
+			s['iRep'] += ind * repShare;
+			s['iDem'] += ind * (1.0 - repShare);
+		});
+		s['Ind'] = s['total'] - s['Rep'] - s['Dem'];
+		s['adjRep'] = s['Rep'] + s['iRep'];
+		s['adjDem'] = s['Dem'] + s['iDem'];
+		return s;
+	}
+
+	function resetHover() {
+		$.each(county_to_id, function (county, ignore) {
+			usfljsconfig[county_to_id[county]].hover = county;
+			usfljsconfig[county_to_id[county]].upColor = NO_DATA_COLOR;
+			usfljsconfig[county_to_id[county]].downColor = NO_DATA_COLOR;
+			$('#' + county_to_id[county]).attr({ fill: NO_DATA_COLOR });
+		});
+	}
+
+	function updateTotals(numerator, denominator, baseline) {
+		const now = splitIndependents(numerator);
+		const base = splitIndependents(denominator);
+
+		function frac(s, key) {
+			return s['total'] > 0 ? s[key] / s['total'] : 0;
 		}
-		return lookup;
+		function margin(s, dem, rep) {
+			return frac(s, dem) - frac(s, rep);
+		}
+		const rawNow = margin(now, 'Dem', 'Rep'), rawBase = margin(base, 'Dem', 'Rep');
+		const adjNow = margin(now, 'adjDem', 'adjRep'), adjBase = margin(base, 'adjDem', 'adjRep');
+
+		function kpi(label, value, sub, m) {
+			const side = m === undefined || m === 0 ? '' : ' fl-kpi--' + (m < 0 ? 'rep' : 'dem');
+			return '<div class="fl-kpi' + side + '"><div class="fl-kpi-label">' + label + '</div>' +
+				'<div class="fl-kpi-value">' + value + '</div><div class="fl-kpi-sub">' + sub + '</div></div>';
+		}
+		$('#countMethod').text('Mail ballots · 2026 vs ' + baseline['label']);
+		const countSub = pct1(now['total'], base['total']) + ' of ' + fmt(base['total']) + ' in ' + baseline['year'];
+		$('#flKpis').html(
+			kpi('2026 ballots', fmt(now['total']), countSub) +
+			kpi('Shift, with I split', lean(adjNow - adjBase), lean(adjNow) + ' now, ' + lean(adjBase) + ' then', adjNow - adjBase) +
+			kpi('Shift, raw', lean(rawNow - rawBase), lean(rawNow) + ' now, ' + lean(rawBase) + ' then', rawNow - rawBase));
+
+		// Labels print only where a segment is wide enough to hold one; the tooltip and table carry the rest.
+		function seg(cls, n, s, tip) {
+			const share = s['total'] > 0 ? 100.0 * n / s['total'] : 0;
+			return '<span class="' + cls + '" style="flex:' + share.toFixed(3) + ' 1 0" data-tip-title="' + tip + '" data-tip="' +
+				fmt(n) + ' ballots, ' + share.toFixed(1) + '%">' + (share >= 9 ? share.toFixed(0) + '%' : '') + '</span>';
+		}
+		function bar(name, s) {
+			return '<div class="fl-bar-name">' + name + '</div><div class="fl-bar">' +
+				seg('fl-seg-d', s['Dem'], s, 'Democrat') + seg('fl-seg-id', s['iDem'], s, 'I share to D') +
+				seg('fl-seg-ir', s['iRep'], s, 'I share to R') + seg('fl-seg-r', s['Rep'], s, 'Republican') + '</div>';
+		}
+		function key(cls, label) {
+			return '<span><span class="fl-swatch" style="background:var(' + cls + ');border:0"></span>' + label + '</span>';
+		}
+		$('#flBars').html(bar('2026', now) + bar(baseline['short'], base) +
+			'<div class="fl-bar-key">' + key('--fl-dem', 'Democrat') + key('--fl-dem-light', 'I → D') +
+			key('--fl-rep-light', 'I → R') + key('--fl-rep', 'Republican') + '</div>');
+
+		function cells(key) {
+			return '<td>' + fmt(now[key]) + '<small>' + pct1(now[key], now['total']) + '</small></td>' +
+				'<td>' + fmt(base[key]) + '<small>' + pct1(base[key], base['total']) + '</small></td>';
+		}
+		// A gain for a party row is colored for that party; I rows stay neutral.
+		function change(key, side) {
+			const d = (frac(now, key) - frac(base, key)) * 100;
+			const cls = side && d > 0 ? ' class="fl-up-' + side + '"' : '';
+			return '<td' + cls + '>' + (d < 0 ? '−' : '+') + Math.abs(d).toFixed(1) + '</td>';
+		}
+		function row(label, key, side) {
+			return '<tr class="fl-row-' + (side || 'ind') + '"><th scope="row">' + label + '</th>' + cells(key) + change(key, side) + '</tr>';
+		}
+		function marginRow(m0, m1) {
+			return '<tr class="fl-margin"><th scope="row">D − R margin</th><td>' + lean(m0) + '</td><td>' +
+				lean(m1) + '</td><td>' + lean(m0 - m1) + '</td></tr>';
+		}
+
+		$('#flTable').html(
+			'<thead><tr><th>Registered party</th><th>2026</th><th>' + baseline['short'] +
+			(baseline['date'] ? '<small>' + baseline['date'] + '</small>' : '') + '</th><th>Change<small>pts</small></th></tr></thead>' +
+			'<tbody>' + row('Democrat', 'Dem', 'dem') + row('Republican', 'Rep', 'rep') + row('No affiliation &amp; other (I)', 'Ind') +
+			'<tr><th scope="row">Total</th><td>' + fmt(now['total']) + '</td><td>' + fmt(base['total']) + '</td><td></td></tr>' +
+			marginRow(rawNow, rawBase) + '</tbody>' +
+			'<tbody><tr class="fl-section"><th colspan="4">With I split by county</th></tr>' +
+			row('Democrat + I share', 'adjDem', 'dem') + row('Republican + I share', 'adjRep', 'rep') +
+			'<tr><th scope="row">I to D / to R</th><td>' + fmt(now['iDem']) + ' / ' + fmt(now['iRep']) + '</td><td>' +
+			fmt(base['iDem']) + ' / ' + fmt(base['iRep']) + '</td><td></td></tr>' +
+			marginRow(adjNow, adjBase) + '</tbody>');
+
+		const year = String(baseline['year']);
+		const final = splitIndependents(series(year + 'f'));
+		$('#flFoot').text('2026 so far is ' + pct1(now['total'], final['total']) + ' of all ' + year + ' mail ballots (D ' +
+			pct1(now['Dem'], final['Dem']) + ', R ' + pct1(now['Rep'], final['Rep']) + ' of their ' + year + ' totals' +
+			').' +
+			' I split: each county\'s I ballots go to D and R in that county\'s D:R ratio. A heuristic, not a measurement.');
+
+		renderContext(baseline);
 	}
 
+	/** 08/31/2026 -> 8/31/26, so the registration headers fit the sidebar. */
+	function shortDate(mdY) {
+		const p = String(mdY).split('/');
+		return p.length === 3 ? (+p[0]) + '/' + (+p[1]) + '/' + p[2].slice(-2) : mdY;
+	}
 
+	/** Registration and certified results for the baseline year, next to 2026 registration. */
+	function renderContext(baseline) {
+		const year = String(baseline['year']);
+		const regNow = DATA['registration']['2026']['TOTAL'];
+		const regThen = DATA['registration'][year]['TOTAL'];
+		const res = DATA['results'][year]['TOTAL'];
+		function regMargin(r) {
+			return (r['DEM'] - r['REP']) / r['TOTAL'];
+		}
+		function regRow(label, key, side) {
+			return '<tr class="fl-row-' + side + '"><th scope="row">' + label + '</th><td>' + fmt(regNow[key]) +
+				'<small>' + pct1(regNow[key], regNow['TOTAL']) + '</small></td><td>' + fmt(regThen[key]) + '<small>' +
+				pct1(regThen[key], regThen['TOTAL']) + '</small></td></tr>';
+		}
+		const cand = res['candidates'];
+		$('#flContext').html(
+			'<div class="fl-label">Registration</div>' +
+			'<table class="fl-table fl-reg"><thead><tr><th></th><th>2026<small>as of ' + shortDate(DATA['registration_as_of']['2026']) + '</small></th><th>' +
+			year + '<small>books closed ' + shortDate(DATA['registration_as_of'][year]) + '</small></th></tr></thead><tbody>' +
+			regRow('Democrat', 'DEM', 'dem') + regRow('Republican', 'REP', 'rep') + regRow('NPA/other', 'NPA', 'ind') +
+			'<tr class="fl-margin"><th scope="row">D − R margin</th><td>' + lean(regMargin(regNow)) + '</td><td>' +
+			lean(regMargin(regThen)) + '</td></tr></tbody></table>' +
+			'<div class="fl-label" style="margin-top:0.75rem">' + year + ' ' + RACE[baseline['year']] + ' result</div>' +
+			'<table class="fl-table"><thead><tr><th></th><th>All votes</th></tr></thead><tbody>' +
+			'<tr class="fl-row-dem"><th scope="row">' + cand['DEM'] + '</th><td>' + pct1(res['DEM'], res['total']) + '</td></tr>' +
+			'<tr class="fl-row-rep"><th scope="row">' + cand['REP'] + '</th><td>' + pct1(res['REP'], res['total']) + '</td></tr>' +
+			'<tr class="fl-margin"><th scope="row">D − R margin</th><td>' + lean((res['DEM'] - res['REP']) / res['total']) +
+			'</td></tr></tbody></table>' +
+			'<p class="fl-note">Registration shifts move mail margins too: compare the ballot shift against the ' +
+			'registration shift before reading it as enthusiasm.</p>');
+	}
 
+	function doSplit(numerator, denominator, baseline) {
+		const baseLabel = baseline['label'];
+		const res = DATA['results'][String(baseline['year'])];
+		$.each(numerator, function (county, results2026) {
+			const resultsBase = denominator[county];
+			const total2026 = results2026['total'];
+			const repTotal2026 = results2026['Rep'];
+			const demTotal2026 = results2026['Dem'];
+			const totalBase = resultsBase['total'];
+			const repTotalBase = resultsBase['Rep'];
+			const demTotalBase = resultsBase['Dem'];
+			const r = res[county];
+			const raceLine = baseline['year'] + ' ' + RACE[baseline['year']] + ': ' + r['candidates']['DEM'] + ' ' +
+				pctToString(r['DEM'] / r['total']) + ', ' + r['candidates']['REP'] + ' ' + pctToString(r['REP'] / r['total']);
 
-
-	// Handle split ratio separately.
-	function doSplit(isAdvantage) {
-		var repNums = getNumerator("REP");
-		var demNums = getNumerator("DEM");
-		var npaNums = getNumerator("NPA");
-		var totalNums = getNumerator("TOTAL");
-		resetHover();
-
-		$.each(demNums, function (k, v) {
-			const myid = counties[k];
-			if (!myid || !totalNums[k] || totalNums[k] <= 0 || !repNums[k]) {
-				console.log("Unknown total: " + k);
+			if (total2026 < MIN_BALLOTS || totalBase < MIN_BALLOTS) {
+				usfljsconfig[county_to_id[county]].hover = county + "<br /><small>" +
+					"Mail ballots: " + total2026 + " in 2026, " + totalBase + " in " + baseLabel + "<br />" +
+					"Not enough ballots to compare<br />" + raceLine + "</small>";
 				return;
 			}
 
-			const demPct = (v + 0.0) / (totalNums[k] + 0.0);
-			const demPct2016 = election2016Data[k]['clintonPct'];
-			const repPct = (repNums[k] + 0.0) / (totalNums[k] + 0.0);
-			const repPct2016 = election2016Data[k]['trumpPct'];
+			const demPct2026 = demTotal2026 / total2026;
+			const repPct2026 = repTotal2026 / total2026;
+			const demPctBase = demTotalBase / totalBase;
+			const repPctBase = repTotalBase / totalBase;
+			const otherPctBase = 1.0 - demPctBase - repPctBase;
 
-			const demEarlyPct = early2016Data[k]['DEMpct'];
-			const repEarlyPct = early2016Data[k]['REPpct'];
-			const npaEarlyPct = early2016Data[k]['NPApct'];
-			const partyDiff = (v - repNums[k]);
-			var partyDiffDesc = partyDiff < 0.0 ? ("" + partyDiff) : ("+" + partyDiff);
-			partyDiffDesc = " (" + partyDiffDesc + ")";
-			//console.log(k + ":" + pctToString(demPct) + "-" + pctToString(repPct));
+			const partyDiff2026 = demTotal2026 - repTotal2026;
+			const partyDiffDesc = " (" + (partyDiff2026 < 0 ? "" : "+") + partyDiff2026 + ")";
 
-			// Fill in the hover. 
-			var methodStr = "All votes";
-			if (methodType === "Mail") {
-				methodStr = "Mail votes";
-			} else if (methodType === "EarlyVoting") {
-				methodStr = "In-person votes";
-			} else if (methodType === "ElectionDay") {
-				methodStr = "Election Day votes";
+			const gap = (demPct2026 - repPct2026) - (demPctBase - repPctBase);
+			var gapDesc = gap <= 0.0 ? "Republican advantage" : "Democratic advantage";
+			const gapRaw = Math.ceil(gap * total2026) * -1;
+			gapDesc += " (" + (gap <= 0.0 ? "+" + gapRaw : "" + gapRaw) + " votes)";
+
+			const splitColor = getSplitAdvantageColor(gap);
+			usfljsconfig[county_to_id[county]].upColor = splitColor;
+			usfljsconfig[county_to_id[county]].downColor = splitColor;
+			$('#' + county_to_id[county]).attr({ fill: splitColor });
+
+			usfljsconfig[county_to_id[county]].hover = county + "<br /><small>" +
+				"Mail ballots, Democrat: <b>" + fmt(demTotal2026) + " (" + pctToString(demPct2026) + ")</b><br />" +
+				"Mail ballots, Republican: <b>" + fmt(repTotal2026) + " (" + pctToString(repPct2026) + ")</b><br />" +
+				"2026 Difference (D-R): <b>" + pctToString(demPct2026 - repPct2026) + "</b>" + partyDiffDesc + "<br />" +
+				baseLabel + ": Dem " + pctToString(demPctBase) + ", Rep " + pctToString(repPctBase) + ", Other " + pctToString(otherPctBase) +
+				" of " + fmt(totalBase) + "<br />" +
+				baseLabel + " Difference (D-R): <b>" + pctToString(demPctBase - repPctBase) + "</b><br />" +
+				"2026 vs " + baseLabel + " Gap: <b>" + pctToString(Math.abs(gap)) + "</b>, " + gapDesc + "<br />" +
+				raceLine + "</small>";
+		});
+	}
+
+	/** D-R margin of a set of counties (all of them when names is null). */
+	function marginOf(results, names) {
+		var d = 0, r = 0, t = 0;
+		$.each(results, function (county, v) {
+			if (!names || names[county]) {
+				d += v['Dem'];
+				r += v['Rep'];
+				t += v['total'];
 			}
+		});
+		return { 'total': t, 'margin': t > 0 ? (d - r) / t : 0 };
+	}
 
-			var gap = (demPct - repPct) - (demEarlyPct - repEarlyPct);
-			var gapDesc = gap <= 0.0 ? " Advantage: Trump" : "Advantage: Harris";
-			var pctDescColor = gap <= 0.0 ? "bg-red-50 border-red-500" : "bg-blue-50 border-blue-500";
+	/**
+	 * Why early mail may not be representative: the 11 largest counties' early returns in the baseline
+	 * year (same point before the election) against their final count.
+	 */
+	function renderEarly(numerator, denominator, baseline) {
+		const year = String(baseline['year']);
+		const early = series(year + 'sp');
+		const big = {};
+		$.each(Object.keys(denominator).sort(function (a, b) {
+			return denominator[b]['total'] - denominator[a]['total'];
+		}).slice(0, BIG_COUNTIES), function (ignore, county) {
+			big[county] = true;
+		});
+		const eBig = marginOf(early, big), fBig = marginOf(denominator, big);
 
-			// raw votes 
-			var gapRaw = Math.ceil((gap * totalNums[k])) * -1;
-			gapDesc += " (";
-			gapDesc += gap <= 0.0 ? ("+" + formatNumber(gapRaw)) : ("" + formatNumber(gapRaw));
-			gapDesc += " votes)";
-
-
-			const splitColor = isAdvantage ? getSplitAdvantageColor(gap) : getSplitColor(repPct, demPct);
-			usfljsconfig[myid].upColor = splitColor;
-			usfljsconfig[myid].downColor = splitColor;
-			$('#' + myid).attr({ fill: splitColor });
-
-			usfljsconfig[myid].hover = "<h4 class='mb-1'>" + k + "</h4>" + "<div class='col-span-2 text-sm border rounded px-2 py-1 mb-2 " + pctDescColor + "'>" + gapDesc + "</div><div class='text-sm grid grid-cols-2 gap-2'>" +
-				"<div>" + methodStr + ", Democrat:</div> <strong>" + v + " (" + pctToString(demPct) + ")</strong>" +
-				"<div>" + methodStr + ", Republican:</div> <strong>" + repNums[k] + " (" + pctToString(repPct) + ")</strong>" +
-				"<div>2024 Difference (D-R):</div> <div><strong>" + pctToString(demPct - repPct) + "</strong> " + partyDiffDesc + "</div>" +
-				"<div>2016 comparison:</div> Clinton: " + pctToString(demPct2016) + "<br />Trump: " + pctToString(repPct2016) + "" +
-				"<div>2016 Votes:</div> Dem: " + pctToString(demEarlyPct) + "<br />Rep: " + pctToString(repEarlyPct) + "<br />No party aff: " + pctToString(npaEarlyPct) + "" +
-				"<div>2016 Difference (D-R):</div> <strong>" + pctToString(demEarlyPct - repEarlyPct) + "</strong>" +
-				"2024-2016 Vote Gap: <strong>" + pctToString(Math.abs(gap)) + "</strong></div>";
+		var out = [];
+		$.each(numerator, function (county, v) {
+			if (v['total'] < MIN_BALLOTS) {
+				out.push(county);
+			}
 		});
 
+		$('#flEarly').html(
+			'<div class="fl-label">Early mail ballots may not be representative</div>' +
+			'<p>In the ' + BIG_COUNTIES + ' largest counties, the first ' + year + ' ballots ran ' + lean(eBig['margin']) +
+			', against ' + lean(fBig['margin']) + ' by the end. Watch daily for updates.</p>' +
+			(out.length === 0 ? '' : '<p>Not yet reporting (fewer than ' + MIN_BALLOTS + ' ballots in 2026, gray on the map): ' +
+				out.join(', ') + '.</p>'));
 	}
 
 	function doUpdate() {
-		$('#turnoutFilter').val(turnoutType);
-		$('#methodFilter').val(methodType);
-		$('#partyFilter').val(partyType);
+		resetHover();
+		const baselineKey = $('input[name=baseline]:checked').val();
+		const baseline = BASELINES[baselineKey];
+		const numerator = series('2026');
+		const denominator = series(baselineKey);
 
+		doSplit(numerator, denominator, baseline);
+		updateTotals(numerator, denominator, baseline);
+		renderEarly(numerator, denominator, baseline);
 
-		// This is the easy denominator - 
-		// we just color on a gradient. 
-		if (turnoutType.includes("turnout2016")) {
-			// trumpVotes -> Trump votes 2016
-			// clintonVotes -> Clinton votes 2016
-			// total -> 2016 votes
-			var pct = {}
-			if (turnoutType.includes("Trump")) {
-				pct = getPercentages(partyType, "trumpVotes");
-			} else if (turnoutType.includes("Clinton")) {
-				pct = getPercentages(partyType, "clintonVotes");
-			} else {
-				pct = getPercentages(partyType, "total");
-			}
-			colorGradient(partyType, pct);
-		}
-		else if (turnoutType.includes("early2016")) {
-			// early2016TOTAL, early2016REP, early2016DEM, early2016NPA
-			const denomType = turnoutType.replace("2016", "");
-			pct = getPercentages(partyType, denomType);
-			colorGradient(partyType, pct);
-		} else if (turnoutType.includes("reg2024")) {
-			pct = getPercentages(partyType, turnoutType);
-			colorGradient(partyType, pct);
-		} else if (turnoutType === "allEarly") {
-			var pct = getPercentages(partyType, "ev");
-			colorGradient(partyType, pct);
-		}
-		else if (turnoutType.includes("split")) {
-			if (turnoutType === "split") {
-				doSplit(false);
-			} else if (turnoutType === "splitAdvantage") {
-				doSplit(true);
-			}
-		}
-
-		/*			var test = getPercentages('REP', 'ev');
-				colorGradient('REP', test);
-		*/
-		updateTotals();
-		$.each(counties, function (k, v) {
-			$('#' + v).mouseenter().mouseleave();
+		$.each(county_to_id, function (county, ignore) {
+			$('#' + county_to_id[county]).mouseenter().mouseleave();
 		});
 	}
 
-	$(document).ready(function () {
-		$.getJSON('https://raw.githubusercontent.com/DataRepublican/datarepublican/master/json/florida.json', function (data) {
-			liveData = data;
-			// Format the timestamp to be more human-readable
-			const timestamp = liveData['TIMESTAMP'].replace(' EST', '');
-			const date = new Date(timestamp);
-			const options = {
-				weekday: 'short',
-				month: 'short',
-				day: 'numeric',
-				year: 'numeric',
-				hour: 'numeric',
-				minute: '2-digit',
-				timeZoneName: 'short'
-			};
-			$('#timestamp').text(date.toLocaleString('en-US', options));
-			$.getJSON('../json/florida2016_reg.json', function (data2016) {
-				election2016Data = data2016;
-				$.getJSON('../json/early2016_revised.json', function (early2016) {
-					early2016Data = early2016;
-					$.each(usfljsconfig, function (key, value) {
-						if (!key || !value || !(value.hover)) {
-							return;
-						}
+	$.getJSON('./fl_2026_general.json?v={{ site.time | date: "%s" }}', function (data) {
+		DATA = data;
+		$('#timestamp').text(new Date(data['TIMESTAMP']).toLocaleString('en-US', {
+			month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+		}));
+		const cutoffLabel = function (iso) {
+			return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+		};
+		$('#asOf').text(cutoffLabel(data['as_of']));
 
-						countyName = value.hover.toLowerCase()
-							.split(' ')
-							.map((s) => s.charAt(0).toUpperCase() + s.substring(1))
-							.join(' ')
-							.replace('-dade', '-Dade')
-							.replace('Desoto', 'DeSoto');
-
-						value.hover = countyName;
-						counties[countyName] = key;
-					});
-
-					$('#partyFilter').change(function () {
-						partyType = this.value;
-						doUpdate();
-					});
-
-					$('#turnoutFilter').change(function () {
-						turnoutType = this.value;
-						doUpdate();
-					});
-
-					$('#methodFilter').change(function () {
-						methodType = this.value;
-						doUpdate();
-					});
-
-					doUpdate();
-				});
-			});
-
-		});
-
-		// Set initial active button
-		const defaultButton = document.querySelector('button[onclick*="methodType=\'total\';turnoutType=\'split\'"]');
-		if (defaultButton) {
-			defaultButton.classList.add('active');
+		function chip(id, main, sub, attrs) {
+			return '<label class="fl-chip" id="' + id + 'Option"><input ' + attrs + ' id="' + id + '"><span>' + main +
+				'</span>' + (sub ? '<small>' + sub + '</small>' : '') + '</label>\n';
 		}
+		var ctl = '<div class="fl-group"><div class="fl-label">Compare 2026 against</div><div class="fl-seg">\n';
+		$.each(BASELINE_ORDER, function (ignore, key) {
+			const checked = key === '2024f' ? ' checked="checked"' : '';
+			ctl += chip('baseline' + key, BASELINES[key]['short'], BASELINES[key]['date'],
+				'type="radio" name="baseline" value="' + key + '"' + checked);
+		});
+		ctl += '</div>\n';
+		ctl += '<p class="fl-note">Each year\'s full count of returned mail ballots, so the 2026 mix can be read against ' +
+			'either election.</p>\n';
+		ctl += '<div class="fl-early" id="flEarly"></div>\n';
+		if (data['broward']['source'] !== 'state feed') {
+			ctl += '<p class="fl-note">Broward is not on the state feed yet. Its numbers come from the Broward Supervisor of ' +
+				'Elections mail ballot dashboard, read ' + new Date(data['broward']['fetched_at']).toLocaleString('en-US', {
+					month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+				}) + '.</p>\n';
+		}
+		ctl += '<p class="fl-note">Mail ballots only. In-person early voting starts Oct 19–24 depending on the county.</p>\n';
+		ctl += '</div>\n';
+		$('#flControls').html(ctl);
+
+		$('#flControls input').on('change', doUpdate);
+		renderLegend();
+		doUpdate();
 	});
-
-	function setActiveButton(clickedButton) {
-		// Remove active class from all buttons
-		document.querySelectorAll('button').forEach(button => {
-			button.classList.remove('active');
-		});
-
-		// Add active class to clicked button
-		clickedButton.classList.add('active');
-	}
 </script>
 
-<h1>Florida early voting statistics</h1>
-<p class="hidden text-sm">Auto-updated: <span id="timestamp"></span></p>
-<p class="hidden text-sm mb-4">Data updates every 5 minutes (computer uptime permitting). <a
-		href="https://raw.githubusercontent.com/DataRepublican/datarepublican/master/json/florida.json">Try refreshing the
-		feed directly</a> if you have caching issues.
-</p>
-
-{% include update.html %}
-
-{% include total_votes.html year="2016" %}
-
-{% include votes_breakdown.html %}
-
-
-<div class="flex flex-col md:flex-row md:gap-4 max-w-7xl mx-auto">
-	<aside class="order-2 md:order-1 md:max-w-xs lg:max-w-sm xl:max-w-lg">
-		<h3>Vote breakdowns</h3>
-
-		<div class="flex flex-col gap-1">
-			<div class="radio-group mb-2">
-
-				{% include radio-button.html name="voteType" value="total-split" methodType="total" turnoutType="split"
-				label="All votes" %}
-
-				<!-- <button onclick="methodType='ElectionDay';turnoutType='split';doUpdate();">
-					Election Day votes only</button> -->
-				{% include radio-button.html
-				name="voteType"
-				value="election-split"
-				methodType="ElectionDay"
-				turnoutType="split"
-				label="Election Day votes only" checked=true
-				%}
-
-
-				{% include radio-button.html
-				name="voteType"
-				value="early-split"
-				methodType="EarlyVoting"
-				turnoutType="split"
-				label="Early votes: In-person only"
-				%}
-
-				{% include radio-button.html
-				name="voteType"
-				value="mail-split"
-				methodType="Mail"
-				turnoutType="split"
-				label="Early votes: Mail only"
-				%}
-
-				{% include radio-button.html
-				name="voteType"
-				value="total-advantage"
-				methodType="total"
-				turnoutType="splitAdvantage"
-				label="Advantage map"
-				%}
-			</div>
-		</div>
-
-		{% include advantage_tip.html %}
-
-		<h3 class="mt-6">Compare 2024 current turnout vs. 2016 early votes</h3>
-
-		<div class="radio-group mb-2">
-
-			{% include radio-button.html
-			name="voteType"
-			value="total-split"
-			methodType="total"
-			turnoutType="early2016TOTAL"
-			partyType="TOTAL"
-			label="All votes"
-			%}
-
-			{% include radio-button.html
-			name="voteType"
-			value="early-split"
-			methodType="total"
-			turnoutType="early2016DEM"
-			partyType="DEM"
-			label="Democrats"
-			%}
-
-			{% include radio-button.html
-			name="voteType"
-			value="early-split"
-			methodType="total"
-			turnoutType="early2016REP"
-			partyType="REP"
-			label="Republicans"
-			%}
-
-			{% include radio-button.html
-			name="voteType"
-			value="early-split"
-			methodType="total"
-			turnoutType="early2016NPA"
-			partyType="NPA"
-			label="Unaffiliated"
-			%}
-		</div>
-
-		<h3 class="mt-6">Compare 2024 early votes vs. active registrations</h3>
-
-		<div class="radio-group mb-2">
-
-			{% include radio-button.html
-			name="voteType"
-			value="total-split"
-			methodType="total"
-			turnoutType="reg2024TOTAL"
-			partyType="TOTAL"
-			label="All votes"
-			%}
-
-			{% include radio-button.html
-			name="voteType"
-			value="early-split"
-			methodType="total"
-			turnoutType="reg2024DEM"
-			partyType="DEM"
-			label="Democrats"
-			%}
-
-			{% include radio-button.html
-			name="voteType"
-			value="early-split"
-			methodType="total"
-			turnoutType="reg2024REP"
-			partyType="REP"
-			label="Republicans"
-			%}
-
-			{% include radio-button.html
-			name="voteType"
-			value="early-split"
-			methodType="total"
-			turnoutType="reg2024NPA"
-			partyType="NPA"
-			label="Independents"
-			%}
-		</div>
-
-
-		<h3 class="mt-6">Advanced</h3>
-		<div class="inline-grid grid-cols-2 gap-2">
-
-			<span>Filter by vote type</span>
-			<select id="methodFilter">
-				<option value="total" selected="selected">All votes</option>
-				<option value="ElectionDay">Election Day votes only</option>
-				<option value="EarlyVoting">In-person early voting only</option>
-				<option value="Mail">Mail in votes only</option>
-			</select>
-
-			<span>Denominator</span>
-			<select id="turnoutFilter">
-				<option value="reg2024TOTAL">Total voter registrations</option>
-				<option value="reg2024DEM">Democrat voter registrations</option>
-				<option value="reg2024REP">Republican voter registrations</option>
-				<option value="reg2024NPA">Unaffiliated voter registrations</option>
-
-				<option value="early2016TOTAL">2016 total votes</option>
-				<option value="early2016DEM">2016 Democrat votes</option>
-				<option value="early2016REP">2016 Republican votes</option>
-				<option value="early2016NPA">2016 unaffiliated votes</option>
-				<option value="turnout2016">2016 total votes</option>
-				<option value="turnout2016Clinton">2016 Clinton votes</option>
-				<option value="turnout2016Trump">2016 Trump votes</option>
-				<option value="allEarly">All party early votes</option>
-				<option value="splitAdvantage">Advantage split (ignores party)</option>
-				<option value="split" selected="selected">R/D split (ignores party)</option>
-			</select>
-
-			<span>Filter by party</span>
-			<select id="partyFilter">
-				<option value="TOTAL" selected="selected">All parties</option>
-				<option value="DEM">Democrat</option>
-				<option value="REP">Republican</option>
-				<option value="NPA">NPA (unaffiliated)</option>
-			</select>
-
-	</aside>
-	<div class="flex-1">
-		<h3>Explore by county</h3>
-
-		<span id="usfljstip"></span>
-		<div id="mapwrapper">
-			<div id="mapbase"><!-- V4.1 -->
-				{% include map-florida.html %}
-			</div>
-		</div>
+<div id="fl-map">
+<div class="fl-head">
+	<h1 class="fl-title">Florida 2026 general: mail ballots</h1>
+	<div class="fl-meta">
+		<span>Returns through <span id="asOf">…</span> · file updated <span id="timestamp">…</span> · counties update through the day</span>
+		<button type="button" class="dr-dialog-open" id="flAboutOpen" aria-haspopup="dialog">
+			<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+			About this map
+		</button>
 	</div>
 </div>
-<br />
-<div id="dataTable"></div>
+
+<div class="fl-layout">
+<div class="fl-card fl-controls" id="flControls"></div>
+
+<div class="fl-main">
+<div class="fl-card fl-results">
+	<h2 class="fl-results-title" id="countMethod">Loading ballot data…</h2>
+	<div class="fl-kpis" id="flKpis"></div>
+	<div class="fl-bars" id="flBars"></div>
+</div>
+
+<div class="fl-card fl-mapcard">
+<span id="usfljstip"></span>
+<div id="mapwrapper">
+	<div id="mapbase"><!-- V4.1 -->
+		{% include map-florida.html %}
+	</div>
+</div>
+<div class="fl-legend" id="flLegend"></div>
+</div>
+
+<div class="fl-card">
+	<table class="fl-table" id="flTable"></table>
+	<p class="fl-foot" id="flFoot"></p>
+</div>
+</div>
+
+<div class="fl-card fl-context" id="flContext"></div>
+</div>
+
+<dialog class="dr-dialog" id="flAbout" aria-labelledby="flAboutTitle">
+	<div class="dr-dialog__head">
+		<h2 id="flAboutTitle">About this map</h2>
+		<button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="flAboutClose" aria-label="Close">✕</button>
+	</div>
+	<div class="dr-dialog__body">
+		<p>This map is for exploring who has returned mail ballots, not an exact count. Counts by county and party come
+			from the Florida Division of Elections turnout feed, which counties update several times a day. Broward is
+			missing from that feed so far this year; until it appears, Broward's numbers come from the Broward
+			Supervisor of Elections mail ballot dashboard.</p>
+		<p>Each county is colored by how far its D−R margin among returned ballots has moved since the baseline you
+			pick: every mail ballot returned in the 2024 or 2022 general election.</p>
+		<p>Totals include every county. Counties with fewer than 10 ballots in 2026 or in the baseline are gray on
+			the map.</p>
+		<p>"I" is every voter not registered D or R, including minor parties. The I split assigns each county's I
+			ballots to R and D in that county's R:D ratio for the same ballots, then sums the counties. It is a
+			heuristic, not a measurement.</p>
+		<p>Election results are the Division of Elections' certified county returns: 2024 President and 2022
+			Governor, the race on the 2026 ballot. Registration is the Division's monthly county report and its 2024
+			and 2022 general book-closing totals.</p>
+		<p><a href="https://twitter.com/DataRepublican">How this map was built.</a></p>
+	</div>
+</dialog>
+</div>
+<script>
+	(function () {
+		const dlg = document.getElementById('flAbout');
+		document.getElementById('flAboutOpen').addEventListener('click', function () { dlg.showModal(); });
+		document.getElementById('flAboutClose').addEventListener('click', function () { dlg.close(); });
+		dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+	})();
+</script>

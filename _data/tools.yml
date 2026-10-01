@@ -34,13 +34,26 @@
   badge: New for 2026
   feature: true
 
+- href: /florida/
+  name: Florida early vote
+  tagline: Back for the 2026 general election
+  description: >-
+    Daily mail-ballot returns by county and party, against all 2024 or 2022
+    mail ballots, with independents split by county.
+  rank: 2
+  updated: 2026-10-01
+  category: Voter turnout analysis
+  preview: florida-2026.webp
+  badge: New for 2026
+  feature: true
+
 - href: /ea-explorer/
   name: EA explorer
   tagline: Effective altruism, in their own words
   description: >-
     Read what effective altruists actually argue — verbatim, sourced — and map
     how the people and money behind the movement connect.
-  rank: 2
+  rank: 3
   updated: 2026-09-21
   category: Networks & influence
   preview: ea-explorer.webp
@@ -52,7 +65,7 @@
   description: >-
     Explore how organizations, people, and funding tie together across
     ideological currents, and country spheres.
-  rank: 3
+  rank: 4
   updated: 2026-08-31
   category: Networks & influence
   preview: dsa-explorer.webp
@@ -64,11 +77,10 @@
   description: >-
     Explore where they cluster geographically, whose reading lists overlap,
     and which institutions they cite as authority.
-  rank: 4
+  rank: 5
   updated: 2026-08-31
   category: Networks & influence
   preview: noblogs.webp
-  feature: true
 
 - href: /browse/
   name: Charity explorer
@@ -76,7 +88,7 @@
   description: >-
     Trace funding between organizations as a Sankey chart. The US government
     is shown as the ultimate NGO — follow the money.
-  rank: 5
+  rank: 6
   updated: 2025-08-23
   category: Charity funding & financials
   preview: charity-browse.webp
@@ -86,7 +98,7 @@
   description: >-
     Financial connections among charitable organizations, focused on taxpayer
     funds received.
-  rank: 6
+  rank: 7
   updated: 2025-06-13
   category: Charity funding & financials
   preview: charity-graph.webp
@@ -95,7 +107,7 @@
   tagline: The National Endowment for Democracy, indexed
   description: >-
     Search the NED's own grant records and the Journal of Democracy archive.
-  rank: 7
+  rank: 8
   updated: 2025-05-15
   category: Networks & influence
   preview: ned.webp
@@ -104,7 +116,7 @@
   tagline: Search NGOs for officers and salaries
   description: >-
     Identify relationships between nonprofits and the people who run them.
-  rank: 8
+  rank: 9
   updated: 2025-03-06
   category: People, officers & salaries
   preview: officer-search.webp
@@ -114,7 +126,7 @@
   description: >-
     Cross-reference a whole board at once to find affiliations between
     organizations and their members.
-  rank: 9
+  rank: 10
   updated: 2025-03-01
   category: People, officers & salaries
   preview: bulk-officer-search.webp
@@ -124,7 +136,7 @@
   description: >-
     Financial detail on 501(c)(3) organizations, including how much of their
     funding comes from taxpayers.
-  rank: 10
+  rank: 11
   updated: 2025-03-01
   category: Charity funding & financials
   preview: charity-funding.webp
@@ -133,7 +145,7 @@
   tagline: Analyze assets & expenses
   description: >-
     Browse nonprofit financials and see how organizations allocate their funds.
-  rank: 11
+  rank: 12
   updated: 2025-03-01
   category: Charity funding & financials
   preview: nonprofit-financials.webp
@@ -143,19 +155,10 @@
   description: >-
     Search federal grant awards by keyword and cross-reference them against
     taxpayer funding.
-  rank: 12
+  rank: 13
   updated: 2025-02-14
   category: Political campaign & grant funding
   preview: award-search.webp
-- href: /florida/
-  name: Florida turnout
-  tagline: County-level early voting and registration
-  description: >-
-    Early voting, mail ballots and registration by county, against prior cycles.
-  rank: 13
-  updated: 2025-04-01
-  category: Voter turnout analysis
-  preview: florida.webp
 - href: /pennsylvania/
   name: Pennsylvania turnout
   tagline: County-level mail voting and registration
