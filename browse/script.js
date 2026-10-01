@@ -1010,10 +1010,9 @@ function applyModeTooltips() {
   const addMod = isMacPlatform() ? "⌘" : "Ctrl";
   const inspectMod = isMacPlatform() ? "⌥" : "Alt";
   const tips = {
-    focus:
-      "Focus: click isolates this org; click it again to expand both sides",
+    focus: "Focus: click isolates this org (this org and its up/down only)",
     zoom: "Zoom: frame this org and one hop up/down (camera, graph stays)",
-    add: `Add: keep the graph and seed this org (${addMod})`,
+    add: `Expand: keep the graph and reveal more hops both ways (${addMod})`,
     inspect: `Inspect: open the card (${inspectMod})`,
     subtract: "Remove this org from the graph (Shift)",
   };
@@ -2582,7 +2581,10 @@ function inspectorPrimary(node) {
     return `<p>Rolled-up copay / drug subsidies (HIPAA / “see statement”). Hats on a manufacturer’s foundation still expand named grants.</p>`;
   }
   if (node.isGov) return "";
-  return `<button type="button" class="insp-primary" onclick="zoomNeighborhood('${node.ein}')">Zoom ±1 hop</button>`;
+  return `<div class="insp-actions">
+    <button type="button" class="insp-primary" onclick="focusNode('${node.ein}')">Focus</button>
+    <button type="button" class="insp-primary" onclick="zoomNeighborhood('${node.ein}')">Zoom ±1 hop</button>
+  </div>`;
 }
 
 function inspectorPork(node) {

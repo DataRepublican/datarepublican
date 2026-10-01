@@ -174,8 +174,8 @@ title: Charity explorer - Sankey chart of NGOs and their flows
       The <b>$10M / $1M / All</b> notches each load a full new set (another wait).
       $10M ships with the site; $1M and All download from grumpytechbro.com.
       Preset <b>add</b> seeds several nodes (Uniparty); flip the switch to replace.
-      Click mode sits above circular links: pointing hand isolates that org,
-      expand-arrows frames it ± one hop (camera only), plus keeps the graph,
+      Click mode sits above circular links: pointing hand (default) isolates that org,
+      expand-arrows frames it ± one hop (camera only), plus expands hops and keeps the graph,
       magnifying glass opens the inspector. Deeper bands load from leftover
       See more in that drawer. Drag pans.
       Wheel zooms. <b>Shift-drag</b> box-zooms. <b>Shift-click</b> hides a node.
@@ -220,7 +220,7 @@ title: Charity explorer - Sankey chart of NGOs and their flows
         <li>Drag to pan</li>
         <li>Wheel to zoom</li>
         <li>Shift-drag box-zooms a region</li>
-        <li>Click mode: Focus / Zoom / Add / Remove / Inspect</li>
+        <li>Click mode: Focus / Zoom / Expand / Remove / Inspect</li>
         <li>Shift-click a node hides it</li>
       </ul>
     </div>
@@ -658,13 +658,13 @@ L21.96,11.51"
       </div>
       <div class="flex flex-col justify-center gap-2">
         <div id="clickMode" class="click-mode" role="radiogroup" aria-label="Click mode">
-          <button type="button" data-mode="focus" class="is-on" title="Focus: click isolates this org; click it again to expand both sides">
+          <button type="button" data-mode="focus" class="is-on" title="Focus: click isolates this org (this org and its up/down only)">
             <i class="fas fa-hand-pointer" data-fa-svg></i>
           </button>
           <button type="button" data-mode="zoom" title="Zoom: frame this org and one hop up/down">
             <i class="fas fa-expand" data-fa-svg></i>
           </button>
-          <button type="button" data-mode="add" title="Add: keep the graph and seed this org">
+          <button type="button" data-mode="add" title="Expand: keep the graph and reveal more hops both ways">
             <i class="fas fa-plus" data-fa-svg></i>
           </button>
           <button type="button" data-mode="subtract" title="Remove this org from the graph (Shift)">

@@ -17,7 +17,7 @@ const FILES_10M = [
 ];
 
 export const DATA_FILES = {
-  dbVersion: "2026-09-03T17:26:39Z",
+  dbVersion: "2026-10-01T12:00:00Z",
   defaultBand: "10M",
   bands: [
     {
@@ -88,3 +88,12 @@ export const DATA_FILES = {
   ],
   files: FILES_10M,
 };
+
+/** IndexedDB is stale when generated is not true or dbVersion moved. */
+export function idbDataIsCurrent(
+  storedVersion,
+  storedGenerated,
+  dbVersion = DATA_FILES.dbVersion,
+) {
+  return storedGenerated === true && storedVersion === dbVersion;
+}

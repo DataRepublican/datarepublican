@@ -17,10 +17,14 @@ describe("BrowseViewModel", () => {
     g = buildGatesGraph();
   });
 
-  it("click mode add seeds without dropping other orgs", () => {
+  it("click mode expand keeps other orgs and reveals more hops", () => {
     g.nodes.trust.place(1, 1);
+    g.nodes.foundation.place(1, 1);
+    const beforeOut = g.nodes.trust.visibleGrants.length;
     g.vm.setClickMode("add");
-    expect(g.vm.clickNode({}, g.nodes.foundation, null)).toBe("add");
+    expect(g.vm.clickNode({}, g.nodes.trust, null)).toBe("add");
+    expect(g.nodes.trust.visibleGrants.length).toBeGreaterThan(beforeOut);
+    expect(g.nodes.foundation.desiredVisible).toBe(true);
     const show = g.vm.getShowList().map((s) => s.split(/[:~]/)[0]);
     expect(show).toEqual(expect.arrayContaining([IDS.trust, IDS.foundation]));
   });
@@ -33,15 +37,28 @@ describe("BrowseViewModel", () => {
     expect(g.nodes.leftover.desiredVisible).toBe(false);
   });
 
-  it("focus click on an already-desired node expands both sides", () => {
-    g.nodes.trust.place(0, 1);
-    const beforeOut = g.nodes.trust.visibleGrants.length;
+  it("focus click on a preset seed isolates instead of expanding", () => {
+    g.vm.loadPreset({ title: "Uniparty", eins: [IDS.trust, IDS.foundation] }, "replace");
+    g.nodes.trust.place(1, 1);
+    g.nodes.foundation.place(1, 1);
     g.vm.setClickMode("focus");
-    expect(g.vm.clickNode({}, g.nodes.trust, null)).toBe("expand");
-    expect(g.nodes.trust.visibleGrants.length).toBeGreaterThan(beforeOut);
+    expect(g.vm.clickNode({}, g.nodes.trust, null)).toBe("focus");
+    const show = g.vm.getShowList();
+    expect(show).toHaveLength(1);
+    expect(show[0].startsWith(IDS.trust)).toBe(true);
+    expect(g.nodes.foundation.desiredVisible).toBe(false);
   });
 
-  it("⌘/Ctrl click adds without depending on the mode button", () => {
+  it("focus click isolates even when that org is already the sole seed", () => {
+    g.nodes.trust.place(0, 1);
+    g.vm.setClickMode("focus");
+    expect(g.vm.clickNode({}, g.nodes.trust, null)).toBe("focus");
+    const show = g.vm.getShowList();
+    expect(show).toHaveLength(1);
+    expect(show[0].startsWith(IDS.trust)).toBe(true);
+  });
+
+  it("⌘/Ctrl click expands without depending on the mode button", () => {
     g.nodes.trust.place(1, 1);
     g.vm.setClickMode("focus");
     expect(

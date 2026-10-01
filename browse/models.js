@@ -21,7 +21,6 @@ const DB_VERSION = 1;
 const CHARITY_STORE = "charities";
 const GRANT_STORE = "grants";
 const METADATA_STORE = "metadata";
-const DATA_VERSION = "2026-09-02";
 /** Sanity floor after the $10M band export (~104k orgs / ~580k grants), not the old 910k dump. */
 const MIN_LOADED_CHARITIES = 10000;
 const MIN_LOADED_GRANTS = 10000;
@@ -29,7 +28,7 @@ const BALANCELIMIT = 20;
 const PER_COL = 3;
 const PER_ROW = 3;
 
-import { DATA_FILES } from "./data_files.js"; // Adjust path if needed
+import { DATA_FILES, idbDataIsCurrent } from "./data_files.js";
 
 export const BAND_ORDER = ["10M", "1M", "all"];
 
@@ -374,10 +373,10 @@ async function hasValidData(db) {
   try {
     const versionRequest = await idbGetMeta(db, "version");
     const generatedRequest = await idbGetMeta(db, "generated");
-    if (
-      versionRequest !== DATA_FILES.dbVersion ||
-      generatedRequest !== true
-    ) {
+    if (!idbDataIsCurrent(versionRequest, generatedRequest)) {
+      console.info(
+        `IndexedDB data version ${versionRequest || "none"} != ${DATA_FILES.dbVersion}; will replace local store`
+      );
       return false;
     }
     const nCharities = await idbCount(db, CHARITY_STORE);
@@ -473,9 +472,13 @@ async function storeData(db, storeName, records) {
 }
 
 async function clearGraphStores(db) {
-  const tx = db.transaction([CHARITY_STORE, GRANT_STORE], "readwrite");
+  const tx = db.transaction(
+    [CHARITY_STORE, GRANT_STORE, METADATA_STORE],
+    "readwrite"
+  );
   await tx.objectStore(CHARITY_STORE).clear();
   await tx.objectStore(GRANT_STORE).clear();
+  await tx.objectStore(METADATA_STORE).clear();
   await tx.done;
 }
 
@@ -1647,11 +1650,6 @@ export class BrowseViewModel {
       const store = tx.objectStore(METADATA_STORE);
       await Promise.all([
         new Promise((resolve, reject) => {
-          const request = store.put({ id: "generated", value: true });
-          request.onsuccess = resolve;
-          request.onerror = () => reject(request.error);
-        }),
-        new Promise((resolve, reject) => {
           const request = store.put({
             id: "version",
             value: DATA_FILES.dbVersion,
@@ -1742,20 +1740,15 @@ export class BrowseViewModel {
       return "zoom";
     }
     if (mode === "add") {
-      this.addToShowList(
-        `${charity.ein}~${START_REVEAL}~${START_REVEAL}`
-      );
-      if (refreshCallback) refreshCallback();
-      return "add";
-    }
-    if (charity.desiredVisible) {
+      charity.desiredVisible = true;
       charity.expandOutflows(NEXT_REVEAL);
       charity.expandInflows(NEXT_REVEAL);
       this.computeImpliedVisibility(charity, true, true);
       this.computeAndSaveURLParams();
       if (refreshCallback) refreshCallback();
-      return "expand";
+      return "add";
     }
+    // Finger = Focus: isolate. Expand is the + mode.
     if (DEBUGLOG) console.log(`Focus node ${charity.id} ${charity.name}`);
     charity.tunnelNode();
     if (refreshCallback) refreshCallback();
@@ -2225,8 +2218,9 @@ export class BrowseViewModel {
       } else {
         this.loadedBand = defaultBandId();
         updateStatus(
-          `Downloading ${bandCutLabel(this.loadedBand)} band (one-time for this data version)...`
+          `New data version — replacing local store, then downloading ${bandCutLabel(this.loadedBand)}...`
         );
+        await clearGraphStores(this.db);
         loadingViaWeb();
 
         try {

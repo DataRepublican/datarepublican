@@ -392,10 +392,11 @@
     margin: 0;
   }
   .insp-id { color: #4b5563; }
+  .insp-actions { display: flex; flex-direction: column; gap: 6px; margin: 8px 0; }
   .insp-primary {
     display: block;
     width: 100%;
-    margin: 8px 0;
+    margin: 0;
     padding: 0.45rem 0.6rem;
     background: #111;
     color: #fff;
