@@ -1,0 +1,668 @@
+---
+layout: default
+title: "Thinking about sitting this one out? – The border, by the numbers"
+permalink: /migration-explorer/tour/
+---
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+main.page-column:has(.mx-page) {
+  container-type: normal;
+}
+.mx-page {
+  --mx-accent:#B22234;
+  font-family: var(--dr-font-content,"Libre Franklin",system-ui,sans-serif);
+}
+.mx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 0 12px;
+}
+.mx-bar .mx-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.mx-bar .mx-title {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+  color: var(--dr-ink-strong,#000);
+}
+.mx-bar .mx-sub {
+  font-size: var(--dr-text-meta,13px);
+  color: var(--dr-ink-faint,#6B7280);
+  line-height: 1.35;
+}
+.mx-bar .mx-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mx-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  background: var(--dr-fill,#EFF1F4);
+  border: 1px solid var(--dr-line,#D3D7DE);
+  border-radius: var(--dr-radius-control,.625rem);
+  padding: 3px;
+}
+.mx-page .mx-switch a,
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+  padding: 6px 11px;
+  border-radius: var(--dr-radius-sm,6px);
+  font-family: var(--dr-font-ui);
+  font-size: var(--dr-text-label,12px);
+  font-weight: 600;
+  color: var(--dr-ink-faint,#6B7280);
+  white-space: nowrap;
+  text-decoration: none;
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a:hover {
+  color: var(--dr-ink-strong,#000);
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a.on {
+  background: var(--dr-panel,#fff);
+  color: #B22234;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+@media (max-width: 600px) {
+  .mx-switch {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  :is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+    padding: 6px 8px;
+  }
+}
+#mx-tour #story {
+  --red:#B22234;
+  --red-dk:#8E1B2A;
+  --ink:#121212;
+  --paper:#FFFDF8;
+  --muted:#55524C;
+  --faint:#77736B;
+  --line:#E4E1DA;
+  --serif:"Source Serif 4",Georgia,serif;
+  --sans:"Libre Franklin",system-ui,sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+}
+#mx-tour #story * {
+  box-sizing: border-box;
+}
+#mx-tour #prog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 4px;
+  background: var(--red);
+  width: 0;
+  z-index: 900;
+}
+#mx-tour #story .wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+#mx-tour #story .wide {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+#mx-tour .stripes {
+  height: 10px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      var(--red) 0 40px,
+      #fff 40px 80px);
+}
+#mx-tour #hero {
+  min-height: calc(100dvh - 110px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  padding: 6vh 0;
+}
+#mx-tour #hero .kicker {
+  font-family: var(--sans);
+  font-size: .8rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--red);
+  margin: 0 0 1.2em;
+}
+#mx-tour #hero .kicker .st {
+  letter-spacing: .4em;
+}
+#mx-tour #hero h1 {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 7.4vw, 5.4rem);
+  line-height: 1.02;
+  letter-spacing: -.02em;
+  margin: 0 0 .35em;
+}
+#mx-tour #hero .sub {
+  font-family: var(--sans);
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  color: var(--muted);
+  max-width: 34ch;
+  line-height: 1.45;
+  margin: 0 auto;
+}
+#mx-tour .cue {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--sans);
+  font-size: .75rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  animation: bob 1.8s ease-in-out infinite;
+}
+@keyframes bob {
+  0%, 100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, 8px);
+  }
+}
+#mx-tour .frame {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  padding: 8vh 0;
+}
+#mx-tour .frame p {
+  font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -.01em;
+}
+#mx-tour .frame .big {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 900;
+  color: var(--red);
+  font-size: clamp(3.4rem, 11vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: -.04em;
+  margin: .12em 0;
+}
+#mx-tour .frame .muted {
+  color: var(--faint);
+  font-weight: 400;
+}
+#mx-tour .beat {
+  padding: 10vh 0;
+  border-top: 1px solid var(--line);
+}
+#mx-tour .beat .kick {
+  font-family: var(--sans);
+  font-size: .78rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--red);
+  margin: 0 0 .6em;
+}
+#mx-tour .beat h2 {
+  font-size: clamp(1.8rem, 4.4vw, 2.8rem);
+  line-height: 1.12;
+  margin: 0 0 .5em;
+  font-weight: 700;
+  letter-spacing: -.015em;
+}
+#mx-tour .beat p {
+  font-size: 1.18rem;
+  line-height: 1.62;
+  margin: 0 0 1em;
+}
+#mx-tour .beat p strong {
+  background: linear-gradient(transparent 62%, #F6D3D7 62%);
+}
+#mx-tour .ch {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 3vh 0 1vh;
+  overflow: visible;
+}
+#mx-tour #story .beat p.cap,
+#mx-tour .cap {
+  font-family: var(--sans);
+  font-size: .82rem;
+  color: var(--faint);
+  line-height: 1.5;
+  margin: .4em 0 0;
+}
+#mx-tour .cap a,
+#mx-tour .src a,
+#mx-tour .notes a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+#mx-tour .pairs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 34px;
+  margin-top: 3vh;
+}
+#mx-tour .pairs h3 {
+  font-family: var(--sans);
+  font-size: 1.02rem;
+  font-weight: 800;
+  margin: 0;
+}
+@media (max-width: 720px) {
+  #mx-tour .pairs {
+    grid-template-columns: 1fr;
+  }
+}
+#mx-tour .stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-top: 3px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+  margin: 4vh 0;
+}
+#mx-tour .stat-tiles .tile {
+  padding: 18px 14px;
+  border-right: 1px solid var(--line);
+}
+#mx-tour .stat-tiles .tile:last-child {
+  border-right: 0;
+}
+#mx-tour .stat-tiles .v {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.6rem, 3.6vw, 2.4rem);
+  letter-spacing: -.03em;
+  color: var(--red);
+  line-height: 1;
+}
+#mx-tour .stat-tiles .l {
+  font-family: var(--sans);
+  font-size: .8rem;
+  color: var(--muted);
+  margin-top: .5em;
+  line-height: 1.35;
+}
+@media (max-width: 720px) {
+  #mx-tour .stat-tiles {
+    grid-template-columns: 1fr 1fr;
+  }
+  #mx-tour .stat-tiles .tile:nth-child(2) {
+    border-right: 0;
+  }
+  #mx-tour .stat-tiles .tile:nth-child(-n+2) {
+    border-bottom: 1px solid var(--line);
+  }
+}
+#mx-tour .tl {
+  list-style: none;
+  margin: 3vh 0 0;
+  padding: 0;
+  border-left: 3px solid var(--red);
+}
+#mx-tour .tl li {
+  padding: 0 0 1.6em 22px;
+  position: relative;
+}
+#mx-tour .tl li::before {
+  content: "★";
+  position: absolute;
+  left: -11px;
+  top: -2px;
+  color: var(--red);
+  background: var(--paper);
+  font-size: 15px;
+  line-height: 1.2;
+}
+#mx-tour .tl .d {
+  font-family: var(--sans);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+#mx-tour .tl .t {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin: .15em 0 .2em;
+}
+#mx-tour .src {
+  font-family: var(--sans);
+  font-size: .8rem;
+  color: var(--faint);
+}
+#mx-tour .note {
+  font-family: var(--sans);
+  font-size: .88rem;
+  line-height: 1.55;
+  color: var(--muted);
+  background: #F4F1EA;
+  border-left: 3px solid var(--faint);
+  padding: 12px 16px;
+  margin: 2vh 0;
+}
+#mx-tour #vote {
+  background: var(--red);
+  color: #fff;
+  text-align: center;
+  padding: 12vh 0 11vh;
+  position: relative;
+}
+#mx-tour #vote .stars {
+  font-size: 1.1rem;
+  letter-spacing: .6em;
+  opacity: .85;
+  margin-bottom: 1.4em;
+}
+#mx-tour #vote h2 {
+  font-size: clamp(2.2rem, 6.4vw, 4.4rem);
+  line-height: 1.04;
+  margin: 0 0 .35em;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+#mx-tour #vote p {
+  font-family: var(--sans);
+  font-size: 1.15rem;
+  line-height: 1.55;
+  max-width: 46ch;
+  margin: 0 auto 1.2em;
+  opacity: .95;
+}
+#mx-tour #vote .date {
+  font-family: var(--sans);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 3.4vw, 2rem);
+  letter-spacing: .02em;
+  margin: .4em 0 1em;
+}
+#mx-tour #vote .btn {
+  display: inline-block;
+  background: #fff;
+  color: var(--red-dk);
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 1.1rem;
+  padding: 16px 30px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .18);
+}
+#mx-tour #vote .btn:hover {
+  transform: translateY(-2px);
+}
+#mx-tour .explore {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 8vh 0 4vh;
+}
+#mx-tour .explore a {
+  display: block;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--red);
+  background: #fff;
+  padding: 20px 22px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform .15s, box-shadow .15s;
+}
+#mx-tour .explore a:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .1);
+}
+#mx-tour .explore .k {
+  font-family: var(--sans);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+#mx-tour .explore h3 {
+  font-size: 1.4rem;
+  margin: .3em 0 .3em;
+  font-weight: 700;
+}
+#mx-tour .explore p {
+  font-family: var(--sans);
+  font-size: .92rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+@media (max-width: 720px) {
+  #mx-tour .explore {
+    grid-template-columns: 1fr;
+  }
+}
+#mx-tour .notes {
+  font-family: var(--sans);
+  font-size: .82rem;
+  color: var(--faint);
+  line-height: 1.6;
+  padding: 2vh 0 8vh;
+}
+#mx-tour .notes h4 {
+  font-size: .78rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 2em 0 .4em;
+}
+#mx-tour .notes ul {
+  padding-left: 1.2em;
+  margin: .3em 0;
+}
+#mx-tour .rv {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+#mx-tour .rv.in {
+  opacity: 1;
+  transform: none;
+}
+#mx-tour .ch-bars .bar {
+  transform-origin: bottom;
+  transform-box: fill-box;
+  transform: scaleY(0);
+  transition: transform .5s ease calc(var(--i)*14ms);
+}
+#mx-tour .in .ch-bars .bar {
+  transform: scaleY(1);
+}
+#mx-tour .grow {
+  transform-origin: left;
+  transform-box: fill-box;
+  transform: scaleX(0);
+  transition: transform 1.1s cubic-bezier(.2, .7, .2, 1);
+}
+#mx-tour .in .grow {
+  transform: scaleX(1);
+}
+#mx-tour .draw {
+  stroke-dasharray: 2000;
+  stroke-dashoffset: 2000;
+  transition: stroke-dashoffset 2s ease;
+}
+#mx-tour .in .draw {
+  stroke-dashoffset: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  #mx-tour .rv,
+  #mx-tour .ch-bars .bar,
+  #mx-tour .grow,
+  #mx-tour .draw {
+    transition: none;
+    opacity: 1;
+    transform: none;
+    stroke-dashoffset: 0;
+  }
+}
+#mx-tour {
+  margin: 0 calc(-1 * var(--page-gutter,0px));
+}
+</style>
+<div class="mx-page" id="mx-tour">
+
+<div id="prog"></div>
+<main id="story">
+<div class="stripes" aria-hidden="true"></div>
+
+<section id="hero"><div class="wrap">
+  <p class="kicker"><span class="st">★★★</span> Midterms · November 3, 2026 <span class="st">★★★</span></p>
+  <h1>Thinking about sitting this one out?</h1>
+  <p class="sub">A lot of Republicans are. Before you decide, look at what the border numbers did.</p>
+</div><span class="cue">Scroll</span></section>
+
+<section class="frame"><div class="wrap rv"><p>In December 2023, the U.S. Border Patrol and port officers recorded
+  <span class="big">301,981</span> encounters at the southwest border. <span class="muted">In one month.</span></p></div></section>
+
+<section class="beat"><div class="wide rv">
+  <p class="kick">The southwest border, month by month</p>
+  <h2>Then the line fell off a cliff.</h2>
+  <p>Every bar is one month of CBP's own count. The gray bars run from October 2020 to January 2025. The red bars start in February 2025, the first full month after the inauguration.</p>
+  <svg class="ch ch-bars" viewBox="0 0 900 380" role="img" aria-label="Monthly southwest border encounters, Oct 2020 to Aug 2026"><title>Monthly southwest border encounters</title><line x1="64" x2="884" y1="336.0" y2="336.0" stroke="#E4E1DA"/><text x="56" y="340.0" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">0</text><line x1="64" x2="884" y1="239.8" y2="239.8" stroke="#E4E1DA"/><text x="56" y="243.8" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">100k</text><line x1="64" x2="884" y1="143.5" y2="143.5" stroke="#E4E1DA"/><text x="56" y="147.5" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">200k</text><line x1="64" x2="884" y1="47.2" y2="47.2" stroke="#E4E1DA"/><text x="56" y="51.2" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">300k</text><rect class="bar" x="64.6" y="266.8" width="10.3" height="69.2" fill="#C9C6BF" style="--i:0"><title>Oct 2020: 71,929</title></rect><rect class="bar" x="76.1" y="266.6" width="10.3" height="69.4" fill="#C9C6BF" style="--i:1"><title>Nov 2020: 72,113</title></rect><rect class="bar" x="87.7" y="264.8" width="10.3" height="71.2" fill="#C9C6BF" style="--i:2"><title>Dec 2020: 73,994</title></rect><rect class="bar" x="99.2" y="260.5" width="10.3" height="75.5" fill="#C9C6BF" style="--i:3"><title>Jan 2021: 78,414</title></rect><text x="104.4" y="354" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2021</text><rect class="bar" x="110.8" y="238.7" width="10.3" height="97.3" fill="#C9C6BF" style="--i:4"><title>Feb 2021: 101,099</title></rect><rect class="bar" x="122.3" y="169.2" width="10.3" height="166.8" fill="#C9C6BF" style="--i:5"><title>Mar 2021: 173,277</title></rect><rect class="bar" x="133.9" y="163.9" width="10.3" height="172.1" fill="#C9C6BF" style="--i:6"><title>Apr 2021: 178,795</title></rect><rect class="bar" x="145.4" y="162.2" width="10.3" height="173.8" fill="#C9C6BF" style="--i:7"><title>May 2021: 180,597</title></rect><rect class="bar" x="157.0" y="154.1" width="10.3" height="181.9" fill="#C9C6BF" style="--i:8"><title>Jun 2021: 189,034</title></rect><rect class="bar" x="168.5" y="130.4" width="10.3" height="205.6" fill="#C9C6BF" style="--i:9"><title>Jul 2021: 213,593</title></rect><rect class="bar" x="180.1" y="134.0" width="10.3" height="202.0" fill="#C9C6BF" style="--i:10"><title>Aug 2021: 209,840</title></rect><rect class="bar" x="191.6" y="151.2" width="10.3" height="184.8" fill="#C9C6BF" style="--i:11"><title>Sep 2021: 192,001</title></rect><rect class="bar" x="203.2" y="177.3" width="10.3" height="158.7" fill="#C9C6BF" style="--i:12"><title>Oct 2021: 164,837</title></rect><rect class="bar" x="214.7" y="167.7" width="10.3" height="168.3" fill="#C9C6BF" style="--i:13"><title>Nov 2021: 174,845</title></rect><rect class="bar" x="226.3" y="163.5" width="10.3" height="172.5" fill="#C9C6BF" style="--i:14"><title>Dec 2021: 179,253</title></rect><rect class="bar" x="237.8" y="186.9" width="10.3" height="149.1" fill="#C9C6BF" style="--i:15"><title>Jan 2022: 154,874</title></rect><text x="243.0" y="354" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2022</text><rect class="bar" x="249.4" y="176.2" width="10.3" height="159.8" fill="#C9C6BF" style="--i:16"><title>Feb 2022: 166,010</title></rect><rect class="bar" x="260.9" y="121.8" width="10.3" height="214.2" fill="#C9C6BF" style="--i:17"><title>Mar 2022: 222,574</title></rect><rect class="bar" x="272.5" y="109.1" width="10.3" height="226.9" fill="#C9C6BF" style="--i:18"><title>Apr 2022: 235,785</title></rect><rect class="bar" x="284.0" y="103.9" width="10.3" height="232.1" fill="#C9C6BF" style="--i:19"><title>May 2022: 241,136</title></rect><rect class="bar" x="295.6" y="136.0" width="10.3" height="200.0" fill="#C9C6BF" style="--i:20"><title>Jun 2022: 207,834</title></rect><rect class="bar" x="307.1" y="143.3" width="10.3" height="192.7" fill="#C9C6BF" style="--i:21"><title>Jul 2022: 200,162</title></rect><rect class="bar" x="318.7" y="139.6" width="10.3" height="196.4" fill="#C9C6BF" style="--i:22"><title>Aug 2022: 204,087</title></rect><rect class="bar" x="330.2" y="117.0" width="10.3" height="219.0" fill="#C9C6BF" style="--i:23"><title>Sep 2022: 227,547</title></rect><rect class="bar" x="341.8" y="113.2" width="10.3" height="222.8" fill="#C9C6BF" style="--i:24"><title>Oct 2022: 231,529</title></rect><rect class="bar" x="353.3" y="109.6" width="10.3" height="226.4" fill="#C9C6BF" style="--i:25"><title>Nov 2022: 235,173</title></rect><rect class="bar" x="364.9" y="93.1" width="10.3" height="242.9" fill="#C9C6BF" style="--i:26"><title>Dec 2022: 252,315</title></rect><rect class="bar" x="376.4" y="184.5" width="10.3" height="151.5" fill="#C9C6BF" style="--i:27"><title>Jan 2023: 157,358</title></rect><text x="381.6" y="354" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2023</text><rect class="bar" x="388.0" y="185.2" width="10.3" height="150.8" fill="#C9C6BF" style="--i:28"><title>Feb 2023: 156,630</title></rect><rect class="bar" x="399.5" y="150.0" width="10.3" height="186.0" fill="#C9C6BF" style="--i:29"><title>Mar 2023: 193,249</title></rect><rect class="bar" x="411.1" y="132.0" width="10.3" height="204.0" fill="#C9C6BF" style="--i:30"><title>Apr 2023: 211,992</title></rect><rect class="bar" x="422.6" y="137.1" width="10.3" height="198.9" fill="#C9C6BF" style="--i:31"><title>May 2023: 206,690</title></rect><rect class="bar" x="434.2" y="196.9" width="10.3" height="139.1" fill="#C9C6BF" style="--i:32"><title>Jun 2023: 144,556</title></rect><rect class="bar" x="445.7" y="159.4" width="10.3" height="176.6" fill="#C9C6BF" style="--i:33"><title>Jul 2023: 183,479</title></rect><rect class="bar" x="457.3" y="111.8" width="10.3" height="224.2" fill="#C9C6BF" style="--i:34"><title>Aug 2023: 232,963</title></rect><rect class="bar" x="468.8" y="76.4" width="10.3" height="259.6" fill="#C9C6BF" style="--i:35"><title>Sep 2023: 269,735</title></rect><rect class="bar" x="480.4" y="104.1" width="10.3" height="231.9" fill="#C9C6BF" style="--i:36"><title>Oct 2023: 240,927</title></rect><rect class="bar" x="491.9" y="102.7" width="10.3" height="233.3" fill="#C9C6BF" style="--i:37"><title>Nov 2023: 242,399</title></rect><rect class="bar" x="503.5" y="45.3" width="10.3" height="290.7" fill="#C9C6BF" style="--i:38"><title>Dec 2023: 301,981</title></rect><rect class="bar" x="515.0" y="166.4" width="10.3" height="169.6" fill="#C9C6BF" style="--i:39"><title>Jan 2024: 176,195</title></rect><text x="520.2" y="354" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2024</text><rect class="bar" x="526.6" y="153.2" width="10.3" height="182.8" fill="#C9C6BF" style="--i:40"><title>Feb 2024: 189,913</title></rect><rect class="bar" x="538.1" y="153.7" width="10.3" height="182.3" fill="#C9C6BF" style="--i:41"><title>Mar 2024: 189,359</title></rect><rect class="bar" x="549.7" y="163.0" width="10.3" height="173.0" fill="#C9C6BF" style="--i:42"><title>Apr 2024: 179,737</title></rect><rect class="bar" x="561.2" y="171.7" width="10.3" height="164.3" fill="#C9C6BF" style="--i:43"><title>May 2024: 170,716</title></rect><rect class="bar" x="572.8" y="210.5" width="10.3" height="125.5" fill="#C9C6BF" style="--i:44"><title>Jun 2024: 130,415</title></rect><rect class="bar" x="584.3" y="235.8" width="10.3" height="100.2" fill="#C9C6BF" style="--i:45"><title>Jul 2024: 104,100</title></rect><rect class="bar" x="595.9" y="232.6" width="10.3" height="103.4" fill="#C9C6BF" style="--i:46"><title>Aug 2024: 107,473</title></rect><rect class="bar" x="607.4" y="238.0" width="10.3" height="98.0" fill="#C9C6BF" style="--i:47"><title>Sep 2024: 101,790</title></rect><rect class="bar" x="619.0" y="233.7" width="10.3" height="102.3" fill="#C9C6BF" style="--i:48"><title>Oct 2024: 106,316</title></rect><rect class="bar" x="630.5" y="245.3" width="10.3" height="90.7" fill="#C9C6BF" style="--i:49"><title>Nov 2024: 94,183</title></rect><rect class="bar" x="642.1" y="243.6" width="10.3" height="92.4" fill="#C9C6BF" style="--i:50"><title>Dec 2024: 96,033</title></rect><rect class="bar" x="653.6" y="276.9" width="10.3" height="59.1" fill="#C9C6BF" style="--i:51"><title>Jan 2025: 61,445</title></rect><text x="658.8" y="354" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2025</text><rect class="bar post" x="665.2" y="324.7" width="10.3" height="11.3" fill="#B22234" style="--i:52"><title>Feb 2025: 11,710</title></rect><rect class="bar post" x="676.7" y="325.4" width="10.3" height="10.6" fill="#B22234" style="--i:53"><title>Mar 2025: 11,011</title></rect><rect class="bar post" x="688.3" y="324.4" width="10.3" height="11.6" fill="#B22234" style="--i:54"><title>Apr 2025: 12,023</title></rect><rect class="bar post" x="699.8" y="324.0" width="10.3" height="12.0" fill="#B22234" style="--i:55"><title>May 2025: 12,450</title></rect><rect class="bar post" x="711.4" y="327.0" width="10.3" height="9.0" fill="#B22234" style="--i:56"><title>Jun 2025: 9,300</title></rect><rect class="bar post" x="722.9" y="328.5" width="10.3" height="7.5" fill="#B22234" style="--i:57"><title>Jul 2025: 7,822</title></rect><rect class="bar post" x="734.5" y="326.6" width="10.3" height="9.4" fill="#B22234" style="--i:58"><title>Aug 2025: 9,731</title></rect><rect class="bar post" x="746.0" y="324.8" width="10.3" height="11.2" fill="#B22234" style="--i:59"><title>Sep 2025: 11,647</title></rect><rect class="bar post" x="757.6" y="324.7" width="10.3" height="11.3" fill="#B22234" style="--i:60"><title>Oct 2025: 11,704</title></rect><rect class="bar post" x="769.1" y="325.5" width="10.3" height="10.5" fill="#B22234" style="--i:61"><title>Nov 2025: 10,960</title></rect><rect class="bar post" x="780.7" y="326.4" width="10.3" height="9.6" fill="#B22234" style="--i:62"><title>Dec 2025: 9,992</title></rect><rect class="bar post" x="792.2" y="326.6" width="10.3" height="9.4" fill="#B22234" style="--i:63"><title>Jan 2026: 9,729</title></rect><text x="797.4" y="354" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2026</text><rect class="bar post" x="803.8" y="326.7" width="10.3" height="9.3" fill="#B22234" style="--i:64"><title>Feb 2026: 9,613</title></rect><rect class="bar post" x="815.3" y="324.7" width="10.3" height="11.3" fill="#B22234" style="--i:65"><title>Mar 2026: 11,735</title></rect><rect class="bar post" x="826.9" y="323.6" width="10.3" height="12.4" fill="#B22234" style="--i:66"><title>Apr 2026: 12,857</title></rect><rect class="bar post" x="838.4" y="323.0" width="10.3" height="13.0" fill="#B22234" style="--i:67"><title>May 2026: 13,542</title></rect><rect class="bar post" x="850.0" y="323.6" width="10.3" height="12.4" fill="#B22234" style="--i:68"><title>Jun 2026: 12,905</title></rect><rect class="bar post" x="861.5" y="323.7" width="10.3" height="12.3" fill="#B22234" style="--i:69"><title>Jul 2026: 12,730</title></rect><rect class="bar post" x="873.1" y="324.2" width="10.3" height="11.8" fill="#B22234" style="--i:70"><title>Aug 2026: 12,242</title></rect><text x="502.6" y="37.3" text-anchor="end" font-size="13" font-weight="700" fill="#121212" font-family="Libre Franklin,system-ui,sans-serif">Dec 2023: 301,981</text><line x1="664.1" x2="664.1" y1="22" y2="336" stroke="#121212" stroke-dasharray="3 3"/><text x="670.1" y="34" font-size="12.5" font-weight="700" fill="#B22234" font-family="Libre Franklin,system-ui,sans-serif">Jan 20, 2025</text><text x="670.1" y="50" font-size="12" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">every month since:</text><text x="670.1" y="65" font-size="12" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">7,822–13,542</text></svg>
+  <p class="cap">Southwest land border encounters (Border Patrol apprehensions plus port-of-entry inadmissibles and Title 42 expulsions), by month. Source: <a href="https://www.cbp.gov/newsroom/stats/nationwide-encounters" target="_blank" rel="noopener">U.S. Customs and Border Protection, Nationwide Encounters</a> data files.</p>
+  <div class="stat-tiles">
+    <div class="tile"><div class="v">301,981</div><div class="l">encounters in Dec 2023, the peak month</div></div>
+    <div class="tile"><div class="v">12,242</div><div class="l">encounters in Aug 2026, the latest month</div></div>
+    <div class="tile"><div class="v">−96%</div><div class="l">from the peak to the latest month</div></div>
+    <div class="tile"><div class="v">19</div><div class="l">straight months below the lowest month of the four years before</div></div>
+  </div>
+</div></section>
+
+<section class="frame"><div class="wrap rv"><p>The lowest month from October 2020 through January 2025 was
+  <span class="big">61,445</span> <span class="muted">(Jan 2025). Since February 2025, no month has gone above 13,542.</span></p></div></section>
+
+<section class="beat"><div class="wide rv">
+  <p class="kick">One month vs. nineteen</p>
+  <h2>Add up every month since February 2025. December 2023 alone is still bigger.</h2>
+  <svg class="ch ch-vs" viewBox="0 0 900 170" role="img" aria-label="December 2023 alone vs all 19 months since February 2025"><title>One month vs. 19 months</title><text x="0" y="18" font-size="14" font-weight="700" fill="#121212" font-family="Libre Franklin,system-ui,sans-serif">December 2023 — one month</text><rect class="grow" x="0" y="28" width="890.0" height="34" fill="#C9C6BF"/><text x="880.0" y="51" text-anchor="end" font-size="16" font-weight="800" fill="#121212" font-family="Libre Franklin,system-ui,sans-serif">301,981</text><text x="0" y="100" font-size="14" font-weight="700" fill="#121212" font-family="Libre Franklin,system-ui,sans-serif">Feb 2025 – Aug 2026 — all 19 months combined</text><rect class="grow" x="0" y="110" width="629.8" height="34" fill="#B22234"/><text x="619.8" y="133" text-anchor="end" font-size="16" font-weight="800" fill="#fff" font-family="Libre Franklin,system-ui,sans-serif">213,703</text></svg>
+  <p class="cap">Sum of 19 monthly southwest border totals, February 2025 through August 2026, vs. the single month of December 2023. Source: <a href="https://www.cbp.gov/newsroom/stats/nationwide-encounters" target="_blank" rel="noopener">CBP Nationwide Encounters</a>.</p>
+</div></section>
+
+<section class="beat"><div class="wide rv">
+  <p class="kick">Families and children</p>
+  <h2>Families and children nearly stopped arriving.</h2>
+  <p>Compare the last full fiscal year before the inauguration with the current one, which is one month short.</p>
+  <div class="pairs">
+    <div><h3>Family-unit encounters</h3><svg class="ch ch-pair" viewBox="0 0 420 150" role="img" aria-label="Family-unit encounters: FY2024 vs FY2026"><title>Family-unit encounters</title><text x="0" y="16" font-size="13" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">FY2024 (12 months)</text><rect class="grow" x="0" y="24" width="410.0" height="30" fill="#C9C6BF"/><text x="402.0" y="45" text-anchor="end" font-size="15" font-weight="800" fill="#121212" font-family="Libre Franklin,system-ui,sans-serif">804,456</text><text x="0" y="90" font-size="13" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">FY2026 (Oct–Aug, 11 months)</text><rect class="grow" x="0" y="98" width="3.7" height="30" fill="#B22234"/><text x="11.7" y="119" font-size="15" font-weight="800" fill="#B22234" font-family="Libre Franklin,system-ui,sans-serif">7,270</text></svg></div>
+    <div><h3>Unaccompanied children</h3><svg class="ch ch-pair" viewBox="0 0 420 150" role="img" aria-label="Unaccompanied children: FY2024 vs FY2026"><title>Unaccompanied children</title><text x="0" y="16" font-size="13" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">FY2024 (12 months)</text><rect class="grow" x="0" y="24" width="410.0" height="30" fill="#C9C6BF"/><text x="402.0" y="45" text-anchor="end" font-size="15" font-weight="800" fill="#121212" font-family="Libre Franklin,system-ui,sans-serif">109,998</text><text x="0" y="90" font-size="13" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">FY2026 (Oct–Aug, 11 months)</text><rect class="grow" x="0" y="98" width="28.4" height="30" fill="#B22234"/><text x="36.4" y="119" font-size="15" font-weight="800" fill="#B22234" font-family="Libre Franklin,system-ui,sans-serif">7,608</text></svg></div>
+  </div>
+  <p class="cap">Southwest border encounters by CBP demographic group ("FMUA" = individuals in family units; "UC/UAC" = unaccompanied children). FY2024 = Oct 2023–Sep 2024. FY2026 = Oct 2025–Aug 2026. Source: <a href="https://www.cbp.gov/newsroom/stats/nationwide-encounters" target="_blank" rel="noopener">CBP Nationwide Encounters</a>.</p>
+</div></section>
+
+<section class="beat"><div class="wrap rv">
+  <p class="kick">What changed</p>
+  <h2>It didn't happen by accident.</h2>
+  <p>The drop starts the month the policies changed. Three actions signed on the first day:</p>
+  <ul class="tl">
+    <li><div class="d">Jan 20, 2025</div><div class="t">National emergency declared at the southern border.</div>
+      <div class="src"><a href="https://www.whitehouse.gov/presidential-actions/2025/01/declaring-a-national-emergency-at-the-southern-border-of-the-united-states/" target="_blank" rel="noopener">White House, "Declaring a National Emergency at the Southern Border"</a></div></li>
+    <li><div class="d">Jan 20, 2025</div><div class="t">"Securing Our Borders" order: resume Remain in Mexico, end catch-and-release, build physical barriers.</div>
+      <div class="src"><a href="https://www.whitehouse.gov/presidential-actions/2025/01/securing-our-borders/" target="_blank" rel="noopener">White House, "Securing Our Borders"</a></div></li>
+    <li><div class="d">Jan 20, 2025</div><div class="t">The U.S. Refugee Admissions Program suspended pending review.</div>
+      <div class="src"><a href="https://www.federalregister.gov/documents/2025/01/30/2025-02011/realigning-the-united-states-refugee-admissions-program" target="_blank" rel="noopener">Federal Register, "Realigning the United States Refugee Admissions Program"</a></div></li>
+    <li><div class="d">Feb 2025 – Aug 2026</div><div class="t">19 straight months between 7,822 and 13,542 encounters.</div>
+      <div class="src"><a href="https://www.cbp.gov/newsroom/stats/nationwide-encounters" target="_blank" rel="noopener">CBP Nationwide Encounters</a></div></li>
+  </ul>
+</div></section>
+
+<section class="beat"><div class="wide rv">
+  <p class="kick">The longer story</p>
+  <h2>For 35 years the share kept climbing.</h2>
+  <p>The share of U.S. residents born abroad rose from <strong>7.9% in 1990 to 14.1% in 2020–24</strong>. The border numbers above show the first sharp break in the flow behind that line.</p>
+  <svg class="ch ch-fb" viewBox="0 0 900 280" role="img" aria-label="Foreign-born share of US residents, 1990 to 2020-24"><title>Foreign-born share of US residents</title><line x1="50" x2="830" y1="240.0" y2="240.0" stroke="#E4E1DA"/><text x="42" y="244.0" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">0%</text><line x1="50" x2="830" y1="172.5" y2="172.5" stroke="#E4E1DA"/><text x="42" y="176.5" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">5%</text><line x1="50" x2="830" y1="105.0" y2="105.0" stroke="#E4E1DA"/><text x="42" y="109.0" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">10%</text><line x1="50" x2="830" y1="37.5" y2="37.5" stroke="#E4E1DA"/><text x="42" y="41.5" text-anchor="end" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">15%</text><text x="50.0" y="260" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">1990</text><text x="279.4" y="260" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2000</text><text x="508.8" y="260" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2010</text><text x="738.2" y="260" text-anchor="middle" font-size="12" fill="#77736B" font-family="Libre Franklin,system-ui,sans-serif">2020</text><path class="draw" d="M50.0,132.7 L279.4,90.8 L485.9,72.8 L508.8,68.2 L531.8,67.1 L554.7,66.3 L577.6,65.2 L600.6,63.5 L623.5,62.1 L646.5,61.2 L669.4,59.0 L692.4,58.0 L715.3,57.0 L738.2,57.6 L761.2,56.4 L784.1,55.4 L807.1,52.7 L830.0,49.2" fill="none" stroke="#121212" stroke-width="3"/><circle cx="50.0" cy="132.7" r="5" fill="#B22234"/><text x="60.0" y="122.7" font-size="14" font-weight="800" fill="#B22234" font-family="Libre Franklin,system-ui,sans-serif">7.9%</text><circle cx="830.0" cy="49.2" r="5" fill="#B22234"/><text x="840.0" y="39.2" font-size="14" font-weight="800" fill="#B22234" font-family="Libre Franklin,system-ui,sans-serif">14.1%</text><text x="840.0" y="59.2" font-size="11.5" fill="#55524C" font-family="Libre Franklin,system-ui,sans-serif">2020–24</text></svg>
+  <p class="cap">Foreign-born share of U.S. residents. 1990 and 2000: decennial census. 2009 onward: American Community Survey 5-year estimates, summed across all 3,144 counties. Census Bureau data, computed from bulk files.</p>
+  <div class="note">These two charts measure different things. The border chart counts encounters at the border, not residents. The foreign-born line counts everyone living here who was born abroad, and most of them are citizens, green-card holders or visa holders. Census data also runs a few years behind: its latest window ends in 2024, so it doesn't show the change since 2025 yet.</div>
+</div></section>
+
+<section id="vote"><div class="wrap rv">
+  <div class="stars" aria-hidden="true">★ ★ ★ ★ ★</div>
+  <h2>Executive orders can be undone.</h2>
+  <p>The border numbers changed because of executive action. This Congress followed through: it <a href="https://www.usda.gov/sites/default/files/guidance-documents/fns.snap-obbb-alien-eligibility-qas1.pdf" target="_blank" rel="noopener">ended food-stamp eligibility for refugees and asylees</a> in July 2025, <a href="https://www.govinfo.gov/content/pkg/PLAW-119publ21/html/PLAW-119publ21.htm" target="_blank" rel="noopener">ended their federal Medicaid eligibility</a> as of October 1, and <a href="https://www.congress.gov/crs_external_products/R/PDF/R48970/R48970.4.pdf" target="_blank" rel="noopener">cut refugee funding 18%</a> for 2026.</p>
+  <p>The White House asked for deeper cuts. Getting them takes more Republican votes, not fewer. That's on the ballot.</p>
+  <p>If you're tired, disappointed, or sure it's already won — vote anyway.</p>
+  <div class="date">Tuesday, November 3, 2026</div>
+  <a class="btn" href="https://vote.gov" target="_blank" rel="noopener">Check your registration at vote.gov →</a>
+</div></section>
+<div class="stripes" aria-hidden="true"></div>
+
+<div class="wrap">
+  <div class="explore">
+    <a href="/migration-explorer/map/"><span class="k">County map</span><h3>Where people settled</h3>
+      <p>Foreign-born share and growth in every U.S. county since 1990, by country of birth, with sourced notes on 116 of the biggest jumps.</p></a>
+    <a href="/migration-explorer/network/"><span class="k">NGO explorer</span><h3>Who was paid to resettle them</h3>
+      <p>The federally funded resettlement network: national agencies, local affiliates, ORR providers and their funders, with every link sourced.</p></a>
+  </div>
+  <div class="notes">
+    <h4>Sources & method</h4>
+    <ul>
+      <li>Border numbers: CBP Nationwide Encounters data files (FY21–24, FY22–25 and FY23–26 releases), Southwest Land Border rows only, summed by month and demographic.</li>
+      <li>Foreign-born share: Census 1990 and 2000 long-form sample; ACS 5-year table B05002, 2005–09 through 2020–24.</li>
+      <li>Policy actions: White House and Federal Register texts.</li>
+      <li>Every number on this page is listed with its source file in the project's facts ledger.</li>
+    </ul>
+  </div>
+</div>
+</main>
+<script>
+(function() {
+  var p = document.getElementById("prog");
+  addEventListener("scroll", function() {
+    var h = document.documentElement;
+    p.style.width = 100 * h.scrollTop / Math.max(1, h.scrollHeight - h.clientHeight) + "%";
+  }, { passive: true });
+  var els = document.querySelectorAll(".rv");
+  if (!("IntersectionObserver" in window)) {
+    els.forEach(function(e) {
+      e.classList.add("in");
+    });
+    return;
+  }
+  var io = new IntersectionObserver(function(es) {
+    es.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add("in");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.18 });
+  els.forEach(function(e) {
+    io.observe(e);
+  });
+})();
+</script>
+
+</div>

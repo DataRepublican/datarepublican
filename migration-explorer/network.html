@@ -1,0 +1,3241 @@
+---
+layout: default
+title: "NGO network – Migration explorer"
+permalink: /migration-explorer/network/
+---
+<style>
+main.page-column:has(.mx-page) {
+  container-type: normal;
+}
+.mx-page {
+  --mx-accent:#B22234;
+  font-family: var(--dr-font-content,"Libre Franklin",system-ui,sans-serif);
+}
+.mx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 0 12px;
+}
+.mx-bar .mx-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.mx-bar .mx-title {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+  color: var(--dr-ink-strong,#000);
+}
+.mx-bar .mx-sub {
+  font-size: var(--dr-text-meta,13px);
+  color: var(--dr-ink-faint,#6B7280);
+  line-height: 1.35;
+}
+.mx-bar .mx-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mx-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  background: var(--dr-fill,#EFF1F4);
+  border: 1px solid var(--dr-line,#D3D7DE);
+  border-radius: var(--dr-radius-control,.625rem);
+  padding: 3px;
+}
+.mx-page .mx-switch a,
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+  padding: 6px 11px;
+  border-radius: var(--dr-radius-sm,6px);
+  font-family: var(--dr-font-ui);
+  font-size: var(--dr-text-label,12px);
+  font-weight: 600;
+  color: var(--dr-ink-faint,#6B7280);
+  white-space: nowrap;
+  text-decoration: none;
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a:hover {
+  color: var(--dr-ink-strong,#000);
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a.on {
+  background: var(--dr-panel,#fff);
+  color: #B22234;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+@media (max-width: 600px) {
+  .mx-switch {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  :is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+    padding: 6px 8px;
+  }
+}
+#mx-net {
+  --bg:#F7F7F5;
+  --panel:#FFFFFF;
+  --ink:#1A1A1A;
+  --dim:#6B6F76;
+  --line:#E2E2DD;
+  --line2:#EDEDE8;
+  --tile:#F1F1EC;
+  --tile2:#F7F7F3;
+  --link:#1155CC;
+  --accent:#1d4ed8;
+  --t1:#1d4ed8;
+  --t2:#0891b2;
+  --t3:#dc2626;
+  --t4:#16a34a;
+  --t5:#7c3aed;
+  --t6:#92400e;
+}
+#mx-net * {
+  box-sizing: border-box;
+}
+#mx-net {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    14px/1.45 "Libre Franklin",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+@media (max-width: 600px) {
+  #mx-net aside#facets {
+    position: fixed;
+    inset: 0;
+    z-index: 700;
+    background: var(--bg);
+    transform: translateX(-102%);
+    transition: transform .22s;
+    width: 85vw;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+  }
+  #mx-net aside#facets.open {
+    transform: none;
+  }
+  #mx-net #mobile-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--panel);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--ink);
+    flex: none;
+  }
+  #mx-net #drawer {
+    width: 100%;
+    max-width: 100%;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    height: 80vh;
+    border-left: none;
+    border-top: 1px solid var(--line);
+  }
+  #mx-net #scrim {
+    top: 0;
+  }
+  #mx-net header #search {
+    width: 100%;
+    max-width: none;
+  }
+  #mx-net .layout {
+    min-height: 0;
+  }
+}
+@media (min-width: 601px) {
+  #mx-net #mobile-filter-btn {
+    display: none;
+  }
+}
+#mx-net a {
+  color: var(--link);
+  text-decoration: none;
+}
+#mx-net a:hover {
+  text-decoration: underline;
+}
+#mx-net button {
+  font: inherit;
+  cursor: pointer;
+}
+#mx-net header {
+  position: sticky;
+  top: 0;
+  z-index: 600;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+#mx-net h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .1px;
+  flex: none;
+}
+#mx-net .sub {
+  color: var(--dim);
+  font-size: 12px;
+  flex: none;
+}
+#mx-net .grow {
+  flex: 1;
+}
+#mx-net #search {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 20px;
+  padding: 7px 14px;
+  font-size: 13px;
+  width: 300px;
+  max-width: 40vw;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .05);
+}
+#mx-net #search::placeholder {
+  color: #9a9ea6;
+}
+#mx-net #search:focus {
+  outline: none;
+  border-color: #c9c9c0;
+}
+#mx-net .tabs {
+  display: flex;
+  gap: 4px;
+  background: #F0F0EA;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 3px;
+}
+#mx-net .tab {
+  padding: 5px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  color: var(--dim);
+  font-size: 13px;
+  font-weight: 600;
+  user-select: none;
+  border: none;
+  background: transparent;
+  text-decoration: none;
+  display: block;
+}
+#mx-net .tab.on {
+  background: var(--accent);
+  color: #fff;
+}
+#mx-net .tab .k {
+  font-size: 10px;
+  opacity: .6;
+  margin-left: 5px;
+  font-weight: 500;
+}
+#mx-net .extlink {
+  font-size: 12px;
+  color: var(--dim);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 5px 10px;
+  background: #fff;
+}
+#mx-net .extlink:hover {
+  color: var(--ink);
+  text-decoration: none;
+  border-color: #c9c9c0;
+}
+#mx-net #hint {
+  position: sticky;
+  top: var(--hh,52px);
+  z-index: 590;
+  font-size: 12px;
+  color: var(--dim);
+  padding: 6px 18px;
+  background: #FBFBF9;
+  border-bottom: 1px solid var(--line2);
+}
+#mx-net #hint b {
+  color: var(--ink);
+  font-weight: 600;
+}
+#mx-net .tab:hover:not(.on) {
+  color: var(--ink);
+}
+#mx-net .layout {
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100vh - 52px);
+}
+#mx-net aside#facets {
+  width: 220px;
+  flex: none;
+  position: sticky;
+  top: var(--top,86px);
+  height: calc(100vh - var(--top,86px));
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  padding: 12px 12px 40px;
+  background: #FBFBF9;
+}
+#mx-net .fgroup {
+  margin-bottom: 14px;
+}
+#mx-net .fgroup h3 {
+  margin: 0 0 6px;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--dim);
+  font-weight: 700;
+}
+#mx-net .fitem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 4px;
+  font-size: 12.5px;
+  color: #4a4e56;
+  cursor: pointer;
+  border-radius: 5px;
+}
+#mx-net .fitem:hover {
+  background: var(--tile);
+  color: var(--ink);
+}
+#mx-net .fitem input[type=checkbox] {
+  accent-color: var(--accent);
+  cursor: pointer;
+  pointer-events: none;
+  flex: none;
+}
+#mx-net .fitem .c {
+  margin-left: auto;
+  color: #9a9ea6;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+#mx-net .fitem.act {
+  color: var(--ink);
+  font-weight: 600;
+}
+#mx-net .fctl {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+#mx-net .fctl label {
+  font-size: 11.5px;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#mx-net .fctl select,
+#mx-net .fctl input[type=range] {
+  width: 100%;
+  font-size: 11.5px;
+  accent-color: var(--accent);
+}
+#mx-net .fclear {
+  font-size: 11px;
+  color: var(--link);
+  cursor: pointer;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+#mx-net #views {
+  flex: 1;
+  min-width: 0;
+}
+#mx-net main#cardsmain {
+  padding: 14px 18px 60px;
+}
+#mx-net .kpis {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+#mx-net .kpi {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 13px;
+  min-width: 88px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+}
+#mx-net .kpi .v {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+#mx-net .kpi .k {
+  font-size: 10.5px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-top: 1px;
+}
+#mx-net .sort-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+#mx-net .sort-row label {
+  font-size: 12.5px;
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#mx-net .sort-row select {
+  font-size: 12.5px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--ink);
+}
+#mx-net #grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 14px;
+}
+#mx-net .card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    border-color .12s,
+    transform .12s,
+    box-shadow .12s;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+}
+#mx-net .card:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, .09);
+}
+#mx-net .card.sel {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(29, 78, 216, .2);
+}
+#mx-net .card {
+  border-top: 3px solid var(--tc,#ccc);
+}
+#mx-net .card-top {
+  padding: 12px 12px 6px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+#mx-net .card-logo {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--tile);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mx-net .card-top .card-logo {
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+  background: #fff;
+}
+#mx-net .card-title {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+#mx-net .card-title .tier-badge {
+  align-self: flex-start;
+}
+#mx-net .chip.faith {
+  border-color: rgba(146, 64, 14, .3);
+  color: #7c2d12;
+  background: #fff7ed;
+}
+#mx-net .card-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#mx-net .tier-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 5px;
+  flex: none;
+  letter-spacing: .5px;
+}
+#mx-net .card-name {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.25;
+}
+#mx-net .card-loc {
+  font-size: 11.5px;
+  color: var(--dim);
+  padding: 0 12px 4px;
+}
+#mx-net .card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 12px 10px;
+}
+#mx-net .chip {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  color: #555;
+  background: var(--tile);
+}
+#mx-net .chip.fed {
+  border-color: rgba(220, 38, 38, .3);
+  color: #991b1b;
+  background: rgba(220, 38, 38, .06);
+}
+#mx-net .chip.fnd {
+  border-color: rgba(124, 58, 237, .3);
+  color: #5b21b6;
+  background: rgba(124, 58, 237, .06);
+}
+#mx-net .chip.cty {
+  border-color: rgba(8, 145, 178, .3);
+  color: #0e7490;
+  background: rgba(8, 145, 178, .06);
+}
+#mx-net .chip.kind {
+  border-color: rgba(100, 116, 139, .45);
+  color: #334155;
+  background: #f1f5f9;
+  font-weight: 600;
+}
+#mx-net .chip.cut {
+  border-color: #b91c1c;
+  background: #b91c1c;
+  color: #fff;
+  font-weight: 700;
+}
+#mx-net .chip.live {
+  border-color: rgba(22, 163, 74, .35);
+  color: #166534;
+  background: rgba(22, 163, 74, .07);
+}
+#mx-net .chip.rein {
+  border-color: rgba(180, 83, 9, .4);
+  color: #92400e;
+  background: #fffbeb;
+}
+#mx-net #cutbanner {
+  margin: 0;
+  padding: 12px 18px;
+  background: #fff;
+  border-bottom: 1px solid var(--line2);
+}
+#mx-net #cutbanner .cb-head {
+  font-size: 13px;
+  color: #7f1d1d;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: .2px;
+}
+#mx-net #cutbanner .cb-tiles {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#mx-net #cutbanner .cbt {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  background: #fff;
+  text-align: left;
+  font: inherit;
+}
+#mx-net #cutbanner .cbt:hover {
+  border-color: #999;
+}
+#mx-net #cutbanner .cbt.on {
+  outline: 2px solid currentColor;
+}
+#mx-net #cutbanner .cbt .n {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+#mx-net #cutbanner .cbt .l {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  font-weight: 700;
+}
+#mx-net #cutbanner .cbt .s {
+  font-size: 12px;
+  color: #444;
+  margin-top: 3px;
+}
+#mx-net #cutbanner .cbt.cut {
+  border-color: #b91c1c;
+  background: #fef2f2;
+  color: #991b1b;
+}
+#mx-net #cutbanner .cbt.cut .n {
+  color: #b91c1c;
+}
+#mx-net #cutbanner .cbt.live {
+  color: #166534;
+}
+#mx-net #cutbanner .cbt.exp {
+  color: #475569;
+}
+#mx-net #cutbanner .cb-note {
+  font-size: 11px;
+  color: var(--dim);
+  margin-top: 7px;
+}
+#mx-net #cutbanner .cbt.rein {
+  color: #b45309;
+}
+#mx-net #cutbanner .cbt .lb {
+  margin: 5px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: #333;
+}
+#mx-net #cutbanner .cbt .lb li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px dotted #d6d3cc;
+  padding: 3px 0;
+}
+#mx-net #cutbanner .cbt .lb li b {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: #166534;
+}
+#mx-net #cutbanner .cbt .lb small {
+  display: block;
+  color: #666;
+  font-size: 11px;
+}
+#mx-net #cutbanner .cbt .lb-tog {
+  align-self: flex-start;
+  margin-top: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #166534;
+  border-bottom: 1px dotted currentColor;
+  cursor: pointer;
+}
+#mx-net #cutbanner .cbt .lb-tog:hover {
+  color: #14532d;
+}
+#mx-net #cutbanner .cb-tiles {
+  align-items: flex-start;
+}
+#mx-net .astat .lbh {
+  font-weight: 700;
+  font-size: 11.5px;
+  color: #166534;
+  margin-top: 4px;
+}
+#mx-net .astat {
+  font-size: 12.5px;
+  border-left: 3px solid #b91c1c;
+  padding: 4px 0 4px 10px;
+  margin: 6px 0;
+  background: #fef2f2;
+}
+#mx-net .astat.live {
+  border-left-color: #16a34a;
+  background: rgba(22, 163, 74, .05);
+}
+#mx-net .astat.rein {
+  border-left-color: #b45309;
+  background: #fffbeb;
+}
+#mx-net .astat.exp {
+  border-left-color: #cbd5e1;
+  background: none;
+}
+#mx-net .astat q {
+  display: block;
+  font-size: 11.5px;
+  color: #444;
+  font-style: italic;
+  margin-top: 2px;
+}
+#mx-net .aid-cut {
+  color: #b91c1c !important;
+  font-weight: 700;
+}
+#mx-net .aid-live {
+  color: #166534 !important;
+}
+#mx-net .aid-exp {
+  color: #64748b !important;
+}
+@media (max-width: 600px) {
+  #mx-net #cutbanner .cbt {
+    flex: 1 1 100%;
+  }
+}
+#mx-net .chip.ev {
+  border-color: rgba(22, 163, 74, .3);
+  color: #166534;
+  background: rgba(22, 163, 74, .06);
+}
+#mx-net .empty {
+  color: var(--dim);
+  padding: 40px;
+  text-align: center;
+}
+#mx-net #graphview,
+#mx-net #mapview {
+  display: none;
+  position: relative;
+  height: calc(100vh - var(--top,86px));
+  width: 100%;
+}
+#mx-net #lmap {
+  width: 100%;
+  height: 100%;
+  background: #eef0ec;
+}
+#mx-net #lmap .leaflet-tile-pane {
+  filter: saturate(.35) brightness(1.04);
+}
+#mx-net .ltip {
+  position: fixed;
+  z-index: 950;
+  pointer-events: none;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .14);
+  padding: 8px 10px;
+  font-size: 12px;
+  max-width: 320px;
+  display: none;
+}
+#mx-net .ltip b {
+  display: block;
+  margin-bottom: 3px;
+}
+#mx-net .ltip ul {
+  margin: 0;
+  padding-left: 16px;
+}
+#mx-net .ltip li {
+  margin: 1px 0;
+}
+#mx-net .ltip .more {
+  color: var(--dim);
+  margin-top: 3px;
+}
+#mx-net .mk {
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  border: 2.5px solid var(--tc);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 10px;
+  color: var(--tc);
+}
+#mx-net .mk img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#mx-net .mk.rsq {
+  border-radius: 7px;
+}
+#mx-net .mk.sel {
+  box-shadow: 0 0 0 3px #1A1A1A;
+}
+#mx-net .mcl {
+  border-radius: 50%;
+  background: rgba(29, 78, 216, .18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#mx-net .mcl span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #1d4ed8;
+  color: #fff;
+  font-weight: 800;
+  font-size: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .3);
+}
+#mx-net #map-note {
+  position: absolute;
+  left: 12px;
+  bottom: 14px;
+  z-index: 500;
+  background: rgba(255, 255, 255, .95);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  color: var(--dim);
+  max-width: 360px;
+}
+#mx-net #cy {
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      #FFFFFF 0%,
+      #F1F1EC 80%);
+}
+#mx-net #graph-controls {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+#mx-net #graph-controls button.zb {
+  font-size: 16px;
+  font-weight: 700;
+  width: 34px;
+  padding: 3px 0;
+}
+#mx-net #graph-controls button {
+  font-size: 12px;
+  padding: 5px 9px;
+  border: 1px solid #D5D5CE;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+}
+#mx-net #graph-controls button:hover {
+  background: #f0f0ea;
+}
+#mx-net #graph-search {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+#mx-net #graph-search input {
+  width: 250px;
+  padding: 6px 12px;
+  border: 1px solid #D5D5CE;
+  border-radius: 20px;
+  font-size: 13px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .07);
+}
+#mx-net #graph-legend {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 5;
+  background: rgba(255, 255, 255, .96);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 11.5px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .1);
+  max-height: calc(100vh - 100px);
+  overflow: auto;
+}
+#mx-net #legend-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--dim);
+  border-bottom: 1px solid var(--line2);
+}
+#mx-net #legend-toggle:hover {
+  color: var(--ink);
+}
+#mx-net #legend-body {
+  padding: 8px 12px 10px;
+}
+#mx-net #graph-legend h4 {
+  margin: 6px 0 4px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #888;
+}
+#mx-net #graph-legend h4:first-child {
+  margin-top: 0;
+}
+#mx-net #graph-legend .row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0;
+}
+#mx-net #graph-legend .sw {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex: 0 0 auto;
+}
+#mx-net #graph-legend .ln {
+  width: 22px;
+  height: 0;
+  border-top-style: solid;
+  flex: 0 0 auto;
+}
+#mx-net #scrim {
+  position: fixed;
+  inset: 52px 0 0 0;
+  display: none;
+  background: rgba(20, 20, 18, .18);
+  z-index: 850;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s;
+}
+#mx-net #scrim.on {
+  opacity: 1;
+  pointer-events: auto;
+}
+#mx-net #drawer {
+  position: fixed;
+  top: var(--top,86px);
+  right: 0;
+  bottom: 0;
+  width: 420px;
+  max-width: 95vw;
+  background: var(--panel);
+  border-left: 1px solid var(--line);
+  box-shadow: -3px 0 22px rgba(0, 0, 0, .12);
+  z-index: 900;
+  transform: translateX(102%);
+  transition: transform .22s cubic-bezier(.4, 0, .2, 1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+#mx-net #drawer.on {
+  transform: none;
+}
+#mx-net .dclose {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 5;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--dim);
+  cursor: pointer;
+  padding: 12px 14px;
+}
+#mx-net .dclose:hover {
+  color: var(--ink);
+}
+#mx-net #dinner {
+  padding: 0 16px 24px;
+  flex: 1;
+}
+#mx-net #dinner .org-name {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 4px 0 2px;
+  line-height: 1.25;
+}
+#mx-net #dinner .org-sub {
+  font-size: 12px;
+  color: var(--dim);
+  margin-bottom: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+#mx-net #dinner .org-logo {
+  min-width: 48px;
+  height: 56px;
+  padding: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--tile);
+  float: right;
+  margin: 0 0 8px 10px;
+  flex: none;
+}
+#mx-net #dinner .org-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#mx-net #dinner h3 {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  color: var(--dim);
+  margin: 12px 0 5px;
+  font-weight: 700;
+  border-top: 1px solid var(--line2);
+  padding-top: 10px;
+}
+#mx-net #dinner h3:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+#mx-net .drow {
+  font-size: 12.5px;
+  margin: 3px 0;
+  line-height: 1.45;
+}
+#mx-net .drow b {
+  color: var(--dim);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  display: block;
+  margin-bottom: 1px;
+}
+#mx-net .dfund {
+  font-size: 12.5px;
+  border-left: 2px solid var(--line);
+  padding: 3px 0 3px 10px;
+  margin: 4px 0;
+}
+#mx-net .dfund .fy {
+  font-size: 11px;
+  color: var(--dim);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+#mx-net .damt {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+#mx-net .dnote {
+  font-size: 11.5px;
+  color: var(--dim);
+  font-style: italic;
+  line-height: 1.4;
+  background: var(--tile);
+  border-radius: 6px;
+  padding: 7px 10px;
+  margin: 6px 0;
+}
+#mx-net .dconn {
+  margin-top: 4px;
+}
+#mx-net .dconn a,
+#mx-net .dconn button {
+  display: inline-block;
+  font-size: 12px;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--tile);
+  color: var(--ink);
+  margin: 0 5px 6px 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+#mx-net .dconn a:hover,
+#mx-net .dconn button:hover {
+  background: var(--line2);
+  border-color: var(--accent);
+}
+#mx-net .dcountychips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 3px;
+}
+#mx-net .dcountychip {
+  font-size: 11px;
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  color: var(--dim);
+  background: var(--tile);
+}
+#mx-net .pempty {
+  color: #9a9ea6;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 24px 16px;
+}
+#mx-net .src-list {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+}
+#mx-net .src-list li {
+  font-size: 11.5px;
+  margin: 3px 0;
+}
+#mx-net .src-list a {
+  color: var(--link);
+}
+#mx-net .ev-item {
+  font-size: 11.5px;
+  margin: 5px 0;
+  border-left: 2px solid var(--line);
+  padding: 3px 0 3px 9px;
+}
+#mx-net .ev-item .ev-kind {
+  font-size: 10px;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+#mx-net .ev-item .ev-excerpt {
+  color: var(--dim);
+  font-size: 11px;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+#mx-net .ev-item .ev-links {
+  margin-top: 3px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#mx-net .ev-item .ev-links a {
+  font-size: 11px;
+  color: var(--link);
+}
+#mx-net .ev-grade-a {
+  border-left-color: #16a34a;
+}
+#mx-net .ev-grade-b {
+  border-left-color: #ca8a04;
+}
+#mx-net .t990 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin-top: 4px;
+}
+#mx-net .t990 th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 10.5px;
+  color: var(--dim);
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  padding: 3px 6px 3px 0;
+  border-bottom: 1px solid var(--line);
+}
+#mx-net .t990 td {
+  padding: 3px 6px 3px 0;
+  border-bottom: 1px solid var(--line2);
+  font-variant-numeric: tabular-nums;
+}
+#mx-net .alias-tag {
+  display: inline-block;
+  font-size: 10.5px;
+  padding: 1px 7px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  color: #555;
+  background: var(--tile);
+  margin: 2px 2px 2px 0;
+}
+#mx-net #graph-legend {
+  max-width: 250px;
+}
+#mx-net {
+  --accent:#B22234;
+}
+#mx-net .tab.on {
+  background: #B22234;
+}
+#mx-net > header {
+  border: 1px solid var(--line);
+  border-radius: 10px 10px 0 0;
+}
+#mx-net .layout {
+  border: 1px solid var(--line);
+  border-top: none;
+  background: var(--bg);
+}
+#mx-net .fdone {
+  display: none;
+}
+#mx-net button {
+  color: var(--ink);
+}
+@media (max-width: 600px) {
+  #mx-net .layout {
+    display: block;
+  }
+  #mx-net aside#facets {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 85vw;
+    z-index: 1100;
+    transform: translateX(-102%);
+    transition: transform .22s;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, .18);
+  }
+  #mx-net aside#facets.open {
+    transform: none;
+  }
+  #mx-net .fdone {
+    display: block;
+    margin: 0 0 10px auto;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #fff;
+    font-weight: 600;
+  }
+  #mx-net #views,
+  #mx-net main#cardsmain {
+    width: 100%;
+    min-width: 0;
+  }
+  #mx-net > header {
+    border-radius: 10px 10px 0 0;
+  }
+}
+</style>
+<div class="mx-page" id="mx-net">
+<div class="mx-bar">
+  <div class="mx-id"><p class="mx-title">Migration explorer</p><div class="mx-sub" id="mx-net-sub"></div></div>
+  <div class="mx-right"><div class="mx-switch" title="Switch between the parts of the migration explorer"><a href="/migration-explorer/">Overview</a><a href="/migration-explorer/tour/">The border</a><a href="/migration-explorer/map/">County map</a><a href="/migration-explorer/network/" class="on" aria-current="page">NGO network</a></div>
+    <button type="button" class="dr-dialog-open" id="mx-net-dlg-open" aria-haspopup="dialog">About &amp; disclaimer</button>
+  </div>
+</div>
+
+<header>
+  <h1>NGO Explorer</h1>
+  <span class="sub" id="hcount">loading…</span>
+  <button id="mobile-filter-btn" onclick="document.getElementById('facets').classList.toggle('open')" aria-label="Toggle filters">Filters ▾</button>
+  <input id="search" type="search" placeholder="Search orgs, EINs, cities, aliases…" autocomplete="off">
+  <div class="grow"></div>
+  <div class="tabs" id="tabs" role="tablist">
+    <button class="tab on" data-v="cards" title="Browse organizations as cards (key 1)">▦ Cards<span class="k">1</span></button>
+    <button class="tab" data-v="map" title="Organizations on a map, clustered (key 2)">◉ Map<span class="k">2</span></button>
+    <button class="tab" data-v="graph" title="Funding and affiliation network (key 3)">⋰ Network<span class="k">3</span></button>
+  </div>
+</header>
+<div id="hint"></div>
+
+<div id="cutbanner" hidden></div>
+<div class="layout">
+  <aside id="facets">
+    <button type="button" class="fdone" onclick="document.getElementById('facets').classList.remove('open')">Done ✕</button><span class="fclear" id="fclear" onclick="clearFilters()">✕ clear filters</span>
+    <div class="fgroup"><h3>Federal awards</h3><div id="status-facets"></div></div>
+    <div class="fgroup"><h3>Tier</h3><div id="tier-facets"></div></div>
+    <div class="fgroup"><h3>Faith / network</h3><div id="faith-facets"></div></div>
+    <div class="fgroup"><h3>State (HQ)</h3><div id="state-facets"></div></div>
+  </aside>
+  <div id="views">
+  
+  <main id="cardsmain">
+    <div class="kpis" id="kpis"></div>
+    <div class="sort-row">
+      <span id="result-count" style="font-size:12.5px;color:var(--dim)"></span>
+      <div class="grow"></div>
+      <label>Sort
+        <select id="sortby">
+          <option value="cut">Cut 2025–26 first</option>
+          <option value="rank">Most prominent</option>
+          <option value="name">Name (A–Z)</option>
+          <option value="fed">Largest federal award</option>
+          <option value="fnd">Largest private grant</option>
+          <option value="conn">Most connections</option>
+          <option value="cty">Most counties</option>
+          <option value="ev">Most evidence</option>
+          <option value="state">HQ state</option>
+        </select>
+      </label>
+    </div>
+    <div id="grid"></div>
+  </main>
+
+  
+  <div id="mapview"><div id="lmap"></div>
+    <div id="map-note">One pin per organization at its headquarters. Numbers are clusters: hover to see who is inside, click to zoom in. Open an organization to see its other offices.</div>
+  </div>
+
+  
+  <div id="graphview">
+    <div id="cy"></div>
+    <div id="graph-controls">
+      <button id="gz+" class="zb" title="Zoom in">＋</button>
+      <button id="gz-" class="zb" title="Zoom out">－</button>
+      <button id="gfit" title="Fit everything">Fit</button>
+      <button id="g-filter-toggle" onclick="toggleGraphFilter()">Expand all</button>
+    </div>
+    <div id="graph-legend">
+      <div id="legend-toggle" onclick="toggleLegend()">
+        <span id="legend-arrow">▾</span> Legend
+      </div>
+      <div id="legend-body"></div>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="ltip" id="ltip"></div>
+
+
+<div id="scrim" onclick="closeDrawer()"></div>
+<aside id="drawer" aria-label="Organization detail">
+  <button class="dclose" onclick="closeDrawer()" title="Close">✕</button>
+  <div id="dinner">
+    <div class="pempty">Click a card, map pin or network node to see full details: funding, evidence, counties, connections.</div>
+  </div>
+</aside>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="/assets/js/cytoscape.min.js"></script>
+<script src="/migration-explorer/data/ngo-logos.js"></script>
+<script>
+const TIER = {
+  1: { c: "#1d4ed8", bg: "#eff6ff", l: "National resettlement agency" },
+  2: { c: "#0891b2", bg: "#ecfeff", l: "Local affiliate" },
+  3: { c: "#dc2626", bg: "#fef2f2", l: "ORR-funded provider" },
+  4: { c: "#16a34a", bg: "#f0fdf4", l: "Legal services" },
+  5: { c: "#7c3aed", bg: "#faf5ff", l: "Advocacy/policy" },
+  6: { c: "#92400e", bg: "#fef3c7", l: "Funder" }
+};
+const EDGE_STYLE = {
+  federal_award: { c: "#dc2626", d: void 0, w: 2, l: "Federal award (prime)" },
+  ffata_subaward: { c: "#f97316", d: "4 3", w: 1.5, l: "FFATA subaward" },
+  foundation_grant: { c: "#7c3aed", d: "6 3", w: 1.5, l: "Private grant (990-PF / Sched. I)" },
+  regrant: { c: "#a16207", d: "2 3", w: 1.5, l: "Re-grant (Sched. I; may pass through federal $)" },
+  affiliate_of: { c: "#0891b2", d: "3 4", w: 1.5, l: "Affiliate of" },
+  schedule_r: { c: "#92400e", d: "8 4", w: 1.5, l: "Schedule R" }
+};
+const EV_KIND_COLOR = {
+  usaspending_award: "#dc2626",
+  usaspending_subaward: "#f97316",
+  usaspending_recipient: "#ef4444",
+  propublica_org: "#2563eb",
+  irs_990_xml: "#1d4ed8",
+  schedule_r: "#92400e",
+  pf_grant: "#7c3aed",
+  affiliate_directory: "#16a34a"
+};
+const HQ_SOURCE_LABEL = {
+  usaspending_recipient: "SAM registration via USASpending",
+  irs_bmf: "IRS Business Master File",
+  propublica: "ProPublica filing",
+  affiliate_directory: "affiliate directory",
+  org_website: "organization website",
+  community_note: "community note"
+};
+const LOGOS = typeof window.NGO_LOGOS !== "undefined" ? window.NGO_LOGOS : {};
+const TOP_T3_LIMIT = 150;
+const BIG_THRESHOLD = 250;
+let DATA = null, cy = null, SEL = null, view = "cards", FSET = null, MAP_DIRTY = true, GRAPH_DIRTY = true;
+const F = { tiers: new Set(), states: new Set(), kinds: new Set(), faiths: new Set(), stat: new Set() };
+const FAITH_NONE = "None stated";
+const faithOf = (o) => o.faith || FAITH_NONE;
+let CONN = {};
+const KIND_NGO = "Nonprofit (NGO)";
+const kindOf = (o) => o.org_kind || KIND_NGO;
+let legendOpen = true;
+let graphShowAll = false;
+let IDX = new Map(), IDX_KEYS = [], SRCHSET = null, SRCH_SCORES = null;
+function norm(s) {
+  if (s == null) return "";
+  return String(s).toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/&/g, " and ").replace(/\bst\.\s/gi, "saint ").replace(/-/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+}
+function toks(s) {
+  const n = norm(s);
+  return n ? n.split(" ").filter(Boolean) : [];
+}
+function buildIdx() {
+  IDX = new Map();
+  DATA.orgs.forEach((o, i) => {
+    const fields = [
+      o.name,
+      o.display_name || "",
+      ...o.aliases || [],
+      ...o.aliases_all || [],
+      o.ein || "",
+      ...o.eins_all || [],
+      o.hq_city,
+      o.hq_state,
+      TIER[o.tier]?.l || "",
+      ...(o.federal || []).map((f) => (f.program || f.cfda || "") + " " + (f.agency || "")),
+      ...(o.foundation_in || []).map((f) => f.funder_name || "")
+    ];
+    const seen = new Set();
+    for (const f of fields) for (const t of toks(f)) seen.add(t);
+    for (const t of seen) {
+      let s = IDX.get(t);
+      if (!s) {
+        s = new Set();
+        IDX.set(t, s);
+      }
+      s.add(i);
+    }
+  });
+  IDX_KEYS = [...IDX.keys()].sort();
+}
+function idxPrefix(tok) {
+  const out = new Set();
+  let lo = 0, hi = IDX_KEYS.length;
+  while (lo < hi) {
+    const m = lo + hi >> 1;
+    if (IDX_KEYS[m] < tok) lo = m + 1;
+    else hi = m;
+  }
+  for (let i = lo; i < IDX_KEYS.length && IDX_KEYS[i].startsWith(tok); i++)
+    for (const id of IDX.get(IDX_KEYS[i])) out.add(id);
+  return out;
+}
+function nameScore(o, qNorm) {
+  const names = [o.display_name || o.name, ...o.aliases || [], ...o.aliases_all || []].map((n) => norm(n));
+  if (names.some((n) => n === qNorm)) return 3;
+  if (names.some((n) => n.startsWith(qNorm))) return 2;
+  if (names.some((n) => n.includes(qNorm))) return 1;
+  return 0;
+}
+function setSearch(q) {
+  const ts = toks(q);
+  if (!ts.length) {
+    SRCHSET = null;
+    SRCH_SCORES = null;
+    return;
+  }
+  let run = null;
+  for (const t of ts) {
+    const u = idxPrefix(t);
+    if (run === null) run = u;
+    else {
+      const nx = new Set();
+      for (const id of run) if (u.has(id)) nx.add(id);
+      run = nx;
+    }
+    if (!run.size) break;
+  }
+  SRCHSET = run || new Set();
+  const qNorm = norm(q);
+  SRCH_SCORES = new Map();
+  SRCHSET.forEach((i) => {
+    const o = DATA.orgs[i];
+    if (o) SRCH_SCORES.set(i, nameScore(o, qNorm));
+  });
+}
+function matchSearch(i) {
+  return SRCHSET === null || SRCHSET.has(i);
+}
+function searchScore(i) {
+  return SRCH_SCORES?.get(i) ?? 0;
+}
+const fmtM = (v) => {
+  if (!v) return "$0";
+  const m = v / 1e6;
+  return m >= 1e3 ? "$" + (v / 1e9).toFixed(1) + "B" : m >= 1 ? "$" + m.toFixed(0) + "M" : "$" + (v / 1e3).toFixed(0) + "k";
+};
+const fmtMleast = (v) => v > 0 ? `at least ${fmtM(v)} (documented)` : "–";
+function maxFed(o) {
+  return Math.max(0, ...(o.federal || []).filter((f) => !f.is_subaward).map((f) => f.amount || 0));
+}
+function maxFnd(o) {
+  return Math.max(0, ...(o.foundation_in || []).map((f) => f.amount || 0));
+}
+const AST_LABEL = { cancelled_2025: "Terminated or cut short in 2025–26", reinstated: "Terminated, then reinstated by court", active: "Still live", expired: "Expired / ended" };
+function astSum(o, s) {
+  return o.award_status?.summary?.[s] || { n: 0, value: 0, deobligated: 0 };
+}
+function statOf(o) {
+  const a = o.award_status;
+  if (!a) return ["none"];
+  const b = [];
+  const S = a.summary;
+  if (S.cancelled_2025.n) b.push("cancelled_2025");
+  if (S.reinstated.n) b.push("reinstated");
+  if (S.active.n) b.push("active");
+  if (!S.cancelled_2025.n && !S.reinstated.n && !S.active.n && S.expired.n) b.push("expired");
+  return b;
+}
+const STAT_FACET = { cancelled_2025: "Has an award terminated or cut short 2025–26", reinstated: "Award terminated, then court-reinstated", active: "Has a live award", expired: "Awards all expired", none: "No federal prime award" };
+function statMatch(o) {
+  if (!F.stat.size) return true;
+  return statOf(o).some((b) => F.stat.has(b));
+}
+function cutBanner() {
+  const box = document.getElementById("cutbanner");
+  const A = DATA.award_status;
+  if (!A) {
+    box.hidden = true;
+    return;
+  }
+  const T = A.meta.totals, z = { n: 0, value: 0, deobligated: 0, orgs: 0 };
+  const c = T.cancelled_2025 || z, l = T.active || z, x = T.expired || z, r = T.reinstated || z;
+  const ex25 = Object.values(A.awards).filter((a) => a.ended_after_inauguration).length;
+  box.hidden = false;
+  box.textContent = "";
+  box.appendChild(el("div", "cb-head", "Federal resettlement and ORR awards to the organizations in this explorer, by status as of " + A.meta.as_of));
+  const tiles = el("div", "cb-tiles");
+  const mk = (cls, key, n, label, sub) => {
+    const b = el("button", "cbt " + cls + (F.stat.size === 1 && F.stat.has(key) ? " on" : ""));
+    b.type = "button";
+    b.append(el("div", "l", label), el("div", "n", n), el("div", "s", sub));
+    b.title = "Show only these organizations";
+    b.onclick = () => {
+      const only = F.stat.size === 1 && F.stat.has(key);
+      F.stat.clear();
+      if (!only) F.stat.add(key);
+      if (!only) {
+        document.getElementById("sortby").value = key === "cancelled_2025" ? "cut" : document.getElementById("sortby").value;
+      }
+      buildFacets();
+      render();
+    };
+    return b;
+  };
+  const cutAw = Object.values(A.awards).filter((a) => a.status === "cancelled_2025"), nTerm = cutAw.filter((a) => /^terminated/.test((a.cancel || {}).basis || "")).length;
+  tiles.appendChild(mk(
+    "cut",
+    "cancelled_2025",
+    `${c.n} awards · ${fmtM(c.value)}`,
+    "Terminated or cut short since Jan 20, 2025",
+    `${c.orgs} organizations${c.deobligated > 0 ? "; at least " + fmtM(c.deobligated) + " clawed back (deobligated)" : ""}. ${nTerm} terminated outright, ${c.n - nTerm} cut short or not renewed. Dollar figure is what the awards held before the cuts.`
+  ));
+  const LB = A.meta.live_buckets || {}, U = A.meta.uc_encounters || [];
+  const lt = mk("live", "active", `${l.n} awards · ${fmtM(l.value)}`, "Still live, and why", `${l.orgs} organizations with an award whose period runs past ${A.meta.as_of}.`);
+  const ul = el("ul", "lb");
+  [
+    ["uc", "Care for unaccompanied children already in HHS custody", U.length === 2 ? `Unaccompanied-child border encounters: ${U[0].n.toLocaleString()} in ${U[0].label}, ${U[1].n.toLocaleString()} in ${U[1].label}.` : ""],
+    ["formula", "Formula aid to states for refugees already here", "Cash, medical aid and services authorized by the 1980 Refugee Act."],
+    ["discretionary", "Other ORR grants", "Project grants and cooperative agreements."]
+  ].forEach(([k, lab, sub]) => {
+    const g = LB[k];
+    if (!g || !g.n) return;
+    const li = el("li");
+    const t = el("span", null, lab);
+    if (sub) t.appendChild(el("small", null, sub));
+    li.title = `${g.n} awards; ${g.n_post_start} of them began after Jan 20, 2025 (${fmtM(g.value_post_start)}).`;
+    li.append(t, el("b", null, fmtM(g.value)));
+    ul.appendChild(li);
+  });
+  if (ul.children.length) {
+    ul.hidden = true;
+    const tg = el("span", "lb-tog", `Why? ${ul.children.length} reasons ▸`);
+    tg.setAttribute("role", "button");
+    tg.tabIndex = 0;
+    tg.title = "Show or hide the breakdown";
+    const flip = (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      ul.hidden = !ul.hidden;
+      tg.textContent = `${ul.hidden ? "Why?" : "Hide"} ${ul.children.length} reasons ${ul.hidden ? "▸" : "▾"}`;
+    };
+    tg.onclick = flip;
+    tg.onkeydown = (e) => {
+      if (e.key === "Enter" || e.key === " ") flip(e);
+    };
+    lt.append(tg, ul);
+  }
+  tiles.appendChild(lt);
+  if (r.n) {
+    const g = LB.court || { n: r.n, value: r.value };
+    tiles.appendChild(mk(
+      "rein",
+      "reinstated",
+      `${g.n} award${g.n > 1 ? "s" : ""} · ${fmtM(g.value)}`,
+      "Kept alive by a court",
+      `Terminated in 2025, then reinstated under the Pacito v. Trump injunction. Not counted as cut.`
+    ));
+  }
+  tiles.appendChild(mk("exp", "expired", `${x.n} awards · ${fmtM(x.value)}`, "Previously expired", `Ran to their scheduled end; ${ex25} of them ended after Jan 20, 2025 without a termination action.`));
+  box.appendChild(tiles);
+  box.appendChild(el(
+    "div",
+    "cb-note",
+    `Dollar figures are total obligations over each award's life (for cut awards, what was obligated before the cut), not savings, and the groups are never added together. "Terminated" means a USASpending modification dated after Jan 20, 2025 says the award was terminated; "cut short or not renewed" means a modification moved the end date up by at least 14 days. Each one quotes the modification text. "Still live" is split by what each award pays for: awards naming unaccompanied children, formula and block grants, and everything else. Open "Why?" and hover a row for how many began after Jan 20, 2025. FFATA subawards are not included.`
+  ));
+}
+function orgRank(o) {
+  const mf = maxFed(o) / 1e6, mn = maxFnd(o) / 1e6;
+  return o.tier * -100 + Math.log10(mf + 1) * 10 + Math.log10(mn + 1) * 5 + (o.counties_active?.length || 0) * 0.1;
+}
+function filtered() {
+  return DATA.orgs.map((o, i) => ({ o, i })).filter(({ o, i }) => {
+    if (!matchSearch(i)) return false;
+    if (F.tiers.size && !F.tiers.has(o.tier)) return false;
+    if (F.states.size && !F.states.has(o.hq_state)) return false;
+    if (F.kinds.size && !F.kinds.has(kindOf(o))) return false;
+    if (F.faiths.size && !F.faiths.has(faithOf(o))) return false;
+    if (!statMatch(o)) return false;
+    return true;
+  });
+}
+function el(tag, cls, txt) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt != null) e.textContent = txt;
+  return e;
+}
+function logoEl(id, size = 32, cls = "card-logo") {
+  const lg = LOGOS[id];
+  const wrap = el("div", cls);
+  wrap.style.width = size + "px";
+  wrap.style.height = size + "px";
+  const wide = cls === "org-logo";
+  const imgUri = (wide ? lg?.card_uri || lg?.node_uri : lg?.node_uri || lg?.card_uri) || lg?.uri || null;
+  if (imgUri) {
+    const img = document.createElement("img");
+    img.src = imgUri;
+    img.alt = "";
+    img.loading = "lazy";
+    img.style.cssText = "width:100%;height:100%;object-fit:contain";
+    if (lg.bg === "light") wrap.style.background = "#fff";
+    else if (lg.bg === "dark") wrap.style.background = "#1A1A1A";
+    else if (lg.tile) wrap.style.background = lg.tile;
+    wrap.appendChild(img);
+    if (lg.parent_mark) wrap.title = "Logo shown is the parent organization's: " + lg.parent_mark + (lg.local_word ? ' (with "' + lg.local_word + '" added)' : "");
+    else if (lg.generated_badge) wrap.title = "No public logo found; badge shows the organization's name (and HQ city where offices share a name)";
+  } else {
+    const t = TIER[DATA.orgs.find((o) => o.id === id)?.tier || 1];
+    wrap.style.background = t?.bg || "#eff6ff";
+    wrap.style.display = "flex";
+    wrap.style.alignItems = "center";
+    wrap.style.justifyContent = "center";
+    const sp = el("span", null, "T" + (DATA.orgs.find((o) => o.id === id)?.tier || "?"));
+    sp.style.cssText = `font-size:${Math.round(size * 0.35)}px;font-weight:800;color:${t?.c || "#1d4ed8"}`;
+    wrap.appendChild(sp);
+  }
+  return wrap;
+}
+function matchExcept(o, i, except) {
+  if (!matchSearch(i)) return false;
+  if (except !== "tier" && F.tiers.size && !F.tiers.has(o.tier)) return false;
+  if (except !== "state" && F.states.size && !F.states.has(o.hq_state)) return false;
+  if (except !== "kind" && F.kinds.size && !F.kinds.has(kindOf(o))) return false;
+  if (except !== "faith" && F.faiths.size && !F.faiths.has(faithOf(o))) return false;
+  if (except !== "stat" && !statMatch(o)) return false;
+  return true;
+}
+let stateShowAll = false;
+function buildFacets() {
+  const tierCounts = {}, stateCounts = {}, kindCounts = {}, faithCounts = {};
+  DATA.orgs.forEach((o, i) => {
+    if (matchExcept(o, i, "tier")) tierCounts[o.tier] = (tierCounts[o.tier] || 0) + 1;
+    if (matchExcept(o, i, "state")) stateCounts[o.hq_state] = (stateCounts[o.hq_state] || 0) + 1;
+    if (matchExcept(o, i, "kind")) kindCounts[kindOf(o)] = (kindCounts[kindOf(o)] || 0) + 1;
+    if (matchExcept(o, i, "faith")) faithCounts[faithOf(o)] = (faithCounts[faithOf(o)] || 0) + 1;
+  });
+  const kf = document.getElementById("kind-facets");
+  if (kf) {
+    kf.textContent = "";
+    Object.entries(kindCounts).sort((a, b) => a[0] === KIND_NGO ? -1 : b[0] === KIND_NGO ? 1 : b[1] - a[1]).forEach(([k, c]) => {
+      const on = F.kinds.has(k);
+      const row = el("div", "fitem" + (on ? " act" : ""));
+      row.dataset.kind = k;
+      const cb = el("input");
+      cb.type = "checkbox";
+      if (on) cb.checked = true;
+      row.append(cb, el("span", null, k), el("span", "c", String(c)));
+      row.onclick = () => {
+        if (F.kinds.has(k)) F.kinds.delete(k);
+        else F.kinds.add(k);
+        buildFacets();
+        render();
+      };
+      kf.appendChild(row);
+    });
+  }
+  const ff = document.getElementById("faith-facets");
+  ff.textContent = "";
+  Object.entries(faithCounts).sort((a, b) => a[0] === FAITH_NONE ? 1 : b[0] === FAITH_NONE ? -1 : b[1] - a[1]).forEach(([k, c]) => {
+    const on = F.faiths.has(k);
+    const row = el("div", "fitem" + (on ? " act" : ""));
+    row.dataset.faith = k;
+    row.title = k === FAITH_NONE ? "No faith affiliation in the name, national network or IRS religion code" : "From the org's name, its national resettlement network, or its IRS religion code (see the chip on each card)";
+    const cb = el("input");
+    cb.type = "checkbox";
+    if (on) cb.checked = true;
+    row.append(cb, el("span", null, k), el("span", "c", String(c)));
+    row.onclick = () => {
+      if (F.faiths.has(k)) F.faiths.delete(k);
+      else F.faiths.add(k);
+      buildFacets();
+      render();
+    };
+    ff.appendChild(row);
+  });
+  const statCounts = {};
+  DATA.orgs.forEach((o, i) => {
+    if (matchExcept(o, i, "stat")) statOf(o).forEach((b) => statCounts[b] = (statCounts[b] || 0) + 1);
+  });
+  const sfx = document.getElementById("status-facets");
+  if (sfx) {
+    sfx.textContent = "";
+    ["cancelled_2025", "reinstated", "active", "expired", "none"].forEach((k) => {
+      if (!statCounts[k] && !F.stat.has(k)) return;
+      const on = F.stat.has(k);
+      const row = el("div", "fitem" + (on ? " act" : ""));
+      row.dataset.stat = k;
+      const cb = el("input");
+      cb.type = "checkbox";
+      if (on) cb.checked = true;
+      const lab = el("span", null, STAT_FACET[k]);
+      if (k === "cancelled_2025") {
+        lab.style.color = "#b91c1c";
+        lab.style.fontWeight = "700";
+      }
+      row.append(cb, lab, el("span", "c", String(statCounts[k] || 0)));
+      row.onclick = () => {
+        if (F.stat.has(k)) F.stat.delete(k);
+        else F.stat.add(k);
+        buildFacets();
+        render();
+      };
+      sfx.appendChild(row);
+    });
+  }
+  cutBanner();
+  const tf = document.getElementById("tier-facets");
+  tf.textContent = "";
+  [1, 2, 3, 4, 5, 6].forEach((t) => {
+    const on = F.tiers.has(t);
+    const row = el("div", "fitem" + (on ? " act" : ""));
+    row.dataset.tier = t;
+    const cb = el("input");
+    cb.type = "checkbox";
+    if (on) cb.checked = true;
+    const sw = el("span");
+    sw.style.cssText = `width:10px;height:10px;border-radius:2px;background:${TIER[t].c};display:inline-block;flex:none`;
+    const lab = el("span", null, `T${t} ${TIER[t].l}`);
+    const cnt = el("span", "c", String(tierCounts[t] || 0));
+    row.append(cb, sw, lab, cnt);
+    row.onclick = () => {
+      if (F.tiers.has(t)) F.tiers.delete(t);
+      else F.tiers.add(t);
+      buildFacets();
+      render();
+    };
+    tf.appendChild(row);
+  });
+  const sf = document.getElementById("state-facets");
+  sf.textContent = "";
+  const allStates = Object.entries(stateCounts).filter(([s]) => !!s).sort((a, b) => b[1] - a[1] || (a[0] || "").localeCompare(b[0] || ""));
+  const showStates = stateShowAll ? allStates : allStates.slice(0, 15);
+  showStates.forEach(([s, c]) => {
+    const on = F.states.has(s);
+    const row = el("div", "fitem" + (on ? " act" : ""));
+    const cb = el("input");
+    cb.type = "checkbox";
+    if (on) cb.checked = true;
+    const lab = el("span", null, s);
+    const cnt = el("span", "c", String(c));
+    row.append(cb, lab, cnt);
+    row.onclick = () => {
+      if (F.states.has(s)) F.states.delete(s);
+      else F.states.add(s);
+      buildFacets();
+      render();
+    };
+    sf.appendChild(row);
+  });
+  if (allStates.length > 15) {
+    const tog = el("div", "fclear");
+    tog.textContent = stateShowAll ? "▲ show less" : `▼ show all ${allStates.length} states`;
+    tog.onclick = () => {
+      stateShowAll = !stateShowAll;
+      buildFacets();
+    };
+    sf.appendChild(tog);
+  }
+}
+function clearFilters() {
+  F.tiers.clear();
+  F.states.clear();
+  F.kinds.clear();
+  F.faiths.clear();
+  F.stat.clear();
+  document.getElementById("search").value = "";
+  setSearch("");
+  SRCHSET = null;
+  document.getElementById("sortby").value = "cut";
+  buildFacets();
+  render();
+}
+function sortOrgs(items) {
+  const by = document.getElementById("sortby").value;
+  return [...items].sort((a, b) => {
+    if (SRCHSET !== null) {
+      const sd = searchScore(b.i) - searchScore(a.i);
+      if (sd) return sd;
+    }
+    if (by === "cut") {
+      const d = astSum(b.o, "cancelled_2025").value - astSum(a.o, "cancelled_2025").value;
+      if (d) return d;
+      return orgRank(b.o) - orgRank(a.o);
+    }
+    if (by === "name") return (a.o.display_name || a.o.name).localeCompare(b.o.display_name || b.o.name);
+    if (by === "fed") return maxFed(b.o) - maxFed(a.o);
+    if (by === "fnd") return maxFnd(b.o) - maxFnd(a.o);
+    if (by === "cty") return (b.o.counties_active?.length || 0) - (a.o.counties_active?.length || 0);
+    if (by === "conn") return (CONN[b.o.id] || 0) - (CONN[a.o.id] || 0);
+    if (by === "ev") return (DATA.ev_by_org?.[b.o.id]?.length || 0) - (DATA.ev_by_org?.[a.o.id]?.length || 0);
+    if (by === "state") return (a.o.hq_state || "~").localeCompare(b.o.hq_state || "~") || (a.o.display_name || a.o.name).localeCompare(b.o.display_name || b.o.name);
+    return orgRank(b.o) - orgRank(a.o);
+  });
+}
+function renderKPIs(items) {
+  const kpis = document.getElementById("kpis");
+  kpis.textContent = "";
+  const nFed = items.filter(({ o }) => maxFed(o) > 0).length;
+  const cty = new Set(items.flatMap(({ o }) => o.counties_active || [])).size;
+  const evCount = items.reduce((s, { o }) => {
+    const evs = DATA.ev_by_org?.[o.id] || [];
+    return s + evs.length;
+  }, 0);
+  [[items.length, "Orgs", "#1d4ed8"], [nFed, "With federal awards", "#dc2626"], [cty, "Counties", "#0891b2"], [evCount, "Evidence items", "#16a34a"]].forEach(([v, k, c]) => {
+    const box = el("div", "kpi");
+    box.style.borderTopColor = c;
+    box.style.borderTopWidth = "2px";
+    box.appendChild(el("div", "v", String(v)));
+    box.appendChild(el("div", "k", k));
+    kpis.appendChild(box);
+  });
+}
+function makeCard(o) {
+  const t = TIER[o.tier];
+  const mf = maxFed(o), mn = maxFnd(o);
+  const div = el("div", "card");
+  div.dataset.id = o.id;
+  div.style.setProperty("--tc", t.c);
+  if (SEL === o.id) div.classList.add("sel");
+  const top = el("div", "card-top");
+  top.appendChild(logoEl(o.id, 60, "card-logo"));
+  const tt = el("div", "card-title");
+  const badge = el("span", "tier-badge", "T" + o.tier + " · " + t.l);
+  badge.style.background = t.c;
+  tt.append(badge, el("span", "card-name", o.display_name || o.name));
+  top.appendChild(tt);
+  div.appendChild(top);
+  div.appendChild(el("div", "card-loc", o.unlocated ? "Location not confirmed" : `${o.hq_city || "?"}, ${o.hq_state || "?"}`));
+  const meta = el("div", "card-meta");
+  {
+    const c = astSum(o, "cancelled_2025"), l = astSum(o, "active"), r = astSum(o, "reinstated");
+    if (c.n) {
+      const ch = el("span", "chip cut", `✕ Cut 2025–26: ${fmtM(c.value)}${c.n > 1 ? " (" + c.n + " awards)" : ""}`);
+      ch.title = `${c.n} federal award${c.n > 1 ? "s" : ""} terminated or cut short after Jan 20, 2025 (total obligated ${fmtM(c.value)}${c.deobligated > 0 ? "; " + fmtM(c.deobligated) + " deobligated" : ""}). Open the card for the modification text.`;
+      meta.appendChild(ch);
+    }
+    if (r.n) {
+      const ch = el("span", "chip rein", "Terminated, court-reinstated");
+      ch.title = "Terminated in 2025, then reinstated under a court order";
+      meta.appendChild(ch);
+    }
+    if (l.n) {
+      const ch = el("span", "chip live", l.value > 0 ? `Live: ${fmtM(l.value)}` : `Live: ${l.n} award${l.n > 1 ? "s" : ""}`);
+      ch.title = `${l.n} award${l.n > 1 ? "s" : ""} still running (total obligated ${fmtM(l.value)})`;
+      meta.appendChild(ch);
+    }
+  }
+  if (o.org_kind) meta.appendChild(el("span", "chip kind", o.org_kind));
+  if (faithOf(o) !== FAITH_NONE) {
+    const fc = el("span", "chip faith", (o.faith_basis || "").startsWith("network:") ? o.faith + " network" : o.faith);
+    fc.title = faithBasisText(o);
+    meta.appendChild(fc);
+  }
+  if (CONN[o.id]) meta.appendChild(el("span", "chip", CONN[o.id] + (CONN[o.id] === 1 ? " link" : " links")));
+  if (mf > 0) meta.appendChild(el("span", "chip fed", "Fed " + fmtM(mf)));
+  if (mn > 0) meta.appendChild(el("span", "chip fnd", "Found. " + fmtM(mn)));
+  const nc = o.counties_active?.length || 0;
+  if (nc > 0) meta.appendChild(el("span", "chip cty", nc + (nc === 1 ? " county" : " counties")));
+  const nev = (DATA.ev_by_org?.[o.id] || []).length;
+  if (nev > 0) meta.appendChild(el("span", "chip ev", nev + " evidence"));
+  if (meta.childNodes.length) div.appendChild(meta);
+  div.onclick = () => openOrg(o.id);
+  return div;
+}
+function faithBasisText(o) {
+  const b = o.faith_basis || "";
+  if (b === "name") return `${o.faith}: from the organization's name`;
+  if (b.startsWith("network:")) {
+    const p = DATA.orgs.find((x) => x.id === b.slice(8));
+    return `${o.faith}: affiliate of ${p ? p.display_name || p.name : b.slice(8)}'s resettlement network. The office itself may not be religious.`;
+  }
+  if (b.startsWith("NTEE")) return `${o.faith}: IRS religion code ${b.slice(5)}`;
+  return o.faith || "";
+}
+function filterActive() {
+  return SRCHSET !== null || F.tiers.size || F.states.size || F.kinds.size || F.faiths.size || F.stat.size;
+}
+function render() {
+  const all = filtered();
+  FSET = new Set(all.map((x) => x.o.id));
+  if (view === "map") mapApply();
+  else MAP_DIRTY = true;
+  if (view === "graph") graphApply();
+  else GRAPH_DIRTY = true;
+  const items = sortOrgs(all);
+  renderKPIs(items);
+  document.getElementById("result-count").textContent = `${items.length} of ${DATA.orgs.length} orgs`;
+  const grid = document.getElementById("grid");
+  grid.textContent = "";
+  if (!items.length) {
+    grid.appendChild(el("div", "empty", "No organizations match these filters."));
+    return;
+  }
+  items.forEach(({ o }) => grid.appendChild(makeCard(o)));
+}
+function edgeStyleKey(e) {
+  return e.subtype === "ffata_subaward" ? "ffata_subaward" : e.type;
+}
+const CLUSTER_KEEP_T3 = 12;
+const CLUSTER_KEEP_T6 = 15;
+let CL = null;
+const GW = 2400;
+const STATE_FIX = { AK: [-121, 27.5], HI: [-110, 26], PR: [-70, 26], GU: [-124, 26], VI: [-68, 27.5] };
+function clusterSetup(BYID) {
+  const t3 = DATA.orgs.filter((o) => o.tier === 3).sort((a, b) => maxFed(b) - maxFed(a));
+  const keep = new Set(t3.slice(0, CLUSTER_KEEP_T3).map((o) => o.id));
+  const fout = {};
+  DATA.edges.forEach((e) => {
+    if (e.type === "foundation_grant") fout[e.source] = (fout[e.source] || 0) + (e.amount || 0);
+  });
+  const t6 = DATA.orgs.filter((o) => o.tier === 6 && fout[o.id]).sort((a, b) => fout[b.id] - fout[a.id]);
+  const keep6 = new Set(t6.slice(0, CLUSTER_KEEP_T6).map((o) => o.id));
+  DATA.orgs.forEach((o) => {
+    if (o.tier === 6 && !fout[o.id]) keep6.add(o.id);
+  });
+  const memberKey = {}, members = {}, meta = {};
+  DATA.orgs.forEach((o) => {
+    let k = null;
+    if (o.tier === 2) k = "c2:" + (o.parent_id && BYID[o.parent_id] ? o.parent_id : "none");
+    else if (o.tier === 3 && !keep.has(o.id)) k = "c3:" + (o.hq_state || "??");
+    else if (o.tier === 6 && !keep6.has(o.id)) k = "c6:" + (/private/i.test(o.tier_label || "") ? "pf" : "pc");
+    if (!k) return;
+    memberKey[o.id] = k;
+    (members[k] = members[k] || []).push(o.id);
+  });
+  Object.keys(members).forEach((k) => {
+    const n = members[k].length;
+    if (k.startsWith("c2:")) {
+      const pid = k.slice(3), p = BYID[pid];
+      meta[k] = { tier: 2, n, label: (p ? p.display_name || p.name : "Unaffiliated") + ` · ${n} local affiliates`, parent: p ? pid : null };
+    } else if (k.startsWith("c6:")) {
+      meta[k] = { tier: 6, n, state: "funders", label: k === "c6:pf" ? `${n} more private foundations` : `${n} more grantmaking public charities` };
+    } else {
+      meta[k] = { tier: 3, n, state: k.slice(3), label: `${k.slice(3)} · ${n} ORR-funded providers` };
+    }
+  });
+  return { memberKey, members, meta, keep, keep6, expanded: new Set() };
+}
+function clusterPositions(BYID) {
+  const P = {};
+  const row = (ids, y, x0 = 80, x1 = GW - 80) => {
+    ids.forEach((id, i) => {
+      P[id] = { x: ids.length === 1 ? (x0 + x1) / 2 : x0 + (x1 - x0) * i / (ids.length - 1), y };
+    });
+  };
+  const byTier = (t) => DATA.orgs.filter((o) => o.tier === t).sort((a, b) => maxFed(b) - maxFed(a)).map((o) => o.id);
+  row([...byTier(6).filter((id) => CL.keep6.has(id)), ...byTier(5), ...byTier(4)], 0);
+  if (CL.meta["c6:pf"]) P["c6:pf"] = { x: GW * 0.33, y: -260 };
+  if (CL.meta["c6:pc"]) P["c6:pc"] = { x: GW * 0.67, y: -260 };
+  const t1 = byTier(1);
+  row(t1, 330, 200, GW - 200);
+  row([...CL.keep], 560, 300, GW - 300);
+  Object.entries(CL.meta).forEach(([k, m]) => {
+    if (m.tier !== 2) return;
+    const px = m.parent && P[m.parent] ? P[m.parent].x : GW - 120;
+    P[k] = { x: px, y: m.parent ? 800 : 560 };
+  });
+  const Y0 = 1100, MH = 1e3;
+  const proj = (lon, lat) => ({ x: 80 + (lon + 125) / 58 * (GW - 160), y: Y0 + (50 - lat) / 25 * MH });
+  Object.entries(CL.meta).forEach(([k, m]) => {
+    if (m.tier !== 3) return;
+    let lon = 0, lat = 0, c = 0;
+    CL.members[k].forEach((id) => {
+      const f = (BYID[id].offices || []).find((x) => x.lat != null);
+      if (f) {
+        lon += f.lon;
+        lat += f.lat;
+        c++;
+      }
+    });
+    const fix = STATE_FIX[m.state];
+    P[k] = fix ? proj(fix[0], fix[1]) : c ? proj(lon / c, lat / c) : proj(-70, 26);
+  });
+  const ks = Object.keys(CL.meta).filter((k) => CL.meta[k].tier === 3);
+  const rad = (k) => (34 + 9 * Math.sqrt(CL.meta[k].n)) / 2 + 14;
+  for (let pass = 0; pass < 80; pass++) {
+    let moved = false;
+    for (let i = 0; i < ks.length; i++) for (let j = i + 1; j < ks.length; j++) {
+      const a = P[ks[i]], b = P[ks[j]], dx = a.x - b.x, dy = a.y - b.y, d = Math.hypot(dx, dy) || 0.1, m = rad(ks[i]) + rad(ks[j]);
+      if (d < m) {
+        const s = (m - d) / 2 / d;
+        a.x += dx * s;
+        a.y += dy * s;
+        b.x -= dx * s;
+        b.y -= dy * s;
+        moved = true;
+      }
+    }
+    if (!moved) break;
+  }
+  return P;
+}
+function spiralAround(k) {
+  const c = cy.getElementById(k).position(), ids = CL.members[k];
+  const gA = Math.PI * (3 - Math.sqrt(5));
+  cy.batch(() => ids.forEach((id, i) => {
+    const r = 70 + 34 * Math.sqrt(i + 1);
+    cy.getElementById(id).position({ x: c.x + Math.cos(i * gA) * r, y: c.y + Math.sin(i * gA) * r });
+  }));
+}
+function clusterRender() {
+  if (!cy) return;
+  cy.batch(() => {
+    Object.keys(CL.meta).forEach((k) => {
+      const open = CL.expanded.has(k);
+      cy.getElementById(k).toggleClass("clhide", open);
+      cy.getElementById("hub:" + k).toggleClass("clhide", !open);
+      CL.members[k].forEach((id) => cy.getElementById(id).toggleClass("clhide", !open));
+    });
+    cy.edges().remove();
+    const rep = (id) => {
+      const k = CL.memberKey[id];
+      return k && !CL.expanded.has(k) ? k : id;
+    };
+    const groups = {};
+    DATA.edges.forEach((e, i) => {
+      const s = rep(e.source), t = rep(e.target);
+      if (s === t) return;
+      const sk = edgeStyleKey(e), g = `${s}|${t}|${sk}`;
+      (groups[g] = groups[g] || { s, t, sk, idx: [] }).idx.push(i);
+    });
+    const add = [];
+    Object.entries(groups).forEach(([g, G]) => {
+      const es = EDGE_STYLE[G.sk] || EDGE_STYLE.federal_award;
+      if (G.idx.length === 1 && G.s === DATA.edges[G.idx[0]].source && G.t === DATA.edges[G.idx[0]].target) {
+        const i = G.idx[0], e = DATA.edges[i];
+        add.push({ group: "edges", data: {
+          id: "e" + i,
+          source: e.source,
+          target: e.target,
+          type: e.type,
+          subtype: e.subtype || "",
+          col: es.c,
+          width: es.w,
+          dash: es.d || "none",
+          label: e.years || "",
+          amount: e.amount,
+          years: e.years,
+          evidence_ids: e.evidence_ids || []
+        } });
+      } else {
+        const nm = (id) => {
+          const o = DATA.orgs.find((x) => x.id === id);
+          return o ? o.display_name || o.name : id;
+        };
+        const pairs = G.idx.map((i) => nm(DATA.edges[i].source) + " → " + nm(DATA.edges[i].target));
+        add.push({ group: "edges", data: {
+          id: "a:" + g,
+          source: G.s,
+          target: G.t,
+          agg: true,
+          n: G.idx.length,
+          sk: G.sk,
+          pairs,
+          col: es.c,
+          width: Math.min(es.w + Math.log2(G.idx.length), 7),
+          dash: es.d || "none",
+          label: String(G.idx.length)
+        } });
+      }
+    });
+    cy.add(add);
+  });
+  const btn = document.getElementById("g-filter-toggle");
+  if (btn) btn.textContent = CL.expanded.size ? "Collapse all" : "Expand all";
+}
+function clusterExpand(k) {
+  if (!CL.meta[k] || CL.expanded.has(k)) return;
+  CL.expanded.add(k);
+  spiralAround(k);
+}
+function focusOrg(id) {
+  if (!cy) return;
+  const k = CL.memberKey[id];
+  if (k && !CL.expanded.has(k)) {
+    clusterExpand(k);
+    clusterRender();
+  }
+  cy.nodes().removeClass("hl");
+  const n = cy.getElementById(id);
+  if (n.length) {
+    n.addClass("hl");
+    cy.animate({ fit: { eles: n.closedNeighborhood(), padding: 80 } }, { duration: 350 });
+  }
+}
+function initGraph() {
+  if (cy || !DATA) return;
+  const BYID = {};
+  DATA.orgs.forEach((o) => BYID[o.id] = o);
+  const BIG = DATA.orgs.length > BIG_THRESHOLD;
+  CL = clusterSetup(BYID);
+  const pos = clusterPositions(BYID);
+  const els = [];
+  DATA.orgs.forEach((o) => {
+    const t = TIER[o.tier];
+    const mf = maxFed(o);
+    const sz = mf <= 0 ? 26 : 22 + Math.log10(mf / 1e6 + 1) * 8;
+    const lg = LOGOS[o.id];
+    const shape = lg?.node_shape === "rsq" ? "round-rectangle" : "ellipse";
+    const logoUri = lg?.node_uri || lg?.uri || null;
+    const hasBg = !!logoUri;
+    const clsList = ["org"];
+    if (BIG && hasBg) clsList.push("deferlogo");
+    if (CL.memberKey[o.id]) clsList.push("clhide");
+    els.push({
+      data: {
+        id: o.id,
+        label: o.display_name || o.name,
+        tier: o.tier,
+        col: t.c,
+        bg: t.bg,
+        size: sz,
+        hasLogo: hasBg,
+        logoUri,
+        logoBg: lg?.tile || t.bg,
+        shape
+      },
+      position: pos[o.id] || { x: GW / 2, y: 600 },
+      classes: clsList.join(" ")
+    });
+  });
+  Object.entries(CL.meta).forEach(([k, m]) => {
+    const t = TIER[m.tier];
+    els.push({
+      data: { id: k, label: m.label, col: t.c, bg: t.bg, size: 34 + 9 * Math.sqrt(m.n), n: String(m.n) + "\n" + (m.tier === 3 ? m.state : m.tier === 6 ? "funders" : "affil."), cluster: true },
+      position: pos[k],
+      classes: "cluster"
+    });
+    els.push({
+      data: { id: "hub:" + k, label: `− collapse ${m.tier === 3 ? m.state : m.tier === 6 ? "funders" : "affiliates"} (${m.n})`, col: t.c, hub: k },
+      position: pos[k],
+      classes: "hub clhide"
+    });
+  });
+  cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements: els,
+    wheelSensitivity: 0.2,
+    textureOnViewport: false,
+    hideEdgesOnViewport: true,
+    style: [
+      { selector: "node.org", style: {
+        "shape": "data(shape)",
+        "background-color": "data(col)",
+        "background-opacity": 0.88,
+        "background-image": "data(logoUri)",
+        "background-fit": "contain",
+        "background-clip": "none",
+        "background-image-opacity": (n) => n.data("hasLogo") ? 1 : 0,
+        "width": "data(size)",
+        "height": "data(size)",
+        "border-width": 1.5,
+        "border-color": "#ffffff99",
+        "label": "data(label)",
+        "font-size": "9px",
+        "font-weight": "600",
+        "color": "#1A1A1A",
+        "text-wrap": "wrap",
+        "text-max-width": "80px",
+        "text-valign": "bottom",
+        "text-margin-y": 3,
+        "text-background-color": "#fff",
+        "text-background-opacity": 0.8,
+        "text-background-padding": "2px",
+        "text-border-opacity": 0
+      } },
+      { selector: "node.cluster", style: {
+        "shape": "ellipse",
+        "width": "data(size)",
+        "height": "data(size)",
+        "background-color": "data(bg)",
+        "border-width": 3,
+        "border-color": "data(col)",
+        "label": "data(n)",
+        "text-valign": "center",
+        "text-halign": "center",
+        "font-size": (n) => Math.max(11, Math.min(24, n.data("size") / 3.4)) + "px",
+        "font-weight": "800",
+        "color": "data(col)",
+        "text-wrap": "wrap",
+        "line-height": 1.05
+      } },
+      { selector: "node.cluster.lbl", style: {} },
+      { selector: "node.hub", style: {
+        "shape": "round-rectangle",
+        "width": "label",
+        "height": 18,
+        "padding": "4px",
+        "background-color": "#fff",
+        "border-width": 1.5,
+        "border-color": "data(col)",
+        "label": "data(label)",
+        "font-size": "10px",
+        "font-weight": "700",
+        "color": "data(col)",
+        "text-valign": "center",
+        "text-halign": "center"
+      } },
+      { selector: ".clhide", style: { "display": "none" } },
+      { selector: ".deferlogo", style: { "background-image": "none", "background-image-opacity": 0 } },
+      { selector: "node:selected,node.hl", style: { "border-width": 3, "border-color": "#1A1A1A" } },
+      { selector: "node.dim", style: { "opacity": 0.12 } },
+      { selector: "edge", style: {
+        "width": "data(width)",
+        "line-color": "data(col)",
+        "line-style": (e) => e.data("dash") === "none" ? "solid" : "dashed",
+        "line-dash-pattern": (e) => e.data("dash") === "none" ? [0] : (e.data("dash") || "4 3").split(" ").map(Number),
+        "target-arrow-shape": "triangle",
+        "target-arrow-color": "data(col)",
+        "arrow-scale": 0.7,
+        "curve-style": "straight",
+        "opacity": 0.16
+      } },
+      { selector: "edge[?agg]", style: {
+        "label": "data(label)",
+        "font-size": "9px",
+        "color": "#555",
+        "text-background-color": "#fff",
+        "text-background-opacity": 0.85,
+        "text-background-padding": "1px"
+      } },
+      { selector: "edge.nbr", style: { "opacity": 0.95, "z-index": 9 } },
+      { selector: "edge:selected,edge.hl", style: { "opacity": 1, "width": (e) => e.data("width") + 1 } }
+    ],
+    layout: { name: "preset" }
+  });
+  window.cy = cy;
+  clusterRender();
+  const evXY = (e) => {
+    const r = document.getElementById("cy").getBoundingClientRect();
+    return [r.left + e.renderedPosition.x, r.top + e.renderedPosition.y];
+  };
+  cy.on("mouseover", "node.cluster", (e) => {
+    const k = e.target.id();
+    showTip(CL.meta[k].label, CL.members[k].map((id) => BYID[id]), "Click to expand and zoom in", ...evXY(e));
+  });
+  cy.on("mouseover", "node.org", (e) => {
+    const o = BYID[e.target.id()];
+    if (o) showTip(o.display_name || o.name, null, `T${o.tier} ${TIER[o.tier].l}${o.hq_state ? " · " + (o.hq_city || "") + ", " + o.hq_state : ""}`, ...evXY(e));
+  });
+  cy.on("mouseover", "edge[?agg]", (e) => {
+    const d = e.target.data();
+    showTip(`${d.n} ${EDGE_STYLE[d.sk]?.l || "links"} grouped`, null, d.pairs.slice(0, 12).join("\n") + (d.pairs.length > 12 ? `
++ ${d.pairs.length - 12} more` : "") + "\nClick to expand both ends", ...evXY(e));
+  });
+  cy.on("mouseout", "node,edge", hideTip);
+  cy.on("viewport", hideTip);
+  cy.on("mouseover", "node", (e) => {
+    cy.edges().removeClass("nbr");
+    e.target.connectedEdges().addClass("nbr");
+  });
+  cy.on("mouseout", "node", () => cy.edges().removeClass("nbr"));
+  cy.on("tap", "node", (e) => {
+    const d = e.target.data();
+    if (d.cluster) {
+      hideTip();
+      clusterExpand(d.id);
+      clusterRender();
+      graphApply();
+      cy.animate({ fit: { eles: cy.getElementById("hub:" + d.id).union(cy.nodes().filter((n) => CL.memberKey[n.id()] === d.id)), padding: 60 } }, { duration: 350 });
+      return;
+    }
+    if (d.hub) {
+      CL.expanded.delete(d.hub);
+      clusterRender();
+      graphApply();
+      return;
+    }
+    const o = BYID[d.id];
+    if (o) openOrg(o.id);
+  });
+  cy.on("tap", "edge", (e) => {
+    const d = e.target.data();
+    if (d.agg) {
+      hideTip();
+      [d.source, d.target].forEach((k) => clusterExpand(k));
+      clusterRender();
+      const ks = [d.source, d.target];
+      const ns = cy.nodes(":visible").filter((n) => ks.includes(CL.memberKey[n.id()]) || ks.includes(n.id()) || ks.includes(n.data("hub")));
+      if (ns.length) cy.animate({ fit: { eles: ns, padding: 60 } }, { duration: 350 });
+      return;
+    }
+    openEdge(d);
+  });
+  cy.on("tap", (e) => {
+    if (e.target === cy) closeDrawer();
+  });
+  buildGraphLegend();
+  document.getElementById("gz+").onclick = () => cy.zoom(cy.zoom() * 1.3);
+  document.getElementById("gz-").onclick = () => cy.zoom(cy.zoom() / 1.3);
+  document.getElementById("gfit").onclick = () => cy.fit(cy.nodes(":visible"), 40);
+  if (BIG) {
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(() => cb({ timeRemaining: () => 0 }), 16));
+    const pending = cy.nodes(".deferlogo").toArray();
+    (function step() {
+      const chunk = pending.splice(0, 48);
+      if (!chunk.length) return;
+      cy.batch(() => chunk.forEach((n) => n.removeClass("deferlogo")));
+      if (pending.length) idle(step);
+    })();
+  }
+  cy.fit(cy.nodes(":visible"), 40);
+  graphApply();
+}
+function graphApply() {
+  if (!cy) return;
+  GRAPH_DIRTY = false;
+  const act = filterActive();
+  cy.batch(() => {
+    cy.nodes().removeClass("dim");
+    if (!act) return;
+    cy.nodes("node.org").forEach((n) => {
+      if (!FSET.has(n.id())) n.addClass("dim");
+    });
+    cy.nodes("node.cluster").forEach((n) => {
+      if (!CL.members[n.id()].some((id) => FSET.has(id))) n.addClass("dim");
+    });
+  });
+  if (act && FSET.size && FSET.size <= 40) {
+    let opened = false;
+    FSET.forEach((id) => {
+      const k = CL.memberKey[id];
+      if (k && !CL.expanded.has(k)) {
+        clusterExpand(k);
+        opened = true;
+      }
+    });
+    if (opened) {
+      clusterRender();
+      return graphApply();
+    }
+    const ns = cy.collection([...FSET].map((id) => cy.getElementById(id))).filter(":visible");
+    if (ns.length) cy.animate({ fit: { eles: ns, padding: 90 } }, { duration: 300 });
+  }
+}
+function toggleGraphFilter() {
+  if (!cy) return;
+  if (CL.expanded.size) {
+    CL.expanded.clear();
+  } else {
+    Object.keys(CL.meta).forEach((k) => clusterExpand(k));
+  }
+  clusterRender();
+  graphApply();
+  cy.fit(cy.nodes(":visible"), 40);
+}
+function buildGraphLegend() {
+  const body = document.getElementById("legend-body");
+  let h = "<h4>Nodes</h4>";
+  [1, 2, 3, 4, 5, 6].forEach((t) => {
+    h += `<div class="row"><div class="sw" style="background:${TIER[t].c}"></div>T${t} ${TIER[t].l}</div>`;
+  });
+  h += '<h4 style="margin-top:8px">Edges</h4>';
+  const legendEdges = [
+    ["federal_award", EDGE_STYLE.federal_award],
+    ["ffata_subaward", EDGE_STYLE.ffata_subaward],
+    ["foundation_grant", EDGE_STYLE.foundation_grant],
+    ["regrant", EDGE_STYLE.regrant],
+    ["affiliate_of", EDGE_STYLE.affiliate_of],
+    ["schedule_r", EDGE_STYLE.schedule_r]
+  ];
+  legendEdges.forEach(([k, es]) => {
+    const bstyle = es.d ? `border-top:${es.w}px dashed ${es.c}` : `border-top:${es.w}px solid ${es.c}`;
+    h += `<div class="row"><div class="ln" style="${bstyle}"></div>${es.l}</div>`;
+  });
+  h += '<h4 style="margin-top:8px">Clusters</h4><div class="row"><div class="sw" style="background:#fff;border:2px solid #555;border-radius:50%"></div>Number = orgs grouped. Hover to list them, click to expand and zoom.</div>';
+  h += '<div style="font-size:10.5px;color:#999;margin-top:4px">Local affiliates sit under their national agency. ORR-funded providers are grouped by HQ state, laid out like a map. Line labels = number of links grouped (hover to list them). The 12 largest ORR providers and 15 largest private funders are shown individually; the rest of the funders sit in two bubbles at the top.</div>';
+  h += '<div style="font-size:10.5px;color:#999;margin-top:6px">Node size = largest single federal award (log scale)</div>';
+  body.innerHTML = h;
+}
+function toggleLegend() {
+  legendOpen = !legendOpen;
+  document.getElementById("legend-body").style.display = legendOpen ? "" : "none";
+  document.getElementById("legend-arrow").textContent = legendOpen ? "▾" : "▸";
+}
+function showTip(title, orgs, foot, x, y) {
+  const t = document.getElementById("ltip");
+  t.textContent = "";
+  t.appendChild(el("b", null, title));
+  if (orgs && orgs.length) {
+    const ul = el("ul");
+    const top = [...orgs].sort((a, b) => orgRank(b) - orgRank(a));
+    top.slice(0, 12).forEach((o) => ul.appendChild(el("li", null, (o.display_name || o.name) + (o.hq_state && !/\(/.test(o.display_name || o.name) ? ` (${o.hq_city ? o.hq_city + ", " : ""}${o.hq_state})` : ""))));
+    t.appendChild(ul);
+    if (top.length > 12) t.appendChild(el("div", "more", `+ ${top.length - 12} more`));
+  }
+  if (foot) {
+    const f = el("div", "more", foot);
+    f.style.whiteSpace = "pre-line";
+    t.appendChild(f);
+  }
+  t.style.display = "block";
+  const w = t.offsetWidth, h = t.offsetHeight;
+  t.style.left = Math.min(x + 14, innerWidth - w - 8) + "px";
+  t.style.top = Math.min(y + 14, innerHeight - h - 8) + "px";
+}
+function hideTip() {
+  document.getElementById("ltip").style.display = "none";
+}
+let LMAP = null, MCL = null, MARK = {}, OFFLAYER = null;
+function orgPoint(o) {
+  if (o.unlocated) return null;
+  const f = (o.offices || []).find((x) => x.kind === "hq" && x.lat != null) || (o.offices || []).find((x) => x.lat != null);
+  return f ? [f.lat, f.lon] : null;
+}
+function markerIcon(o, sel) {
+  const t = TIER[o.tier], lg = LOGOS[o.id], sz = o.tier === 1 ? 42 : o.tier === 6 ? 34 : 30;
+  const uri = lg?.node_uri || lg?.uri;
+  const inner = uri ? `<img src="${uri}" alt="">` : `T${o.tier}`;
+  return L.divIcon({
+    className: "",
+    iconSize: [sz, sz],
+    iconAnchor: [sz / 2, sz / 2],
+    html: `<div class="mk${lg?.node_shape === "rsq" ? " rsq" : ""}${sel ? " sel" : ""}" style="--tc:${t.c};width:${sz}px;height:${sz}px;${uri && lg.tile ? "background:" + lg.tile : ""}">${inner}</div>`
+  });
+}
+function initMap() {
+  if (LMAP) return;
+  LMAP = L.map("lmap", { zoomControl: true, preferCanvas: false, worldCopyJump: true, minZoom: 2 }).setView([39, -96], 4);
+  const TILE_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  L.tileLayer(TILE_URL, {
+    maxZoom: 18,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(LMAP);
+  MCL = L.markerClusterGroup({
+    maxClusterRadius: 45,
+    showCoverageOnHover: false,
+    spiderfyOnMaxZoom: true,
+    zoomToBoundsOnClick: true,
+    chunkedLoading: true,
+    iconCreateFunction: (c) => {
+      const n = c.getChildCount(), d = n < 10 ? 30 : n < 50 ? 38 : n < 200 ? 46 : 54;
+      return L.divIcon({ className: "", iconSize: [d + 10, d + 10], html: `<div class="mcl" style="width:${d + 10}px;height:${d + 10}px"><span style="width:${d}px;height:${d}px">${n}</span></div>` });
+    }
+  });
+  MCL.on("clustermouseover", (e) => {
+    const ms = e.layer.getAllChildMarkers();
+    const pt = e.originalEvent;
+    showTip(`${ms.length} organizations here`, ms.map((m) => m.__org), "Click to zoom in", pt.clientX, pt.clientY);
+  });
+  MCL.on("clustermouseout", hideTip);
+  MCL.on("animationend", hideTip);
+  LMAP.addLayer(MCL);
+  LMAP.on("click", () => {
+    if (OFFLAYER) {
+      LMAP.removeLayer(OFFLAYER);
+      OFFLAYER = null;
+    }
+  });
+  MAP_DIRTY = true;
+}
+function mapApply() {
+  if (!LMAP) return;
+  MAP_DIRTY = false;
+  MCL.clearLayers();
+  MARK = {};
+  const ms = [];
+  DATA.orgs.forEach((o) => {
+    if (FSET && !FSET.has(o.id)) return;
+    const p = orgPoint(o);
+    if (!p) return;
+    const m = L.marker(p, { icon: markerIcon(o, SEL === o.id), riseOnHover: true, zIndexOffset: o.tier === 1 ? 1e3 : 0 });
+    m.__org = o;
+    m.on("mouseover", (e) => {
+      const ev = e.originalEvent;
+      showTip(o.display_name || o.name, null, `T${o.tier} ${TIER[o.tier].l} · ${o.hq_city || ""}, ${o.hq_state || ""}
+Click for details`, ev.clientX, ev.clientY);
+    });
+    m.on("mouseout", hideTip);
+    m.on("click", () => {
+      hideTip();
+      openOrg(o.id);
+    });
+    MARK[o.id] = m;
+    ms.push(m);
+  });
+  MCL.addLayers(ms);
+  const nUn = (FSET ? [...FSET].map((id) => DATA.orgs.find((o) => o.id === id)) : DATA.orgs).filter((o) => o && !orgPoint(o)).length;
+  document.getElementById("map-note").textContent = `${ms.length} organizations, one pin each at headquarters${nUn ? ` (${nUn} without a confirmed location are not shown)` : ""}. Numbers are clusters: hover to see who is inside, click to zoom in. Open an organization to see its other offices.`;
+}
+function mapFocus(id) {
+  initMap();
+  if (MAP_DIRTY) mapApply();
+  const o = DATA.orgs.find((x) => x.id === id), m = MARK[id];
+  if (OFFLAYER) {
+    LMAP.removeLayer(OFFLAYER);
+    OFFLAYER = null;
+  }
+  if (!o) return;
+  const offs = (o.offices || []).filter((f) => f.lat != null);
+  if (offs.length > 1) {
+    OFFLAYER = L.layerGroup(offs.filter((f) => f.kind !== "hq").map((f) => L.circleMarker([f.lat, f.lon], { radius: 5, color: TIER[o.tier].c, weight: 2, fillColor: "#fff", fillOpacity: 1 }).bindTooltip(`${f.kind === "place_of_performance" ? "Award site" : "Office"}: ${f.city}, ${f.state}`))).addTo(LMAP);
+  }
+  if (m) {
+    MCL.zoomToShowLayer(m, () => {
+      m.setIcon(markerIcon(o, true));
+      if (offs.length > 1) LMAP.fitBounds(L.latLngBounds(offs.map((f) => [f.lat, f.lon])).pad(0.2), { maxZoom: 9 });
+    });
+  } else if (offs.length) LMAP.fitBounds(L.latLngBounds(offs.map((f) => [f.lat, f.lon])).pad(0.2), { maxZoom: 9 });
+}
+const EV_KIND_LABEL = {
+  usaspending_award: "Federal award",
+  usaspending_subaward: "FFATA subaward",
+  usaspending_recipient: "SAM registration",
+  propublica_org: "ProPublica 990",
+  irs_990_xml: "IRS 990 XML",
+  schedule_r: "Schedule R",
+  pf_grant: "Foundation grant",
+  affiliate_directory: "Affiliate directory"
+};
+function renderEvidenceList(ev_ids, groupByKind = false) {
+  if (!ev_ids || !ev_ids.length) return null;
+  const frag = document.createDocumentFragment();
+  if (groupByKind && ev_ids.length > 10) {
+    const groups = {};
+    ev_ids.forEach((eid) => {
+      const ev = DATA.evidence?.[eid];
+      if (!ev) return;
+      (groups[ev.kind || "other"] = groups[ev.kind || "other"] || []).push(eid);
+    });
+    Object.entries(groups).sort((a, b) => b[1].length - a[1].length).forEach(([kind, ids]) => {
+      const sec = el("div");
+      sec.style.cssText = "margin:4px 0";
+      const hd = el("div");
+      hd.style.cssText = "font-size:10.5px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.3px;margin:6px 0 3px";
+      hd.textContent = `${EV_KIND_LABEL[kind] || kind} (${ids.length})`;
+      sec.appendChild(hd);
+      const visCount = Math.min(5, ids.length);
+      ids.slice(0, visCount).forEach((eid) => {
+        const ev = DATA.evidence?.[eid];
+        if (ev) sec.appendChild(buildEvItem(ev, eid));
+      });
+      if (ids.length > visCount) {
+        const more = el("div", "fy");
+        more.style.cursor = "pointer";
+        more.style.color = "var(--link)";
+        more.textContent = `+ ${ids.length - visCount} more → click to expand`;
+        more.onclick = () => {
+          more.remove();
+          ids.slice(visCount).forEach((eid) => {
+            const ev = DATA.evidence?.[eid];
+            if (ev) sec.appendChild(buildEvItem(ev, eid));
+          });
+        };
+        sec.appendChild(more);
+      }
+      frag.appendChild(sec);
+    });
+  } else {
+    ev_ids.slice(0, 6).forEach((eid) => {
+      const ev = DATA.evidence?.[eid];
+      if (ev) frag.appendChild(buildEvItem(ev, eid));
+    });
+    if (ev_ids.length > 6) frag.appendChild(el("div", "fy", `+ ${ev_ids.length - 6} more evidence items`));
+  }
+  return frag;
+}
+function buildEvItem(ev, eid) {
+  const div = el("div", "ev-item " + (ev.grade === "A" ? "ev-grade-a" : "ev-grade-b"));
+  const isSub = ev.kind === "usaspending_subaward";
+  const kindLabel = EV_KIND_LABEL[ev.kind] || (isSub ? "sub-award" : ev.kind || "source");
+  const kindSpan = el("span", "ev-kind", kindLabel);
+  kindSpan.style.background = EV_KIND_COLOR[ev.kind] || "#6B6F76";
+  const gradeSpan = el("span", null, ` Grade ${ev.grade || "B"}`);
+  gradeSpan.style.cssText = "font-size:10px;color:var(--dim)";
+  const topDiv = el("div");
+  topDiv.appendChild(kindSpan);
+  topDiv.appendChild(gradeSpan);
+  div.appendChild(topDiv);
+  if (isSub && ev.subaward_id) {
+    const primeId = (ev.live_url || "").match(/\/award\/([^/]+)\//)?.[1] || "prime";
+    const sd = el("div", "ev-excerpt", `Sub-Award ${ev.subaward_id} under prime ${primeId}`);
+    sd.style.wordBreak = "break-all";
+    div.appendChild(sd);
+  } else if (ev.row_ref || ev.excerpt) {
+    div.appendChild(el("div", "ev-excerpt", (ev.row_ref || ev.excerpt || "").slice(0, 160)));
+  }
+  const links = el("div", "ev-links");
+  if (ev.live_url) {
+    const lbl = isSub ? "↗ Prime award (usaspending.gov)" : "↗ Live";
+    const a = el("a", null, lbl);
+    a.href = ev.live_url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    links.appendChild(a);
+  }
+  div.appendChild(links);
+  return div;
+}
+function openOrg(id) {
+  SEL = id;
+  if (cy) {
+    cy.nodes().removeClass("hl");
+    const n = cy.getElementById(id);
+    if (n.length) n.addClass("hl");
+  }
+  if (view === "map") mapFocus(id);
+  document.querySelectorAll(".card").forEach((c) => c.classList.toggle("sel", c.dataset.id === id));
+  const o = DATA.orgs.find((x) => x.id === id);
+  if (!o) return;
+  renderOrgDrawer(o);
+  const u = new URL(location.href);
+  u.searchParams.set("org", id);
+  history.replaceState(null, "", u);
+}
+const KIND_SYM = { hq: "●", office: "○", place_of_performance: "·" };
+function renderOrgDrawer(o) {
+  const d = document.getElementById("dinner");
+  d.textContent = "";
+  const SRCS = DATA.sources || {};
+  const t = TIER[o.tier];
+  const dispName = o.display_name || o.name;
+  const dl = logoEl(o.id, 56, "org-logo");
+  dl.style.width = "auto";
+  dl.style.maxWidth = "170px";
+  const dimg = dl.querySelector("img");
+  if (dimg) {
+    dimg.style.width = "auto";
+    dimg.style.maxWidth = "160px";
+    dimg.style.height = "100%";
+  }
+  d.appendChild(dl);
+  if (LOGOS[o.id]?.parent_mark || LOGOS[o.id]?.generated_badge) {
+    const lg = LOGOS[o.id];
+    const pn = el("div", "logo-note", lg.parent_mark ? "Logo shown is the parent organization's: " + lg.parent_mark + (lg.local_word ? ' (with "' + lg.local_word + '" added)' : "") : "No public logo found; badge shows the organization's name (and HQ city where offices share a name).");
+    pn.style.cssText = "font-size:11px;color:#6b7280;margin:2px 0 6px";
+    d.appendChild(pn);
+  }
+  d.appendChild(el("div", "org-name", dispName));
+  const sub = el("div", "org-sub");
+  const badge = el("span", "tier-badge", "T" + o.tier + " " + t.l);
+  badge.style.background = t.c;
+  sub.appendChild(badge);
+  if (o.ein || o.eins_all?.length) {
+    const eins = (o.eins_all?.length ? o.eins_all : [o.ein]).filter(Boolean);
+    sub.append(` EIN ${eins.join(", ")}`);
+  }
+  if (o.org_kind) {
+    const kc = el("span", "chip kind", o.org_kind);
+    kc.title = "Recipient type (" + (o.org_kind_basis === "name" ? "from its name" : "IRS " + o.org_kind_basis) + "). Listed because it received documented refugee/ORR or grant money; not a resettlement NGO.";
+    sub.append(" ", kc);
+  }
+  if (o.grade) sub.append(el("span", "chip", "Grade " + o.grade));
+  d.appendChild(sub);
+  if (o.display_name && o.display_name !== o.name) {
+    const dn = el("div");
+    dn.style.cssText = "font-size:11px;color:var(--dim);margin-bottom:4px";
+    dn.textContent = "Also known as: " + o.name;
+    d.appendChild(dn);
+  }
+  if (o.unlocated) {
+    const note = el("div", "dnote");
+    note.textContent = "Location not confirmed — this organization is included in cards and graph but has no verified office address.";
+    d.appendChild(note);
+  }
+  if (o.possible_office_of) {
+    const parentOrg = DATA.orgs.find((x) => x.id === o.possible_office_of);
+    const pnote = el("div", "dnote");
+    pnote.style.borderLeft = "2px dashed #aaa";
+    if (parentOrg) {
+      pnote.append("Possible office of ");
+      const a = el("a", null, parentOrg.display_name || parentOrg.name);
+      a.href = "#";
+      a.onclick = (ev) => {
+        ev.preventDefault();
+        openOrg(parentOrg.id);
+      };
+      pnote.appendChild(a);
+      pnote.append(" (not merged — addresses may be the same entity).");
+    } else {
+      pnote.textContent = `Possible office of ${o.possible_office_of} (not merged — addresses may be the same entity).`;
+    }
+    d.appendChild(pnote);
+  }
+  const aliases = [...o.aliases_all || o.aliases || []];
+  if (aliases.length) {
+    const aw = el("div");
+    aw.style.marginBottom = "6px";
+    aliases.forEach((a) => {
+      const sp = el("span", "alias-tag", a);
+      aw.appendChild(sp);
+    });
+    d.appendChild(aw);
+  }
+  const cn = el("div", "dconn");
+  if (view !== "map" && orgPoint(o)) {
+    const b = el("button", null, "◉ Show on map");
+    b.onclick = () => showOrgIn("map", o.id);
+    cn.appendChild(b);
+  }
+  if (view !== "graph") {
+    const b = el("button", null, "⋰ Show in network");
+    b.onclick = () => showOrgIn("graph", o.id);
+    cn.appendChild(b);
+  }
+  if (view !== "cards") {
+    const b = el("button", null, "▦ Show in cards");
+    b.onclick = () => showOrgIn("cards", o.id);
+    cn.appendChild(b);
+  }
+  d.appendChild(cn);
+  d.appendChild(el("h3", null, "Headquarters"));
+  if (!o.unlocated) {
+    d.appendChild(el("div", "drow", `${o.hq_city || "?"}, ${o.hq_state || "?"}`));
+    const srcLabel = HQ_SOURCE_LABEL[o.hq_source] || o.hq_source || "";
+    if (srcLabel) d.appendChild(el("div", "fy", "Address source: " + srcLabel));
+  } else {
+    d.appendChild(el("div", "drow", "Location not confirmed"));
+  }
+  if (o.offices?.length) {
+    const legend = el("div");
+    legend.style.cssText = "font-size:10.5px;color:var(--dim);margin:2px 0 5px";
+    legend.textContent = "● HQ  ○ Office  · Award site";
+    d.appendChild(legend);
+    o.offices.forEach((off) => {
+      const sym = KIND_SYM[off.kind] || "●";
+      const kLabel = off.kind === "place_of_performance" ? "Award site" : off.kind === "hq" ? "HQ" : "Office";
+      const yrsStr = off.years?.length ? ` (${kLabel} FY${off.years[0]}–${off.years[off.years.length - 1]})` : "";
+      d.appendChild(el("div", "drow", `${sym} ${off.city}, ${off.state}${yrsStr}`));
+    });
+  }
+  const AW = DATA.award_status?.awards || {};
+  if (o.award_status) {
+    const S = o.award_status.summary, keys = Object.keys(o.award_status.by_key || {});
+    const byS = (s) => keys.filter((k) => AW[k]?.status === s).sort((a, b) => (AW[b].value || 0) - (AW[a].value || 0));
+    d.appendChild(el("h3", null, "Federal award status"));
+    const line = el("div", "fy", [["cancelled_2025", "terminated or cut short 2025–26"], ["reinstated", "court-reinstated"], ["active", "still live"], ["expired", "expired"]].filter(([s]) => S[s].n).map(([s, l]) => `${S[s].n} ${l} (${fmtM(S[s].value)})`).join(" · ") + ". Totals are obligations over each award's life; groups are not added together.");
+    d.appendChild(line);
+    const awLink = (k, a) => {
+      const x = el("a", null, "#" + a.fain);
+      x.href = "https://www.usaspending.gov/award/" + encodeURIComponent(k);
+      x.target = "_blank";
+      x.rel = "noopener";
+      return x;
+    };
+    byS("cancelled_2025").forEach((k) => {
+      const a = AW[k], c = a.cancel || {};
+      const b = el("div", "astat");
+      const top = el("div");
+      top.append(el("span", "damt", fmtM(a.value) + " "), /^terminated/.test(c.basis || "") ? " terminated " : " cut short ", el("b", null, c.date || ""), ` · ${a.agency === "prm" ? "State Dept. PRM" : "HHS/ORR"} · `, awLink(k, a));
+      b.appendChild(top);
+      b.appendChild(el("div", "fy", `Period ${a.start || "?"} → ${c.end_before ? "was " + c.end_before + ", " : ""}now ${c.end_after || a.end || "?"} · basis: ${c.basis}${a.deobligated_2025 > 0 ? " · " + fmtM(a.deobligated_2025) + " deobligated" : ""}`));
+      if (c.desc) b.appendChild(el("q", null, c.desc));
+      d.appendChild(b);
+    });
+    byS("reinstated").forEach((k) => {
+      const a = AW[k], c = a.cancel || {}, r = a.reinstated || {};
+      const b = el("div", "astat rein");
+      const top = el("div");
+      top.append(el("span", "damt", fmtM(a.value) + " "), ` terminated ${c.date || ""}, reinstated ${r.date || ""} · `, awLink(k, a));
+      b.appendChild(top);
+      if (r.desc) b.appendChild(el("q", null, r.desc));
+      d.appendChild(b);
+    });
+    const live = byS("active");
+    if (live.length) {
+      const b = el("div", "astat live");
+      b.appendChild(el("div", null, `Still live: ${live.length} award${live.length > 1 ? "s" : ""}, ${fmtM(S.active.value)}`));
+      const LBL = { uc: "Unaccompanied children in HHS custody", formula: "Formula aid for refugees already here", discretionary: "Other ORR grants" };
+      ["uc", "formula", "discretionary"].forEach((bk) => {
+        const ks = live.filter((k) => (AW[k].live_bucket || "discretionary") === bk);
+        if (!ks.length) return;
+        b.appendChild(el("div", "lbh", LBL[bk]));
+        const ids = el("div", "fy");
+        ks.forEach((k) => {
+          const a = AW[k];
+          const x = awLink(k, a);
+          x.textContent += ` (${fmtM(a.value)}, to ${a.end})`;
+          x.style.marginRight = "8px";
+          ids.appendChild(x);
+        });
+        b.appendChild(ids);
+      });
+      d.appendChild(b);
+    }
+    const exp = byS("expired");
+    if (exp.length) {
+      const det = el("details", "astat exp");
+      det.appendChild(el("summary", null, `Previously expired: ${exp.length} award${exp.length > 1 ? "s" : ""}, ${fmtM(S.expired.value)}`));
+      const ids = el("div", "fy");
+      exp.forEach((k) => {
+        const a = AW[k];
+        const x = awLink(k, a);
+        x.textContent += ` (ended ${a.end})`;
+        x.style.marginRight = "8px";
+        ids.appendChild(x);
+      });
+      det.appendChild(ids);
+      d.appendChild(det);
+    }
+  }
+  const primeAwards = (o.federal || []).filter((f) => !f.is_subaward);
+  if (primeAwards.length) {
+    d.appendChild(el("h3", null, "Federal awards by program (documented; not a complete total; red = terminated or cut short, green = live)"));
+    primeAwards.forEach((f) => {
+      const box = el("div", "dfund");
+      const top = el("div");
+      top.appendChild(el("span", "damt", fmtMleast(f.amount)));
+      top.append(` · ${f.agency || ""}`);
+      box.appendChild(top);
+      const fyRange = f.fy_start && f.fy_end ? `FY${f.fy_start}–${f.fy_end}` : f.fy_start ? `FY${f.fy_start}` : f.years || "";
+      box.appendChild(el("div", "fy", `${f.cfda || f.program || ""}${fyRange ? " · " + fyRange : ""}`));
+      if (f.award_ids?.length) {
+        const aidDiv = el("div", "fy");
+        f.award_ids.forEach((aid, k) => {
+          const key = (f.award_keys || [])[k];
+          const a = el("a", null, `#${aid}`);
+          const st = key && DATA.award_status?.awards?.[key]?.status;
+          if (st) {
+            a.className = st === "cancelled_2025" ? "aid-cut" : st === "active" ? "aid-live" : st === "expired" ? "aid-exp" : "";
+            a.title = AST_LABEL[st] || "";
+          }
+          a.href = key ? `https://www.usaspending.gov/award/${encodeURIComponent(key)}` : `https://www.usaspending.gov/keyword_search/${encodeURIComponent(aid)}`;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.style.marginRight = "6px";
+          aidDiv.appendChild(a);
+        });
+        box.appendChild(aidDiv);
+      } else if (f.source_id && SRCS[f.source_id]) {
+        const src = SRCS[f.source_id];
+        const sl = el("div", "fy");
+        if (src.url) {
+          const a = el("a", null, src.title || src.url);
+          a.href = src.url;
+          a.target = "_blank";
+          sl.appendChild(a);
+        } else sl.textContent = src.title || f.source_id;
+        box.appendChild(sl);
+      }
+      if (f.evidence_ids?.length) {
+        const evFrag = renderEvidenceList(f.evidence_ids);
+        if (evFrag) box.appendChild(evFrag);
+      }
+      d.appendChild(box);
+    });
+  }
+  const subAwards = (o.federal || []).filter((f) => f.is_subaward);
+  if (subAwards.length) {
+    d.appendChild(el("h3", null, "Reported FFATA subawards (prime-reported, known incomplete; NOT added to federal awards above)"));
+    subAwards.forEach((f) => {
+      const box = el("div", "dfund");
+      box.style.borderLeftColor = "#f97316";
+      const top = el("div");
+      if (f.amount) {
+        top.appendChild(el("span", "damt", f.amount_label || fmtMleast(f.amount)));
+      } else {
+        top.appendChild(el("span", null, "Amount omitted (FFATA rows inconsistent)"));
+      }
+      top.append(` · via ${f.via_state ? "state agencies" : f.via ? f.via.join(", ") : "prime recipient"}`);
+      box.appendChild(top);
+      const fyRange = f.fy_start && f.fy_end ? `FY${f.fy_start}–${f.fy_end}` : f.fy_start ? `FY${f.fy_start}` : f.years || "";
+      if (fyRange) box.appendChild(el("div", "fy", fyRange));
+      if (f.subaward_ids?.length) {
+        box.appendChild(el("div", "fy", `Sub-Award IDs: ${f.subaward_ids.slice(0, 3).join(", ")}${f.subaward_ids.length > 3 ? " +more" : ""}`));
+      }
+      if (f.evidence_ids?.length) {
+        const evFrag = renderEvidenceList(f.evidence_ids);
+        if (evFrag) box.appendChild(evFrag);
+      }
+      d.appendChild(box);
+    });
+  }
+  if (o.govt_990?.length) {
+    d.appendChild(el("h3", null, "990 Part VIII govt grants (self-reported; not summed with federal awards)"));
+    const tbl = el("table", "t990");
+    const thead = el("tr");
+    ["Tax Year", "Amount", "Source"].forEach((h) => {
+      const th = el("th", null, h);
+      thead.appendChild(th);
+    });
+    tbl.appendChild(thead);
+    [...o.govt_990].sort((a, b) => (b.tax_year || 0) - (a.tax_year || 0)).forEach((g) => {
+      const tr = el("tr");
+      tr.appendChild(el("td", null, String(g.tax_year || "–")));
+      tr.appendChild(el("td", "damt", fmtM(g.amount)));
+      const tdS = el("td");
+      const filing_url = g.filing_url || (g.evidence_ids?.length ? DATA.evidence?.[g.evidence_ids[0]]?.live_url : null);
+      if (filing_url) {
+        const a = el("a", null, "ProPublica");
+        a.href = filing_url;
+        a.target = "_blank";
+        tdS.appendChild(a);
+      } else if (g.source_id && SRCS[g.source_id]) {
+        const src = SRCS[g.source_id];
+        if (src.url) {
+          const a = el("a", null, src.title || "Source");
+          a.href = src.url;
+          a.target = "_blank";
+          tdS.appendChild(a);
+        } else tdS.textContent = g.source_id;
+      }
+      tr.appendChild(tdS);
+      tbl.appendChild(tr);
+    });
+    d.appendChild(tbl);
+  }
+  const fndGrants = groupFoundation(o.foundation_in || []);
+  if (fndGrants.length) {
+    d.appendChild(el("h3", null, "Private grants received (IRS filings; not summed with federal awards)"));
+    fndGrants.slice(0, 12).forEach((f) => {
+      const box = el("div", "dfund");
+      const top = el("div");
+      top.appendChild(el("span", "damt", fmtMleast(f.amount)));
+      top.append(` · ${f.funder_name} · TY${f.y0}${f.y1 > f.y0 ? "–" + f.y1 : ""} · ${f.n} grant${f.n > 1 ? "s" : ""} (${f.form})`);
+      box.appendChild(top);
+      if (f.purpose) {
+        const pp = el("div", "fy");
+        pp.textContent = `Purpose: ${f.purpose}`;
+        box.appendChild(pp);
+      }
+      const evf = renderEvidenceList(f.ev.slice(0, 3));
+      if (evf) box.appendChild(evf);
+      d.appendChild(box);
+    });
+    if (fndGrants.length > 12) d.appendChild(el("div", "fy", `+ ${fndGrants.length - 12} more funders (see Connections)`));
+  }
+  const orgEvIds = DATA.ev_by_org?.[o.id] || [];
+  if (orgEvIds.length) {
+    d.appendChild(el("h3", null, `Evidence (${orgEvIds.length} items)`));
+    const evFrag = renderEvidenceList(orgEvIds, orgEvIds.length > 10);
+    if (evFrag) d.appendChild(evFrag);
+  }
+  const conns = DATA.edges.filter((e) => e.source === o.id || e.target === o.id);
+  if (conns.length) {
+    d.appendChild(el("h3", null, `Connections (${conns.length})`));
+    conns.forEach((e) => {
+      const other = DATA.orgs.find((x) => x.id === (e.source === o.id ? e.target : e.source));
+      if (!other) return;
+      const sk = edgeStyleKey(e);
+      const es = EDGE_STYLE[sk] || EDGE_STYLE.federal_award;
+      const row = el("div", "drow");
+      const dir = e.source === o.id ? "→ " : "← ";
+      row.append(dir);
+      const a = el("a", null, other.display_name || other.name);
+      a.href = "#";
+      a.onclick = (ev) => {
+        ev.preventDefault();
+        openOrg(other.id);
+      };
+      row.appendChild(a);
+      let extra = "";
+      if (e.type === "affiliate_of" && e.basis) extra = ` · ${e.basis}`;
+      if (e.subtype === "ffata_subaward" && e.via_state) extra += " · via state agencies";
+      row.append(` (${es.l}${e.years ? " · " + e.years : ""}${e.amount ? " · " + fmtMleast(e.amount) : ""}${extra})`);
+      const edgeEvIds = e.evidence_ids || [];
+      if (edgeEvIds.length) {
+        const evFrag = renderEvidenceList(edgeEvIds.slice(0, 2));
+        if (evFrag) row.appendChild(evFrag);
+      }
+      d.appendChild(row);
+    });
+  }
+  if (o.counties_active?.length) {
+    d.appendChild(el("h3", null, `Counties active (${o.counties_active.length})`));
+    const wrap = el("div", "dcountychips");
+    o.counties_active.forEach((f) => wrap.appendChild(el("span", "dcountychip", f)));
+    d.appendChild(wrap);
+    d.appendChild(el("div", "fy", "FIPS codes; documented office or placement only."));
+  }
+  if (o.notes) d.appendChild(el("div", "dnote", o.notes));
+  showDrawer();
+}
+function openEdge(d) {
+  const din = document.getElementById("dinner");
+  din.textContent = "";
+  const SRCS = DATA.sources || {};
+  const src = DATA.orgs.find((x) => x.id === d.source), tgt = DATA.orgs.find((x) => x.id === d.target);
+  const sk = d.subtype === "ffata_subaward" ? "ffata_subaward" : d.type;
+  const es = EDGE_STYLE[sk] || EDGE_STYLE.federal_award;
+  din.appendChild(el("h2", null, es.l));
+  din.appendChild(el("div", "org-sub", (src?.display_name || src?.name || d.source) + " → " + (tgt?.display_name || tgt?.name || d.target)));
+  if (d.amount) din.appendChild(el("div", "drow", fmtMleast(d.amount)));
+  if (d.years) din.appendChild(el("div", "drow", "Years: " + d.years));
+  if (d.source_id && SRCS[d.source_id]) {
+    const s = SRCS[d.source_id];
+    const row = el("div", "drow");
+    row.append("Source: ");
+    if (s.url) {
+      const a = el("a", null, s.title || s.url);
+      a.href = s.url;
+      a.target = "_blank";
+      row.appendChild(a);
+    } else row.append(s.title || d.source_id);
+    din.appendChild(row);
+  }
+  const edgeEvIds = d.evidence_ids || [];
+  if (edgeEvIds.length) {
+    din.appendChild(el("h3", null, `Evidence (${edgeEvIds.length})`));
+    const evFrag = renderEvidenceList(edgeEvIds);
+    if (evFrag) din.appendChild(evFrag);
+  }
+  const cn = el("div", "dconn");
+  if (src) {
+    const b = el("button", null, "Open " + (src.display_name || src.name));
+    b.onclick = () => openOrg(src.id);
+    cn.appendChild(b);
+  }
+  if (tgt) {
+    const b = el("button", null, "Open " + (tgt.display_name || tgt.name));
+    b.onclick = () => openOrg(tgt.id);
+    cn.appendChild(b);
+  }
+  din.appendChild(cn);
+  showDrawer();
+}
+function groupFoundation(grants) {
+  const m = {};
+  grants.forEach((g) => {
+    const k = g.funder_id || g.funder_name;
+    const r = m[k] = m[k] || { funder_name: g.funder_name, amount: 0, n: 0, y0: 9999, y1: 0, form: g.form || "990", purpose: g.purpose || "", ev: [] };
+    r.amount += g.amount || 0;
+    r.n++;
+    r.y0 = Math.min(r.y0, g.year);
+    r.y1 = Math.max(r.y1, g.year);
+    r.ev.push(...g.evidence_ids || []);
+  });
+  return Object.values(m).sort((a, b) => b.amount - a.amount);
+}
+function showDrawer() {
+  document.getElementById("drawer").classList.add("on");
+  document.getElementById("scrim").classList.add("on");
+}
+function closeDrawer() {
+  document.getElementById("drawer").classList.remove("on");
+  document.getElementById("scrim").classList.remove("on");
+  SEL = null;
+  document.querySelectorAll(".card").forEach((c) => c.classList.remove("sel"));
+  if (cy) cy.nodes().removeClass("hl");
+  if (OFFLAYER) {
+    LMAP.removeLayer(OFFLAYER);
+    OFFLAYER = null;
+  }
+  if (LMAP && view === "map") mapApply();
+  const u = new URL(location.href);
+  u.searchParams.delete("org");
+  history.replaceState(null, "", u);
+}
+const HINT = {
+  cards: "<b>Cards</b> · one card per organization. Filters on the left and the search box apply to all three views. Click a card for funding, evidence and connections.",
+  map: "<b>Map</b> · scroll or use ＋/－ to zoom. Numbered circles are clusters: hover to list who is inside, click to zoom in. Click a logo for details.",
+  graph: "<b>Network</b> · who funds or affiliates with whom. Numbered bubbles group organizations: hover to list them, click to expand and zoom. Numbered lines group links. Filters dim what doesn't match."
+};
+function switchView(v) {
+  if (!HINT[v]) v = "cards";
+  view = v;
+  hideTip();
+  document.getElementById("cardsmain").style.display = v === "cards" ? "block" : "none";
+  document.getElementById("graphview").style.display = v === "graph" ? "block" : "none";
+  document.getElementById("mapview").style.display = v === "map" ? "block" : "none";
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("on", t.dataset.v === v));
+  document.getElementById("hint").innerHTML = HINT[v];
+  if (v === "graph") {
+    initGraph();
+    if (cy) {
+      cy.resize();
+      if (GRAPH_DIRTY) graphApply();
+    }
+  }
+  if (v === "map") {
+    initMap();
+    LMAP.invalidateSize();
+    if (MAP_DIRTY) mapApply();
+  }
+  const u = new URL(location.href);
+  if (v === "cards") u.searchParams.delete("v");
+  else u.searchParams.set("v", v);
+  history.replaceState(null, "", u);
+  if (SEL) {
+    const o = DATA.orgs.find((x) => x.id === SEL);
+    if (o) renderOrgDrawer(o);
+  }
+}
+function showOrgIn(v, id) {
+  switchView(v);
+  if (v === "graph") setTimeout(() => focusOrg(id), 60);
+  else if (v === "map") setTimeout(() => mapFocus(id), 60);
+  else {
+    if (!FSET.has(id)) clearFilters();
+    setTimeout(() => {
+      const c = document.querySelector(`.card[data-id="${id}"]`);
+      if (c) {
+        c.scrollIntoView({ block: "center", behavior: "smooth" });
+        document.querySelectorAll(".card").forEach((x) => x.classList.toggle("sel", x.dataset.id === id));
+      }
+    }, 60);
+  }
+}
+document.querySelectorAll(".tab[data-v]").forEach((t) => t.onclick = () => switchView(t.dataset.v));
+function setTop() {
+  const h = document.querySelector("#mx-net>header").offsetHeight;
+  document.documentElement.style.setProperty("--hh", h + "px");
+  document.documentElement.style.setProperty("--top", h + document.getElementById("hint").offsetHeight + "px");
+}
+addEventListener("resize", () => {
+  setTop();
+  if (cy) cy.resize();
+  if (LMAP) LMAP.invalidateSize();
+});
+document.getElementById("search").addEventListener("input", (e) => {
+  setSearch(e.target.value);
+  buildFacets();
+  render();
+});
+document.getElementById("sortby").addEventListener("change", render);
+(window.__NGO_DATA__ ? Promise.resolve(window.__NGO_DATA__) : fetch("/migration-explorer/data/ngo.json").then((r) => r.json())).then((d) => {
+  DATA = d;
+  buildIdx();
+  document.getElementById("hcount").textContent = `${d.orgs.length} orgs · ${d.edges.length} edges`;
+  CONN = {};
+  DATA.edges.forEach((e) => {
+    CONN[e.source] = (CONN[e.source] || 0) + 1;
+    CONN[e.target] = (CONN[e.target] || 0) + 1;
+  });
+  buildFacets();
+  render();
+  const qp = new URLSearchParams(location.search);
+  switchView(qp.get("v") || "cards");
+  setTop();
+  const orgParam = qp.get("org");
+  if (orgParam && DATA.orgs.find((x) => x.id === orgParam)) {
+    openOrg(orgParam);
+    if (view === "graph") setTimeout(() => focusOrg(orgParam), 80);
+  }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    closeDrawer();
+    hideTip();
+    return;
+  }
+  if (/input|select|textarea/i.test(document.activeElement?.tagName || "") || e.metaKey || e.ctrlKey || e.altKey) return;
+  const v = { "1": "cards", "2": "map", "3": "graph" }[e.key];
+  if (v) switchView(v);
+});
+</script>
+
+</div>
+<script>
+(function() {
+  const sv = switchView;
+  switchView = function(v, ...a) {
+    const r = sv(v, ...a);
+    if (v !== "cards") {
+      const h = document.querySelector("#mx-net>header");
+      const y = h.getBoundingClientRect().top + scrollY;
+      if (Math.abs(scrollY - y) > 4) scrollTo({ top: y });
+      setTimeout(() => dispatchEvent(new Event("resize")), 50);
+    }
+    return r;
+  };
+  const q = new URLSearchParams(location.search);
+  if (q.get("v") && q.get("v") !== "cards" || q.get("org")) addEventListener("load", () => setTimeout(() => {
+    const h = document.querySelector("#mx-net>header");
+    scrollTo({ top: h.getBoundingClientRect().top + scrollY });
+    dispatchEvent(new Event("resize"));
+  }, 400));
+})();
+</script>
+<dialog class="dr-dialog" id="mx-net-dlg" aria-labelledby="mx-net-dlg-title">
+  <div class="dr-dialog__head"><h2 id="mx-net-dlg-title">About this network &amp; disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="mx-net-dlg-close" aria-label="Close">✕</button></div>
+  <div class="dr-dialog__body"><p><b>Limitations &amp; disclaimer.</b> Provided for research, educational, and journalistic purposes only. Compiled from public federal records (Census, ACS, CBP, USASpending, DHS, DOL, ORR, EOIR) and IRS filings, offered “as is” without warranty of any kind; it may contain errors or omissions. Foreign-born counts include naturalized citizens and every legal status – the Census does not ask legal status. Modeled estimates are labeled as such. Organizations appear because a public record documents federal money, a grant, or an affiliation; a listing describes that record only and alleges no wrongdoing. Dollar figures are documented minimums and dollar types are never added together. Every claim links to its source; please verify before relying on it.</p></div>
+</dialog>
+<script>
+(function() {
+  const d = document.getElementById("mx-net-dlg");
+  document.getElementById("mx-net-dlg-open").onclick = () => d.showModal();
+  document.getElementById("mx-net-dlg-close").onclick = () => d.close();
+  d.addEventListener("click", (e) => {
+    if (e.target === d) d.close();
+  });
+})();
+</script>

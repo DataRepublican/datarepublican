@@ -1,0 +1,297 @@
+---
+layout: default
+title: "Migration explorer – the border, the map, the money"
+permalink: /migration-explorer/
+---
+<style>
+main.page-column:has(.mx-page) {
+  container-type: normal;
+}
+.mx-page {
+  --mx-accent:#B22234;
+  font-family: var(--dr-font-content,"Libre Franklin",system-ui,sans-serif);
+}
+.mx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 0 12px;
+}
+.mx-bar .mx-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.mx-bar .mx-title {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+  color: var(--dr-ink-strong,#000);
+}
+.mx-bar .mx-sub {
+  font-size: var(--dr-text-meta,13px);
+  color: var(--dr-ink-faint,#6B7280);
+  line-height: 1.35;
+}
+.mx-bar .mx-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mx-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  background: var(--dr-fill,#EFF1F4);
+  border: 1px solid var(--dr-line,#D3D7DE);
+  border-radius: var(--dr-radius-control,.625rem);
+  padding: 3px;
+}
+.mx-page .mx-switch a,
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+  padding: 6px 11px;
+  border-radius: var(--dr-radius-sm,6px);
+  font-family: var(--dr-font-ui);
+  font-size: var(--dr-text-label,12px);
+  font-weight: 600;
+  color: var(--dr-ink-faint,#6B7280);
+  white-space: nowrap;
+  text-decoration: none;
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a:hover {
+  color: var(--dr-ink-strong,#000);
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a.on {
+  background: var(--dr-panel,#fff);
+  color: #B22234;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+@media (max-width: 600px) {
+  .mx-switch {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  :is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+    padding: 6px 8px;
+  }
+}
+#mx-hub {
+  --panel:var(--dr-panel,#fff);
+  --ink-strong:var(--dr-ink-strong,#000);
+  --muted:var(--dr-ink-muted,#5A5A5A);
+  --faint:var(--dr-ink-faint,#6B7280);
+  --line:var(--dr-line,#D3D7DE);
+  --line-strong:var(--dr-line-strong,#878D99);
+  --fill:var(--dr-fill,#EFF1F4);
+  --rad:var(--dr-radius-lg,.75rem);
+  line-height: 1.5;
+}
+#mx-hub * {
+  box-sizing: border-box;
+}
+#mx-hub a {
+  color: inherit;
+  text-decoration: none;
+}
+#mx-hub .wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+@media (max-width: 720px) {
+  #mx-hub .wrap {
+    padding: 0;
+  }
+}
+#mx-hub .hub-hero {
+  text-align: center;
+  padding: 6vh 0 1vh;
+}
+#mx-hub .kicker {
+  font-size: .8rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #B22234;
+  margin: 0 0 1em;
+}
+#mx-hub h1 {
+  font-size: clamp(2.3rem, 6vw, 4.2rem);
+  line-height: 1.03;
+  margin: 0 0 .28em;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--ink-strong);
+}
+#mx-hub .lede {
+  color: var(--muted);
+  font-size: 1.06rem;
+  line-height: 1.6;
+  max-width: 62ch;
+  margin: 0 auto;
+}
+#mx-hub .hub-cta {
+  margin-top: 1.6em;
+  color: #fff;
+  background: #B22234;
+  border-color: #B22234;
+}
+#mx-hub .hub-cta:hover {
+  background: #8E1B2A;
+}
+#mx-hub .hub-gallery {
+  margin: 4vh 0 2vh;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+#mx-hub .hub-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+@media (max-width: 720px) {
+  #mx-hub .hub-row {
+    grid-template-columns: 1fr;
+  }
+}
+#mx-hub .tile {
+  display: block;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--rad);
+  overflow: hidden;
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease,
+    border-color .16s ease;
+}
+#mx-hub .tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--line-strong);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .12);
+}
+#mx-hub .tile .shot {
+  display: block;
+  background: var(--fill);
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  aspect-ratio: 16/8.2;
+}
+#mx-hub .tile .shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+#mx-hub .tile.big .shot {
+  aspect-ratio: 16/6;
+}
+#mx-hub .tile .body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+#mx-hub .t-k {
+  font-size: .7rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #B22234;
+  margin: 0 0 .5em;
+}
+#mx-hub .t-h {
+  font-size: 1.42rem;
+  font-weight: 800;
+  letter-spacing: -.02em;
+  line-height: 1.12;
+  color: var(--ink-strong);
+  margin: 0 0 .35em;
+}
+#mx-hub .t-d {
+  font-size: .92rem;
+  line-height: 1.55;
+  color: var(--faint);
+  margin: 0 0 .8em;
+  font-weight: 400;
+}
+#mx-hub .t-go {
+  font-size: .9rem;
+  font-weight: 700;
+  color: #B22234;
+}
+#mx-hub .tile:hover .t-go {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+#mx-hub .hub-note {
+  color: var(--faint);
+  font-size: .84rem;
+  line-height: 1.6;
+  max-width: 76ch;
+  margin: 5vh auto 1.5vh;
+  text-align: center;
+}
+</style>
+
+<div class="mx-page" id="mx-hub">
+  <div class="wrap">
+    <section class="hub-hero">
+      <p class="kicker">Migration Explorer</p>
+      <h1>The border, the map,<br>and the money.</h1>
+      <p class="lede">What changed at the border after January 2025, where three decades of immigration
+        actually settled, county by county, and which organizations were paid to resettle people –
+        every number from federal records and public filings, linked to source.</p>
+      <a class="hub-cta dr-btn dr-btn--solid" href="/migration-explorer/tour/">See what changed at the border</a>
+    </section>
+
+    <section class="hub-gallery">
+      <a class="tile big" href="/migration-explorer/tour/">
+        <span class="shot"><img src="assets/montage/tour.jpg" alt="The border story – monthly encounters before and after February 2025"></span>
+        <span class="body">
+          <span class="t-k">The border</span>
+          <span class="t-h">One month in 2023 outnumbered the last nineteen</span>
+          <span class="t-d">Monthly encounters from CBP's own files, before and after the day-one orders.</span>
+          <span class="t-go">Read the numbers →</span>
+        </span>
+      </a>
+      <div class="hub-row">
+        <a class="tile" href="/migration-explorer/map/">
+          <span class="shot"><img src="assets/montage/map.jpg" alt="County map of foreign-born share, 1990–2024"></span>
+          <span class="body">
+            <span class="t-k">County map</span>
+            <span class="t-h">Where people settled</span>
+            <span class="t-d">Foreign-born share for every county, 1990–2024, by region and country of birth,
+              with sourced notes on 116 of the biggest jumps and the federal pathways behind them.</span>
+            <span class="t-go">Explore the map →</span>
+          </span>
+        </a>
+        <a class="tile" href="/migration-explorer/network/">
+          <span class="shot"><img src="assets/montage/network.jpg" alt="NGO network cards – resettlement agencies, affiliates, providers, funders"></span>
+          <span class="body">
+            <span class="t-k">The network</span>
+            <span class="t-h">Who was paid to resettle them</span>
+            <span class="t-d">Resettlement agencies, their local affiliates, ORR-funded providers and private
+              funders – each link backed by a federal award, subaward, or IRS filing row.</span>
+            <span class="t-go">Follow the money →</span>
+          </span>
+        </a>
+      </div>
+    </section>
+
+    <p class="hub-note">Foreign-born counts are Census and ACS estimates and include citizens and every legal
+      status; border figures are CBP encounters. Dollar figures are documented minimums and are never added
+      across types. Organizations are listed because a public record documents money or an affiliation – a
+      listing alleges no wrongdoing.</p>
+  </div>
+</div>

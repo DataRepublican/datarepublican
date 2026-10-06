@@ -8,6 +8,7 @@ module.exports = {
     './browse/**/*.{html,js}',
     './!(990tools|node_modules|docs|vendor|_site|test-results)/**/*.{html,js,md}',
     './*.{html,js}',
+    '!./migration-explorer/data/**',
   ],
   safelist: [
     'min-h-[75vh]',

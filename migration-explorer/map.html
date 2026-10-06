@@ -1,0 +1,2965 @@
+---
+layout: default
+title: "County map – Migration explorer"
+permalink: /migration-explorer/map/
+---
+<style>
+main.page-column:has(.mx-page) {
+  container-type: normal;
+}
+.mx-page {
+  --mx-accent:#B22234;
+  font-family: var(--dr-font-content,"Libre Franklin",system-ui,sans-serif);
+}
+.mx-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 0 12px;
+}
+.mx-bar .mx-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.mx-bar .mx-title {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+  color: var(--dr-ink-strong,#000);
+}
+.mx-bar .mx-sub {
+  font-size: var(--dr-text-meta,13px);
+  color: var(--dr-ink-faint,#6B7280);
+  line-height: 1.35;
+}
+.mx-bar .mx-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.mx-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  background: var(--dr-fill,#EFF1F4);
+  border: 1px solid var(--dr-line,#D3D7DE);
+  border-radius: var(--dr-radius-control,.625rem);
+  padding: 3px;
+}
+.mx-page .mx-switch a,
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+  padding: 6px 11px;
+  border-radius: var(--dr-radius-sm,6px);
+  font-family: var(--dr-font-ui);
+  font-size: var(--dr-text-label,12px);
+  font-weight: 600;
+  color: var(--dr-ink-faint,#6B7280);
+  white-space: nowrap;
+  text-decoration: none;
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a:hover {
+  color: var(--dr-ink-strong,#000);
+}
+:is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a.on {
+  background: var(--dr-panel,#fff);
+  color: #B22234;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12);
+}
+@media (max-width: 600px) {
+  .mx-switch {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  :is(#mx-map, #mx-net, #mx-tour, #mx-hub) .mx-switch a {
+    padding: 6px 8px;
+  }
+}
+#mx-map .viz-root {
+  color-scheme: light;
+  --page: #F7F7F5;
+  --surface-1: #FFFFFF;
+  --text-primary: #1A1A1A;
+  --text-secondary: #52514e;
+  --text-muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11,11,11,0.10);
+  --state-line: #52514e;
+  --nodata: #e1e0d9;
+  --pin: #0b0b0b;
+  --pin-ring: #fcfcfb;
+  --accent: #2a78d6;
+  --hatch: rgba(11,11,11,0.55);
+}
+#mx-map * {
+  box-sizing: border-box;
+}
+#mx-map,
+#mx-map {
+  margin: 0;
+}
+#mx-map {
+  font-family:
+    "Libre Franklin",
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+#mx-map .viz-root {
+  background: var(--page);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+#mx-map .wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 24px 40px;
+}
+#mx-map h1 {
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 650;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+#mx-map .dek {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin: 0 0 16px;
+  max-width: 760px;
+  line-height: 1.45;
+}
+#mx-map .hero {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 14px;
+}
+#mx-map .hero .big {
+  font-size: 34px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+#mx-map .hero .lbl {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+#mx-map .controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 18px;
+  padding: 10px 0 12px;
+  border-top: 1px solid var(--grid);
+}
+#mx-map .seg {
+  display: inline-flex;
+  border: 1px solid var(--axis);
+  border-radius: 8px;
+  overflow: hidden;
+}
+#mx-map .seg button {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+#mx-map .seg button[aria-pressed=true] {
+  background: var(--text-primary);
+  color: var(--surface-1);
+}
+#mx-map .ctl {
+  font-size: 13px;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+#mx-map select,
+#mx-map input[type=search] {
+  font: inherit;
+  font-size: 13px;
+  padding: 5px 8px;
+  border: 1px solid var(--axis);
+  border-radius: 6px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+}
+#mx-map .play {
+  font: inherit;
+  font-size: 13px;
+  width: 34px;
+  height: 30px;
+  border: 1px solid var(--axis);
+  border-radius: 8px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+#mx-map .slider {
+  flex: 1 1 380px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+#mx-map .slider input {
+  width: 100%;
+  accent-color: var(--accent);
+  margin: 0;
+}
+#mx-map .ticks {
+  position: relative;
+  height: 16px;
+  font-size: 10.5px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+#mx-map .ticks span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+#mx-map .ticks span.first {
+  transform: none;
+}
+#mx-map .ticks span.last {
+  transform: translateX(-100%);
+}
+#mx-map .frame-label {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 170px;
+  margin-left: 6px;
+}
+#mx-map .main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  position: relative;
+}
+#mx-map .main.open {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+#mx-map .card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 12px 8px;
+  position: relative;
+}
+#mx-map .legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 4px 18px;
+  padding: 2px 4px 10px;
+}
+#mx-map .legend .title {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  width: 100%;
+}
+#mx-map .legend .title b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+#mx-map .swatches {
+  display: flex;
+  gap: 2px;
+}
+#mx-map .sw {
+  width: 60px;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+#mx-map .sw i {
+  display: block;
+  width: 60px;
+  height: 12px;
+  border-radius: 2px;
+}
+#mx-map .sw.nd i {
+  background: var(--nodata);
+}
+#mx-map .legend .lcav {
+  width: 100%;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  max-width: 880px;
+}
+#mx-map .legend .lcav b {
+  color: var(--text-primary);
+  font-weight: 650;
+}
+#mx-map .legend .lcav a {
+  color: inherit;
+}
+#mx-map .panel .pwbox {
+  border: 1px solid var(--axis);
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin: 8px 0;
+  font-size: 12.5px;
+}
+#mx-map .panel .hedge {
+  font-weight: 650;
+}
+#mx-map .pwgrp {
+  margin: 6px 0 8px;
+}
+#mx-map .pwfam {
+  font-weight: 650;
+  margin-bottom: 2px;
+}
+#mx-map .key {
+  font-size: 11px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+#mx-map svg.map {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+#mx-map .county {
+  stroke: var(--surface-1);
+  stroke-width: 0.25;
+}
+#mx-map .county:hover,
+#mx-map .county.hl {
+  stroke: var(--text-primary);
+  stroke-width: 1.2;
+}
+#mx-map .states path {
+  fill: none;
+  stroke: var(--state-line);
+  stroke-width: 0.6;
+  stroke-linejoin: round;
+  pointer-events: none;
+  opacity: .75;
+}
+#mx-map .pin circle.dot {
+  fill: var(--pin);
+  stroke: var(--pin-ring);
+  stroke-width: 2;
+}
+#mx-map .pin circle.dot {
+  cursor: pointer;
+}
+#mx-map .pin:hover circle.dot,
+#mx-map .pin.sel circle.dot {
+  fill: var(--accent);
+}
+#mx-map .pin:focus {
+  outline: none;
+}
+#mx-map .pin:focus-visible circle.dot {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+#mx-map #tip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+  padding: 8px 10px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  max-width: 280px;
+  display: none;
+  z-index: 10;
+}
+#mx-map #tip .v {
+  font-size: 18px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+#mx-map #tip .n {
+  color: var(--text-secondary);
+}
+#mx-map #tip .warn {
+  color: var(--text-primary);
+  margin-top: 4px;
+  font-size: 11.5px;
+}
+#mx-map #tip .warn::before {
+  content: "⚠︎ ";
+}
+#mx-map .panel {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  display: none;
+  align-self: start;
+  position: sticky;
+  top: 12px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+}
+#mx-map .main.open .panel {
+  display: block;
+}
+#mx-map .panel h2 {
+  font-size: 18px;
+  margin: 0 0 2px;
+  line-height: 1.3;
+}
+#mx-map .panel .sub {
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+#mx-map .panel dl {
+  margin: 0 0 10px;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 4px 10px;
+}
+#mx-map .panel dt {
+  color: var(--text-muted);
+  font-size: 12px;
+  padding-top: 1px;
+}
+#mx-map .panel dd {
+  margin: 0;
+}
+#mx-map .panel .close {
+  float: right;
+  font: inherit;
+  border: 1px solid var(--axis);
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px 8px;
+}
+#mx-map .panel ol {
+  padding-left: 18px;
+  margin: 6px 0 0;
+}
+#mx-map .panel li {
+  margin: 0 0 6px;
+}
+#mx-map .panel a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+#mx-map .grade {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  border: 1px solid var(--axis);
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-right: 6px;
+  color: var(--text-secondary);
+}
+#mx-map .panel h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--text-muted);
+  margin: 14px 0 4px;
+  font-weight: 600;
+}
+#mx-map .spark text {
+  font-size: 10px;
+  fill: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+#mx-map .spark .lbl {
+  fill: var(--text-secondary);
+  font-size: 10.5px;
+}
+#mx-map .notes {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-top: 18px;
+}
+#mx-map .notes summary {
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: 600;
+  margin: 8px 0;
+}
+#mx-map table {
+  border-collapse: collapse;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+#mx-map th,
+#mx-map td {
+  text-align: right;
+  padding: 3px 10px;
+  border-bottom: 1px solid var(--grid);
+}
+#mx-map th:first-child,
+#mx-map td:first-child {
+  text-align: left;
+}
+#mx-map .export .controls,
+#mx-map .export .panel,
+#mx-map .export .notes,
+#mx-map .export #search-wrap {
+  display: none !important;
+}
+#mx-map .export .wrap {
+  padding: 20px 26px 14px;
+  max-width: none;
+}
+#mx-map .export .card {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+#mx-map .srcline {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  display: none;
+}
+#mx-map .export .srcline {
+  display: block;
+}
+@media (max-width: 860px) {
+  #mx-map .main.open {
+    grid-template-columns: 1fr;
+  }
+  #mx-map .panel {
+    position: static;
+    max-height: none;
+  }
+}
+@media (max-width: 600px) {
+  #mx-map .wrap {
+    padding: 12px 12px 32px;
+  }
+  #mx-map h1 {
+    font-size: 17px;
+  }
+  #mx-map .controls {
+    gap: 8px 12px;
+  }
+  #mx-map select {
+    font-size: 12px;
+  }
+  #mx-map .drawer {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+#mx-map .btn {
+  font: inherit;
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--axis);
+  border-radius: 8px;
+  background: var(--surface-1);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+#mx-map .btn[aria-pressed=true] {
+  background: var(--text-primary);
+  color: var(--surface-1);
+}
+#mx-map .dim .county:not(.top) {
+  opacity: .22;
+}
+#mx-map .tops path {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+#mx-map .tlabels text {
+  font-size: 8.5px;
+  font-weight: 600;
+  fill: var(--text-primary);
+  stroke: var(--surface-1);
+  stroke-width: 2.6;
+  paint-order: stroke;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+#mx-map .tlabels text .rk {
+  fill: var(--text-secondary);
+  font-weight: 500;
+}
+#mx-map .drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: min(760px, 100vw);
+  background: var(--surface-1);
+  border-right: 1px solid var(--border);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, .14);
+  transform: translateX(-102%);
+  transition: transform .22s ease;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+#mx-map .drawer.open {
+  transform: none;
+}
+#mx-map .drawer .dhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 4px;
+}
+#mx-map .drawer h2 {
+  font-size: 17px;
+  margin: 0;
+  flex: 1;
+}
+#mx-map .drawer .dsub {
+  color: var(--text-secondary);
+  padding: 0 16px 8px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+#mx-map .drawer .dctl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 0 16px 10px;
+  border-bottom: 1px solid var(--grid);
+}
+#mx-map .drawer .dtable {
+  overflow: auto;
+  flex: 1;
+}
+#mx-map .drawer table {
+  width: 100%;
+}
+#mx-map .drawer thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-1);
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 11.5px;
+  padding: 8px 8px 6px;
+  border-bottom: 1px solid var(--axis);
+  white-space: nowrap;
+}
+#mx-map .drawer thead th[aria-sort] {
+  color: var(--text-primary);
+}
+#mx-map .drawer thead th[aria-sort=descending]::after {
+  content: " ▾";
+}
+#mx-map .drawer thead th[aria-sort=ascending]::after {
+  content: " ▴";
+}
+#mx-map .drawer td {
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+#mx-map .drawer td.cn,
+#mx-map .drawer thead th:nth-child(2) {
+  text-align: left;
+  white-space: normal;
+  min-width: 170px;
+}
+#mx-map .drawer td.rk {
+  color: var(--text-muted);
+}
+#mx-map .drawer tbody tr {
+  cursor: pointer;
+}
+#mx-map .drawer tbody tr:hover {
+  background: var(--grid);
+}
+#mx-map .drawer td .w {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+#mx-map .drawer .more {
+  margin: 10px 16px 16px;
+}
+#mx-map .stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 8px 0 6px;
+}
+#mx-map .stat {
+  border: 1px solid var(--grid);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+#mx-map .stat .k {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+#mx-map .stat .x {
+  font-size: 16px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+#mx-map .stat .r {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+#mx-map .export .drawer,
+#mx-map .export #drawer-btn {
+  display: none !important;
+}
+#mx-map #tip .hd {
+  font-weight: 650;
+  font-size: 13px;
+}
+#mx-map #tip .meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+#mx-map #tip .hint {
+  color: var(--text-muted);
+  font-size: 11px;
+  margin-top: 4px;
+}
+#mx-map .chip {
+  display: inline-block;
+  font-size: 10.5px;
+  line-height: 1.5;
+  border: 1px solid var(--axis);
+  border-radius: 999px;
+  padding: 0 7px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+#mx-map .chip.res {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+#mx-map .chip.gqf {
+  border-color: var(--text-secondary);
+  color: var(--text-primary);
+}
+#mx-map .hover path {
+  fill: none;
+  stroke: var(--text-primary);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+#mx-map .rsl path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+#mx-map .clampnote {
+  font-size: 12.5px;
+  color: var(--text-primary);
+  background: var(--grid);
+  border-radius: 6px;
+  padding: 5px 10px;
+  margin: 0 0 10px;
+  display: none;
+  max-width: 760px;
+}
+#mx-map .clampnote::before {
+  content: "ⓘ︎ ";
+}
+#mx-map .panel table.mini {
+  width: 100%;
+  margin: 4px 0 6px;
+}
+#mx-map .panel table.mini th {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+#mx-map .panel table.mini td,
+#mx-map .panel table.mini th {
+  padding: 2px 4px;
+}
+#mx-map .panel table.mini td:last-child {
+  white-space: nowrap;
+}
+#mx-map .panel table.mini .mo {
+  color: var(--text-muted);
+  font-size: 10.5px;
+  margin-left: 3px;
+}
+#mx-map .panel .two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+#mx-map .panel .two h4 {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+#mx-map .panel .head {
+  font-weight: 600;
+  margin: 2px 0 4px;
+}
+#mx-map .panel ul.drv {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0 0;
+}
+#mx-map .panel ul.drv li {
+  border-left: 2px solid var(--axis);
+  padding: 2px 0 2px 8px;
+  margin: 0 0 8px;
+}
+#mx-map .panel ul.drv .dm {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+  align-items: center;
+}
+#mx-map .panel ul.drv .ev {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-top: 2px;
+}
+#mx-map .panel sup a {
+  text-decoration: none;
+  font-size: 10px;
+  margin-left: 1px;
+}
+#mx-map .panel ul.plain {
+  padding-left: 18px;
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+#mx-map .conf {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 0 6px;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  border: 1px solid var(--axis);
+}
+#mx-map .conf.high {
+  background: var(--text-primary);
+  color: var(--surface-1);
+  border-color: var(--text-primary);
+}
+#mx-map .conf.low {
+  border-style: dashed;
+  color: var(--text-secondary);
+}
+#mx-map .panel ol.srcs li {
+  font-size: 12.5px;
+}
+#mx-map .panel ol.srcs .sm {
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+#mx-map .panel .gqbox {
+  border: 1px solid var(--axis);
+  border-radius: 8px;
+  padding: 6px 8px;
+  margin: 8px 0;
+  font-size: 12.5px;
+}
+#mx-map .panel .gqbox b {
+  font-weight: 650;
+}
+#mx-map .drawer td .rs {
+  color: var(--accent);
+}
+#mx-map .drawer td.gq {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: left;
+}
+#mx-map .export .rsl,
+#mx-map .export .hover,
+#mx-map .export #res-btn {
+  display: none !important;
+}
+#mx-map .ngo-dot {
+  cursor: pointer;
+}
+#mx-map .ngo-dots {
+  pointer-events: none;
+}
+#mx-map .ngo-dot circle {
+  transition: r .1s;
+  pointer-events: none;
+}
+#mx-map .ngo-dot:hover circle,
+#mx-map .ngo-dot.ngo-sel circle {
+  stroke-width: 2;
+  stroke: var(--text-primary);
+}
+#mx-map .ngo-edge-line {
+  cursor: pointer;
+}
+#mx-map .ngo-edge-line:hover {
+  stroke-opacity: 1 !important;
+}
+#mx-map .export .ngo-dots,
+#mx-map .export .ngo-edges,
+#mx-map .export #ngo-wrap {
+  display: none !important;
+}
+#mx-map .ngo-tb {
+  min-width: 28px;
+  padding: 4px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 5px;
+}
+#mx-map .panel .ngo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  border: 1px solid var(--axis);
+  border-radius: 20px;
+  padding: 2px 9px;
+  color: var(--text-secondary);
+  margin: 0 4px 4px 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+#mx-map .panel .ngo-chip:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+#mx-map .viz-root {
+  --accent:#B22234;
+  --page:transparent;
+  min-height: 0;
+}
+#mx-map .wrap {
+  max-width: none;
+  padding: 0 0 40px;
+}
+#mx-map .main,
+#mx-map .main > *,
+#mx-map .card {
+  min-width: 0;
+  max-width: 100%;
+}
+#mx-map .ctl {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+#mx-map select {
+  max-width: 100%;
+}
+#mx-map button {
+  color: var(--text-primary);
+}
+#mx-map .slider {
+  min-width: 0;
+}
+#mx-map .swatches {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+</style>
+<div class="mx-page" id="mx-map">
+<div class="mx-bar">
+  <div class="mx-id"><p class="mx-title">Migration explorer</p><div class="mx-sub" id="mx-map-sub"></div></div>
+  <div class="mx-right"><div class="mx-switch" title="Switch between the parts of the migration explorer"><a href="/migration-explorer/">Overview</a><a href="/migration-explorer/tour/">The border</a><a href="/migration-explorer/map/" class="on" aria-current="page">County map</a><a href="/migration-explorer/network/">NGO network</a></div>
+    <button type="button" class="dr-dialog-open" id="mx-map-dlg-open" aria-haspopup="dialog">About &amp; disclaimer</button>
+  </div>
+</div>
+
+<div class="viz-root" id="root">
+<div class="wrap">
+  <h1 id="title">Foreign-born share of county population, 1990–2024</h1>
+  <p class="dek" id="dek-region" style="display:none"></p>
+  <p class="dek" id="dek">Share of each county’s residents born outside the US (excluding people born in Puerto Rico, US island areas, or abroad to American parents). Census 1990 and 2000 long-form sample, then American Community Survey 5-year estimates. Every frame is mapped onto 2023 county boundaries.</p>
+  <p class="clampnote" id="clamp-note" role="status"></p>
+  <div class="hero"><span class="big" id="hero-v">–</span><span class="lbl" id="hero-l"></span></div>
+  <div class="controls" role="group" aria-label="Map controls">
+    <label class="ctl">Layer
+      <select id="layer" aria-label="Map layer"><option value="">Foreign-born residents (Census/ACS)</option><optgroup label="Citizenship &amp; year of entry (ACS residents)" id="og-st"></optgroup><optgroup label="Administrative records (flows per year, not residents)" id="og-pw"></optgroup><optgroup label="Modeled estimates (not counts)" id="og-mod"></optgroup></select>
+    </label>
+    <div class="seg" id="den-wrap" role="group" aria-label="Denominator" style="display:none">
+      <button id="d-fb" aria-pressed="true">% of foreign-born</button>
+      <button id="d-pop" aria-pressed="false">% of all residents</button>
+    </div>
+    <label class="ctl" id="pwyear-wrap" style="display:none">Year
+      <select id="pwyear" aria-label="Record year"></select>
+    </label>
+    <label class="ctl" id="region-wrap">Born in
+      <select id="region" aria-label="Region or country of birth"><option value="">All foreign-born</option><optgroup label="World regions" id="og-reg"></optgroup><optgroup label="Countries" id="og-ctry"></optgroup></select>
+    </label>
+    <span class="ctl" id="region-note" style="display:none;font-size:11.5px;color:#78350F;background:#FEF3C7;border:1px solid #FDE68A;border-radius:4px;padding:2px 7px;"></span>
+    <div class="seg" id="mode-seg" role="group" aria-label="Measure">
+      <button id="m-share" aria-pressed="true">Share</button>
+      <button id="m-change" aria-pressed="false">Change (pts)</button>
+      <button id="m-growth" aria-pressed="false">Growth (%)</button>
+      <button id="m-accel" aria-pressed="false">Speeding up?</button>
+    </div>
+    <label class="ctl" id="base-wrap" style="display:none">Baseline
+      <select id="base"><option value="2000">Census 2000</option><option value="1990">Census 1990</option></select>
+    </label>
+    <label class="ctl" id="pivot-wrap" style="display:none">Split at
+      <select id="pivot"></select>
+    </label>
+    <button class="play" id="play" aria-label="Play">&#9654;</button>
+    <div class="slider" id="slider-wrap">
+      <input type="range" id="slider" min="0" step="1" aria-label="Data vintage">
+      <div class="ticks" id="ticks"></div>
+    </div>
+    <span class="frame-label" id="frame-label"></span>
+    <label class="ctl" id="hatch-wrap"><input type="checkbox" id="hatch"> Mark low-reliability estimates</label>
+    <label class="ctl"><input type="checkbox" id="showpins" checked> Community pins</label>
+    <span class="ctl" id="ngo-wrap">NGO&nbsp;
+      <button class="btn ngo-tb" aria-pressed="false" id="ngo-tb1" title="Tier 1: National resettlement agencies" style="opacity:.35;background:#1d4ed8;color:#fff;border-color:#1d4ed8">National</button><button class="btn ngo-tb" aria-pressed="false" id="ngo-tb2" title="Tier 2: Local affiliates" style="opacity:.35;background:#0891b2;color:#fff;border-color:#0891b2">Local affiliates</button><button class="btn ngo-tb" aria-pressed="false" id="ngo-tb3" title="Tier 3: ORR-funded providers" style="opacity:.35;background:#dc2626;color:#fff;border-color:#dc2626">ORR providers</button><button class="btn ngo-tb" aria-pressed="false" id="ngo-tb4" title="Tier 4: Legal services" style="opacity:.35;background:#16a34a;color:#fff;border-color:#16a34a">Legal</button><button class="btn ngo-tb" aria-pressed="false" id="ngo-tb5" title="Tier 5: Advocacy/policy" style="opacity:.35;background:#7c3aed;color:#fff;border-color:#7c3aed">Advocacy</button><button class="btn ngo-tb" aria-pressed="false" id="ngo-tb6" title="Tier 6: Funders" style="opacity:.35;background:#92400e;color:#fff;border-color:#92400e">Funders</button>
+    </span>
+    <span class="ctl"><button class="btn" id="top-btn" aria-pressed="false">Highlight top</button>
+      <select id="topn" aria-label="How many counties to highlight"><option>10</option><option selected>25</option><option>50</option><option>100</option></select></span>
+    <label class="ctl" id="reliable-wrap" title="Rank only counties with 10,000+ residents, 500+ foreign-born (or born in the selected region), and margin of error under 30% of the estimate"><input type="checkbox" id="reliable" checked> Reliable counties only</label>
+    <button class="btn" id="res-btn" aria-pressed="false" title="Outline counties with a written explanation of why their foreign-born population changed">Researched counties</button>
+    <button class="btn" id="drawer-btn" aria-expanded="false" aria-controls="drawer">County table &#9656;</button>
+    <span class="ctl" id="search-wrap"><input type="search" id="search" list="county-list" placeholder="Find a county…" aria-label="Find a county"><datalist id="county-list"></datalist></span>
+  </div>
+  <div class="main" id="main">
+    <div class="card">
+      <div class="legend" id="legend"></div>
+      <svg class="map" id="map" role="img" aria-label="County choropleth map of the United States"></svg>
+      <div class="srcline" id="srcline">Source: US Census Bureau, 1990 STF3, 2000 SF3, ACS 5-year table B05002 (bulk summary files); region and country of birth from 2000 SF3 PCT019 and ACS B05006 (Census API); group quarters from 2020 Census PL 94-171 P5. 2023 county boundaries; crosswalk notes in data/CROSSWALK.md.</div>
+    </div>
+    <aside class="panel" id="panel" aria-live="polite"></aside>
+  </div>
+  <div class="notes">
+    <details><summary>National totals by vintage (table view)</summary><div id="nat-table"></div></details>
+    <details><summary>How to read this / caveats</summary>
+      <p><b>Vintages are not single years.</b> “ACS 2019–2023 5-yr” pools five years of survey responses; it is the only ACS product that covers every county. Consecutive ACS frames overlap by four years, so they move smoothly by construction. Census 1990 and 2000 values are from the decennial long-form sample (about 1 in 6 households).</p>
+      <p><b>Small counties are noisy.</b> Where the ACS margin of error (90%) on the foreign-born count exceeds 30% of the estimate, the tooltip says so and “Mark low-reliability estimates” hatches the county. About four in ten counties are flagged in a typical frame, together holding about 5% of the population.</p>
+      <p><b>Boundaries.</b> Connecticut’s 2022 planning regions are rebuilt exactly from town-level data for 2000–2021 and approximated for 1990. Former Virginia independent cities (Bedford, Clifton Forge, South Boston) are merged into their surrounding counties. Some Alaska census areas that were later split share one rate across their successors. Broomfield County, CO did not exist before 2001 and is blank for 1990 and 2000.</p>
+      <p><b>Group quarters.</b> Census and ACS count people where they live on the reference date, including prisons, immigration detention centers, college dorms, military barracks and nursing homes. Counties where institutional, college and military group quarters together hold 5% or more of the 2020 Census population are flagged with the dominant type (2020 Census PL 94-171 table P5; ICE detention is tabulated as adult correctional). In those counties a jump in the foreign-born count can reflect a facility rather than a community.</p>
+      <p><b>Country of birth.</b> Some countries are only tabulated separately from a later vintage (Nepal, Burma, Yemen and Eritrea from ACS 2005–09; Somalia from ACS 2011–15; DR Congo from ACS 2015–19; Bhutan and the Marshall Islands from ACS 2018–22). Earlier vintages show no data and the baseline moves to the first published vintage.</p>
+      <p><b>Citizenship and year of entry.</b> ACS table B05001 (Census 2000 SF3 P021) splits the foreign-born into naturalized citizens and noncitizens; B05005 (SF3 P022) gives the year each person came to live in the US. <b>“Noncitizen” is not a legal-status category:</b> it lumps together green-card holders (lawful permanent residents), temporary visa holders such as students and workers, refugees and asylees, and unauthorized immigrants. The Census does not ask legal status, so no layer here can show how many residents are unauthorized. Year of entry is the most recent arrival, and “entered 2010 or later” is an open-ended window, so later vintages include more arrival years by construction.</p>
+      <p><b>Administrative records and modeled estimates.</b> Record layers (refugee arrivals, sponsor releases, green cards, labor certifications, court cases) count events per year: a flow, not the people living in a county. They are not comparable with the ACS foreign-born count or with each other, and must not be added up. Where a source reports by city or metro area, values are allocated to counties and hatched. Modeled estimates are labeled as such, with the modeler and year, and show their range where one is published. Each layer’s panel lists what one unit counts, its caveats and its sources.</p>
+      <p><b>Community pins</b> mark case-study places with a documented arrival history; each pin appears from its arrival start year onward. Program/pathway attribution and sources are in each pin’s panel, graded A (primary), B (solid reporting), C (thin).</p>
+    </details>
+  </div>
+</div>
+<aside class="drawer" id="drawer" aria-label="County table" aria-hidden="true">
+  <div class="dhead"><h2>Counties</h2><button class="btn" id="drawer-close" aria-label="Close table">&#10005;</button></div>
+  <div class="dsub" id="dsub"></div>
+  <div class="dctl">
+    <input type="search" id="dfilter" placeholder="Filter by name…" aria-label="Filter counties by name">
+    <select id="dstate" aria-label="State"><option value="">All states</option></select>
+    <label class="ctl"><input type="checkbox" id="dres"> Researched only</label>
+    <label class="ctl" title="Institutional + college + military group quarters are 5%+ of the 2020 population"><input type="checkbox" id="dgq"> Group-quarters flag only</label>
+    <span class="ctl" id="dcount"></span>
+  </div>
+  <div class="dtable"><table id="dt"><thead><tr id="dth"></tr></thead><tbody id="dtb"></tbody></table>
+    <button class="btn more" id="dmore">Show all</button></div>
+</aside>
+<div id="tip" role="tooltip"></div>
+</div>
+<script src="/migration-explorer/data/map-data.js"></script>
+<script>
+(function() {
+  const $ = (id) => document.getElementById(id);
+  const NS = "http://www.w3.org/2000/svg";
+  const F = DATA.frames, C = DATA.counties;
+  const ALL = { k: "", label: "All countries", pct: DATA.pct, fb: DATA.fb, moe: DATA.moe, flag: DATA.flag, nat: F.map((f) => ({ us_fb: f.us_fb, us_pct: f.us_pct })) };
+  const REG = Object.fromEntries([...DATA.regions || [], ...DATA.countries || []].map((r) => [r.k, r]));
+  let A = ALL;
+  const AV = new Int16Array(128).fill(-1);
+  [...DATA.ALPH].forEach((ch, i) => {
+    AV[ch.charCodeAt(0)] = i;
+  });
+  function decode(r) {
+    if (r.fb) return;
+    const nC = C.length;
+    r.fb = [];
+    r.moe = [];
+    r.enc.forEach((s, i) => {
+      if (s == null) {
+        r.fb.push(new Array(nC).fill(null));
+        r.moe.push(new Array(nC).fill(null));
+        return;
+      }
+      const dec = F[i].source === "decennial", zm = DATA.ZM[i];
+      const fb = new Array(nC), moe = new Array(nC);
+      for (let j2 = 0; j2 < nC; j2++) {
+        const has = DATA.pop[i][j2] != null;
+        fb[j2] = has ? 0 : null;
+        moe[j2] = has && !dec ? zm[j2] : null;
+      }
+      let p = 0, j = -1;
+      const rd = () => {
+        let n = 0, sh = 0, d;
+        do {
+          d = AV[s.charCodeAt(p++)];
+          n += (d & 31) * 2 ** sh;
+          sh += 5;
+        } while (d & 32);
+        return n;
+      };
+      while (p < s.length) {
+        j += rd() + 1;
+        fb[j] = rd();
+        if (!dec) {
+          const m = rd();
+          moe[j] = m === 0 ? null : m - 1;
+        }
+      }
+      r.fb.push(fb);
+      r.moe.push(moe);
+    });
+  }
+  function buildRegion(r) {
+    if (r.pct) return r;
+    decode(r);
+    r.pct = r.fb.map((row, i) => row.map((v, j) => v == null || !DATA.pop[i][j] ? null : v / DATA.pop[i][j] * 100));
+    r.flag = r.fb.map((row, i) => row.map((v, j) => {
+      const m = r.moe[i][j];
+      return v == null || m == null ? 0 : v === 0 && m > 0 || v > 0 && m > 0.3 * v ? 1 : 0;
+    }));
+    r.nat = F.map((f, i) => {
+      if (r.fb[i].every((v) => v == null)) return { us_fb: null, us_pct: null };
+      let n = 0;
+      r.fb[i].forEach((v) => {
+        n += v || 0;
+      });
+      return { us_fb: n, us_pct: n / f.us_pop * 100 };
+    });
+    return r;
+  }
+  const firstFrame = () => A.nat.findIndex((n) => n.us_fb != null);
+  const who = () => A.kind === "status" ? A.who : A.k ? `born in ${A.label}` : "foreign-born";
+  const Who = () => A.kind === "status" ? A.Who : A.k ? `Born in ${A.label}` : "Foreign-born";
+  const NONCIT_CAVEAT = "“Noncitizen” lumps together green-card holders (LPRs), temporary visa holders, refugees/asylees and unauthorized immigrants. The Census does not ask legal status.";
+  const ENTRY_CAVEAT = "Year of entry = year the person came to live in the US (most recent arrival). Open-ended window: later vintages include more arrival years. Says nothing about legal status.";
+  const ST_INFO = {
+    noncit: { who: "noncitizens", Who: "Noncitizens", src: "ACS B05001 / Census 2000 SF3 P021", cav: NONCIT_CAVEAT },
+    natz: { who: "naturalized citizens", Who: "Naturalized citizens", src: "ACS B05001 / Census 2000 SF3 P021", cav: "Naturalized = immigrants who became US citizens. All other foreign-born residents are noncitizens: green-card holders (LPRs), visa holders, refugees/asylees and unauthorized immigrants, combined. The Census does not ask legal status." },
+    e2000: { who: "immigrants who entered 2000 or later", Who: "Entered the US 2000 or later", src: "ACS B05005", cav: ENTRY_CAVEAT },
+    e2010: { who: "immigrants who entered 2010 or later", Who: "Entered the US 2010 or later", src: "ACS B05005", cav: ENTRY_CAVEAT }
+  };
+  const STS = Object.fromEntries((DATA.status || []).map((s) => [s.k, Object.assign(s, { kind: "status", who: s.label, Who: s.label, src: "", cav: "" }, ST_INFO[s.k] || {})]));
+  function statusSet(s) {
+    if (!s.pctPop) {
+      decode(s);
+      const shares = (den) => s.fb.map((row, i) => row.map((v, j) => v == null || !den(i, j) ? null : v / den(i, j) * 100));
+      s.pctPop = shares((i, j) => DATA.pop[i][j]);
+      s.pctFb = shares((i, j) => ALL.fb[i][j]);
+      s.flag = s.fb.map((row, i) => row.map((v, j) => {
+        const m = s.moe[i][j];
+        return v == null || m == null ? 0 : v === 0 && m > 0 || v > 0 && m > 0.3 * v ? 1 : 0;
+      }));
+      const nat = (den) => F.map((f, i) => {
+        if (s.fb[i].every((v) => v == null)) return { us_fb: null, us_pct: null };
+        let n = 0;
+        s.fb[i].forEach((v) => {
+          n += v || 0;
+        });
+        return { us_fb: n, us_pct: n / den(f) * 100 };
+      });
+      s.natPop = nat((f) => f.us_pop);
+      s.natFb = nat((f) => f.us_fb);
+    }
+    s.pct = st.den === "pop" ? s.pctPop : s.pctFb;
+    s.nat = st.den === "pop" ? s.natPop : s.natFb;
+    return s;
+  }
+  const isSt = () => A.kind === "status";
+  const denFb = () => isSt() && st.den === "fb";
+  const denom = (fi, j) => denFb() ? ALL.fb[fi][j] : DATA.pop[fi][j];
+  const denWord = () => denFb() ? "foreign-born residents" : "residents";
+  const pctOf = () => denFb() ? "% of foreign-born residents" : "% of population";
+  let PW = null;
+  const PWS = Object.fromEntries((DATA.pathways || []).map((p) => [p.id, p]));
+  const GEO = ["county", "city_alloc", "cbsa_alloc", "state_alloc"];
+  const GEO_TXT = { county: "county records", city_alloc: "allocated from city totals", cbsa_alloc: "allocated from metro-area (CBSA) totals", state_alloc: "allocated from state totals" };
+  const tbLbl = (p, y) => p.tb === "FY" ? `FY${y}` : String(y);
+  const sent = (x) => String(x).trim().replace(/\.+$/, "") + ".";
+  const perYear = (p) => p.group === "pathways" && !/\bper\b/i.test(p.unit) ? " per year" : "";
+  function pwRow(p, y, j) {
+    p._ix = p._ix || {};
+    const d = p.data[String(y)];
+    if (!d) return null;
+    if (!p._ix[y]) {
+      const m = new Map();
+      d.j.forEach((jj, k2) => m.set(jj, k2));
+      p._ix[y] = m;
+    }
+    const k = p._ix[y].get(j);
+    if (k == null) return null;
+    return { v: d.v[k], lo: d.lo ? d.lo[k] : null, hi: d.hi ? d.hi[k] : null, g: GEO[d.g ? d.g[k] : 0] };
+  }
+  const fmtV = (v) => v == null ? "–" : (+v).toLocaleString("en-US", { maximumFractionDigits: Math.abs(v) < 10 ? 1 : 0 });
+  const fmtRange = (r) => r && (r.lo != null || r.hi != null) ? ` (range ${fmtV(r.lo)}–${fmtV(r.hi)})` : "";
+  const PW_C = ["#86b6ef", "#5598e7", "#2a78d6", "#1c5cab", "#104281", "#0a2a55"];
+  const PW_C_D = ["#184f95", "#256abf", "#3987e5", "#6da7ec", "#9ec5f4", "#cde2fb"];
+  function pwScale(p) {
+    if (!p._T) {
+      const vals = [];
+      Object.values(p.data).forEach((d) => d.v.forEach((v) => {
+        if (v > 0) vals.push(v);
+      }));
+      vals.sort((a, b) => a - b);
+      const nice = (x) => {
+        if (x <= 0) return 0;
+        const e = 10 ** Math.floor(Math.log10(x)), m = x / e;
+        return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * e;
+      };
+      const T = [];
+      for (const q of [0.3, 0.5, 0.7, 0.85, 0.95]) {
+        const t = nice(vals[Math.floor(q * (vals.length - 1))] || 0);
+        if (t > 0 && (!T.length || t > T[T.length - 1])) T.push(t);
+      }
+      p._T = T.length ? T : [1];
+      const f = (v) => v >= 1e6 ? +(v / 1e6).toFixed(1) + "M" : v >= 1e3 ? +(v / 1e3).toFixed(1) + "k" : v.toLocaleString("en-US");
+      p._L = [`<${f(p._T[0])}`, ...p._T.slice(0, -1).map((t, i) => `${f(t)}–${f(p._T[i + 1])}`), `${f(p._T[p._T.length - 1])}+`];
+    }
+    const pal = dark() ? PW_C_D : PW_C, n = p._T.length + 1;
+    const cols = Array.from({ length: n }, (_, i) => pal[n === 1 ? pal.length - 1 : Math.round(i * (pal.length - 1) / (n - 1))]);
+    return [p._T, cols, p._L];
+  }
+  const params = new URLSearchParams(location.search);
+  const isExport = params.get("export") === "1";
+  if (params.get("theme")) document.documentElement.dataset.theme = params.get("theme");
+  if (isExport) $("root").classList.add("export");
+  const dark = () => document.documentElement.dataset.theme === "dark" || document.documentElement.dataset.theme !== "light" && matchMedia("(prefers-color-scheme: dark)").matches;
+  const SHARE_T = [1, 2.5, 5, 10, 15, 25];
+  const SHARE_C = ["#fff1c1", "#fed98a", "#fdb94f", "#f5922b", "#dc6a1a", "#ad4911", "#6f2c0a"];
+  const SHARE_C_D = ["#3b2c14", "#5e3f14", "#8a5714", "#b77412", "#df941f", "#f6bb4d", "#ffe49a"];
+  const CH_T = [-10, -5, -2, -0.5, 0.5, 2, 5, 10];
+  const CH_C_L = ["#00474f", "#11787f", "#5aaeb0", "#b3dcda", "#efeeea", "#fbd3a4", "#f4a259", "#d4691b", "#8c3b06"];
+  const CH_C_D = ["#b3dcda", "#5aaeb0", "#11787f", "#0a4247", "#383835", "#6b3208", "#c0601a", "#f4a259", "#fbd3a4"];
+  const SHARE_LBL = ["<1%", "1–2.5", "2.5–5", "5–10", "10–15", "15–25", "25%+"];
+  const CH_LBL = ["≤−10", "−10…−5", "−5…−2", "−2…−0.5", "±0.5", "+0.5…2", "+2…5", "+5…10", "≥+10"];
+  const GR_T = [-50, -25, -10, -5, 5, 50, 100, 200];
+  const GR_LBL = ["≤−50%", "−50…−25", "−25…−10", "−10…−5", "±5%", "+5…50", "+50…100", "+100…200", "≥+200%"];
+  const AC_T = [-2, -1, -0.5, -0.1, 0.1, 0.5, 1, 2];
+  const AC_LBL = ["≤−2", "−2…−1", "−1…−0.5", "−0.5…−0.1", "±0.1", "+0.1…0.5", "+0.5…1", "+1…2", "≥+2"];
+  const MIN_BASE_FB = 100;
+  const bin = (v, t) => {
+    let i = 0;
+    while (i < t.length && v >= t[i]) i++;
+    return i;
+  };
+  const shareColors = () => dark() ? SHARE_C_D : SHARE_C;
+  const chColors = () => dark() ? CH_C_D : CH_C_L;
+  const fmtPct = (v) => v == null ? "–" : (v < 10 ? v.toFixed(1) : v.toFixed(1)) + "%";
+  const sgn = (v) => v > 0 ? "+" : v < 0 ? "−" : "";
+  const fmtPP = (v) => v == null ? "–" : sgn(v) + Math.abs(v).toFixed(1) + " pts";
+  const fmtG = (v) => v == null ? "–" : sgn(v) + Math.abs(v).toLocaleString("en-US", { maximumFractionDigits: Math.abs(v) < 10 ? 1 : 0 }) + "%";
+  const fmtA = (v) => v == null ? "–" : sgn(v) + Math.abs(v).toFixed(2) + " pts/decade";
+  const fmtN = (v) => v == null ? "–" : v.toLocaleString("en-US");
+  const yearIdx = Object.fromEntries(F.map((f, i) => [f.year, i]));
+  const MODES = ["share", "change", "growth", "accel"];
+  const mid = (i) => F[i].source === "decennial" ? F[i].year : F[i].year - 2;
+  let st = {
+    region: REG[params.get("region")] ? params.get("region") : "",
+    mode: MODES.includes(params.get("mode")) ? params.get("mode") : "share",
+    base: +(params.get("base") || 2e3),
+    pivot: +(params.get("pivot") || 2012),
+    researched: params.get("researched") === "1",
+    layer: params.get("layer") || "",
+    den: params.get("den") === "pop" ? "pop" : "fb",
+    pwYear: +(params.get("pwyear") || 0),
+    fi: F.length - 1,
+    hatch: params.get("hatch") === "1",
+    pins: params.get("pins") !== "0",
+    sel: null,
+    top: +(params.get("top") || 0),
+    topN: +(params.get("top") || 25),
+    reliable: params.get("reliable") !== "0",
+    drawer: false,
+    sort: null,
+    dall: false
+  };
+  if (params.get("frame") && yearIdx[+params.get("frame")] != null) st.fi = yearIdx[+params.get("frame")];
+  if (yearIdx[st.base] == null || F[yearIdx[st.base]].year !== st.base) st.base = 2e3;
+  if (yearIdx[st.pivot] == null) st.pivot = 2012;
+  st.baseWant = st.base;
+  st.pivotWant = st.pivot;
+  const svg = $("map");
+  svg.setAttribute("viewBox", `0 0 ${DATA.W} ${DATA.H}`);
+  const defs = document.createElementNS(NS, "defs");
+  defs.innerHTML = `<pattern id="hatchp" patternUnits="userSpaceOnUse" width="3" height="3" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="3" style="stroke:var(--hatch);stroke-width:0.7"/></pattern>`;
+  svg.appendChild(defs);
+  const gC = document.createElementNS(NS, "g");
+  svg.appendChild(gC);
+  const gH = document.createElementNS(NS, "g");
+  gH.setAttribute("pointer-events", "none");
+  svg.appendChild(gH);
+  const gS = document.createElementNS(NS, "g");
+  gS.setAttribute("class", "states");
+  svg.appendChild(gS);
+  const gT = document.createElementNS(NS, "g");
+  gT.setAttribute("class", "tops");
+  svg.appendChild(gT);
+  const gR = document.createElementNS(NS, "g");
+  gR.setAttribute("class", "rsl");
+  svg.appendChild(gR);
+  const gV = document.createElementNS(NS, "g");
+  gV.setAttribute("class", "hover");
+  svg.appendChild(gV);
+  const gL = document.createElementNS(NS, "g");
+  gL.setAttribute("class", "tlabels");
+  svg.appendChild(gL);
+  const gP = document.createElementNS(NS, "g");
+  svg.appendChild(gP);
+  const gNGOe = document.createElementNS(NS, "g");
+  gNGOe.setAttribute("class", "ngo-edges");
+  gNGOe.setAttribute("pointer-events", "none");
+  svg.appendChild(gNGOe);
+  const gNGO = document.createElementNS(NS, "g");
+  gNGO.setAttribute("class", "ngo-dots");
+  svg.appendChild(gNGO);
+  function _ngoSvgCoords(ev) {
+    const pt = svg.createSVGPoint();
+    pt.x = ev.clientX;
+    pt.y = ev.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  }
+  function _ngoHit(ev) {
+    const pt = _ngoSvgCoords(ev);
+    let hit = null, min2 = Infinity;
+    for (const d of _ngoDots) {
+      const dx = pt.x - d.ox, dy = pt.y - d.oy, dist2 = dx * dx + dy * dy, rr = Math.max(d.r, 2.5) * 1.5;
+      if (dist2 <= rr * rr && dist2 < min2) {
+        hit = d;
+        min2 = dist2;
+      }
+    }
+    return hit;
+  }
+  svg.addEventListener("click", (ev) => {
+    if (!DATA.ngo || !_ngoDots.length) return;
+    const hit = _ngoHit(ev);
+    if (!hit) {
+      if (ngoSpider || ngoSel) {
+        ngoSpider = null;
+        ngoSel = null;
+        drawNGO();
+      }
+      return;
+    }
+    ev.stopImmediatePropagation();
+    hideTip();
+    if (hit.kind === "cluster") {
+      ngoSpider = ngoSpider === hit.key ? null : hit.key;
+      ngoSel = null;
+    } else {
+      ngoSel = ngoSel === hit.id ? null : hit.id;
+    }
+    drawNGO();
+  }, true);
+  svg.addEventListener("pointermove", (ev) => {
+    if (!DATA.ngo || !_ngoDots.length) return;
+    const hit = _ngoHit(ev);
+    if (!hit) return;
+    const fr = document.createDocumentFragment();
+    if (hit.kind === "cluster") {
+      const cnt = {};
+      hit.members.forEach((o) => cnt[o.tier] = (cnt[o.tier] || 0) + 1);
+      fr.appendChild(el("div", "hd", `${hit.members.length} organizations here`));
+      Object.keys(cnt).sort().forEach((t) => fr.appendChild(el("div", "n", `${cnt[t]} × ${NGO_TIER[t].l}`)));
+      hit.members.slice(0, 5).forEach((o) => fr.appendChild(el("div", "n", "• " + o.name)));
+      if (hit.members.length > 5) fr.appendChild(el("div", "n", `… and ${hit.members.length - 5} more`));
+      fr.appendChild(el("div", "hint", "Click to fan out"));
+    } else {
+      const o = hit.o, tc = NGO_TIER[o.tier];
+      fr.appendChild(el("div", "hd", o.name));
+      fr.appendChild(el("div", "n", `T${o.tier} ${tc.l} · ${o.hq_city}, ${o.hq_state}`));
+      if (o.max_fed > 0) fr.appendChild(el("div", "n", "Largest federal award: $" + fmtM(o.max_fed)));
+      fr.appendChild(el("div", "hint", ngoSel === o.id ? "Click to deselect" : "Click to show funding links"));
+    }
+    showTip(ev, fr);
+    ev.stopPropagation();
+  }, true);
+  const paths = C.map((c, j) => {
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", c.d);
+    p.setAttribute("class", "county");
+    p.dataset.j = j;
+    gC.appendChild(p);
+    return p;
+  });
+  const hatchPaths = [];
+  DATA.states.forEach((d) => {
+    const p = document.createElementNS(NS, "path");
+    p.setAttribute("d", d);
+    gS.appendChild(p);
+  });
+  const accelOK = (fi) => yearIdx[st.base] < yearIdx[st.pivot] && yearIdx[st.pivot] < fi;
+  function metric(kind, fi, j) {
+    if (PW) {
+      const r = pwRow(PW, st.pwYear, j);
+      return r ? r.v : null;
+    }
+    const v = A.pct[fi][j], bi = yearIdx[st.base];
+    if (v == null) return null;
+    if (kind === "share") return v;
+    if (kind === "change") {
+      const b = A.pct[bi][j];
+      return b == null ? null : v - b;
+    }
+    if (kind === "growth") {
+      const a = A.fb[bi][j], n = A.fb[fi][j];
+      return a == null || n == null || a < MIN_BASE_FB ? null : (n / a - 1) * 100;
+    }
+    if (kind === "accel") {
+      if (!accelOK(fi)) return null;
+      const pi = yearIdx[st.pivot], b = A.pct[bi][j], p = A.pct[pi][j];
+      if (b == null || p == null) return null;
+      return ((v - p) / (mid(fi) - mid(pi)) - (p - b) / (mid(pi) - mid(bi))) * 10;
+    }
+  }
+  const val = (fi, j) => metric(st.mode, fi, j);
+  const flaggedFor = (kind, fi, j) => !PW && (A.flag[fi][j] === 1 || kind !== "share" && A.flag[yearIdx[st.base]][j] === 1 || kind === "accel" && A.flag[yearIdx[st.pivot]][j] === 1);
+  const flagged = (fi, j) => flaggedFor(st.mode, fi, j);
+  const reliableOK = (kind, fi, j) => !!PW || DATA.pop[fi][j] >= 1e4 && A.fb[fi][j] >= 500 && !flaggedFor(kind, fi, j);
+  const SHARE_T_S = [0.1, 0.25, 0.5, 1, 2.5, 5], SHARE_LBL_S = ["<0.1%", "0.1–0.25", "0.25–0.5", "0.5–1", "1–2.5", "2.5–5", "5%+"];
+  const CH_T_S = [-1, -0.5, -0.2, -0.05, 0.05, 0.2, 0.5, 1], CH_LBL_S = ["≤−1", "−1…−0.5", "−0.5…−0.2", "−0.2…−0.05", "±0.05", "+0.05…0.2", "+0.2…0.5", "+0.5…1", "≥+1"];
+  const AC_T_S = [-0.2, -0.1, -0.05, -0.01, 0.01, 0.05, 0.1, 0.2], AC_LBL_S = ["≤−0.2", "−0.2…−0.1", "−0.1…−0.05", "−0.05…−0.01", "±0.01", "+0.01…0.05", "+0.05…0.1", "+0.1…0.2", "≥+0.2"];
+  const small = () => !!A.k && !isSt() && A.nat[F.length - 1].us_pct < 2;
+  const ST_T = [20, 30, 40, 50, 60, 70], ST_LBL = ["<20%", "20–30", "30–40", "40–50", "50–60", "60–70", "70%+"];
+  const scale = () => PW ? pwScale(PW) : denFb() && st.mode === "share" ? [ST_T, shareColors(), ST_LBL] : small() ? { share: [SHARE_T_S, shareColors(), SHARE_LBL_S], change: [CH_T_S, chColors(), CH_LBL_S], growth: [GR_T, chColors(), GR_LBL], accel: [AC_T_S, chColors(), AC_LBL_S] }[st.mode] : { share: [SHARE_T, shareColors(), SHARE_LBL], change: [CH_T, chColors(), CH_LBL], growth: [GR_T, chColors(), GR_LBL], accel: [AC_T, chColors(), AC_LBL] }[st.mode];
+  const rankCache = new Map();
+  function ranking(kind, fi, reliable) {
+    const key = [PW ? "pw:" + PW.id + ":" + st.pwYear : A.k, st.den, kind, fi, st.base, st.pivot, reliable].join("|");
+    if (rankCache.has(key)) return rankCache.get(key);
+    const order = [];
+    for (let j = 0; j < C.length; j++) {
+      const v = metric(kind, fi, j);
+      if (v != null && (!reliable || reliableOK(kind, fi, j))) order.push(j);
+    }
+    order.sort((a, b) => metric(kind, fi, b) - metric(kind, fi, a));
+    const rank = new Int32Array(C.length).fill(0);
+    order.forEach((j, i) => {
+      rank[j] = i + 1;
+    });
+    const r = { order, rank };
+    if (rankCache.size > 200) rankCache.clear();
+    rankCache.set(key, r);
+    return r;
+  }
+  function drawTop() {
+    gT.textContent = "";
+    gL.textContent = "";
+    paths.forEach((p) => p.classList.remove("top"));
+    gC.classList.remove("dim");
+    if (!st.top) return;
+    const top = ranking(st.mode, st.fi, st.reliable).order.slice(0, st.topN);
+    if (!top.length) return;
+    gC.classList.add("dim");
+    top.forEach((j) => {
+      paths[j].classList.add("top");
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", C[j].d);
+      gT.appendChild(p);
+    });
+    const placed = [];
+    top.slice(0, Math.min(12, top.length)).forEach((j, i) => {
+      const [x, y] = C[j].c;
+      if (placed.some(([px, py]) => Math.abs(px - x) < 62 && Math.abs(py - y) < 11)) return;
+      placed.push([x, y]);
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", x + 4);
+      t.setAttribute("y", y + 3);
+      if (x > DATA.W - 90) {
+        t.setAttribute("x", x - 4);
+        t.setAttribute("text-anchor", "end");
+      }
+      const rk = document.createElementNS(NS, "tspan");
+      rk.setAttribute("class", "rk");
+      rk.textContent = `${i + 1}. `;
+      t.append(rk, `${C[j].n.replace(/ (County|Parish|Borough|Census Area|Municipality|city)$/, "")}, ${C[j].s}`);
+      gL.appendChild(t);
+    });
+  }
+  function paint() {
+    const fi = st.fi, [T, cols] = scale();
+    const nd = getComputedStyle($("root")).getPropertyValue("--nodata").trim();
+    for (let j = 0; j < C.length; j++) {
+      const v = val(fi, j);
+      paths[j].style.fill = v == null ? nd : cols[bin(v, T)];
+    }
+    drawTop();
+    gH.textContent = "";
+    if (PW) {
+      for (let j = 0; j < C.length; j++) {
+        const r = pwRow(PW, st.pwYear, j);
+        if (r && r.g !== "county") {
+          const p = document.createElementNS(NS, "path");
+          p.setAttribute("d", C[j].d);
+          p.setAttribute("fill", "url(#hatchp)");
+          gH.appendChild(p);
+        }
+      }
+    } else if (st.hatch) {
+      for (let j = 0; j < C.length; j++) if (val(fi, j) != null && flagged(fi, j)) {
+        const p = document.createElementNS(NS, "path");
+        p.setAttribute("d", C[j].d);
+        p.setAttribute("fill", "url(#hatchp)");
+        gH.appendChild(p);
+      }
+    }
+    drawResearched();
+    drawPins();
+    drawNGO();
+    legend();
+    header();
+    $("slider").value = fi;
+    $("frame-label").textContent = F[fi].label;
+    if (st.sel) renderPanel();
+    if (st.drawer) renderTable();
+  }
+  function header() {
+    const f = F[st.fi];
+    const b = F[yearIdx[st.base]], p = F[yearIdx[st.pivot]];
+    if (PW) {
+      const d = PW.data[String(st.pwYear)];
+      let n = 0;
+      if (d) d.v.forEach((v) => {
+        n += v;
+      });
+      $("hero-v").textContent = d ? fmtV(n) : "–";
+      $("hero-l").textContent = !d ? `No rows for ${tbLbl(PW, st.pwYear)} in this layer` : PW.group === "modeled" ? `${PW.unit}, sum of ${fmtN(d.v.length)} counties in this file, ${tbLbl(PW, st.pwYear)}. ${PW.hedge}; not a national estimate` : `${PW.unit} in ${tbLbl(PW, st.pwYear)}, summed over ${fmtN(d.v.length)} counties in this file. A yearly flow from administrative records, not residents`;
+      if (isExport) $("title").textContent = `${PW.hedge ? PW.hedge + ": " : ""}${PW.label}, ${tbLbl(PW, st.pwYear)}` + (st.top ? ` · top ${st.topN} outlined` : "");
+      return;
+    }
+    if (st.mode === "share") {
+      $("hero-v").textContent = A.nat[st.fi].us_pct.toFixed(1) + "%";
+      $("hero-l").textContent = `of US ${denWord()} were ${who()} (${fmtN(A.nat[st.fi].us_fb)} people), ${f.label}`;
+    } else if (st.mode === "change") {
+      $("hero-v").textContent = fmtPP(A.nat[st.fi].us_pct - A.nat[yearIdx[st.base]].us_pct);
+      $("hero-l").textContent = `US share ${who()}, ${b.label} (${A.nat[yearIdx[st.base]].us_pct.toFixed(1)}%) → ${f.label} (${A.nat[st.fi].us_pct.toFixed(1)}%)`;
+    } else if (st.mode === "growth") {
+      $("hero-v").textContent = fmtG((A.nat[st.fi].us_fb / A.nat[yearIdx[st.base]].us_fb - 1) * 100);
+      $("hero-l").textContent = `growth in US residents ${who()}, ${b.label} (${fmtN(A.nat[yearIdx[st.base]].us_fb)}) → ${f.label} (${fmtN(A.nat[st.fi].us_fb)})`;
+    } else if (!accelOK(st.fi)) {
+      $("hero-v").textContent = "–";
+      $("hero-l").textContent = `Move the slider past ${p.label} to compare the two periods`;
+    } else {
+      const fi = st.fi, bi = yearIdx[st.base], pi = yearIdx[st.pivot];
+      const r1 = (A.nat[yearIdx[st.pivot]].us_pct - A.nat[yearIdx[st.base]].us_pct) / (mid(pi) - mid(bi)) * 10, r2 = (A.nat[st.fi].us_pct - A.nat[yearIdx[st.pivot]].us_pct) / (mid(fi) - mid(pi)) * 10;
+      $("hero-v").textContent = fmtA(r2 - r1);
+      $("hero-l").textContent = `US share ${who()} grew ${fmtPP(r1)}/decade from ${b.label} to ${p.label}, then ${fmtPP(r2)}/decade to ${f.label}`;
+    }
+    if (isExport) {
+      $("title").textContent = {
+        share: `${Who()}: ${denFb() ? "share of county foreign-born residents" : "share of county population"} — ${f.label}`,
+        change: `Change in share ${who()}, ${b.label} → ${f.label}`,
+        growth: `Growth in residents ${who()}, ${b.label} → ${f.label}`,
+        accel: `Is growth ${A.k ? "in residents " + who() : "in the foreign-born population"} speeding up? ${b.label} → ${p.label} vs ${p.label} → ${f.label}`
+      }[st.mode] + (st.top ? ` · top ${st.topN} outlined` : "");
+    }
+  }
+  const legendTitle = () => {
+    const f = F[st.fi], b = F[yearIdx[st.base]], p = F[yearIdx[st.pivot]];
+    return {
+      share: [`${Who()}, ${pctOf()}`, " · " + f.label],
+      change: [isSt() ? `Change in ${who()} as ${pctOf()}, percentage points` : `Change in share ${who()}, percentage points`, ` · ${b.label} → ${f.label}`],
+      growth: [`Growth in residents ${who()}, % of baseline headcount`, ` · ${b.label} → ${f.label} · counties with <${MIN_BASE_FB} at baseline left blank`],
+      accel: ["Change in growth rate, pts per decade", ` · (${p.label} → ${f.label}) minus (${b.label} → ${p.label}); orange = faster recently, teal = slower`]
+    }[st.mode];
+  };
+  function legend() {
+    const L = $("legend");
+    L.textContent = "";
+    const t = document.createElement("div");
+    t.className = "title";
+    const b = document.createElement("b");
+    const [lt, ls] = PW ? [(PW.hedge ? PW.hedge + " · " : "") + PW.label, ` · ${tbLbl(PW, st.pwYear)} · ${PW.unit}${perYear(PW)}${PW.group === "pathways" ? " (flow, not residents)" : ""}`] : legendTitle();
+    b.textContent = lt;
+    t.append(b, ls);
+    L.appendChild(t);
+    const sw = document.createElement("div");
+    sw.className = "swatches";
+    const [, cols, LBL] = scale();
+    cols.forEach((c, i) => {
+      const d = document.createElement("div");
+      d.className = "sw";
+      const sq = document.createElement("i");
+      sq.style.background = c;
+      const lab = document.createElement("span");
+      lab.textContent = LBL[i];
+      d.append(sq, lab);
+      sw.appendChild(d);
+    });
+    const ndw = document.createElement("div");
+    ndw.className = "sw nd";
+    const ndi = document.createElement("i");
+    const nds = document.createElement("span");
+    nds.textContent = PW ? "not in file" : "no data";
+    ndw.append(ndi, nds);
+    sw.appendChild(ndw);
+    L.appendChild(sw);
+    if (PW) {
+      if (gH.childNodes.length) {
+        const k = document.createElement("div");
+        k.className = "key";
+        k.innerHTML = `<svg width="18" height="12"><rect width="18" height="12" fill="url(#hatchp)" style="stroke:var(--axis)"/></svg>`;
+        k.append("Allocated from city, metro or state totals (not county records)");
+        L.appendChild(k);
+      }
+      const c = el("div", "lcav");
+      if (PW.hedge) c.appendChild(el("b", null, PW.hedge + ". "));
+      c.append(`One unit = ${sent(PW.counts)} ${PW.tb === "FY" ? "Federal fiscal years (Oct–Sep)." : "Calendar years."} `);
+      c.append(PW.group === "modeled" ? "Not a count. " : "Counts events per year, not people living in the county; do not add to other layers or to the foreign-born count. ");
+      if (PW.ncw.length) c.append(`Not comparable with: ${sent(PW.ncw.join("; "))} `);
+      if (PW.caveats.length) c.append(sent(PW.caveats[0]) + " ");
+      c.append("Blank counties are not in the source file, which is not the same as zero.");
+      L.appendChild(c);
+    } else if (isSt() && A.cav) {
+      const c = el("div", "lcav");
+      c.appendChild(el("b", null, A.k === "noncit" || A.k === "natz" ? "Not legal status. " : "Year of entry. "));
+      c.append(A.cav);
+      L.appendChild(c);
+    }
+    if (st.pins) {
+      const k = document.createElement("div");
+      k.className = "key";
+      k.innerHTML = `<svg width="14" height="14"><circle cx="7" cy="7" r="4.5" style="fill:var(--pin);stroke:var(--pin-ring);stroke-width:2"/></svg>`;
+      k.append("Case-study community (click)");
+      L.appendChild(k);
+    }
+    if (st.hatch) {
+      const k = document.createElement("div");
+      k.className = "key";
+      k.innerHTML = `<svg width="18" height="12"><rect width="18" height="12" fill="url(#hatchp)" style="stroke:var(--axis)"/></svg>`;
+      k.append("MOE > 30% of estimate");
+      L.appendChild(k);
+    }
+    if (st.researched) {
+      const k = document.createElement("div");
+      k.className = "key";
+      k.innerHTML = `<svg width="18" height="12"><rect x="1" y="1" width="16" height="10" style="fill:none;stroke:var(--accent);stroke-width:1.5"/></svg>`;
+      k.append(`Researched county (${Object.keys(NOTES).length}); click for why it changed`);
+      L.appendChild(k);
+    }
+    if (st.top) {
+      const k = document.createElement("div");
+      k.className = "key";
+      k.innerHTML = `<svg width="18" height="12"><rect x="1" y="1" width="16" height="10" style="fill:none;stroke:var(--text-primary);stroke-width:1.5"/></svg>`;
+      const n = ranking(st.mode, st.fi, st.reliable).order.length;
+      k.append(`Top ${Math.min(st.topN, n)} of ${fmtN(n)} ranked counties` + (st.reliable ? " (reliable only)" : ""));
+      L.appendChild(k);
+    }
+  }
+  const sl = $("slider");
+  sl.max = F.length - 1;
+  const ticks = $("ticks");
+  F.forEach((f, i) => {
+    if (!(i === 0 || f.source !== "decennial" && f.year % 5 === 0 || i === F.length - 1)) return;
+    const s = document.createElement("span");
+    if (i === 0) s.className = "first";
+    if (i === F.length - 1) s.className = "last";
+    s.style.left = i / (F.length - 1) * 100 + "%";
+    s.textContent = f.source === "decennial" ? f.year : `’${String(f.year - 4).slice(2)}–’${String(f.year).slice(2)}`;
+    ticks.appendChild(s);
+  });
+  sl.addEventListener("input", () => {
+    st.fi = Math.max(+sl.value, firstFrame());
+    paint();
+  });
+  let timer = null;
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+    $("play").innerHTML = "&#9654;";
+    $("play").setAttribute("aria-label", "Play");
+  }
+  $("play").addEventListener("click", () => {
+    if (timer) return stop();
+    if (st.fi === F.length - 1) {
+      st.fi = firstFrame();
+      paint();
+    }
+    $("play").innerHTML = "&#10074;&#10074;";
+    $("play").setAttribute("aria-label", "Pause");
+    timer = setInterval(() => {
+      if (st.fi >= F.length - 1) return stop();
+      st.fi++;
+      paint();
+    }, 900);
+  });
+  (DATA.regions || []).forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r.k;
+    o.textContent = r.label;
+    $("og-reg").appendChild(o);
+  });
+  (DATA.countries || []).forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r.k;
+    o.textContent = r.label;
+    $("og-ctry").appendChild(o);
+  });
+  const shortLabel = (f) => f.source === "decennial" ? `Census ${f.year}` : `ACS ${f.year - 4}–${String(f.year).slice(2)}`;
+  function syncBase() {
+    const f0 = firstFrame(), sel = $("base");
+    sel.textContent = "";
+    const opts = [1990, 2e3];
+    if (F[f0].year > 2e3) opts.push(F[f0].year);
+    opts.forEach((y) => {
+      const o = document.createElement("option");
+      o.value = y;
+      o.textContent = F[yearIdx[y]].source === "decennial" ? F[yearIdx[y]].label : F[yearIdx[y]].label + " (first published)";
+      o.disabled = yearIdx[y] < f0;
+      sel.appendChild(o);
+    });
+    st.base = yearIdx[st.baseWant] >= f0 ? st.baseWant : F[f0].year;
+    sel.value = String(st.base);
+    fillPivot();
+  }
+  function setRegion(k) {
+    st.region = k;
+    setLayer("");
+  }
+  let savedRegion = "";
+  function setLayer(L) {
+    st.layer = STS[L] || PWS[L] ? L : "";
+    const s = STS[st.layer];
+    PW = PWS[st.layer] || null;
+    if (st.layer) {
+      if (st.region) savedRegion = st.region;
+      st.region = "";
+    } else if (!st.region && savedRegion) {
+      st.region = savedRegion;
+      savedRegion = "";
+    }
+    const k = st.region;
+    A = s ? statusSet(s) : k ? buildRegion(REG[k]) : ALL;
+    $("layer").value = st.layer;
+    $("region").value = k;
+    $("region").disabled = !!st.layer;
+    $("region-wrap").style.display = st.layer ? "none" : "";
+    const rn = $("region-note");
+    if (st.layer && savedRegion && REG[savedRegion]) {
+      rn.textContent = "Born-in: " + REG[savedRegion].label + " (paused — restored when you switch back to foreign-born)";
+      rn.style.display = "";
+    } else {
+      rn.style.display = "none";
+    }
+    ["mode-seg", "slider-wrap", "play", "frame-label", "hatch-wrap", "reliable-wrap"].forEach((id) => {
+      $(id).style.display = PW ? "none" : "";
+    });
+    $("den-wrap").style.display = s ? "" : "none";
+    $("pwyear-wrap").style.display = PW ? "" : "none";
+    modeCtl();
+    if (PW) {
+      const sel = $("pwyear");
+      sel.textContent = "";
+      PW.years.forEach((y) => {
+        const o = document.createElement("option");
+        o.value = y;
+        o.textContent = tbLbl(PW, y) + (PW.data[String(y)] ? "" : " (no rows)");
+        sel.appendChild(o);
+      });
+      const have = PW.years.filter((y) => PW.data[String(y)]);
+      if (!PW.years.includes(st.pwYear)) st.pwYear = have.length ? have[have.length - 1] : PW.years[PW.years.length - 1];
+      sel.value = String(st.pwYear);
+    } else {
+      const f0 = firstFrame();
+      if (st.fi < f0) st.fi = f0;
+      syncBase();
+    }
+    titles();
+    clampNote();
+    st.sort = null;
+    paint();
+  }
+  function titles() {
+    const k = st.region, f0 = firstFrame(), isC = k && REG[k].kind === "country", from = F[f0].year > 2e3 ? shortLabel(F[f0]) : String(F[f0].year);
+    const dr = $("dek-region"), custom = !!(st.layer || k);
+    dr.style.display = custom ? "" : "none";
+    $("dek").style.display = custom ? "none" : "";
+    if (PW) {
+      $("title").textContent = (PW.group === "modeled" ? "Modeled estimate: " : "Administrative records: ") + PW.label;
+      dr.textContent = `${PW.hedge ? sent(PW.hedge) + " " : ""}One unit = ${sent(PW.counts)} ${PW.tb === "FY" ? "Federal fiscal years (Oct–Sep)." : "Calendar years."}` + (PW.group === "modeled" ? " Not comparable with ACS or administrative counts." : "") + (PW.geo !== "county" ? ` Some or all values are ${GEO_TXT[PW.geo]} (hatched).` : "");
+    } else if (isSt()) {
+      $("title").textContent = `${A.Who}: ${denFb() ? "share of each county’s foreign-born residents" : "share of county population"}, ${from}–2024`;
+      dr.textContent = `${A.src}. ${denFb() ? "Shares are of each county’s foreign-born residents." : "Shares are of each county’s total population."} ${A.cav}`;
+    } else {
+      $("title").textContent = k ? `Residents born in ${A.label}: share of county population, ${from}–2024` : "Foreign-born share of county population, 1990–2024";
+      dr.textContent = k ? `Showing residents born in ${A.label} (Census 2000 and ACS table B05006; 1990 has no ${isC ? "country" : "regional"} breakdown here). Shares are of each county’s total population. ${REGION_NOTE[k] || ""}` : "";
+    }
+  }
+  function setDen(d) {
+    st.den = d;
+    ["fb", "pop"].forEach((x) => $("d-" + x).setAttribute("aria-pressed", x === d));
+    if (isSt()) {
+      statusSet(A);
+      titles();
+      st.sort = null;
+      paint();
+    }
+  }
+  $("d-fb").onclick = () => setDen("fb");
+  $("d-pop").onclick = () => setDen("pop");
+  ["fb", "pop"].forEach((x) => $("d-" + x).setAttribute("aria-pressed", x === st.den));
+  Object.values(STS).forEach((s) => {
+    const o = document.createElement("option");
+    o.value = s.k;
+    o.textContent = s.Who;
+    $("og-st").appendChild(o);
+  });
+  Object.values(PWS).forEach((p) => {
+    const o = document.createElement("option");
+    o.value = p.id;
+    o.textContent = (p.group === "modeled" ? "Modeled: " : "") + p.label;
+    $(p.group === "modeled" ? "og-mod" : "og-pw").appendChild(o);
+  });
+  ["og-st", "og-pw", "og-mod"].forEach((id) => {
+    if (!$(id).children.length) $(id).remove();
+  });
+  $("layer").onchange = (e) => setLayer(e.target.value);
+  $("pwyear").onchange = (e) => {
+    st.pwYear = +e.target.value;
+    st.sort = null;
+    paint();
+  };
+  function clampNote() {
+    const cn = $("clamp-note"), k = st.region, f0 = firstFrame();
+    if (PW) {
+      cn.style.display = "none";
+      return;
+    }
+    if ((k || isSt()) && F[f0].year > 2e3) {
+      cn.textContent = `${isSt() ? A.Who : A.label} first published separately in ${shortLabel(F[f0])}; earlier vintages have no data, so the slider starts there` + (st.mode !== "share" && st.baseWant < F[f0].year ? ` and the baseline is ${shortLabel(F[f0])} (a ${F[F.length - 1].year - F[f0].year}-year window, not 2000 → 2024).` : " and change/growth baselines move to it.");
+      cn.style.display = "block";
+    } else cn.style.display = "none";
+  }
+  const REGION_NOTE = {
+    mena: "Middle East & North Africa = Census “Western Asia” (Iraq, Israel, Jordan, Lebanon, Syria, Turkey, Yemen, Gulf states, Caucasus) minus Armenia, plus Northern Africa (Egypt, Morocco, Sudan, Algeria, Libya, Tunisia) and Iran. Armenia is left out of every region.",
+    ssa: "Africa minus Northern Africa (Sudan is counted under Northern Africa by the Census).",
+    s_c_asia: "Census “South Central Asia” minus Iran: India, Pakistan, Bangladesh, Nepal, Bhutan, Sri Lanka, Afghanistan, and the ex-Soviet Central Asian states.",
+    e_se_asia: "Eastern Asia (China, Korea, Japan, Taiwan, Hong Kong) plus South Eastern Asia (Philippines, Vietnam, Burma, Laos, Cambodia, Thailand, Indonesia).",
+    c_america: "Central America excluding Mexico: Guatemala, Honduras, El Salvador, Nicaragua, Costa Rica, Panama, Belize.",
+    oceania: "Includes the Marshall Islands and Micronesia (COFA migrants).",
+    n_america: "Canada, plus Bermuda and other non-Latin territories.",
+    china: "Census “China, excluding Hong Kong and Taiwan”.",
+    korea: "Census “Korea” (North and South combined; nearly all South Korea).",
+    marshall_is: "Marshall Islands citizens can live and work in the US without a visa under the Compact of Free Association.",
+    bhutan: "Most Bhutan-born residents are ethnic Nepali (Lhotshampa) refugees resettled 2008–2019."
+  };
+  $("region").onchange = (e) => setRegion(e.target.value);
+  function modeCtl() {
+    $("base-wrap").style.display = PW || st.mode === "share" ? "none" : "";
+    $("pivot-wrap").style.display = !PW && st.mode === "accel" ? "" : "none";
+  }
+  function setMode(m) {
+    st.mode = m;
+    clampNote();
+    MODES.forEach((k) => $("m-" + k).setAttribute("aria-pressed", k === m));
+    modeCtl();
+    st.sort = null;
+    paint();
+  }
+  MODES.forEach((k) => {
+    $("m-" + k).onclick = () => setMode(k);
+  });
+  function fillPivot() {
+    const sel = $("pivot");
+    sel.textContent = "";
+    F.forEach((f, i) => {
+      if (i > yearIdx[st.base] && i < F.length - 1) {
+        const o = document.createElement("option");
+        o.value = f.year;
+        o.textContent = f.label;
+        sel.appendChild(o);
+      }
+    });
+    const ok = (y) => yearIdx[y] > yearIdx[st.base] && yearIdx[y] < F.length - 1;
+    st.pivot = ok(st.pivotWant) ? st.pivotWant : ok(2012) ? 2012 : F[Math.round((yearIdx[st.base] + F.length - 1) / 2)].year;
+    sel.value = String(st.pivot);
+  }
+  fillPivot();
+  $("pivot").onchange = (e) => {
+    st.pivot = st.pivotWant = +e.target.value;
+    paint();
+  };
+  $("base").value = String(st.base);
+  $("base").onchange = (e) => {
+    st.base = st.baseWant = +e.target.value;
+    fillPivot();
+    paint();
+  };
+  const syncTop = () => {
+    $("top-btn").setAttribute("aria-pressed", !!st.top);
+    $("topn").value = String(st.topN);
+  };
+  syncTop();
+  $("top-btn").onclick = () => {
+    st.top = st.top ? 0 : 1;
+    syncTop();
+    paint();
+  };
+  $("topn").onchange = (e) => {
+    st.topN = +e.target.value;
+    st.top = 1;
+    syncTop();
+    paint();
+  };
+  $("reliable").checked = st.reliable;
+  $("reliable").onchange = (e) => {
+    st.reliable = e.target.checked;
+    paint();
+  };
+  $("hatch").checked = st.hatch;
+  $("hatch").onchange = (e) => {
+    st.hatch = e.target.checked;
+    paint();
+  };
+  $("showpins").checked = st.pins;
+  $("showpins").onchange = (e) => {
+    st.pins = e.target.checked;
+    paint();
+  };
+  const tip = $("tip");
+  function showTip(evt, html) {
+    tip.textContent = "";
+    tip.appendChild(html);
+    tip.style.display = "block";
+    const r = tip.getBoundingClientRect();
+    let x = evt.clientX + 14, y = evt.clientY + 14;
+    if (x + r.width > innerWidth - 8) x = evt.clientX - r.width - 14;
+    if (y + r.height > innerHeight - 8) y = evt.clientY - r.height - 14;
+    tip.style.left = x + "px";
+    tip.style.top = y + "px";
+  }
+  const hideTip = () => {
+    tip.style.display = "none";
+    if (typeof setHover === "function") setHover(-1);
+  };
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  const NOTES = DATA.notes || {}, GQ = DATA.gq || {};
+  const GQ_LABEL = { corr: "adult correctional (prisons, jails, ICE detention)", juv: "juvenile facilities", nursing: "nursing homes", oth_inst: "other institutional", college: "college housing", military: "military quarters", oth_noninst: "other noninstitutional" };
+  const GQ_SHORT = { corr: "prison/detention", juv: "juvenile facility", nursing: "nursing homes", oth_inst: "institutional", college: "college dorms", military: "military", oth_noninst: "other GQ" };
+  const gqFlag = (j) => {
+    const g = GQ[C[j].f];
+    return g && g[0] === 1 ? g : null;
+  };
+  const hasNote = (j) => !!NOTES[C[j].f];
+  function pwTip(j) {
+    const c = C[j], frag = document.createDocumentFragment(), r = pwRow(PW, st.pwYear, j);
+    frag.appendChild(el("div", "hd", `${c.n}, ${c.s}`));
+    frag.appendChild(el("div", "v", r ? fmtV(r.v) + fmtRange(r) : "–"));
+    frag.appendChild(el("div", "n", `${PW.label}, ${tbLbl(PW, st.pwYear)}`));
+    if (PW.hedge) frag.appendChild(el("div", "warn", PW.hedge));
+    if (!r) frag.appendChild(el("div", "n", "Not in the source file for this year (not the same as zero)"));
+    else {
+      const R = ranking(st.mode, st.fi, st.reliable);
+      if (R.rank[j]) frag.appendChild(el("div", "n", `#${fmtN(R.rank[j])} of ${fmtN(R.order.length)} counties in this file`));
+      if (r.g !== "county") frag.appendChild(el("div", "warn", `Value ${GEO_TXT[r.g]}, not a county record`));
+    }
+    frag.appendChild(el("div", "n", `One unit = ${sent(PW.counts)}`));
+    if (PW.group === "pathways") frag.appendChild(el("div", "n", "Yearly flow, not residents; not comparable with ACS counts"));
+    const meta = el("div", "meta");
+    if (hasNote(j)) meta.appendChild(el("span", "chip res", "📝 researched"));
+    if (meta.childNodes.length) frag.appendChild(meta);
+    frag.appendChild(el("div", "hint", "Click for details"));
+    return frag;
+  }
+  function countyTip(j) {
+    if (PW) return pwTip(j);
+    const fi = st.fi, c = C[j], frag = document.createDocumentFragment();
+    const v = val(fi, j);
+    const fmt = { share: fmtPct, change: fmtPP, growth: fmtG, accel: fmtA }[st.mode];
+    frag.appendChild(el("div", "hd", `${c.n}, ${c.s}`));
+    frag.appendChild(el("div", "v", fmt(v)));
+    frag.appendChild(el("div", "n", { share: `${Who()}, ${pctOf()}`, change: `Change in share ${who()} since ${shortLabel(F[yearIdx[st.base]])}`, growth: `Growth in residents ${who()} since ${shortLabel(F[yearIdx[st.base]])}`, accel: `Speed-up after ${shortLabel(F[yearIdx[st.pivot]])}` }[st.mode]));
+    const fb = A.fb[fi][j], moe = A.moe[fi][j];
+    if (A.pct[fi][j] == null) frag.appendChild(el("div", "n", `No data for ${F[fi].label}` + (c.f === "08014" ? " (county created 2001)" : "")));
+    else {
+      const R = ranking(st.mode, fi, st.reliable);
+      if (R.rank[j]) frag.appendChild(el("div", "n", `#${fmtN(R.rank[j])} of ${fmtN(R.order.length)} counties` + (st.reliable ? " (reliable only)" : "")));
+      else if (v != null && st.reliable) frag.appendChild(el("div", "n", "Not ranked: too small or too noisy"));
+      const bi = yearIdx[st.base], pi = yearIdx[st.pivot];
+      if (st.mode === "change") frag.appendChild(el("div", "n", `${F[bi].label}: ${fmtPct(A.pct[bi][j])} → ${F[fi].label}: ${fmtPct(A.pct[fi][j])}`));
+      if (st.mode === "growth") frag.appendChild(el("div", "n", v == null ? `Fewer than ${MIN_BASE_FB} ${who()} in ${F[bi].label} (${fmtN(A.fb[bi][j])}); % growth not meaningful` : `${fmtN(A.fb[bi][j])} ${who()} in ${F[bi].label} → ${fmtN(fb)}`));
+      if (st.mode === "accel" && v != null) {
+        frag.appendChild(el("div", "n", `${F[bi].label} → ${F[pi].label}: ${fmtPP((A.pct[pi][j] - A.pct[bi][j]) / (mid(pi) - mid(bi)) * 10)}/decade`));
+        frag.appendChild(el("div", "n", `${F[pi].label} → ${F[fi].label}: ${fmtPP((A.pct[fi][j] - A.pct[pi][j]) / (mid(fi) - mid(pi)) * 10)}/decade`));
+      }
+      frag.appendChild(el("div", "n", `${fmtN(fb)} ${who()}${moe != null ? " (±" + fmtN(moe) + ")" : ""} of ${fmtN(denom(fi, j))} ${denWord()} · ${F[fi].label}`));
+      if (isSt()) frag.appendChild(el("div", "n", A.k === "noncit" || A.k === "natz" ? "Noncitizens = LPRs + visa holders + refugees + unauthorized, combined; legal status not asked" : "Year of entry, not legal status"));
+      if (flagged(fi, j)) frag.appendChild(el("div", "warn", `Low reliability: margin of error exceeds 30% of the estimate` + (st.mode !== "share" && A.flag[fi][j] !== 1 ? " (baseline)" : "")));
+      const xw = DATA.xw[c.f] && DATA.xw[c.f][fi];
+      if (xw) frag.appendChild(el("div", "n", "Boundary crosswalk: " + xw.replace(/_/g, " ").replace(/;/g, "; ")));
+    }
+    const g = gqFlag(j);
+    if (g) frag.appendChild(el("div", "warn", `Group quarters ${g[1].toFixed(1)}% of 2020 pop., mostly ${GQ_SHORT[g[2]]}`));
+    const meta = el("div", "meta");
+    if (hasNote(j)) meta.appendChild(el("span", "chip res", "📝 researched"));
+    if (meta.childNodes.length) frag.appendChild(meta);
+    frag.appendChild(el("div", "hint", "Click for details"));
+    return frag;
+  }
+  let hoverJ = -1;
+  function setHover(j) {
+    if (j === hoverJ) return;
+    hoverJ = j;
+    gV.textContent = "";
+    if (j >= 0) {
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", C[j].d);
+      gV.appendChild(p);
+    }
+  }
+  gC.addEventListener("pointermove", (e) => {
+    const j = e.target.dataset && e.target.dataset.j;
+    if (j == null) {
+      hideTip();
+      return;
+    }
+    setHover(+j);
+    showTip(e, countyTip(+j));
+  });
+  gC.addEventListener("pointerleave", hideTip);
+  gC.addEventListener("pointerout", (e) => {
+    if (!e.relatedTarget || !gC.contains(e.relatedTarget)) hideTip();
+  });
+  addEventListener("scroll", hideTip, { passive: true });
+  addEventListener("blur", hideTip);
+  gC.addEventListener("click", (e) => {
+    const j = e.target.dataset && e.target.dataset.j;
+    if (j != null) {
+      hideTip();
+      st.sel = { type: "county", j: +j };
+      openPanel();
+    }
+  });
+  function drawResearched() {
+    gR.textContent = "";
+    if (!st.researched) return;
+    for (let j = 0; j < C.length; j++) if (hasNote(j)) {
+      const p = document.createElementNS(NS, "path");
+      p.setAttribute("d", C[j].d);
+      gR.appendChild(p);
+    }
+  }
+  const syncRes = () => {
+    $("res-btn").setAttribute("aria-pressed", st.researched);
+    $("res-btn").textContent = `Researched counties (${Object.keys(NOTES).length})`;
+  };
+  syncRes();
+  $("res-btn").onclick = () => {
+    st.researched = !st.researched;
+    syncRes();
+    if (st.researched && st.drawer) $("dres").checked = true;
+    paint();
+  };
+  function drawPins() {
+    gP.textContent = "";
+    if (!st.pins) return;
+    const y = F[st.fi].year;
+    DATA.pins.forEach((p, k) => {
+      if (p.from != null && y < p.from) return;
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "pin" + (st.sel && st.sel.type === "pin" && st.sel.k === k ? " sel" : ""));
+      g.setAttribute("transform", `translate(${p.xy[0]},${p.xy[1]})`);
+      g.setAttribute("tabindex", isExport ? "-1" : "0");
+      g.setAttribute("role", "button");
+      g.setAttribute("aria-label", `${p.place}: ${p.group}`);
+      const dot = document.createElementNS(NS, "circle");
+      dot.setAttribute("r", 3.6);
+      dot.setAttribute("class", "dot");
+      g.append(dot);
+      gP.appendChild(g);
+      const tipf = (e) => {
+        const fr = document.createDocumentFragment();
+        fr.appendChild(el("div", "v", p.place));
+        fr.appendChild(el("div", null, p.group || ""));
+        fr.appendChild(el("div", "n", (p.arrival_window || "") + " · click for sources"));
+        showTip(e, fr);
+      };
+      g.addEventListener("pointermove", tipf);
+      g.addEventListener("pointerleave", hideTip);
+      const open = () => {
+        st.sel = { type: "pin", k };
+        openPanel();
+      };
+      g.addEventListener("click", open);
+      g.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          open();
+        }
+      });
+    });
+  }
+  const NGO_TIER = {
+    1: { c: "#1d4ed8", l: "National resettlement" },
+    2: { c: "#0891b2", l: "Local affiliate" },
+    3: { c: "#dc2626", l: "ORR-funded provider" },
+    4: { c: "#16a34a", l: "Legal services" },
+    5: { c: "#7c3aed", l: "Advocacy/policy" },
+    6: { c: "#92400e", l: "Funder" }
+  };
+  const NGO_EDGE = {
+    federal_award: { c: "#dc2626", d: "", w: 1.8, l: "Federal award" },
+    foundation_grant: { c: "#7c3aed", d: "4 2", w: 1.4, l: "Foundation grant" },
+    affiliate_of: { c: "#0891b2", d: "2 3", w: 1.2, l: "Affiliate of" },
+    schedule_r: { c: "#92400e", d: "6 3", w: 1.4, l: "Schedule R link" }
+  };
+  let ngoSel = null, _ngoDots = [];
+  const ngoTiers = new Set();
+  function ngoRadius(o) {
+    const a = o.max_fed || 0;
+    return a <= 0 ? 2.8 : 2.2 + Math.log10(a / 1e6 + 1) * 2.4;
+  }
+  function fmtM(v) {
+    return v >= 1e9 ? (v / 1e9).toFixed(1) + "B" : v >= 1e6 ? (v / 1e6).toFixed(0) + "M" : v >= 1e3 ? (v / 1e3).toFixed(0) + "k" : String(v);
+  }
+  const NGO_CR = 14;
+  let ngoSpider = null;
+  function drawNGO() {
+    gNGO.textContent = "";
+    gNGOe.textContent = "";
+    _ngoDots = [];
+    if (!DATA.ngo) return;
+    const byId = {};
+    DATA.ngo.orgs.forEach((o) => {
+      byId[o.id] = o;
+    });
+    const vis = DATA.ngo.orgs.filter((o) => ngoTiers.has(o.tier) && o.xy).sort((a, b) => (b.max_fed || 0) - (a.max_fed || 0));
+    const clusters = [];
+    vis.forEach((o) => {
+      let c = clusters.find((c2) => {
+        const dx = c2.x - o.xy[0], dy = c2.y - o.xy[1];
+        return dx * dx + dy * dy <= NGO_CR * NGO_CR;
+      });
+      if (!c) {
+        c = { x: o.xy[0], y: o.xy[1], members: [] };
+        clusters.push(c);
+      }
+      c.members.push(o);
+    });
+    clusters.forEach((c) => {
+      c.key = c.members[0].id;
+    });
+    if (ngoSpider && !clusters.some((c) => c.key === ngoSpider && c.members.length > 1)) ngoSpider = null;
+    const disp = {}, spiderLegs = [];
+    clusters.forEach((c) => {
+      if (c.members.length === 1 || c.key === ngoSpider) {
+        if (c.members.length === 1) {
+          disp[c.members[0].id] = [c.x, c.y];
+          return;
+        }
+        const n = c.members.length, gA = Math.PI * (3 - Math.sqrt(5));
+        c.members.forEach((o, i) => {
+          let x, y;
+          if (n <= 10) {
+            const r = 10 + n * 2.2, a = i / n * 2 * Math.PI - Math.PI / 2;
+            x = c.x + Math.cos(a) * r;
+            y = c.y + Math.sin(a) * r;
+          } else {
+            const r = 8 + 9.5 * Math.sqrt(i);
+            x = c.x + Math.cos(i * gA) * r;
+            y = c.y + Math.sin(i * gA) * r;
+          }
+          disp[o.id] = [x, y];
+          spiderLegs.push([c.x, c.y, x, y]);
+        });
+      } else {
+        c.members.forEach((o) => {
+          disp[o.id] = [c.x, c.y];
+        });
+      }
+    });
+    if (ngoSel) {
+      DATA.ngo.edges.forEach((e) => {
+        if (e.source !== ngoSel && e.target !== ngoSel) return;
+        const src = byId[e.source], tgt = byId[e.target];
+        const p1 = disp[e.source] || src?.xy, p2 = disp[e.target] || tgt?.xy;
+        if (!p1 || !p2) return;
+        const es = NGO_EDGE[e.type] || NGO_EDGE.federal_award;
+        const ln = document.createElementNS(NS, "line");
+        ln.setAttribute("x1", p1[0]);
+        ln.setAttribute("y1", p1[1]);
+        ln.setAttribute("x2", p2[0]);
+        ln.setAttribute("y2", p2[1]);
+        ln.setAttribute("stroke", es.c);
+        ln.setAttribute("stroke-width", es.w);
+        if (es.d) ln.setAttribute("stroke-dasharray", es.d);
+        ln.setAttribute("stroke-opacity", "0.7");
+        ln.setAttribute("class", "ngo-edge-line");
+        ln.setAttribute("pointer-events", "stroke");
+        const tipf = (ev) => {
+          const fr = document.createDocumentFragment();
+          fr.appendChild(el("div", "hd", `${src.name} → ${tgt.name}`));
+          fr.appendChild(el("div", "n", `${es.l}${e.years ? " · " + e.years : ""}${e.amount ? " · $" + fmtM(e.amount) : ""}`));
+          fr.appendChild(el("div", "n", e.source_id || ""));
+          showTip(ev, fr);
+        };
+        ln.addEventListener("pointermove", tipf);
+        ln.addEventListener("pointerleave", hideTip);
+        gNGOe.appendChild(ln);
+      });
+      gNGOe.setAttribute("pointer-events", "all");
+    }
+    spiderLegs.forEach(([x1, y1, x2, y2]) => {
+      const ln = document.createElementNS(NS, "line");
+      ln.setAttribute("x1", x1);
+      ln.setAttribute("y1", y1);
+      ln.setAttribute("x2", x2);
+      ln.setAttribute("y2", y2);
+      ln.setAttribute("stroke", "var(--text-secondary)");
+      ln.setAttribute("stroke-width", "0.4");
+      ln.setAttribute("stroke-opacity", "0.6");
+      gNGO.appendChild(ln);
+    });
+    const dot = (o, x, y, fan) => {
+      const r = fan ? Math.min(ngoRadius(o), 4.5) : ngoRadius(o), tc = NGO_TIER[o.tier];
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "ngo-dot" + (ngoSel === o.id ? " ngo-sel" : ""));
+      g.setAttribute("transform", `translate(${x},${y})`);
+      const ci = document.createElementNS(NS, "circle");
+      ci.setAttribute("r", r);
+      ci.setAttribute("fill", tc.c);
+      ci.setAttribute("stroke", "#fff");
+      ci.setAttribute("stroke-width", "0.7");
+      ci.setAttribute("fill-opacity", "0.9");
+      g.appendChild(ci);
+      gNGO.appendChild(g);
+      _ngoDots.push({ kind: "org", id: o.id, ox: x, oy: y, r, o });
+    };
+    clusters.forEach((c) => {
+      if (c.members.length === 1) {
+        dot(c.members[0], c.x, c.y);
+        return;
+      }
+      if (c.key === ngoSpider) {
+        c.members.forEach((o) => dot(o, disp[o.id][0], disp[o.id][1], true));
+        return;
+      }
+      const n = c.members.length, r = 3.6 + 1.5 * Math.sqrt(n);
+      const cnt = {};
+      c.members.forEach((o) => cnt[o.tier] = (cnt[o.tier] || 0) + 1);
+      const top = +Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a])[0];
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("class", "ngo-dot ngo-cl");
+      g.setAttribute("transform", `translate(${c.x},${c.y})`);
+      const ci = document.createElementNS(NS, "circle");
+      ci.setAttribute("r", r);
+      ci.setAttribute("fill", "#fff");
+      ci.setAttribute("fill-opacity", "0.92");
+      ci.setAttribute("stroke", NGO_TIER[top].c);
+      ci.setAttribute("stroke-width", "1.4");
+      const tx = document.createElementNS(NS, "text");
+      tx.setAttribute("text-anchor", "middle");
+      tx.setAttribute("dominant-baseline", "central");
+      tx.setAttribute("font-size", Math.max(4.5, Math.min(8, r * 0.95)));
+      tx.setAttribute("font-weight", "700");
+      tx.setAttribute("fill", NGO_TIER[top].c);
+      tx.setAttribute("pointer-events", "none");
+      tx.textContent = n;
+      g.appendChild(ci);
+      g.appendChild(tx);
+      gNGO.appendChild(g);
+      _ngoDots.push({ kind: "cluster", key: c.key, ox: c.x, oy: c.y, r, members: c.members });
+    });
+  }
+  function ngoBlock(j) {
+    if (!DATA.ngo) return null;
+    const fips = C[j].f;
+    const here = DATA.ngo.orgs.filter((o) => (o.counties_active || []).includes(fips));
+    if (!here.length) return null;
+    const wrap = el("div");
+    wrap.appendChild(el("h3", null, `Organizations active here (${here.length})`));
+    here.forEach((o) => {
+      const tc = NGO_TIER[o.tier];
+      const a = el("a", "ngo-chip", `T${o.tier} ${o.name}` + (o.max_fed > 0 ? ` · $${fmtM(o.max_fed)}` : ""));
+      a.href = `ngo/?org=${o.id}`;
+      a.target = "_blank";
+      a.rel = "noopener";
+      wrap.appendChild(a);
+    });
+    wrap.appendChild(el("div", "sub", "Federal $ is largest single award; see ngo/ explorer for full funding."));
+    return wrap;
+  }
+  [1, 2, 3, 4, 5, 6].forEach((t) => {
+    const b = $("ngo-tb" + t);
+    if (!b) return;
+    b.onclick = () => {
+      if (ngoTiers.has(t)) ngoTiers.delete(t);
+      else ngoTiers.add(t);
+      b.setAttribute("aria-pressed", ngoTiers.has(t));
+      b.style.opacity = ngoTiers.has(t) ? "1" : "0.35";
+      drawNGO();
+    };
+  });
+  const panel = $("panel");
+  function openPanel() {
+    if (isExport) return;
+    $("main").classList.add("open");
+    paint();
+  }
+  function closePanel() {
+    st.sel = null;
+    $("main").classList.remove("open");
+    paths.forEach((p) => p.classList.remove("hl"));
+    drawPins();
+  }
+  function spark(j) {
+    const W = 300, H = 140, m = { l: 38, r: 46, t: 10, b: 20 };
+    const xs = (y) => m.l + (y - 1990) / (F[F.length - 1].year - 1990) * (W - m.l - m.r);
+    const vals = F.map((f, i) => A.pct[i][j]), us = A.nat.map((n) => n.us_pct);
+    const mx = Math.max(5, ...vals.filter((v) => v != null), ...us);
+    const top = Math.ceil(mx / 5) * 5;
+    const ys = (v) => m.t + (1 - v / top) * (H - m.t - m.b);
+    const s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    s.setAttribute("width", "100%");
+    s.setAttribute("class", "spark");
+    let h = "";
+    [0, top / 2, top].forEach((g) => {
+      h += `<line x1="${m.l}" x2="${W - m.r}" y1="${ys(g)}" y2="${ys(g)}" style="stroke:var(--grid);stroke-width:1"/><text x="${m.l - 4}" y="${ys(g) + 3}" text-anchor="end">${g}%</text>`;
+    });
+    [1990, 2e3, 2010, 2020].forEach((y) => {
+      h += `<text x="${xs(y)}" y="${H - 5}" text-anchor="middle">${y}</text>`;
+    });
+    const line = (arr, style) => {
+      let d = "";
+      arr.forEach((v, i) => {
+        if (v == null) return;
+        d += (d ? "L" : "M") + xs(F[i].year).toFixed(1) + "," + ys(v).toFixed(1);
+      });
+      return `<path d="${d}" fill="none" style="${style}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    };
+    h += line(us, "stroke:var(--text-muted);stroke-width:2;stroke-dasharray:4 3");
+    h += line(vals, "stroke:var(--accent);stroke-width:2");
+    vals.forEach((v, i) => {
+      if (v != null) h += `<circle cx="${xs(F[i].year)}" cy="${ys(v)}" r="${i === st.fi ? 4.5 : 2}" style="fill:var(--accent);stroke:var(--surface-1);stroke-width:${i === st.fi ? 2 : 1}"/>`;
+    });
+    const lastV = vals[vals.length - 1], lastU = us[us.length - 1];
+    let yc = ys(lastV ?? 0), yu = ys(lastU);
+    if (Math.abs(yc - yu) < 11) {
+      if (yc < yu) {
+        yc -= 5;
+        yu += 5;
+      } else {
+        yc += 5;
+        yu -= 5;
+      }
+    }
+    if (lastV != null) h += `<text class="lbl" x="${W - m.r + 6}" y="${yc + 3}">County</text>`;
+    h += `<text class="lbl" x="${W - m.r + 6}" y="${yu + 3}">US</text>`;
+    s.innerHTML = h;
+    return s;
+  }
+  function countyBlock(j) {
+    const frag = document.createDocumentFragment();
+    const c = C[j], fi = st.fi;
+    frag.appendChild(el("h3", null, `${c.n}, ${c.s} — share ${who()}`));
+    const v = A.pct[fi][j];
+    const p = el("div", null, v == null ? `No data for ${F[fi].label}` : `${fmtPct(v)} in ${F[fi].label}: ${fmtN(A.fb[fi][j])}` + (A.moe[fi][j] != null ? ` (±${fmtN(A.moe[fi][j])})` : "") + ` of ${fmtN(denom(fi, j))} ${denWord()}`);
+    frag.appendChild(p);
+    if (A.flag[fi][j] === 1) frag.appendChild(el("div", "sub", "⚠︎ Margin of error exceeds 30% of the estimate."));
+    const bl = F[yearIdx[st.base]].label, pl = F[yearIdx[st.pivot]].label;
+    const grid = el("div", "stats");
+    [["share", "Share", fmtPct], ["change", `Change since ${bl}`, fmtPP], ["growth", `${A.k ? "Headcount" : "Foreign-born"} growth since ${bl}`, fmtG], ["accel", `Speed-up after ${pl}`, fmtA]].forEach(([k, label, fmt]) => {
+      const m = metric(k, fi, j), R = ranking(k, fi, st.reliable), box = el("div", "stat");
+      box.append(
+        el("div", "k", label),
+        el("div", "x", fmt(m)),
+        el("div", "r", m == null ? k === "accel" && !accelOK(fi) ? `needs a vintage after ${pl}` : "n/a" : R.rank[j] ? `#${fmtN(R.rank[j])} of ${fmtN(R.order.length)}` : "not ranked (small/noisy)")
+      );
+      grid.appendChild(box);
+    });
+    frag.appendChild(grid);
+    frag.appendChild(spark(j));
+    const xw = DATA.xw[c.f];
+    if (xw && Object.keys(xw).length) frag.appendChild(el("div", "sub", "Boundary crosswalk applied in some vintages: " + [...new Set(Object.values(xw))].join("; ").replace(/_/g, " ")));
+    return frag;
+  }
+  const CTRS = [...DATA.countries || [], ...REG.mexico ? [REG.mexico] : []];
+  function gqBlock(j) {
+    const g = GQ[C[j].f];
+    if (!g) return null;
+    const [flag, pctv, dom, pop2020, ...cnt] = g;
+    const box = el("div", flag ? "gqbox" : "sub");
+    if (flag) {
+      const b = el("b", null, `⚠︎ Group-quarters county: ${pctv.toFixed(1)}% of the 2020 population lives in institutional, college or military group quarters`);
+      box.appendChild(b);
+      box.appendChild(el("div", null, `Largest type: ${GQ_LABEL[dom]}, ${fmtN(cnt[DATA.gqTypes.indexOf(dom)])} people (${(cnt[DATA.gqTypes.indexOf(dom)] / pop2020 * 100).toFixed(1)}%). Census counts these residents where the facility is, so foreign-born counts here can move with a facility’s population rather than a community.`));
+      const parts = DATA.gqTypes.map((t, i) => [t, cnt[i]]).filter(([, n]) => n > 0).sort((a, b2) => b2[1] - a[1]).map(([t, n]) => `${GQ_SHORT[t]} ${fmtN(n)}`);
+      box.appendChild(el("div", "sub", "2020 Census PL 94-171 P5: " + parts.join(" · ")));
+    } else box.textContent = `Group quarters (2020): ${pctv.toFixed(1)}% of population in institutional/college/military quarters, below the 5% flag.`;
+    return box;
+  }
+  function topCountries(j) {
+    const fi = st.fi, bi0 = yearIdx[st.base], wrap = el("div");
+    wrap.appendChild(el("h3", null, "Top countries of birth"));
+    const cur = [], gain = [];
+    CTRS.forEach((r) => {
+      buildRegion(r);
+      const v = r.fb[fi][j];
+      if (v == null) return;
+      cur.push([r, v, r.moe[fi][j]]);
+      const f0 = r.fb.findIndex((row) => row.some((x) => x != null)), bi = Math.max(bi0, f0);
+      if (bi < fi && r.fb[bi][j] != null) gain.push([r, v - r.fb[bi][j], bi]);
+    });
+    cur.sort((a, b) => b[1] - a[1]);
+    gain.sort((a, b) => b[1] - a[1]);
+    const two = el("div", "two");
+    const mk = (title, rows, cells) => {
+      const d = el("div");
+      d.appendChild(el("h4", null, title));
+      const t = el("table", "mini"), tb2 = el("tbody");
+      rows.forEach((r) => {
+        const tr = el("tr");
+        cells(r).forEach((x) => {
+          const td = el("td");
+          (Array.isArray(x) ? x : [x]).forEach((y, k) => {
+            if (k) td.appendChild(el("span", "mo", y));
+            else td.append(y);
+          });
+          tr.appendChild(td);
+        });
+        tb2.appendChild(tr);
+      });
+      if (!rows.length) {
+        const tr = el("tr");
+        tr.appendChild(el("td", null, "none"));
+        tb2.appendChild(tr);
+      }
+      t.appendChild(tb2);
+      d.appendChild(t);
+      return d;
+    };
+    two.appendChild(mk(shortLabel(F[fi]), cur.filter((r) => r[1] > 0).slice(0, 5), ([r, v, m]) => [r.label, m != null ? [fmtN(v), `±${fmtN(m)}`] : fmtN(v)]));
+    two.appendChild(mk(`Gain since ${shortLabel(F[bi0])}`, gain.filter((r) => r[1] > 0).slice(0, 5), ([r, g, bi]) => [r.label + (bi !== bi0 ? ` (since ${shortLabel(F[bi])})` : ""), "+" + fmtN(g)]));
+    wrap.appendChild(two);
+    wrap.appendChild(el("div", "sub", `Among the ${CTRS.length} countries tracked here, including Mexico (not every country of birth). ACS counts for small groups have wide margins of error.`));
+    return wrap;
+  }
+  function noteBlock(j) {
+    const n = NOTES[C[j].f];
+    if (!n) return null;
+    const frag = document.createDocumentFragment(), fips = C[j].f;
+    const num = Object.fromEntries(n.sources.map((s, i) => [s.id, i + 1]));
+    const h = el("h3", null, "Why it changed");
+    frag.appendChild(h);
+    const top = el("div", "meta");
+    top.style.display = "flex";
+    top.style.gap = "6px";
+    top.style.alignItems = "center";
+    top.style.flexWrap = "wrap";
+    if (n.confidence) top.appendChild(el("span", "conf " + n.confidence.toLowerCase(), n.confidence + " confidence"));
+    if (n.window) top.appendChild(el("span", "chip", n.window));
+    frag.appendChild(top);
+    if (n.headline) frag.appendChild(el("p", "head", n.headline));
+    if (n.drivers.length) {
+      const ul = el("ul", "drv");
+      n.drivers.forEach((d) => {
+        const li = el("li"), cl = el("div", null, d.claim);
+        d.sources.forEach((sid) => {
+          const sup = el("sup"), a = el("a", null, `[${num[sid]}]`);
+          a.href = `#src-${fips}-${num[sid]}`;
+          a.onclick = (e) => {
+            e.preventDefault();
+            const t = document.getElementById(`src-${fips}-${num[sid]}`);
+            if (t) t.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          };
+          sup.appendChild(a);
+          cl.appendChild(sup);
+        });
+        li.appendChild(cl);
+        const m = el("div", "dm");
+        if (d.grade) m.appendChild(el("span", "grade", d.grade));
+        m.appendChild(el("span", "chip", d.pathway.replace(/_/g, " ")));
+        if (d.years) m.appendChild(el("span", "chip", d.years));
+        li.appendChild(m);
+        if (d.evidence) li.appendChild(el("div", "ev", `“${d.evidence}”`));
+        ul.appendChild(li);
+      });
+      frag.appendChild(ul);
+    }
+    const list = (title, arr) => {
+      if (!arr.length) return;
+      frag.appendChild(el("h3", null, title));
+      const ul = el("ul", "plain");
+      arr.forEach((x) => ul.appendChild(el("li", null, x)));
+      frag.appendChild(ul);
+    };
+    list("Looked for, not found", n.neg);
+    list("Caveats", n.caveats);
+    if (n.sources.length) {
+      frag.appendChild(el("h3", null, "Sources"));
+      const ol = el("ol", "srcs");
+      n.sources.forEach((s, i) => {
+        const li = el("li");
+        li.id = `src-${fips}-${i + 1}`;
+        if (s.url) {
+          const a = el("a", null, s.title || s.url);
+          a.href = s.url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          li.appendChild(a);
+        } else li.appendChild(el("span", null, s.title || "(untitled)"));
+        const meta = [s.publisher, s.date].filter(Boolean).join(", ");
+        if (meta) li.appendChild(el("div", "sm", meta));
+        ol.appendChild(li);
+      });
+      frag.appendChild(ol);
+    }
+    if (n.at) frag.appendChild(el("div", "sub", `Researched ${n.at.slice(0, 10)}`));
+    return frag;
+  }
+  function statusBlock(j) {
+    const fi = st.fi, rows = Object.values(STS).map((s) => {
+      decode(s);
+      return [s, s.fb[fi][j], s.moe[fi][j]];
+    }).filter(([, v]) => v != null);
+    if (!rows.length) return null;
+    const wrap = el("div"), fbN = ALL.fb[fi][j];
+    wrap.appendChild(el("h3", null, `Citizenship & year of entry · ${shortLabel(F[fi])}`));
+    const t = el("table", "mini"), tb2 = el("tbody");
+    rows.forEach(([s, v, m]) => {
+      const tr = el("tr");
+      tr.appendChild(el("td", null, s.Who));
+      const td = el("td", null, fmtN(v));
+      if (m != null) td.appendChild(el("span", "mo", `±${fmtN(m)}`));
+      tr.appendChild(td);
+      tr.appendChild(el("td", null, fbN ? `${(v / fbN * 100).toFixed(0)}% of foreign-born` : ""));
+      tb2.appendChild(tr);
+    });
+    t.appendChild(tb2);
+    wrap.appendChild(t);
+    wrap.appendChild(el("div", "sub", `${NONCIT_CAVEAT} Year of entry is the most recent arrival. ACS B05001/B05005 (2000: SF3 P021/P022).`));
+    return wrap;
+  }
+  function pwBlock(j, p) {
+    const box = el("div", "pwbox");
+    box.appendChild(el("h3", null, (p.group === "modeled" ? "Modeled estimate: " : "Administrative records: ") + p.label));
+    if (p.hedge) box.appendChild(el("div", "hedge", p.hedge));
+    box.appendChild(el("div", null, `One unit = ${sent(p.counts)} ${p.tb === "FY" ? "Federal fiscal years." : "Calendar years."}`));
+    const t = el("table", "mini"), tb2 = el("tbody");
+    p.years.forEach((y) => {
+      const r = pwRow(p, y, j), tr = el("tr");
+      tr.appendChild(el("td", null, tbLbl(p, y)));
+      tr.appendChild(el("td", null, r ? fmtV(r.v) + fmtRange(r) : p.data[String(y)] ? "not in file" : "no data this year"));
+      tr.appendChild(el("td", null, r && r.g !== "county" ? GEO_TXT[r.g] : ""));
+      tb2.appendChild(tr);
+    });
+    t.appendChild(tb2);
+    box.appendChild(t);
+    box.appendChild(el("div", "sub", p.group === "modeled" ? "Not a count. Not comparable with ACS or administrative counts." : "A yearly flow, not people living here. Not comparable with the ACS foreign-born count or other record layers; do not add them up."));
+    if (p.ncw.length) box.appendChild(el("div", "sub", "Not comparable with: " + p.ncw.join("; ")));
+    if (p.caveats.length) {
+      const ul = el("ul", "plain");
+      p.caveats.forEach((c) => ul.appendChild(el("li", null, c)));
+      box.appendChild(ul);
+    }
+    if (p.sources.length) {
+      const ol = el("ol", "srcs");
+      p.sources.forEach((s) => {
+        const li = el("li");
+        if (s.url) {
+          const a = el("a", null, s.title || s.url);
+          a.href = s.url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          li.appendChild(a);
+        } else li.appendChild(el("span", null, s.title || "(untitled)"));
+        ol.appendChild(li);
+      });
+      box.appendChild(ol);
+    }
+    return box;
+  }
+  function pwSummary(j) {
+    const groups = new Map();
+    Object.values(PWS).forEach((p) => {
+      if (PW && p.id === PW.id) return;
+      const y = [...p.years].reverse().find((yy) => pwRow(p, yy, j));
+      if (y == null) return;
+      const r = pwRow(p, y, j);
+      const m = p.label.match(/^([^:(]+):\s*(.+)$/);
+      const fam = m ? m[1].trim() : p.label.replace(/\s*\(.*\)\s*$/, "");
+      const item = (m ? m[2] : "").replace(/\s*\([^)]*\)\s*$/, "").replace(/,?\s*per (fiscal )?year$/i, "").trim();
+      if (!groups.has(fam)) groups.set(fam, { hedge: p.hedge, unit: p.unit, rows: [], geos: new Set() });
+      const g = groups.get(fam);
+      g.rows.push({ item: item || fam, v: `${fmtV(r.v)}${fmtRange(r)}`, when: tbLbl(p, y), id: p.id });
+      if (r.g !== "county") g.geos.add(GEO_TXT[r.g]);
+    });
+    if (!groups.size) return null;
+    const wrap = el("div");
+    wrap.appendChild(el("h3", null, "Other record & modeled layers"));
+    groups.forEach((g, fam) => {
+      const box = el("div", "pwgrp");
+      const when = [...new Set(g.rows.map((x) => x.when))];
+      if (g.rows.length === 1) {
+        const x = g.rows[0], line = el("div");
+        line.appendChild(el("span", "pwfam", `${fam}, ${x.when}: `));
+        line.appendChild(el("span", null, `${x.v} ${g.unit}`));
+        box.appendChild(line);
+      } else {
+        box.appendChild(el("div", "pwfam", `${fam}${when.length === 1 ? ", " + when[0] : ""}`));
+        const t = el("table", "mini"), tb2 = el("tbody");
+        g.rows.forEach((x) => {
+          if (x.item === fam) x.item = "All classes";
+          const tr = el("tr");
+          tr.appendChild(el("td", null, x.item));
+          tr.appendChild(el("td", null, x.v + " " + g.unit.replace(/^new /, "")));
+          if (when.length > 1) tr.appendChild(el("td", null, x.when));
+          tb2.appendChild(tr);
+        });
+        t.appendChild(tb2);
+        box.appendChild(t);
+      }
+      const notes = [g.hedge, g.geos.size ? `Values ${[...g.geos].join("; ")}` : ""].filter(Boolean);
+      if (notes.length) box.appendChild(el("div", "sub", notes.join(". ") + "."));
+      wrap.appendChild(box);
+    });
+    wrap.appendChild(el("div", "sub", "Each counts something different (pick the layer for its definition). Do not add them up or compare them to the foreign-born count."));
+    return wrap;
+  }
+  function countyExtras(j) {
+    const frag = document.createDocumentFragment();
+    const g = gqBlock(j);
+    if (g) frag.appendChild(g);
+    const sb = statusBlock(j);
+    if (sb) frag.appendChild(sb);
+    const ps = pwSummary(j);
+    if (ps) frag.appendChild(ps);
+    if (CTRS.length) frag.appendChild(topCountries(j));
+    if (DATA.ngo) {
+      const nb = ngoBlock(j);
+      if (nb) frag.appendChild(nb);
+    }
+    const n = noteBlock(j);
+    if (n) frag.appendChild(n);
+    return frag;
+  }
+  function renderPanel() {
+    panel.textContent = "";
+    const close = el("button", "close", "Close");
+    close.onclick = closePanel;
+    panel.appendChild(close);
+    paths.forEach((p) => p.classList.remove("hl"));
+    if (st.sel.type === "pin") {
+      const p = DATA.pins[st.sel.k];
+      panel.appendChild(el("h2", null, p.place));
+      panel.appendChild(el("p", "sub", p.group || ""));
+      const dl = el("dl");
+      [["Pathway", p.program], ["Arrival", p.arrival_window], ["Confidence", p.confidence]].forEach(([k, v]) => {
+        if (!v) return;
+        dl.appendChild(el("dt", null, k));
+        dl.appendChild(el("dd", null, v));
+      });
+      panel.appendChild(dl);
+      if (p.summary) panel.appendChild(el("p", null, p.summary));
+      if (p.sources && p.sources.length) {
+        panel.appendChild(el("h3", null, "Sources"));
+        const ol = el("ol");
+        p.sources.forEach((s) => {
+          const li = el("li");
+          if (s.grade) li.appendChild(el("span", "grade", s.grade));
+          if (s.url && /^https?:\/\//.test(s.url)) {
+            const a = el("a", null, s.label || s.url);
+            a.href = s.url;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            li.appendChild(a);
+          } else li.appendChild(document.createTextNode(s.label || ""));
+          ol.appendChild(li);
+        });
+        panel.appendChild(ol);
+      }
+      if (DATA.ngo) {
+        const pinOrgs = DATA.ngo.orgs.filter((o) => (o.pins || []).includes(p.id));
+        if (pinOrgs.length) {
+          panel.appendChild(el("h3", null, "Organizations"));
+          pinOrgs.forEach((o) => {
+            const a = el("a", "ngo-chip", `T${o.tier} ${o.name}`);
+            a.href = `ngo/?org=${o.id}`;
+            a.target = "_blank";
+            a.rel = "noopener";
+            panel.appendChild(a);
+          });
+        }
+      }
+      const j = C.findIndex((c) => c.f === p.county_fips);
+      if (j >= 0) {
+        paths[j].classList.add("hl");
+        panel.appendChild(countyBlock(j));
+        panel.appendChild(countyExtras(j));
+      }
+    } else {
+      const j = st.sel.j;
+      paths[j].classList.add("hl");
+      panel.appendChild(el("h2", null, `${C[j].n}, ${C[j].s}`));
+      panel.appendChild(el("p", "sub", "County FIPS " + C[j].f));
+      if (PW) panel.appendChild(pwBlock(j, PW));
+      panel.appendChild(countyBlock(j));
+      panel.appendChild(countyExtras(j));
+      const here = DATA.pins.filter((p) => p.county_fips === C[j].f);
+      if (here.length) {
+        panel.appendChild(el("h3", null, "Case studies in this county"));
+        here.forEach((p) => {
+          const b = el("button", "close", p.place + " — " + (p.group || ""));
+          b.style.float = "none";
+          b.style.margin = "0 0 6px";
+          b.onclick = () => {
+            st.sel = { type: "pin", k: DATA.pins.indexOf(p) };
+            paint();
+          };
+          panel.appendChild(b);
+        });
+      }
+    }
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (st.drawer) setDrawer(false);
+    else if (st.sel) closePanel();
+  });
+  const drawer = $("drawer");
+  const COLS = () => {
+    if (PW) return [
+      { k: "rank", h: "#" },
+      { k: "name", h: "County" },
+      { k: "pw", h: `${PW.unit}, ${tbLbl(PW, st.pwYear)}`, f: fmtV },
+      { k: "lo", h: "Low", f: fmtV },
+      { k: "hi", h: "High", f: fmtV },
+      { k: "geo", h: "Geography", f: (v) => v || "", str: 1 }
+    ];
+    const b = F[yearIdx[st.base]], p = F[yearIdx[st.pivot]];
+    const yy = (f) => f.source === "decennial" ? String(f.year) : "’" + String(f.year).slice(2);
+    return [
+      { k: "rank", h: "#" },
+      { k: "name", h: "County" },
+      { k: "share", h: "Share", f: fmtPct },
+      { k: "change", h: `Δ pts since ${yy(b)}`, f: fmtPP },
+      { k: "growth", h: `FB growth since ${yy(b)}`, f: fmtG },
+      { k: "accel", h: `Speed-up after ${yy(p)}`, f: (v) => v == null ? "–" : sgn(v) + Math.abs(v).toFixed(2) },
+      { k: "fb", h: isSt() ? A.Who : A.k ? REG[A.k].kind === "country" ? "Born in country" : "Born in region" : "Foreign-born", f: fmtN },
+      { k: "gq", h: "Group quarters ’20", f: (v, r) => v == null ? "" : `${GQ_SHORT[gqFlag(r.j)[2]]} ${v.toFixed(1)}%`, cls: "gq" }
+    ];
+  };
+  const states = [...new Set(C.map((c) => c.s))].sort();
+  states.forEach((s) => {
+    const o = document.createElement("option");
+    o.value = s;
+    o.textContent = s;
+    $("dstate").appendChild(o);
+  });
+  function tableRows() {
+    const fi = st.fi, sk = st.sort ? st.sort.k : PW ? "pw" : st.mode, dir = st.sort ? st.sort.dir : -1;
+    const q = $("dfilter").value.trim().toLowerCase(), s = $("dstate").value;
+    const rows = [];
+    for (let j = 0; j < C.length; j++) {
+      const c = C[j];
+      if (s && c.s !== s) continue;
+      if (q && !`${c.n}, ${c.s}`.toLowerCase().includes(q)) continue;
+      if (PW) {
+        const pr = pwRow(PW, st.pwYear, j);
+        if (!pr) continue;
+        if ($("dres").checked && !hasNote(j)) continue;
+        if ($("dgq").checked && !gqFlag(j)) continue;
+        rows.push({ j, name: `${c.n}, ${c.s}`, pw: pr.v, lo: pr.lo, hi: pr.hi, geo: pr.g === "county" ? "county" : GEO_TXT[pr.g], gq: gqFlag(j) ? gqFlag(j)[1] : null });
+        continue;
+      }
+      if (st.reliable && !reliableOK(MODES.includes(sk) ? sk : "share", fi, j)) continue;
+      if ($("dres").checked && !hasNote(j)) continue;
+      const g = gqFlag(j);
+      if ($("dgq").checked && !g) continue;
+      const r = { j, name: `${c.n}, ${c.s}`, fb: A.pct[fi][j] == null ? null : A.fb[fi][j], gq: g ? g[1] : null };
+      MODES.forEach((k) => {
+        r[k] = metric(k, fi, j);
+      });
+      if (st.reliable && MODES.includes(sk) && r[sk] == null) continue;
+      rows.push(r);
+    }
+    rows.sort((a, b) => {
+      if (sk === "name" || sk === "geo") return dir * String(a[sk] || "").localeCompare(String(b[sk] || ""));
+      const x = a[sk], y = b[sk];
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return dir * (x - y);
+    });
+    return { rows, sk, dir };
+  }
+  function renderTable() {
+    const { rows, sk, dir } = tableRows(), cols = COLS();
+    const f = F[st.fi];
+    $("dsub").textContent = PW ? `${PW.hedge ? PW.hedge + ". " : ""}${PW.label}, ${tbLbl(PW, st.pwYear)}: counties present in the source file only. One unit = ${PW.counts}. ${PW.group === "modeled" ? "Not a count." : "A yearly flow, not residents."} Click a column to sort, a row to open the county.` : `${f.label}. Sorted by ${cols.find((c) => c.k === sk).h.toLowerCase()}. ` + (st.reliable ? `Showing counties with 10,000+ residents, 500+ ${who()}, and margin of error under 30% for the sorted measure (uncheck “Reliable counties only” above to see all). ` : "") + (isSt() ? `Layer: ${A.Who} (${pctOf()}). ` : A.k ? `Born in: ${A.label}. ` : "") + ($("dres").checked ? "Researched counties only. " : "") + ($("dgq").checked ? "Group-quarters-flagged counties only. " : "") + "Click a column to sort, a row to open the county. Growth % is the change in the foreign-born headcount; speed-up is pts/decade in the later period minus the earlier one.";
+    const th = $("dth");
+    th.textContent = "";
+    cols.forEach((c) => {
+      const h = el("th", null, c.h);
+      if (c.k === sk) h.setAttribute("aria-sort", dir < 0 ? "descending" : "ascending");
+      if (c.k !== "rank") h.onclick = () => {
+        st.sort = { k: c.k, dir: c.k === sk ? -dir : c.k === "name" ? 1 : -1 };
+        renderTable();
+      };
+      th.appendChild(h);
+    });
+    const tb2 = $("dtb");
+    tb2.textContent = "";
+    const lim = st.dall ? rows.length : Math.min(rows.length, 200);
+    for (let i = 0; i < lim; i++) {
+      const r = rows[i], tr = document.createElement("tr");
+      tr.appendChild(el("td", "rk", i + 1 < 1e4 && r[sk] != null ? String(i + 1) : ""));
+      const cn = el("td", "cn", r.name);
+      if (!PW && A.flag[st.fi][r.j] === 1) {
+        cn.append(" ");
+        cn.appendChild(el("span", "w", "±"));
+        cn.title = "Margin of error exceeds 30% of the foreign-born estimate";
+      }
+      if (hasNote(r.j)) {
+        cn.append(" ");
+        const m = el("span", "rs", "📝");
+        m.title = "Researched: click for why it changed";
+        cn.appendChild(m);
+      }
+      tr.appendChild(cn);
+      cols.slice(2).forEach((c) => tr.appendChild(el("td", c.cls || null, c.f(r[c.k], r))));
+      tr.onmouseenter = () => paths[r.j].classList.add("hl");
+      tr.onmouseleave = () => {
+        if (!(st.sel && st.sel.type === "county" && st.sel.j === r.j)) paths[r.j].classList.remove("hl");
+      };
+      tr.onclick = () => {
+        st.sel = { type: "county", j: r.j };
+        openPanel();
+      };
+      tb2.appendChild(tr);
+    }
+    $("dcount").textContent = `${fmtN(rows.length)} counties`;
+    $("dmore").style.display = rows.length > lim ? "" : "none";
+    $("dmore").textContent = `Show all ${fmtN(rows.length)}`;
+  }
+  function setDrawer(open) {
+    st.drawer = open;
+    drawer.classList.toggle("open", open);
+    drawer.setAttribute("aria-hidden", !open);
+    $("drawer-btn").setAttribute("aria-expanded", open);
+    $("drawer-btn").setAttribute("aria-pressed", open);
+    if (open) {
+      if (st.researched && Object.keys(NOTES).length) $("dres").checked = true;
+      renderTable();
+    }
+  }
+  $("drawer-btn").onclick = () => setDrawer(!st.drawer);
+  $("drawer-close").onclick = () => setDrawer(false);
+  $("dfilter").oninput = renderTable;
+  $("dstate").onchange = renderTable;
+  $("dres").onchange = renderTable;
+  $("dgq").onchange = renderTable;
+  $("dmore").onclick = () => {
+    st.dall = true;
+    renderTable();
+  };
+  const dlist = $("county-list");
+  C.forEach((c) => {
+    const o = document.createElement("option");
+    o.value = `${c.n}, ${c.s}`;
+    dlist.appendChild(o);
+  });
+  function doSearch(val2) {
+    const q = val2.trim().toLowerCase();
+    if (!q) return;
+    let j = C.findIndex((c) => `${c.n}, ${c.s}`.toLowerCase() === q);
+    if (j < 0) j = C.findIndex((c) => c.n.toLowerCase().startsWith(q));
+    if (j < 0) j = C.findIndex((c) => c.n.toLowerCase().includes(q));
+    if (j >= 0) {
+      st.sel = { type: "county", j };
+      openPanel();
+    }
+  }
+  $("search").addEventListener("change", (e) => doSearch(e.target.value));
+  $("search").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      doSearch(e.target.value);
+    }
+  });
+  const tb = document.createElement("table");
+  tb.innerHTML = "<thead><tr><th>Vintage</th><th>Population</th><th>Foreign-born</th><th>Share</th></tr></thead>";
+  const body = document.createElement("tbody");
+  F.forEach((f) => {
+    const tr = document.createElement("tr");
+    [f.label, fmtN(f.us_pop), fmtN(f.us_fb), f.us_pct.toFixed(2) + "%"].forEach((v) => tr.appendChild(el("td", null, v)));
+    body.appendChild(tr);
+  });
+  tb.appendChild(body);
+  $("nat-table").appendChild(tb);
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", paint);
+  if (!REG[st.region]) st.region = "";
+  st.mode = MODES.includes(st.mode) ? st.mode : "share";
+  MODES.forEach((k) => $("m-" + k).setAttribute("aria-pressed", k === st.mode));
+  setLayer(st.layer);
+  document.body.dataset.ready = "1";
+})();
+</script>
+
+</div>
+<dialog class="dr-dialog" id="mx-map-dlg" aria-labelledby="mx-map-dlg-title">
+  <div class="dr-dialog__head"><h2 id="mx-map-dlg-title">About this map &amp; disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="mx-map-dlg-close" aria-label="Close">✕</button></div>
+  <div class="dr-dialog__body"><p><b>Limitations &amp; disclaimer.</b> Provided for research, educational, and journalistic purposes only. Compiled from public federal records (Census, ACS, CBP, USASpending, DHS, DOL, ORR, EOIR) and IRS filings, offered “as is” without warranty of any kind; it may contain errors or omissions. Foreign-born counts include naturalized citizens and every legal status – the Census does not ask legal status. Modeled estimates are labeled as such. Organizations appear because a public record documents federal money, a grant, or an affiliation; a listing describes that record only and alleges no wrongdoing. Dollar figures are documented minimums and dollar types are never added together. Every claim links to its source; please verify before relying on it.</p></div>
+</dialog>
+<script>
+(function() {
+  const d = document.getElementById("mx-map-dlg");
+  document.getElementById("mx-map-dlg-open").onclick = () => d.showModal();
+  document.getElementById("mx-map-dlg-close").onclick = () => d.close();
+  d.addEventListener("click", (e) => {
+    if (e.target === d) d.close();
+  });
+})();
+</script>
