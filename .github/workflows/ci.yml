@@ -19,7 +19,9 @@ concurrency:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    # github-pages needs Ruby 3.1.x; setup-ruby has no 3.1 builds on
+    # ubuntu-26.04, which is what ubuntu-latest currently is.
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
