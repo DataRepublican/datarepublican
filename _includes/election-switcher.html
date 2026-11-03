@@ -1,0 +1,34 @@
+{%- comment -%}
+  State switcher for the 2026 election maps. Each state page is its own tool with its own layout
+  and data; this bar only links between them. The list is _data/elections.yml.
+
+  Usage, first thing inside the page's root container:
+    {% include election-switcher.html current="florida" %}
+{%- endcomment -%}
+<style>
+	.el-switch { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.75rem; font-family: var(--dr-font-ui, inherit); }
+	.el-switch-label { flex: none; color: var(--dr-ink-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+	.el-switch-list { display: flex; gap: 2px; margin: 0; padding: 3px; list-style: none; overflow-x: auto; scrollbar-width: none; border-radius: var(--dr-radius-pill, 9999px); background: var(--dr-fill-quiet, #f1f1f4); }
+	.el-switch-list::-webkit-scrollbar { display: none; }
+	.el-switch-list li { flex: none; margin: 0; }
+	.el-switch a { display: flex; align-items: center; min-height: var(--dr-tap-sm, 2rem); padding: 0 13px; border-radius: var(--dr-radius-pill, 9999px); color: var(--dr-ink-muted); font-size: 13px; font-weight: 700; white-space: nowrap; text-decoration: none; }
+	.el-switch a:hover { color: var(--dr-ink); }
+	.el-switch a[aria-current="page"] { background: var(--dr-accent, #252739); color: #fff; }
+	.el-switch a:focus-visible { outline: 2px solid var(--dr-accent, #252739); outline-offset: 2px; }
+	.el-switch-abbr { display: none; }
+	@media (max-width: 640px) {
+		.el-switch-label, .el-switch-name { display: none; }
+		.el-switch-abbr { display: inline; }
+		.el-switch a { min-height: var(--dr-tap, 2.75rem); padding: 0 14px; }
+	}
+</style>
+<nav class="el-switch" aria-label="2026 election maps by state">
+	<span class="el-switch-label">2026 maps</span>
+	<ul class="el-switch-list">
+		{%- for s in site.data.elections %}
+		<li><a href="{{ s.href | relative_url }}"{% if s.slug == include.current %} aria-current="page"{% endif %} title="{{ s.name }}: {{ s.data }}">
+			<span class="el-switch-name">{{ s.name }}</span><span class="el-switch-abbr" aria-hidden="true">{{ s.abbr }}</span>
+		</a></li>
+		{%- endfor %}
+	</ul>
+</nav>

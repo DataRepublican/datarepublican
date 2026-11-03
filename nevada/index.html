@@ -1,0 +1,737 @@
+---
+layout: default
+title: Nevada 2026 general vote map
+---
+<style>
+	/* Layout, chips, tiles, bars and the party table match the North Carolina page. Nevada-only pieces are at the end. */
+	#nv-map {
+		/* The light steps sit under 3:1 on white, so every bar segment is direct-labeled and the
+		   table repeats the numbers. */
+		--nv-dem: #2456c9;
+		--nv-dem-light: #7f9ee6;
+		--nv-dem-tint: #edf2fc;
+		--nv-rep: #c4312a;
+		--nv-rep-light: #e8837a;
+		--nv-rep-tint: #fcefee;
+		--nv-ind: #6d5a9c;
+		--nv-ind-tint: #f3f0f8;
+		font-family: var(--dr-font-ui);
+		color: var(--dr-ink);
+	}
+
+	#nv-map .nv-head {
+		display: flex;
+		flex-direction: column;
+		gap: 0.125rem;
+		margin: 0 0 0.75rem;
+	}
+
+	#nv-map .nv-title {
+		font-family: var(--dr-font-content);
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1.2;
+		margin: 0;
+	}
+
+	#nv-map .nv-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		column-gap: 0.75rem;
+		color: var(--dr-ink-muted);
+		font-size: var(--dr-text-meta);
+	}
+
+	#nv-map .nv-layout {
+		display: grid;
+		gap: 0.75rem;
+	}
+
+	#nv-map .nv-main {
+		display: grid;
+		gap: 0.75rem;
+		min-width: 0;
+	}
+
+	#nv-map .nv-card {
+		background: var(--dr-panel);
+		border: 1px solid var(--dr-line);
+		border-radius: var(--dr-radius-lg);
+		padding: 0.75rem;
+		min-width: 0;
+	}
+
+	#nv-map .nv-label,
+	#nv-map .nv-filters summary {
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		margin: 0 0 0.375rem;
+	}
+
+	#nv-map .nv-group + .nv-group {
+		margin-top: 0.75rem;
+	}
+
+	#nv-map .nv-note {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+		line-height: 1.35;
+		margin: 0.375rem 0 0;
+	}
+
+	#nv-map .nv-warn {
+		padding: 0.375rem 0.5rem;
+		border: 1px solid var(--dr-legal-border);
+		border-radius: var(--dr-radius-sm);
+		background: var(--dr-legal-fill);
+		color: var(--dr-legal-ink);
+	}
+
+	/* ---- Chips: every checkbox and radio on the page ---- */
+	#nv-map .nv-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+	}
+
+	#nv-map .nv-seg {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.375rem;
+	}
+
+	#nv-map .nv-chip {
+		position: relative;
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: center;
+		min-width: 0;
+		min-height: var(--dr-tap-sm);
+		padding: 0.25rem 0.75rem;
+		border: 1px solid var(--dr-line-strong);
+		border-radius: var(--dr-radius-pill);
+		background: var(--dr-panel);
+		font-size: var(--dr-text-meta);
+		line-height: 1.2;
+		cursor: pointer;
+		user-select: none;
+	}
+
+	#nv-map .nv-seg .nv-chip {
+		border-radius: var(--dr-radius-sm);
+		padding: 0.375rem 0.625rem;
+	}
+
+	#nv-map .nv-chip[hidden] {
+		display: none;
+	}
+
+	#nv-map .nv-chips .nv-chip span::first-letter {
+		text-transform: uppercase;
+	}
+
+	#nv-map .nv-chip small {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	/* Visually hidden, still focusable and still the label's control. */
+	#nv-map .nv-chip input {
+		position: absolute;
+		opacity: 0;
+		width: 1px;
+		height: 1px;
+		margin: 0;
+		pointer-events: none;
+	}
+
+	#nv-map .nv-chip:hover {
+		background: var(--dr-fill);
+	}
+
+	#nv-map .nv-chip:has(input:checked) {
+		background: var(--dr-accent);
+		border-color: var(--dr-accent);
+		color: var(--dr-panel);
+	}
+
+	#nv-map .nv-chip:has(input:checked) small {
+		color: var(--dr-accent-tint);
+	}
+
+	#nv-map .nv-chip:has(input:focus-visible) {
+		outline: 2px solid var(--dr-accent);
+		outline-offset: 2px;
+	}
+
+	#nv-map .nv-chip:has(input:disabled) {
+		border-style: dashed;
+		background: var(--dr-fill-quiet);
+		color: var(--dr-ink-faint);
+		cursor: not-allowed;
+	}
+
+	/* ---- Filters ---- */
+	#nv-map .nv-filters summary {
+		display: flex;
+		align-items: center;
+		gap: 0.375rem;
+		min-height: var(--dr-tap-sm);
+		margin: 0;
+		cursor: pointer;
+	}
+
+	#nv-map .nv-filters[open] summary {
+		margin-bottom: 0.5rem;
+	}
+
+	#nv-map .nv-badge:not([hidden]) {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 1.25rem;
+		height: 1.25rem;
+		padding: 0 0.375rem;
+		border-radius: var(--dr-radius-pill);
+		background: var(--dr-accent);
+		color: var(--dr-panel);
+		font-size: var(--dr-text-label);
+	}
+
+	#nv-map .nv-history {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		gap: 0.375rem 0.75rem;
+	}
+
+	#nv-map .nv-history .nv-year {
+		font-size: var(--dr-text-meta);
+		color: var(--dr-ink-muted);
+		font-variant-numeric: tabular-nums;
+	}
+
+	#nv-map .nv-clear {
+		margin-top: 0.75rem;
+	}
+
+	/* ---- Results ---- */
+	#nv-map .nv-results-title {
+		font-family: var(--dr-font-ui);
+		font-size: var(--dr-text-meta);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		margin: 0 0 0.5rem;
+	}
+
+	#nv-map .nv-kpis {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.5rem;
+	}
+
+	#nv-map .nv-kpi {
+		padding: 0.5rem 0.625rem;
+		border-top: 3px solid var(--dr-line-strong);
+		border-radius: var(--dr-radius-card);
+		background: var(--dr-fill-quiet);
+		min-width: 0;
+	}
+
+	#nv-map .nv-kpi--dem {
+		border-top-color: var(--nv-dem);
+		background: var(--nv-dem-tint);
+	}
+
+	#nv-map .nv-kpi--rep {
+		border-top-color: var(--nv-rep);
+		background: var(--nv-rep-tint);
+	}
+
+	#nv-map .nv-bars {
+		margin-top: 0.75rem;
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		gap: 0.375rem 0.5rem;
+		align-items: center;
+		font-size: var(--dr-text-label);
+	}
+
+	#nv-map .nv-bar-name {
+		color: var(--dr-ink-muted);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	#nv-map .nv-bar {
+		display: flex;
+		gap: 2px;
+		height: 1.375rem;
+		min-width: 0;
+	}
+
+	#nv-map .nv-bar span {
+		display: flex;
+		align-items: center;
+		min-width: 0;
+		overflow: hidden;
+		padding: 0 0.3125rem;
+		color: #fff;
+		font-weight: 700;
+		font-variant-numeric: tabular-nums;
+		white-space: nowrap;
+	}
+
+	#nv-map .nv-bar span:first-child {
+		border-radius: 4px 0 0 4px;
+	}
+
+	#nv-map .nv-bar span:last-child {
+		justify-content: flex-end;
+		border-radius: 0 4px 4px 0;
+	}
+
+	#nv-map .nv-bar .nv-seg-d { background: var(--nv-dem); }
+	#nv-map .nv-bar .nv-seg-id { background: var(--nv-dem-light); color: var(--dr-ink); }
+	#nv-map .nv-bar .nv-seg-ir { background: var(--nv-rep-light); color: var(--dr-ink); justify-content: flex-end; }
+	#nv-map .nv-bar .nv-seg-r { background: var(--nv-rep); }
+
+	#nv-map .nv-bar-key {
+		grid-column: 1 / -1;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.125rem 0.75rem;
+		color: var(--dr-ink-muted);
+	}
+
+	#nv-map .nv-kpi-label,
+	#nv-map .nv-kpi-sub {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	#nv-map .nv-kpi-label {
+		font-weight: 600;
+	}
+
+	#nv-map .nv-kpi-value {
+		font-family: var(--dr-font-content);
+		font-size: 1.375rem;
+		font-weight: 700;
+		line-height: 1.25;
+		font-variant-numeric: tabular-nums;
+	}
+
+	#nv-map .nv-dem,
+	#nv-map .nv-rep {
+		white-space: nowrap;
+	}
+
+	#nv-map .nv-dem {
+		color: var(--nv-dem);
+	}
+
+	#nv-map .nv-rep {
+		color: var(--nv-rep);
+	}
+
+	#nv-map .nv-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: var(--dr-text-meta);
+		font-variant-numeric: tabular-nums;
+	}
+
+	#nv-map .nv-table th,
+	#nv-map .nv-table td {
+		padding: 0.3125rem 0.375rem;
+		border: 0;
+		border-bottom: 1px solid var(--dr-line);
+		background: none;
+		text-align: right;
+		vertical-align: top;
+	}
+
+	#nv-map .nv-table th[scope="row"],
+	#nv-map .nv-table thead th:first-child {
+		text-align: left;
+		font-weight: 400;
+		white-space: normal;
+	}
+
+	#nv-map .nv-table thead th {
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+		vertical-align: bottom;
+	}
+
+	#nv-map .nv-table small {
+		display: block;
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-faint);
+		font-weight: 400;
+	}
+
+	#nv-map .nv-table .nv-section th {
+		padding-top: 0.75rem;
+		text-align: left;
+		font-size: var(--dr-text-label);
+		font-weight: 600;
+		color: var(--dr-ink-muted);
+	}
+
+	#nv-map .nv-table .nv-margin th,
+	#nv-map .nv-table .nv-margin td {
+		font-weight: 700;
+		border-bottom: 0;
+		background: var(--dr-fill-quiet);
+	}
+
+	#nv-map .nv-table .nv-row-dem th[scope="row"],
+	#nv-map .nv-table .nv-row-dem td:not(:last-child) {
+		color: var(--nv-dem);
+	}
+
+	#nv-map .nv-table .nv-row-dem th[scope="row"] {
+		font-weight: 600;
+	}
+
+	#nv-map .nv-table .nv-row-rep th[scope="row"],
+	#nv-map .nv-table .nv-row-rep td:not(:last-child) {
+		color: var(--nv-rep);
+	}
+
+	#nv-map .nv-table .nv-row-rep th[scope="row"] {
+		font-weight: 600;
+	}
+
+	#nv-map .nv-table .nv-row-ind th[scope="row"] {
+		color: var(--nv-ind);
+		font-weight: 600;
+	}
+
+	#nv-map .nv-table .nv-row-dem th[scope="row"]::before,
+	#nv-map .nv-table .nv-row-rep th[scope="row"]::before,
+	#nv-map .nv-table .nv-row-ind th[scope="row"]::before {
+		content: "";
+		display: inline-block;
+		width: 0.625rem;
+		height: 0.625rem;
+		margin-right: 0.375rem;
+		border-radius: 2px;
+		background: currentColor;
+	}
+
+	#nv-map .nv-table .nv-row-dem td:first-of-type { background: var(--nv-dem-tint); font-weight: 700; }
+	#nv-map .nv-table .nv-row-rep td:first-of-type { background: var(--nv-rep-tint); font-weight: 700; }
+
+	#nv-map .nv-up-dem { color: var(--nv-dem); }
+	#nv-map .nv-up-rep { color: var(--nv-rep); }
+
+	#nv-map .nv-foot {
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+		line-height: 1.4;
+		margin: 0.5rem 0 0;
+	}
+
+	/* ---- Map ---- */
+	#nv-map #nvSvg {
+		display: block;
+		height: auto;
+	}
+
+	#nv-map .nv-legend {
+		margin-top: 0.5rem;
+		font-size: var(--dr-text-label);
+		color: var(--dr-ink-muted);
+	}
+
+	#nv-map .nv-legend-bar {
+		display: flex;
+		height: 0.75rem;
+		border-radius: var(--dr-radius-sm);
+		overflow: hidden;
+		margin: 0.25rem 0;
+	}
+
+	#nv-map .nv-legend-bar span {
+		flex: 1 1 0;
+	}
+
+	#nv-map .nv-legend-ends {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	#nv-map .nv-swatch {
+		display: inline-block;
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 2px;
+		vertical-align: -0.125rem;
+		margin-right: 0.25rem;
+		border: 1px solid var(--dr-line);
+	}
+
+	/* map-style.css ships z-index 1000 and a Trebuchet box; bring it onto the site's scale. */
+	#nv-map #nvTip {
+		z-index: var(--dr-z-popover);
+		max-width: min(22rem, 85vw);
+		padding: 0.5rem 0.625rem;
+		border: 1px solid var(--dr-line);
+		border-radius: var(--dr-radius-card);
+		background: var(--dr-panel);
+		color: var(--dr-ink);
+		font: var(--dr-text-meta)/1.4 var(--dr-font-ui);
+		box-shadow: 0 4px 16px rgb(0 0 0 / 0.14);
+	}
+
+	@media (max-width: 767px) {
+		#nv-map .nv-title {
+			font-size: 1.25rem;
+		}
+
+		#nv-map .nv-card {
+			padding: 0.625rem;
+		}
+
+		#nv-map .nv-chip {
+			min-height: var(--dr-tap);
+		}
+
+		#nv-map .nv-kpis {
+			gap: 0.375rem;
+		}
+
+		#nv-map .nv-kpi {
+			padding: 0.375rem 0.5rem;
+		}
+
+		#nv-map .nv-kpi-value {
+			font-size: 1.125rem;
+		}
+
+		#nv-map .nv-table th,
+		#nv-map .nv-table td {
+			padding-left: 0.25rem;
+			padding-right: 0.25rem;
+		}
+
+		#nv-map .nv-table th[scope="row"]::before {
+			display: none;
+		}
+	}
+
+	/* Controls and filters stack in a left column; the results take the rest. */
+	@media (min-width: 1024px) {
+		#nv-map .nv-layout {
+			grid-template-columns: 19rem minmax(0, 1fr);
+			grid-template-areas: "controls main" "county main";
+			grid-template-rows: auto 1fr;
+			align-items: start;
+		}
+
+		#nv-map .nv-controls {
+			grid-area: controls;
+		}
+
+		#nv-map .nv-main {
+			grid-area: main;
+		}
+
+		#nv-map .nv-county {
+			grid-area: county;
+		}
+	}
+
+	/* Wide enough for the table to sit beside the map instead of under it. */
+	@media (min-width: 1280px) {
+		#nv-map .nv-main {
+			grid-template-columns: minmax(0, 1fr) 23rem;
+			align-items: start;
+		}
+
+		#nv-map .nv-results {
+			grid-column: 1 / -1;
+		}
+	}
+
+	/* ---- Nevada: SVG county map, tooltip, county panel, lower tables, day-by-day chart ---- */
+	#nv-map .nv-mapwrap { position: relative; }
+	#nv-map #nvSvg { width: 100%; height: auto; max-height: 560px; display: block; margin: 0 auto; }
+	#nv-map .nv-cty { stroke: #fff; stroke-width: 1.2; cursor: pointer; }
+	#nv-map .nv-cty:hover, #nv-map .nv-cty:focus { stroke: var(--dr-ink); stroke-width: 2; outline: none; }
+	#nv-map .nv-cty.is-sel { stroke: var(--dr-ink); stroke-width: 3; }
+	#nv-map .nv-cty.is-out { stroke: #e3e4e6; }
+	#nv-map .nv-cty.is-out:hover { stroke: var(--dr-ink-muted); }
+	#nv-map .nv-grid-table tr.nv-cd th, #nv-map .nv-grid-table tr.nv-cd td { border-top: 2px solid var(--dr-line-strong); }
+	#nv-map .nv-lbl { font-size: 14px; fill: var(--dr-ink); text-anchor: middle; pointer-events: none; paint-order: stroke; stroke: rgba(255,255,255,0.85); stroke-width: 3px; }
+	#nv-map #nvTip { position: absolute; pointer-events: none; min-width: 11rem; }
+	#nv-map .nv-mapcard .nv-results-title { margin-bottom: 0.25rem; }
+	#nv-map .nv-county h3 { font-size: var(--dr-text-label); font-weight: 600; color: var(--dr-ink-muted); margin: 0.75rem 0 0.25rem; }
+	#nv-map .nv-county .nv-bars { margin-top: 0.25rem; }
+	#nv-map .nv-d-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+	#nv-map .nv-d-head h2 { font-size: 1rem; margin: 0; }
+	#nv-map .nv-close { min-height: var(--dr-tap-sm); padding: 0 0.625rem; border: 1px solid var(--dr-line-strong); border-radius: var(--dr-radius-pill); background: var(--dr-panel); font: inherit; font-size: var(--dr-text-label); cursor: pointer; }
+
+	#nv-map .nv-wide { margin-top: 0.75rem; }
+	#nv-map .nv-wide h2 { font-size: 1.05rem; margin: 0 0 0.125rem; }
+	#nv-map .nv-tablewrap { overflow-x: auto; }
+	#nv-map .nv-grid-table { width: 100%; border-collapse: collapse; font-size: var(--dr-text-meta); font-variant-numeric: tabular-nums; }
+	#nv-map .nv-grid-table th, #nv-map .nv-grid-table td { text-align: right; padding: 0.3125rem 0.5rem; border: 0; border-bottom: 1px solid var(--dr-line); background: none; white-space: nowrap; }
+	#nv-map .nv-grid-table th:first-child { text-align: left; }
+	#nv-map .nv-grid-table thead th { font-size: var(--dr-text-label); font-weight: 600; color: var(--dr-ink-muted); vertical-align: bottom; }
+	#nv-map .nv-grid-table thead th small { display: block; font-weight: 400; color: var(--dr-ink-faint); }
+	#nv-map .nv-grid-table td small { display: block; font-size: var(--dr-text-label); color: var(--dr-ink-faint); }
+	#nv-map .nv-grid-table tr.nv-total th, #nv-map .nv-grid-table tr.nv-total td { font-weight: 700; border-top: 2px solid var(--dr-line-strong); }
+	#nv-map .nv-grid-table tr.is-sel { background: var(--dr-fill-quiet); }
+	#nv-map .nv-grid-table th.is-cur, #nv-map .nv-grid-table td.is-cur { background: var(--dr-fill-quiet); }
+	#nv-map .nv-sort, #nv-map .nv-link { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; text-align: inherit; }
+	#nv-map .nv-link { color: var(--dr-link, #1f4fbf); text-decoration: underline; text-underline-offset: 2px; }
+	#nv-map .nv-chip-cell { display: inline-block; min-width: 4.25rem; padding: 0.0625rem 0.375rem; border-radius: var(--dr-radius-sm); font-weight: 700; text-align: center; }
+
+	#nv-map .nv-daily svg { width: 100%; height: auto; display: block; max-width: 760px; }
+	#nv-map .nv-gridline { stroke: var(--dr-line); stroke-width: 1; }
+	#nv-map .nv-axis0 { stroke: var(--dr-line-strong); stroke-width: 1.5; }
+	#nv-map .nv-tick { font-size: 11px; fill: var(--dr-ink-muted); }
+	#nv-map .nv-b26.is-D { fill: var(--nv-dem); }
+	#nv-map .nv-b26.is-R { fill: var(--nv-rep); }
+	#nv-map .nv-b24.is-D { fill: #9fb4e6; }
+	#nv-map .nv-b24.is-R { fill: #e2a29d; }
+	#nv-map .nv-keys { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; font-size: var(--dr-text-label); color: var(--dr-ink-muted); margin: 0.25rem 0; align-items: center; }
+	#nv-map .nv-key { display: inline-flex; align-items: center; gap: 0.3rem; }
+	#nv-map .nv-key i { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+	#nv-map select { font: inherit; font-size: var(--dr-text-meta); min-height: var(--dr-tap-sm); border: 1px solid var(--dr-line-strong); border-radius: var(--dr-radius-card); background: var(--dr-panel); color: var(--dr-ink); padding: 0 0.5rem; }
+	#nv-map .nv-points { margin: 0.25rem 0 0; padding-left: 1.1rem; list-style: disc; font-size: var(--dr-text-meta); line-height: 1.45; }
+	#nv-map .nv-points li { margin: 0.2rem 0; }
+	#nv-map details > summary { cursor: pointer; font-weight: 600; font-size: var(--dr-text-meta); }
+	@media (max-width: 640px) {
+		#nv-map .nv-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	}
+</style>
+
+<div id="nv-map">
+	{% include election-switcher.html current="nevada" %}
+<div class="nv-head">
+	<h1 class="nv-title">Nevada 2026 general: early vote and Election Day</h1>
+	<div class="nv-meta">
+		<span id="nvMeta">Loading…</span>
+		<button type="button" class="dr-dialog-open" id="nvAboutOpen" aria-haspopup="dialog">About this map</button>
+	</div>
+</div>
+
+<div class="nv-layout">
+<div class="nv-card nv-controls" id="nvControls"></div>
+
+<div class="nv-main">
+<div class="nv-card nv-results">
+	<h2 class="nv-results-title" id="nvTitle">Loading ballot data…</h2>
+	<div class="nv-kpis" id="nvKpis"></div>
+	<div class="nv-bars" id="nvBars"></div>
+	<p class="nv-note nv-warn" id="nvWarn" hidden></p>
+</div>
+
+<div class="nv-card nv-mapcard">
+	<h2 class="nv-results-title" id="nvMapTitle"></h2>
+	<div class="nv-mapwrap" id="nvMapWrap">
+		<svg id="nvSvg" role="img" aria-label="Nevada counties"></svg>
+		<div id="nvTip" hidden></div>
+	</div>
+	<div class="nv-legend" id="nvLegend"></div>
+</div>
+
+<div class="nv-card">
+	<table class="nv-table" id="nvTable"></table>
+	<p class="nv-foot" id="nvFoot"></p>
+</div>
+</div>
+
+<div class="nv-card nv-county" id="nvCounty" aria-live="polite"></div>
+</div>
+
+<section class="nv-card nv-wide" aria-labelledby="nvShiftTitle">
+	<h2 id="nvShiftTitle">Shift since each comparison point</h2>
+	<p class="nv-note" id="nvShiftNote"></p>
+	<div class="nv-tablewrap"><table class="nv-grid-table" id="nvShift"></table></div>
+</section>
+
+<section class="nv-card nv-wide nv-daily" aria-labelledby="nvDailyTitle">
+	<h2 id="nvDailyTitle">In person, day by day: D−R ballots</h2>
+	<p class="nv-note">Ballots cast in person on each early-voting day. 2022 is not shown: the Secretary of State published only weekly totals that year.</p>
+	<div class="nv-keys">
+		<label class="nv-key">Area
+			<select id="nvDailyArea">
+				<option value="st">Statewide</option>
+				<option value="clark">Clark</option>
+				<option value="washoe">Washoe</option>
+				<option value="rural">15 rural counties</option>
+				<option value="cd2">CD2</option>
+			</select>
+		</label>
+		<span class="nv-key"><i style="background:#9fb4e6"></i><i style="background:#e2a29d"></i>2024</span>
+		<span class="nv-key"><i style="background:var(--nv-dem)"></i><i style="background:var(--nv-rep)"></i>2026</span>
+		<span>Above the line: more D ballots; below: more R.</span>
+	</div>
+	<div id="nvDaily"></div>
+	<details><summary>Table</summary><div class="nv-tablewrap"><table class="nv-grid-table" id="nvDailyRows"></table></div></details>
+</section>
+
+<section class="nv-card nv-wide" aria-labelledby="nvCountiesTitle">
+	<h2 id="nvCountiesTitle">All counties</h2>
+	<p class="nv-note" id="nvCountiesNote"></p>
+	<div class="nv-tablewrap"><table class="nv-grid-table" id="nvCounties"></table></div>
+</section>
+
+<section class="nv-card nv-wide" aria-labelledby="nvPointsTitle">
+	<h2 id="nvPointsTitle">Comparison points</h2>
+	<ul class="nv-points" id="nvPoints"></ul>
+</section>
+
+<dialog class="dr-dialog" id="nvAbout" aria-labelledby="nvAboutTitle">
+	<div class="dr-dialog__head">
+		<h2 id="nvAboutTitle">About this map</h2>
+		<button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="nvAboutClose" aria-label="Close">✕</button>
+	</div>
+	<div class="dr-dialog__body">
+		<p><b>2026</b> is the Nevada Secretary of State's VIVID dashboard, snapshotted through the day. VIVID keeps no
+			history, so earlier points exist only where we saved them. <b>2024 and 2022</b> are the Secretary of State's
+			published turnout reports, which give ballots by county and party registration.</p>
+		<p><b>Nearest point</b> compares against the published report closest in days before Election Day. For 2024 in
+			person that is the same early-voting day, from the per-day tables. 2022 has only weekly reports, so its
+			nearest point can be several days off; compare party shares, not raw totals. <b>Final</b> is the last report
+			of early voting that year.</p>
+		<p>Each county is colored by how far its D−R margin has moved since the comparison point you pick. The margin
+			is ballots cast by registered Democrats minus registered Republicans as a share of all ballots. It is not a
+			vote count for any candidate.</p>
+		<p><b>Other</b> is nonpartisan and minor-party voters. The Other split assigns each county's Other ballots to D
+			and R in that county's D:R ratio for the same ballots, then sums the counties. It is a heuristic, not a
+			measurement.</p>
+		<p><b>Mail</b> is mail and EASE ballots returned and accepted (2024 and 2026); 2022's weekly report lists mail
+			ballots returned. Where a 2026 county has accepted fewer than half of the mail ballots it has received,
+			received ballots are used. All figures are unaudited county uploads.</p>
+		<p><b>Election Day</b> is ballots cast in person on Election Day, as VIVID reports them through the day. 2022 has
+			only the final count; its party breakdown leaves out counted provisional ballots. For 2024 the Secretary of
+			State published 10 AM, 2 PM and close-of-polls reports: <b>2024 nearest</b> uses the one closest in time of
+			day, <b>2024 final</b> the close of polls. Until 2026's polls close, compare party shares, not raw totals.</p>
+	</div>
+</dialog>
+</div>
+
+<script src="./nevada.js?v={{ site.time | date: '%s' }}"></script>
+<script>
+	(function () {
+		const dlg = document.getElementById('nvAbout');
+		document.getElementById('nvAboutOpen').addEventListener('click', function () { dlg.showModal(); });
+		document.getElementById('nvAboutClose').addEventListener('click', function () { dlg.close(); });
+		dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+		fetch('./nv_2026_general.json?v={{ site.time | date: "%s" }}')
+			.then((r) => r.json())
+			.then((d) => window.nvInit(d))
+			.catch((e) => { document.getElementById('nvTitle').textContent = 'Could not load the data.'; console.error(e); });
+	})();
+</script>

@@ -1,0 +1,31 @@
+# 2026 election maps, in switcher order. Each state keeps its own page, layout, data file and
+# job; this list only drives the state switcher (_includes/election-switcher.html). To add a
+# state: build its page, add one entry here, and put
+# {% include election-switcher.html current="<slug>" %} at the top of its root container.
+#
+#   slug   matches the `current` passed by the page
+#   data   what the state publishes, in a phrase
+
+- slug: florida
+  name: Florida
+  abbr: FL
+  href: /florida/
+  data: Mail, early and Election Day ballots by county and party, through the day
+
+- slug: nevada
+  name: Nevada
+  abbr: NV
+  href: /nevada/
+  data: Mail, in-person and Election Day ballots by county and party, through the day
+
+- slug: northcarolina
+  name: North Carolina
+  abbr: NC
+  href: /northcarolina/
+  data: Absentee and early vote by county and party, daily
+
+- slug: pennsylvania
+  name: Pennsylvania
+  abbr: PA
+  href: /pennsylvania/
+  data: Mail ballots by county and party, plus voter-roll history, daily

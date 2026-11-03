@@ -31,7 +31,7 @@
   description: >-
     Daily mail-ballot returns by county and party, against the same point in
     2022 and 2024, with unaffiliated voters split by county.
-  rank: 2
+  rank: 3
   updated: 2026-09-23
   launched: 2026-09-23
   category: Voter turnout analysis
@@ -43,9 +43,9 @@
   name: Florida early vote
   tagline: Back for the 2026 general election
   description: >-
-    Daily mail-ballot returns by county and party, against all 2024 or 2022
-    mail ballots, with independents split by county.
-  rank: 3
+    Mail, early and Election Day votes by county and party, against 2024 or
+    2022, with independents split by county.
+  rank: 4
   updated: 2026-10-01
   launched: 2026-10-01
   category: Voter turnout analysis
@@ -68,19 +68,32 @@
   badge: New
   feature: true
 
+- href: /nevada/
+  name: Nevada early vote
+  tagline: New for the 2026 general election
+  description: >-
+    Mail, in-person and Election Day votes by county and party, live from the
+    state's VIVID feed, against 2022 and 2024.
+  rank: 2
+  updated: 2026-11-03
+  launched: 2026-11-03
+  category: Voter turnout analysis
+  preview: nevada-2026.webp
+  badge: New for 2026
+  feature: true
+
 - href: /pennsylvania/
   name: Pennsylvania mail vote
   tagline: Back for the 2026 general election
   description: >-
     Daily mail-ballot returns by county and party, plus who is returning them:
     voter-roll switches that split 2022 and 2024 voters by history and age.
-  rank: 4
+  rank: 5
   updated: 2026-10-12
   launched: 2026-10-12
   category: Voter turnout analysis
   preview: pennsylvania-2026.webp
   badge: New for 2026
-  feature: true
 
 - href: /ea-explorer/
   name: EA explorer
@@ -88,7 +101,7 @@
   description: >-
     Read what effective altruists actually argue — verbatim, sourced — and map
     how the people and money behind the movement connect.
-  rank: 5
+  rank: 6
   updated: 2026-09-21
   launched: 2026-09-21
   category: Networks & influence
@@ -100,7 +113,7 @@
   description: >-
     Explore how organizations, people, and funding tie together across
     ideological currents, and country spheres.
-  rank: 6
+  rank: 7
   updated: 2026-08-31
   launched: 2026-08-28
   category: Networks & influence
@@ -112,7 +125,7 @@
   description: >-
     Explore where they cluster geographically, whose reading lists overlap,
     and which institutions they cite as authority.
-  rank: 7
+  rank: 8
   updated: 2026-08-31
   launched: 2026-08-31
   category: Networks & influence
@@ -124,7 +137,7 @@
   description: >-
     Trace funding between organizations as a Sankey chart. The US government
     is shown as the ultimate NGO — follow the money.
-  rank: 8
+  rank: 9
   updated: 2025-08-23
   launched: 2025-02-20
   category: Charity funding & financials
@@ -135,7 +148,7 @@
   description: >-
     Financial connections among charitable organizations, focused on taxpayer
     funds received.
-  rank: 9
+  rank: 10
   updated: 2025-06-13
   launched: 2025-01-21
   category: Charity funding & financials
@@ -145,7 +158,7 @@
   tagline: The National Endowment for Democracy, indexed
   description: >-
     Search the NED's own grant records and the Journal of Democracy archive.
-  rank: 10
+  rank: 11
   updated: 2025-05-15
   launched: 2025-05-15
   category: Networks & influence
@@ -155,7 +168,7 @@
   tagline: Search NGOs for officers and salaries
   description: >-
     Identify relationships between nonprofits and the people who run them.
-  rank: 11
+  rank: 12
   updated: 2025-03-06
   launched: 2025-02-05
   category: People, officers & salaries
@@ -166,7 +179,7 @@
   description: >-
     Cross-reference a whole board at once to find affiliations between
     organizations and their members.
-  rank: 12
+  rank: 13
   updated: 2025-03-01
   launched: 2025-02-14
   category: People, officers & salaries
@@ -177,7 +190,7 @@
   description: >-
     Financial detail on 501(c)(3) organizations, including how much of their
     funding comes from taxpayers.
-  rank: 13
+  rank: 14
   updated: 2025-03-01
   launched: 2025-01-16
   category: Charity funding & financials
@@ -187,7 +200,7 @@
   tagline: Analyze assets & expenses
   description: >-
     Browse nonprofit financials and see how organizations allocate their funds.
-  rank: 14
+  rank: 15
   updated: 2025-03-01
   launched: 2025-02-14
   category: Charity funding & financials
@@ -198,7 +211,7 @@
   description: >-
     Search federal grant awards by keyword and cross-reference them against
     taxpayer funding.
-  rank: 15
+  rank: 16
   updated: 2025-02-14
   launched: 2025-01-27
   category: Political campaign & grant funding

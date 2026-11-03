@@ -52,7 +52,7 @@ description: Search federal grants, nonprofit filings, officers and funding netw
 <label class="flex items-center">
   <span class="sr-only">Sort tools by</span>
   <select id="tool-sort"
-          class="cursor-pointer appearance-none !border-0 !bg-transparent !p-0 pr-[1.375em] text-body font-bold leading-[1.25] tracking-title !text-ink-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong">
+          class="cursor-pointer appearance-none !border-0 !bg-transparent !py-0 !pl-0 !pr-[1.375em] text-body font-bold leading-[1.25] tracking-title !text-ink-strong focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink-strong">
     <option value="latest">Latest</option>
     <option value="featured">Featured</option>
     <option value="category">Category</option>
@@ -64,7 +64,7 @@ description: Search federal grants, nonprofit filings, officers and funding netw
 
 {% include section-header.html title="Tools" control=sort_control %}
 
-<ul id="tool-list" data-sort="latest"
+<ul id="tool-list" data-sort="featured"
     class="m-0 mt-5 flex list-none flex-col gap-5 p-0 md:flex-row md:flex-wrap md:items-start">
 
   {%- comment -%} Category headers. Visible only in category mode. {%- endcomment -%}
