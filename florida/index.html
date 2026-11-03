@@ -183,7 +183,7 @@ redirect_from:
 	}
 
 	#fl-map .fl-seg--methods {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 
 	#fl-map .fl-shifts {
@@ -598,24 +598,28 @@ redirect_from:
 		'2024f': { 'year': 2024, 'label': '2024 final', 'short': '2024', 'chip': '2024 final', 'date': 'full count' }
 	};
 	const BASELINE_ORDER = ['2022sp', '2022f', '2024sp', '2024f'];
-	const DEFAULT_BASELINE = '2022sp';
+	const DEFAULT_BASELINE = '2024sp';
 	const METHODS = {
-		'mail': { 'key': 'series', 'label': 'Mail', 'sub': 'returned ballots' },
-		'ev': { 'key': 'series_ev', 'label': 'In person', 'sub': 'early voting' }
+		'mail': { 'key': 'series', 'label': 'Mail', 'sub': 'returned ballots', 'name': 'mail ballots' },
+		'ev': { 'key': 'series_ev', 'label': 'In person', 'sub': 'early voting', 'name': 'in-person early votes' },
+		'ed': { 'key': 'series_ed', 'label': 'Election Day', 'sub': 'Nov 3', 'name': 'Election Day votes' }
 	};
+	const METHOD_ORDER = ['mail', 'ev', 'ed'];
+	var DEFAULT_METHODS = ['ed'];
 
-	/** Which methods are ticked, e.g. ['mail', 'ev']. Unticking both falls back to mail. */
+	/** Which methods are ticked, e.g. ['mail', 'ev']. Unticking all falls back to the default. */
 	function methods() {
 		var out = [];
 		$('input[name=method]:checked').each(function () { out.push($(this).val()); });
-		return out.length ? out : ['mail'];
+		return out.length ? out : DEFAULT_METHODS;
 	}
 
-	/** "Mail + in-person ballots", "Mail ballots", "In-person early votes". */
-	function methodLabel(ms) {
+	/** "Election Day votes", "Mail ballots + in-person early votes", "All ballots"; mid-sentence with lower. */
+	function methodLabel(ms, lower) {
 		ms = ms || methods();
-		if (ms.length === 2) return 'Mail + in-person ballots';
-		return ms[0] === 'ev' ? 'In-person early votes' : 'Mail ballots';
+		const s = ms.length === METHOD_ORDER.length ? 'all ballots' :
+			$.map(ms, function (m) { return METHODS[m]['name']; }).join(' + ');
+		return lower ? s : s.charAt(0).toUpperCase() + s.slice(1);
 	}
 	const RACE = { 2024: 'President', 2022: 'Governor' };
 
@@ -675,7 +679,7 @@ redirect_from:
 
 	/**
 	 * County x party counts for one series summed over the ticked methods, every county present, in the
-	 * {Dem, Rep, total} shape. A file without series_ev (older data) counts as no early votes.
+	 * {Dem, Rep, total} shape. A file without series_ev or series_ed (older data) counts as none of those votes.
 	 */
 	function series(key, ms) {
 		var out = {};
@@ -754,7 +758,11 @@ redirect_from:
 		const advKpi = kpi('Advantage now', adv(lead), (lead < 0 ? 'Republican' : lead > 0 ? 'Democratic' : 'No') +
 			' lead in ballots · ' + adv(leadBase) + ' then', lead === 0 ? undefined : lead);
 		const ms = methods();
-		if (view === 'margin') {
+		if (now['total'] === 0) {
+			$('#countMethod').text(methodLabel(ms) + ' · 2026 vs ' + baseline['label'] + ' (' + baseline['date'] + ')');
+			$('#flKpis').html(kpi('2026 ballots', '0', countSub) + advKpi +
+				kpi('Shift, with I split', '–', 'no 2026 ballots yet') + kpi('Shift, raw', '–', 'no 2026 ballots yet'));
+		} else if (view === 'margin') {
 			$('#countMethod').text(methodLabel(ms) + ' · 2026 D−R margin · ' + baseline['label'] + ' for reference');
 			$('#flKpis').html(
 				kpi('2026 ballots', fmt(now['total']), countSub) + advKpi +
@@ -820,7 +828,7 @@ redirect_from:
 		const year = String(baseline['year']);
 		const final = splitIndependents(series(year + 'f'));
 		$('#flFoot').text('2026 so far is ' + pct1(now['total'], final['total']) + ' of all ' + year + ' ' +
-			methodLabel(ms).toLowerCase() + ' (D ' +
+			methodLabel(ms, true) + ' (D ' +
 			pct1(now['Dem'], final['Dem']) + ', R ' + pct1(now['Rep'], final['Rep']) + ' of their ' + year + ' totals' +
 			').' +
 			' I split: each county\'s I ballots go to D and R in that county\'s D:R ratio. A heuristic, not a measurement.');
@@ -925,6 +933,11 @@ redirect_from:
 		var rows = '';
 		$.each(BASELINE_ORDER, function (ignore, k) {
 			const b = splitIndependents(series(k, ms));
+			if (now['total'] === 0) {
+				rows += '<tr><th scope="row">' + BASELINES[k]['label'] + '<small>' + BASELINES[k]['date'] + '</small></th>' +
+					'<td colspan="3">no 2026 ballots yet</td></tr>';
+				return;
+			}
 			if (b['total'] === 0) {
 				rows += '<tr><th scope="row">' + BASELINES[k]['label'] + '<small>' + BASELINES[k]['date'] + '</small></th>' +
 					'<td colspan="3">no ballots yet</td></tr>';
@@ -959,28 +972,34 @@ redirect_from:
 	 */
 	function renderEarly(numerator, denominator, baseline) {
 		const year = String(baseline['year']);
-		const early = series(year + 'sp');
+		// Election Day has no early part, so the check covers only the ticked mail and early-vote ballots.
+		const ms = $.grep(methods(), function (m) { return m !== 'ed'; });
+		const early = series(year + 'sp', ms);
 		const big = {};
 		$.each(Object.keys(denominator).sort(function (a, b) {
 			return denominator[b]['total'] - denominator[a]['total'];
 		}).slice(0, BIG_COUNTIES), function (ignore, county) {
 			big[county] = true;
 		});
-		const eBig = marginOf(early, big), fBig = marginOf(series(year + 'f'), big);
+		const eBig = marginOf(early, big), fBig = marginOf(series(year + 'f', ms), big);
 
-		var out = [];
+		var out = [], noBase = [];
 		$.each(numerator, function (county, v) {
 			if (v['total'] < MIN_BALLOTS) {
 				out.push(county);
+			} else if (denominator[county]['total'] < MIN_BALLOTS) {
+				noBase.push(county);
 			}
 		});
 
 		$('#flEarly').html(
-			'<div class="fl-label">Early ballots may not be representative</div>' +
-			'<p>In the ' + BIG_COUNTIES + ' largest counties, the first ' + year + ' ballots ran ' + lean(eBig['margin']) +
-			', against ' + lean(fBig['margin']) + ' by the end. Watch daily for updates.</p>' +
-			(out.length === 0 ? '' : '<p>Not yet reporting (fewer than ' + MIN_BALLOTS + ' ballots in 2026, gray on the map): ' +
-				out.join(', ') + '.</p>'));
+			'<div class="fl-label">' + (ms.length ? 'Early ballots may not be representative' : 'County reporting') + '</div>' +
+			(ms.length ? '<p>In the ' + BIG_COUNTIES + ' largest counties, the first ' + year + ' ballots ran ' + lean(eBig['margin']) +
+				', against ' + lean(fBig['margin']) + ' by the end. Watch daily for updates.</p>' : '') +
+			(out.length === 0 ? (ms.length ? '' : '<p>Every county has at least ' + MIN_BALLOTS + ' ballots in 2026.</p>') :
+				'<p>Not yet reporting (fewer than ' + MIN_BALLOTS + ' ballots in 2026, gray on the map): ' + out.join(', ') + '.</p>') +
+			(noBase.length === 0 ? '' : '<p>No ' + baseline['label'] + ' ballots of these kinds on the state feed (gray on the map, ' +
+				'still in the totals): ' + noBase.join(', ') + '.</p>'));
 	}
 
 	function doUpdate() {
@@ -1017,19 +1036,20 @@ redirect_from:
 		}
 		const sp = data['same_point'] || {};
 		if (sp['2024']) {
-			BASELINES['2024sp']['date'] = new Date(sp['2024'] + '-04:00').toLocaleString('en-US', {
+			BASELINES['2024sp']['date'] = new Date(sp['2024'] + 'Z').toLocaleString('en-US', {
 				month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
-				timeZone: 'America/New_York' }) + ' ET';
+				timeZone: 'UTC' }) + ' ET';
 		}
 		if (sp['2022']) {
 			BASELINES['2022sp']['date'] = 'end of ' + new Date(sp['2022'].slice(0, 10) + 'T12:00:00').toLocaleDateString('en-US', {
 				month: 'short', day: 'numeric', year: 'numeric' });
 		}
-		const hasEv = !!data['series_ev'];
+		const avail = $.grep(METHOD_ORDER, function (m) { return !!data[METHODS[m]['key']]; });
+		if (!data['series_ed']) DEFAULT_METHODS = avail;
 		var ctl = '<div class="fl-group"><div class="fl-label">Ballots</div><div class="fl-seg fl-seg--methods">\n';
-		$.each(['mail', 'ev'], function (ignore, m) {
-			if (m === 'ev' && !hasEv) return;
-			ctl += chip('method' + m, METHODS[m]['label'], METHODS[m]['sub'], 'type="checkbox" name="method" value="' + m + '" checked="checked"');
+		$.each(avail, function (ignore, m) {
+			const checked = DEFAULT_METHODS.indexOf(m) >= 0 ? ' checked="checked"' : '';
+			ctl += chip('method' + m, METHODS[m]['label'], METHODS[m]['sub'], 'type="checkbox" name="method" value="' + m + '"' + checked);
 		});
 		ctl += '</div></div>\n';
 		ctl += '<div class="fl-group"><div class="fl-label">Map shows</div><div class="fl-seg">\n';
@@ -1051,12 +1071,12 @@ redirect_from:
 		ctl += '<div class="fl-early" id="flEarly"></div>\n';
 		if (data['broward']['source'] !== 'state feed') {
 			ctl += '<p class="fl-note">Broward is not on the state feed yet. Its numbers come from the Broward Supervisor of ' +
-				'Elections turnout dashboard (mail and early vote by party), read ' + new Date(data['broward']['fetched_at']).toLocaleString('en-US', {
+				'Elections turnout dashboard (mail, early vote and Election Day by party), read ' + new Date(data['broward']['fetched_at']).toLocaleString('en-US', {
 					month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
 				}) + '.</p>\n';
 		}
-		ctl += '<p class="fl-note">In-person early voting opens Oct 19–24 depending on the county, so early-vote ' +
-			'totals undercount until every county is open.</p>\n';
+		ctl += '<p class="fl-note">Election Day polls are open 7 a.m. to 7 p.m. local time. Counties post Election Day ' +
+			'check-ins through the day, so those totals undercount until every county has reported.</p>\n';
 		ctl += '</div>\n';
 		$('#flControls').html(ctl);
 
@@ -1067,7 +1087,7 @@ redirect_from:
 
 <div id="fl-map">
 <div class="fl-head">
-	<h1 class="fl-title">Florida 2026 general: early vote</h1>
+	<h1 class="fl-title">Florida 2026 general: early vote and Election Day</h1>
 	<div class="fl-meta">
 		<span>Feed updated <span id="timestamp">…</span> · counties update hourly</span><span id="asOf" hidden></span>
 		<button type="button" class="dr-dialog-open" id="flAboutOpen" aria-haspopup="dialog">
@@ -1113,7 +1133,7 @@ redirect_from:
 		<button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" id="flAboutClose" aria-label="Close">✕</button>
 	</div>
 	<div class="dr-dialog__body">
-		<p>This map is for exploring who has voted early, by mail and in person, not an exact count. Counts by county,
+		<p>This map is for exploring who has voted, by mail, in person early and on Election Day, not an exact count. Counts by county,
 			party and method come from the Florida Division of Elections turnout feed, which counties update about
 			hourly. Broward is missing from that feed so far this year; until it appears, Broward's numbers come from
 			the Broward Supervisor of Elections turnout dashboard.</p>
@@ -1121,10 +1141,13 @@ redirect_from:
 			comparison point you pick. Same time (2024): the counts at the same hour on the same day before the
 			election, from snapshots of the 2024 feed. Same day (2022): the end of the same day before the election
 			(the 2022 feed has only daily totals; the party split comes from the Division's daily early voting and
-			mail ballot reports). Final: every ballot of that type in that election. Margin view colors each
-			county by its 2026 D−R margin alone; the baseline still sets the comparison numbers in the tiles and table.</p>
+			mail ballot reports). For Election Day votes, 2022 same day is the full 2022 Election Day count, since
+			every one was cast that day even where the county posted it later. Final: every ballot of that type in
+			that election. Margin view colors each county by its 2026 D−R margin alone; the baseline still sets the
+			comparison numbers in the tiles and table.</p>
 		<p>Totals include every county. Counties with fewer than 10 ballots in 2026 or in the baseline are gray on
-			the map.</p>
+			the map. The 2022 feed has no Election Day votes for Lee (filed with its early votes after Hurricane
+			Ian) or Seminole, so both are gray against 2022 when only Election Day is ticked.</p>
 		<p>"I" is every voter not registered D or R, including minor parties. The I split assigns each county's I
 			ballots to R and D in that county's R:D ratio for the same ballots, then sums the counties. It is a
 			heuristic, not a measurement.</p>
