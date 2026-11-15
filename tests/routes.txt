@@ -3,6 +3,10 @@
 /award_search/
 /browse/
 /browse/circleTest.html
+/sankeybuilder/
+/sankeybuilder/extract/
+/sankeybuilder/help/
+/sankeybuilder/share/
 /christianity/
 /clark/
 /convex/

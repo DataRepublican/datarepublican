@@ -70,6 +70,9 @@ exclude:
   # page and every spec was downloadable. It also meant writing a spec
   # triggered a rebuild, 404-ing whatever page the suite was mid-request on.
   - tests
+  # Vitest for this tool. Publishing it is noise; writing a spec while the
+  # server runs would also rebuild the site and 404 whatever was in flight.
+  - sankeybuilder/test
   # The design-system skill and its references live here, and they get edited in
   # the same sessions that run the suite. Every write was kicking off a rebuild
   # and 404-ing whatever page a test had just requested — the same cascade as

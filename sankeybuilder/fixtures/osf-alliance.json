@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "title": "OSF to Example Alliance",
+  "source": {
+    "url": "",
+    "note": "Tiny grant+partner fixture for tests and the empty-state demo. Not a real investigation."
+  },
+  "nodes": [
+    {
+      "name": "Open Society Foundations",
+      "kind": "org",
+      "ein": "13-7029866",
+      "starting": true,
+      "inspector": { "propublica": true, "nonprofit": true, "award_search": true, "maps": true, "google": true }
+    },
+    {
+      "id": "example-alliance",
+      "name": "Example Alliance",
+      "kind": "org",
+      "starting": true,
+      "govFunds": 250000,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "id": "jane-example",
+      "name": "Jane Example",
+      "kind": "person",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": false, "google": true }
+    }
+  ],
+  "edges": [
+    {
+      "from": "137029866",
+      "to": "example-alliance",
+      "kind": "grant",
+      "amount": 10500000,
+      "years": [2023],
+      "label": "$10.5M",
+      "cite": "fixture"
+    },
+    {
+      "from": "jane-example",
+      "to": "example-alliance",
+      "kind": "partner",
+      "label": "board",
+      "cite": "fixture"
+    }
+  ]
+}
