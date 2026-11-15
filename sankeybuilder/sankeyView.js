@@ -3,13 +3,64 @@ import { BADGE, USER_BODY, badgeCenter, linkPath, trapezoidPath } from "./shapes
 
 let zoomBehavior = null;
 
-function money(n) {
-  if (!n) return "";
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
+const TIP_ID = "sb-graph-tip";
+
+function tipEl() {
+  let el = document.getElementById(TIP_ID);
+  if (!el) {
+    el = document.createElement("div");
+    el.id = TIP_ID;
+    el.className = "sb-graph-tip";
+    el.setAttribute("role", "tooltip");
+    el.hidden = true;
+    document.body.appendChild(el);
+  }
+  return el;
+}
+
+function placeTip(ev, el) {
+  const pad = 12;
+  const w = el.offsetWidth;
+  const h = el.offsetHeight;
+  let left = ev.clientX + pad;
+  let top = ev.clientY + pad;
+  if (left + w > window.innerWidth - 8) left = ev.clientX - w - pad;
+  if (top + h > window.innerHeight - 8) top = ev.clientY - h - pad;
+  if (left < 8) left = 8;
+  if (top < 8) top = 8;
+  el.style.left = `${Math.round(left)}px`;
+  el.style.top = `${Math.round(top)}px`;
+}
+
+function showTip(ev, text) {
+  if (!text || ev.pointerType === "touch") return;
+  const el = tipEl();
+  el.textContent = text;
+  el.hidden = false;
+  placeTip(ev, el);
+}
+
+function hideTip() {
+  const el = document.getElementById(TIP_ID);
+  if (el) el.hidden = true;
+}
+
+function linkTip(d) {
+  const base = d.tip || "";
+  return d.circular ? `${base}\ncircular` : base;
+}
+
+function bindTip(sel, textOf) {
+  sel
+    .on("pointerenter", (ev, d) => showTip(ev, textOf(d)))
+    .on("pointermove", (ev, d) => {
+      const el = document.getElementById(TIP_ID);
+      if (!el || el.hidden) return;
+      if (ev.pointerType === "touch") return;
+      el.textContent = textOf(d);
+      placeTip(ev, el);
+    })
+    .on("pointerleave", hideTip);
 }
 
 export function bindSankey(svgEl, vm) {
@@ -18,6 +69,7 @@ export function bindSankey(svgEl, vm) {
 
   const svg = d3.select(svgEl);
   zoomBehavior = d3.zoom().scaleExtent([0.2, 8]).on("zoom", (ev) => {
+    hideTip();
     svg.select("g.sb-main").attr("transform", ev.transform);
   });
   svg.call(zoomBehavior);
@@ -46,6 +98,7 @@ export function bindSankey(svgEl, vm) {
 
   async function draw() {
     if (vm.view === "table") return;
+    hideTip();
     const data = vm.getSankeyData();
     svg.selectAll("*").remove();
     const main = svg.append("g").attr("class", "sb-main");
@@ -103,12 +156,13 @@ export function bindSankey(svgEl, vm) {
       .attr("d", linkPath)
       .attr("fill", "none")
       .attr("stroke", "transparent")
-      .attr("stroke-width", 16)
+      .attr("stroke-width", (d) => Math.max(16, d.width || 2))
       .style("cursor", "pointer")
       .on("click", (ev, d) => {
         ev.stopPropagation();
         vm.setSelectedEdge(d.id);
       });
+    bindTip(main.selectAll("path.sb-hit"), linkTip);
 
     main
       .append("g")
@@ -122,9 +176,7 @@ export function bindSankey(svgEl, vm) {
       .attr("stroke", (d) => colorString(getColorForId(d.source.colorKey || d.source.id)))
       .attr("stroke-opacity", (d) => (d.id === selectedEdge ? 0.95 : 0.45))
       .attr("stroke-width", (d) => Math.max(2, d.width || 2))
-      .style("pointer-events", "none")
-      .append("title")
-      .text((d) => `${d.source.name} → ${d.target.name} ${money(d.amount)} ${d.label || ""}`);
+      .style("pointer-events", "none");
 
     main
       .append("g")
@@ -141,9 +193,7 @@ export function bindSankey(svgEl, vm) {
       .attr("stroke-opacity", (d) => (d.id === selectedEdge ? 1 : 0.7))
       .attr("stroke-width", (d) => (d.id === selectedEdge ? 3 : 2))
       .attr("stroke-dasharray", "5 4")
-      .style("pointer-events", "none")
-      .append("title")
-      .text((d) => `${d.source.name} · ${d.label || "partner"} · ${d.target.name}`);
+      .style("pointer-events", "none");
 
     const nodes = main
       .append("g")
@@ -158,6 +208,7 @@ export function bindSankey(svgEl, vm) {
         ev.stopPropagation();
         vm.clickNode(d.id, ev);
       });
+    bindTip(nodes, (d) => d.tip || d.name);
 
     nodes
       .append("path")
@@ -266,6 +317,7 @@ export function bindSankey(svgEl, vm) {
       svg.transition().duration(200).call(zoomBehavior.scaleBy, k);
     },
     destroy() {
+      hideTip();
       unsub();
     },
   };

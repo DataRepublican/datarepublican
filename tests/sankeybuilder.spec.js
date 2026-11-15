@@ -95,6 +95,23 @@ test.describe("Show Don't Tell", () => {
     await expect(page.locator("#sb-panel")).toContainText("Grant");
   });
 
+  test("hovering a node or flow shows an info tip", async ({ page }) => {
+    await openBuilder(page);
+    await page.goto(HOST + "/sankeybuilder/?url=/sankeybuilder/fixtures/osf-alliance.json", {
+      waitUntil: "load",
+    });
+    await expect(page.locator("#sb-svg g.sb-node")).toHaveCount(2);
+    await page.locator('#sb-svg g.sb-node[data-id="example-alliance"]').hover();
+    const tip = page.locator("#sb-graph-tip");
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText("Example Alliance");
+    await expect(tip).toContainText("Gov $");
+    const hit = page.locator("#sb-svg path.sb-hit").first();
+    await hit.hover({ force: true });
+    await expect(tip).toBeVisible();
+    await expect(tip).toContainText("→");
+  });
+
   test("table view lists hidden nodes and edits a grant", async ({ page }) => {
     await openBuilder(page);
     await page.goto(HOST + "/sankeybuilder/?url=/sankeybuilder/fixtures/osf-alliance.json", {

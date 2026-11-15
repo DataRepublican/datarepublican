@@ -553,20 +553,26 @@ export class SankeyBuilderViewModel {
       photo: n.photo,
       colorKey: n.colorKey,
       starting: n.starting,
+      tip: n.toolTipText(),
     }));
     const idSet = new Set(nodes.map((n) => n.id));
     const links = this.visibleEdges()
       .filter((e) => idSet.has(e.from) && idSet.has(e.to))
-      .map((e) => ({
-        source: e.from,
-        target: e.to,
-        value: e.sankeyValue(),
-        kind: e.kind,
-        label: e.label,
-        amount: e.amount,
-        cite: e.cite,
-        id: e.id,
-      }));
+      .map((e) => {
+        const from = this.doc.node(e.from);
+        const to = this.doc.node(e.to);
+        return {
+          source: e.from,
+          target: e.to,
+          value: e.sankeyValue(),
+          kind: e.kind,
+          label: e.label,
+          amount: e.amount,
+          cite: e.cite,
+          id: e.id,
+          tip: e.toolTipText(from?.name, to?.name),
+        };
+      });
     return { nodes, links };
   }
 

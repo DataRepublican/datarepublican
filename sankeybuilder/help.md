@@ -14,7 +14,7 @@ permalink: /sankeybuilder/help/
 ## What you put in
 
 - **Organizations, people, and government bodies.** An EIN is optional. Without one, the tool makes a slug from the name (`Open Society Foundations` → `open-society-foundations`) and colors the node from that id.
-- **Grants** are dollar flows. Thickness follows the amount. Click a flow to edit it.
+- **Grants** are dollar flows. Thickness follows the amount. Hover a node or a flow for name, EIN, and dollars; click a flow to edit it.
 - **Partners** are relationships that are not money (board overlap, “advises”, “national partner”). They draw **dashed** and thin on purpose. A dotted line is a partner, not a grant with an unknown dollar amount. Switch the kind to Grant in the editor or the **Table** view to attach dollars.
 - **Table** is a sortable spreadsheet of every organization and every flow, including nodes that are hidden on the diagram (starting set). Edit cells in place. **Add row** appends an empty organization or flow. **Show all** unhides the money nodes Grok left off the starting set.
 - **Government funds** (Gov $ in the table, or the inspector field) become a grant from an implied U.S. government node. The first amount creates that `us-gov` node if the graph does not already have one.

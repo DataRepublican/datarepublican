@@ -24,6 +24,15 @@ export function extractGrokHref(postUrl) {
   return `https://grok.com/?${params.toString()}`;
 }
 
+function dollars(n) {
+  if (!n) return "";
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
 export class GraphNode {
   constructor(raw) {
     this.id = raw.id;
@@ -46,6 +55,16 @@ export class GraphNode {
 
   get isPerson() {
     return this.kind === "person";
+  }
+
+  toolTipText() {
+    const kind =
+      this.kind === "person" ? "person" : this.kind === "gov" ? "government" : "organization";
+    const lines = [this.name, kind];
+    if (this.ein) lines.push(`EIN ${this.longEIN}`);
+    const gov = dollars(this.govFunds);
+    if (gov) lines.push(`Gov $ ${gov}`);
+    return lines.join("\n");
   }
 
   toJSON() {
@@ -135,6 +154,21 @@ export class GraphEdge {
   sankeyValue() {
     if (this.kind === "partner") return 1;
     return Math.max(this.amount, 1);
+  }
+
+  toolTipText(fromName, toName) {
+    const from = fromName || this.from;
+    const to = toName || this.to;
+    if (this.kind === "partner") {
+      return `${from} · ${this.label || "partner"} · ${to}`;
+    }
+    const lines = [`${from} → ${to}`];
+    const amt = dollars(this.amount);
+    if (amt) lines.push(amt);
+    if (this.label && this.label !== amt) lines.push(this.label);
+    if (this.years.length) lines.push(this.years.join(", "));
+    if (this.cite) lines.push(this.cite);
+    return lines.join("\n");
   }
 
   toJSON() {

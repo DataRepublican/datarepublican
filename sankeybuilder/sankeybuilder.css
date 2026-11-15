@@ -245,6 +245,26 @@
   display: block;
 }
 
+/* On body: #sb-canvas is isolation:isolate, so a tip inside it clips. */
+.sb-graph-tip {
+  position: fixed;
+  z-index: var(--dr-z-popover, 70);
+  max-width: 17rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: var(--dr-radius-sm, 6px);
+  background: var(--dr-accent, #252739);
+  color: #fff;
+  font-size: var(--dr-text-meta, 13px);
+  line-height: 1.4;
+  white-space: pre-wrap;
+  pointer-events: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.26);
+}
+
+.sb-graph-tip[hidden] {
+  display: none;
+}
+
 #sb-controls {
   position: absolute;
   top: 8px;
