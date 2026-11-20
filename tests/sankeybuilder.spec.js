@@ -161,6 +161,40 @@ test.describe("Show Don't Tell", () => {
     await expect(page.locator("#sb-panel")).toBeVisible();
   });
 
+  test("inspect click opens a hidden editor for a node or grant", async ({ page }) => {
+    await openBuilder(page);
+    await page.goto(HOST + "/sankeybuilder/?url=/sankeybuilder/fixtures/osf-alliance.json", {
+      waitUntil: "load",
+    });
+    await expect(page.locator("#sb-svg g.sb-node")).toHaveCount(2);
+    await page.locator("#sb-view-editor").click();
+    await expect(page.locator("#sb-panel")).toBeHidden();
+    await page.locator('#sb-click-mode [data-mode="inspect"]').click();
+    await page.locator('#sb-svg g.sb-node[data-id="example-alliance"]').click();
+    await expect(page.locator("#sb")).toHaveAttribute("data-editor", "on");
+    await expect(page.locator("#sb-panel")).toBeVisible();
+    await expect(page.locator("#sb-node-form")).toBeVisible();
+    await page.locator("#sb-view-editor").click();
+    await expect(page.locator("#sb-panel")).toBeHidden();
+    await page.locator("#sb-svg path.sb-hit").first().click({ force: true });
+    await expect(page.locator("#sb-panel")).toBeVisible();
+    await expect(page.locator("#sb-edge-edit")).toBeVisible();
+  });
+
+  test("controls toggle hides the canvas overlay", async ({ page }) => {
+    await openBuilder(page);
+    await expect(page.locator("#sb-controls")).toBeVisible();
+    await expect(page.locator("#sb-zoom-in")).toBeVisible();
+    await expect(page.locator("#sb-view-controls")).toHaveText("Hide Controls");
+    await page.locator("#sb-view-controls").click();
+    await expect(page.locator("#sb")).toHaveAttribute("data-controls", "off");
+    await expect(page.locator("#sb-view-controls")).toHaveText("Show Controls");
+    await expect(page.locator("#sb-controls")).toBeHidden();
+    await page.locator("#sb-view-controls").click();
+    await expect(page.locator("#sb-controls")).toBeVisible();
+    await expect(page.locator("#sb-zoom-in")).toBeVisible();
+  });
+
   test("help and share pages explain gist saving", async ({ page }) => {
     await page.goto(HOST + "/sankeybuilder/help/", { waitUntil: "load" });
     await expect(page.locator("h1")).toContainText(/How Show Don.t Tell works/);

@@ -131,13 +131,17 @@
 
 #sb .sb-views #sb-view-editor,
 #sb .sb-views #sb-view-editor[aria-pressed="true"],
-#sb .sb-views #sb-view-editor[aria-pressed="false"] {
+#sb .sb-views #sb-view-editor[aria-pressed="false"],
+#sb .sb-views #sb-view-controls,
+#sb .sb-views #sb-view-controls[aria-pressed="true"],
+#sb .sb-views #sb-view-controls[aria-pressed="false"] {
   background: #10b981;
   border-color: #059669;
   color: #fff;
 }
 
-#sb .sb-views #sb-view-editor:hover {
+#sb .sb-views #sb-view-editor:hover,
+#sb .sb-views #sb-view-controls:hover {
   background: #059669;
   color: #fff;
 }
@@ -217,6 +221,10 @@
 }
 
 #sb[data-editor="off"] #sb-panel {
+  display: none;
+}
+
+#sb[data-controls="off"] #sb-controls {
   display: none;
 }
 

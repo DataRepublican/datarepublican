@@ -160,7 +160,7 @@ export function bindSankey(svgEl, vm) {
       .style("cursor", "pointer")
       .on("click", (ev, d) => {
         ev.stopPropagation();
-        vm.setSelectedEdge(d.id);
+        vm.clickEdge(d.id, ev);
       });
     bindTip(main.selectAll("path.sb-hit"), linkTip);
 

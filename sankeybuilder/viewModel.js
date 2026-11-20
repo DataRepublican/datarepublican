@@ -35,6 +35,7 @@ export class SankeyBuilderViewModel {
     this.selectedEdgeId = null;
     this.view = "diagram";
     this.editorOpen = true;
+    this.controlsOpen = true;
     this.circularLinks = true;
     this.hidden = new Set();
     this.status = "";
@@ -141,6 +142,7 @@ export class SankeyBuilderViewModel {
     this.selectedEdgeId = null;
     if (mode === "inspect") {
       this.camera = null;
+      this.editorOpen = true;
       this.notify();
       return mode;
     }
@@ -192,6 +194,11 @@ export class SankeyBuilderViewModel {
     this.notify();
   }
 
+  setControlsOpen(on) {
+    this.controlsOpen = Boolean(on);
+    this.notify();
+  }
+
   setCircularLinks(on) {
     this.circularLinks = Boolean(on);
     this.notify();
@@ -200,6 +207,18 @@ export class SankeyBuilderViewModel {
   setSelected(id) {
     this.selectedId = id || null;
     this.selectedEdgeId = null;
+    this.notify();
+  }
+
+  clickEdge(id, event) {
+    const edge = id ? this.doc.edge(id) : null;
+    this.selectedEdgeId = edge ? edge.id : null;
+    this.selectedId = null;
+    if (edge) {
+      this.hidden.delete(edge.from);
+      this.hidden.delete(edge.to);
+    }
+    if (edge && this.modeFromEvent(event) === "inspect") this.editorOpen = true;
     this.notify();
   }
 

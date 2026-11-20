@@ -42,6 +42,27 @@ describe("SankeyBuilderViewModel", () => {
     expect(v.visibleNodes().map((n) => n.id)).toEqual([]);
   });
 
+  it("inspect click opens a hidden editor for a node or grant", () => {
+    const v = vm(osf);
+    v.setEditorOpen(false);
+    v.setClickMode("inspect");
+    v.clickNode("example-alliance");
+    expect(v.editorOpen).toBe(true);
+    expect(v.selectedId).toBe("example-alliance");
+    v.setEditorOpen(false);
+    const grant = v.doc.edges.find((e) => e.kind === "grant");
+    v.clickEdge(grant.id);
+    expect(v.editorOpen).toBe(true);
+    expect(v.selectedEdgeId).toBe(grant.id);
+    v.setEditorOpen(false);
+    v.setClickMode("add");
+    v.clickNode("example-alliance", { altKey: true });
+    expect(v.editorOpen).toBe(true);
+    v.setEditorOpen(false);
+    v.clickNode("example-alliance");
+    expect(v.editorOpen).toBe(false);
+  });
+
   it("selecting a flow reveals both ends and table lists hidden nodes", () => {
     const v = vm(osf);
     expect(v.visibleNodes().map((n) => n.id)).not.toContain("jane-example");
@@ -56,6 +77,9 @@ describe("SankeyBuilderViewModel", () => {
     expect(v.editorOpen).toBe(true);
     v.setEditorOpen(false);
     expect(v.editorOpen).toBe(false);
+    expect(v.controlsOpen).toBe(true);
+    v.setControlsOpen(false);
+    expect(v.controlsOpen).toBe(false);
     expect(v.circularLinks).toBe(true);
     v.setCircularLinks(false);
     expect(v.circularLinks).toBe(false);

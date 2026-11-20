@@ -38,7 +38,7 @@ const MODE_TIPS = {
   zoom: "Clicking a node frames it and one hop of ties. The rest of the graph stays; only the camera moves.",
   add: "Clicking a node keeps the graph and reveals its neighbors both ways. ⌘ or Ctrl does the same from any mode.",
   subtract: "Clicking a node hides it. Shift-click does the same from any mode.",
-  inspect: "Clicking a node opens the editor card without changing who is visible. Alt or Option does the same from any mode.",
+  inspect: "Clicking a node or flow opens the editor even if it is hidden, without changing who is visible. Alt or Option does the same from any mode.",
 };
 
 function iconBtn(id, name, tip, glyph) {
@@ -68,6 +68,7 @@ export function bindView(root, vm) {
   const viewDiagram = root.querySelector("#sb-view-diagram");
   const viewTable = root.querySelector("#sb-view-table");
   const viewEditor = root.querySelector("#sb-view-editor");
+  const viewControls = root.querySelector("#sb-view-controls");
   const status = root.querySelector("#sb-status");
   const err = root.querySelector("#sb-error");
   const fileInput = document.getElementById("sb-file");
@@ -217,6 +218,7 @@ export function bindView(root, vm) {
   viewDiagram?.addEventListener("click", () => vm.setView("diagram"));
   viewTable?.addEventListener("click", () => vm.setView("table"));
   viewEditor?.addEventListener("click", () => vm.setEditorOpen(!vm.editorOpen));
+  viewControls?.addEventListener("click", () => vm.setControlsOpen(!vm.controlsOpen));
 
   fileInput?.addEventListener("change", async () => {
     const f = fileInput.files?.[0];
@@ -249,10 +251,13 @@ export function bindView(root, vm) {
     bindPanel(panel, vm);
     root.dataset.view = vm.view;
     root.dataset.editor = vm.editorOpen ? "on" : "off";
+    root.dataset.controls = vm.controlsOpen ? "on" : "off";
     viewDiagram?.setAttribute("aria-pressed", String(vm.view === "diagram"));
     viewTable?.setAttribute("aria-pressed", String(vm.view === "table"));
     viewEditor?.setAttribute("aria-pressed", String(vm.editorOpen));
     if (viewEditor) viewEditor.textContent = vm.editorOpen ? "Hide Editor" : "Show Editor";
+    viewControls?.setAttribute("aria-pressed", String(vm.controlsOpen));
+    if (viewControls) viewControls.textContent = vm.controlsOpen ? "Hide Controls" : "Show Controls";
     if (newBtn) newBtn.textContent = n || e ? "Clear" : "New";
     if (circular) circular.checked = !vm.circularLinks;
     root.querySelectorAll("#sb-click-mode [data-mode]").forEach((btn) => {
