@@ -142,6 +142,18 @@
   launched: 2025-02-20
   category: Charity funding & financials
   preview: charity-browse.webp
+- href: /sankeybuilder/
+  name: Show Don't Tell
+  tagline: Draw the money in a post
+  description: >-
+    Build a Sankey from organizations, people, and grants you type or extract
+    from a thread. Share the JSON, not a screenshot of a spreadsheet.
+  rank: 9
+  updated: 2026-11-15
+  launched: 2026-11-15
+  category: Charity funding & financials
+  preview: sankeybuilder.webp
+  badge: New
 - href: /expose/
   name: Charity graph
   tagline: Visualize how the money flows

@@ -7,7 +7,7 @@ const stub = (name) =>
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["browse/test/**/*.test.js"],
+    include: ["browse/test/**/*.test.js", "sankeybuilder/test/**/*.test.js"],
     setupFiles: ["browse/test/setup.js"],
   },
   resolve: {

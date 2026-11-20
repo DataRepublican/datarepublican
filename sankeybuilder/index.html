@@ -1,0 +1,101 @@
+---
+layout: nofooter
+title: Show Don't Tell
+description: Draw a Sankey from a post, a gist, or a JSON file. User-authored, not IRS data.
+permalink: /sankeybuilder/
+---
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<link rel="stylesheet" href="/sankeybuilder/sankeybuilder.css">
+
+<div id="sb" data-view="diagram" data-editor="on" data-controls="on">
+  <div id="sb-header">
+    <div class="sb-idrow">
+      <div class="sb-id">
+        <h1>Show Don't Tell</h1>
+        <div id="sb-status" role="status" aria-live="polite">New graph</div>
+      </div>
+      <div class="sb-id-links">
+        <a href="/sankeybuilder/help/">Help</a>
+        <a href="/sankeybuilder/share/">Save and share</a>
+      <button type="button" class="dr-dialog-open" id="sb-legal-open" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        Disclaimer
+      </button>
+      </div>
+    </div>
+
+    <div class="sb-toolbar">
+      <div class="sb-views" role="tablist" aria-label="View">
+        <button type="button" class="dr-btn" id="sb-view-diagram" aria-pressed="true">Diagram</button>
+        <button type="button" class="dr-btn" id="sb-view-table" aria-pressed="false">Table</button>
+        <button type="button" class="dr-btn" id="sb-view-editor" aria-pressed="true">Hide Editor</button>
+        <button type="button" class="dr-btn" id="sb-view-controls" aria-pressed="true">Hide Controls</button>
+      </div>
+      <div class="sb-actions">
+        <button type="button" class="dr-btn" id="sb-new">New</button>
+        <button type="button" class="dr-btn" id="sb-open">Load file</button>
+        <button type="button" class="dr-btn" id="sb-load-url">Load URL</button>
+        <button type="button" class="dr-btn" id="sb-paste-open">Paste JSON</button>
+        <button type="button" class="dr-btn" id="sb-save">Save JSON</button>
+        <button type="button" class="dr-btn" id="sb-save-svg">Save diagram</button>
+        <button type="button" class="dr-btn" id="sb-share">Share URL</button>
+        <input id="sb-post-url" type="url" placeholder="post or article URL" aria-label="Post URL">
+        <button type="button" class="dr-btn" id="sb-extract-post">Extract from Post</button>
+      </div>
+    </div>
+    <div id="sb-error" hidden></div>
+  </div>
+
+  <div id="sb-stage">
+    <div id="sb-canvas">
+      <div id="sb-controls"></div>
+      <div id="sb-empty" data-empty>Add organizations on the right, paste JSON from Grok, or load a file. To hand someone a URL, save a GitHub gist — Help explains how.</div>
+      <svg id="sb-svg" role="img" aria-label="Sankey diagram"></svg>
+    </div>
+    <div id="sb-table" hidden></div>
+    <aside id="sb-panel" aria-label="Editor"></aside>
+  </div>
+</div>
+
+<dialog class="dr-dialog" id="sb-legal" aria-labelledby="sb-legal-title">
+  <div class="dr-dialog__head">
+    <h2 id="sb-legal-title">Disclaimer</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" data-close aria-label="Close">✕</button>
+  </div>
+  <div class="dr-dialog__body">
+    <p>This diagram is <strong>user-authored</strong>. It is not IRS data, not a Form 990 extract, and not a fraud determination. Nodes and dollar amounts come from files you load or type, including JSON produced by a language model from a post you pasted.</p>
+    <p>Provided for research, educational, and journalistic purposes only, offered &ldquo;as is&rdquo; without warranty. It may contain errors. Classifications and associations are the author’s reading of a source, not statements of fact, and nothing here alleges unlawful conduct.</p>
+    <p>Do not rely on this material without independent verification. An EIN, when present, is a link into public records (ProPublica, this site’s charity pages, USAspending). A missing EIN means those links stay off.</p>
+  </div>
+</dialog>
+
+<dialog class="dr-dialog" id="sb-load" aria-labelledby="sb-load-title">
+  <div class="dr-dialog__head">
+    <h2 id="sb-load-title">Load URL</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" data-close aria-label="Close">✕</button>
+  </div>
+  <form id="sb-load-form" class="dr-dialog__body">
+    <p>Paste a GitHub gist URL. The raw file (<code>gist.githubusercontent.com</code>) is what the browser can fetch. A gist page URL is rewritten to raw.</p>
+    <input id="sb-url" type="url" placeholder="https://gist.githubusercontent.com/…" aria-label="Gist URL">
+    <p id="sb-load-error" class="sb-paste-error" hidden></p>
+    <button type="submit" class="dr-btn">Load</button>
+  </form>
+</dialog>
+
+<dialog class="dr-dialog" id="sb-paste" aria-labelledby="sb-paste-title">
+  <div class="dr-dialog__head">
+    <h2 id="sb-paste-title">Paste JSON</h2>
+    <button type="button" class="dr-btn dr-btn--icon dr-btn--ghost" data-close aria-label="Close">✕</button>
+  </div>
+  <form id="sb-paste-form" class="dr-dialog__body">
+    <p>Paste the JSON Grok returned. Fences around it are fine.</p>
+    <textarea id="sb-paste-text" rows="14" spellcheck="false" aria-label="JSON"></textarea>
+    <p id="sb-paste-error" class="sb-paste-error" hidden></p>
+    <button type="submit" class="dr-btn">Load</button>
+  </form>
+</dialog>
+
+<input id="sb-file" type="file" accept="application/json,.json" hidden>
+
+<script type="module" src="/sankeybuilder/main.js"></script>

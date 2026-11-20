@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "title": "ESRN and its National Partners",
+  "source": {
+    "url": "https://x.com/labtechleigh/status/2118414465632739481",
+    "note": "X thread by @labtechleigh on ESRN's seven national partners, leadership, funding flows, and post-election activities."
+  },
+  "nodes": [
+    {
+      "name": "ESRN",
+      "kind": "org",
+      "id": "esrn",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "All Voting is Local",
+      "kind": "org",
+      "ein": "87-3908699",
+      "id": "873908699",
+      "starting": true,
+      "inspector": { "propublica": true, "nonprofit": true, "award_search": true, "maps": true, "google": true }
+    },
+    {
+      "name": "Bridging Divides Initiative",
+      "kind": "org",
+      "id": "bridging-divides-initiative",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Campaign Legal Center",
+      "kind": "org",
+      "id": "campaign-legal-center",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Common Cause",
+      "kind": "org",
+      "id": "common-cause",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Democracy Defenders Fund",
+      "kind": "org",
+      "ein": "93-2740517",
+      "id": "932740517",
+      "starting": true,
+      "inspector": { "propublica": true, "nonprofit": true, "award_search": true, "maps": true, "google": true }
+    },
+    {
+      "name": "Lawyers' Committee for Civil Rights Under Law",
+      "kind": "org",
+      "id": "lawyers-committee-for-civil-rights-under-law",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Protect Democracy",
+      "kind": "org",
+      "ein": "81-4777062",
+      "id": "814777062",
+      "starting": true,
+      "inspector": { "propublica": true, "nonprofit": true, "award_search": true, "maps": true, "google": true }
+    },
+    {
+      "name": "Norm Eisen",
+      "kind": "person",
+      "id": "norm-eisen",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Hannah Fried",
+      "kind": "person",
+      "id": "hannah-fried",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Vanita Gupta",
+      "kind": "person",
+      "id": "vanita-gupta",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Ian Bassin",
+      "kind": "person",
+      "id": "ian-bassin",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Sayer LaGalle",
+      "kind": "person",
+      "id": "sayer-lagalle",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Foundation to Promote Open Society",
+      "kind": "org",
+      "ein": "26-3753801",
+      "id": "263753801",
+      "starting": false,
+      "inspector": { "propublica": true, "nonprofit": true, "award_search": true, "maps": true, "google": true }
+    },
+    {
+      "name": "Common Cause Education Fund",
+      "kind": "org",
+      "id": "common-cause-education-fund",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Spitzer Charitable Trust",
+      "kind": "org",
+      "id": "spitzer-charitable-trust",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Joyce Foundation",
+      "kind": "org",
+      "id": "joyce-foundation",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Democracy Fund",
+      "kind": "org",
+      "id": "democracy-fund",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Hewlett Foundation",
+      "kind": "org",
+      "id": "hewlett-foundation",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Hannah Dugan Legal Defense Fund",
+      "kind": "org",
+      "id": "hannah-dugan-legal-defense-fund",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "name": "Election Reformers Network",
+      "kind": "org",
+      "id": "election-reformers-network",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    }
+  ],
+  "edges": [
+    { "from": "esrn", "to": "873908699", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "esrn", "to": "bridging-divides-initiative", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "esrn", "to": "campaign-legal-center", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "esrn", "to": "common-cause", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "esrn", "to": "932740517", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "esrn", "to": "lawyers-committee-for-civil-rights-under-law", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "esrn", "to": "814777062", "kind": "partner", "label": "national partner", "cite": "ESRN's partners: All Voting is Local, Bridging Divides Initiative (Princeton), Campaign Legal Center, Common Cause, Democracy Defenders Fund, Lawyers' Committee for Civil Rights Under Law, Protect Democracy" },
+    { "from": "norm-eisen", "to": "esrn", "kind": "partner", "label": "executive director", "cite": "ESRN's executive director is Norm Eisen, per People's Action." },
+    { "from": "norm-eisen", "to": "932740517", "kind": "partner", "label": "founder", "cite": "Democracy Defenders Fund was \"founded in 2023 by Ambassador Norm Eisen (ret.).\"" },
+    { "from": "hannah-fried", "to": "873908699", "kind": "partner", "label": "co-founder and CEO", "cite": "Co-founder and CEO Hannah Fried, paid $301,139 in 2024" },
+    { "from": "vanita-gupta", "to": "873908699", "kind": "partner", "label": "board", "cite": "Vanita Gupta, Biden's Associate Attorney General, sits on its board" },
+    { "from": "ian-bassin", "to": "814777062", "kind": "partner", "label": "co-founder", "cite": "Co-founder Ian Bassin was Associate White House Counsel under Obama" },
+    { "from": "sayer-lagalle", "to": "esrn", "kind": "partner", "label": "ESRN DIRECTOR", "cite": "Its 990 lists Sayer LaGalle as \"ESRN DIRECTOR,\" paid $147,653" },
+    { "from": "common-cause", "to": "lawyers-committee-for-civil-rights-under-law", "kind": "partner", "label": "866-OUR-VOTE hotline", "cite": "The 866-OUR-VOTE hotline, run by fellow ESRN partner Lawyers' Committee for Civil Rights Under Law" },
+    { "from": "263753801", "to": "lawyers-committee-for-civil-rights-under-law", "kind": "grant", "amount": 10475001, "years": [2016, 2017, 2018, 2019, 2020, 2021], "label": "$10,475,001 (2016–2021)", "cite": "Open Society's own grants page lists $10,475,001 from Foundation to Promote Open Society to the Lawyers' Committee for Civil Rights Under Law (2016–2021), including a $5,000,000 five-year general-support grant in 2021." },
+    { "from": "873908699", "to": "common-cause-education-fund", "kind": "grant", "amount": 363717, "label": "$363,717", "cite": "It gave $363,717 to Common Cause Education Fund, another ESRN partner" },
+    { "from": "campaign-legal-center", "to": "873908699", "kind": "grant", "amount": 660080, "label": "for hiring of state-based democracy defense manager positions", "cite": "$660,080 to All Voting is Local for \"hiring of state-based democracy defense manager positions\"" },
+    { "from": "campaign-legal-center", "to": "election-reformers-network", "kind": "grant", "amount": 25000, "label": "related to the ECRA", "cite": "$25,000 to Election Reformers Network for work \"related to the ECRA\" (Electoral Count Reform Act)" },
+    { "from": "932740517", "to": "hannah-dugan-legal-defense-fund", "kind": "grant", "amount": 100000, "label": "$100,000", "cite": "It gave $100,000 to the \"Hannah Dugan Legal Defense Fund.\"" },
+    { "from": "spitzer-charitable-trust", "to": "bridging-divides-initiative", "kind": "grant", "amount": 675000, "years": [2020, 2021, 2022, 2023, 2024], "label": "$675,000", "cite": "Spitzer Charitable Trust (trustee Eliot Spitzer): $675,000" },
+    { "from": "joyce-foundation", "to": "bridging-divides-initiative", "kind": "grant", "amount": 600000, "years": [2020, 2021, 2022, 2023, 2024], "label": "$600,000", "cite": "Joyce Foundation: $600,000" },
+    { "from": "democracy-fund", "to": "bridging-divides-initiative", "kind": "grant", "amount": 500000, "years": [2020, 2021, 2022, 2023, 2024], "label": "$500,000", "cite": "Democracy Fund (Omidyar): $500,000" },
+    { "from": "hewlett-foundation", "to": "bridging-divides-initiative", "kind": "grant", "amount": 300000, "years": [2020, 2021, 2022, 2023, 2024], "label": "$300,000", "cite": "Hewlett Foundation: $300,000" }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "title": "Rogan × Means × Wiles",
+  "source": {
+    "url": "https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk",
+    "note": "Illustration from the Joe Rogan / Casey Means conversation that names Susan Wiles. Dollar grants were not stated; people are partner-linked. Replace with extracted JSON after running the Grok prompt on a transcript."
+  },
+  "nodes": [
+    {
+      "id": "joe-rogan",
+      "name": "Joe Rogan",
+      "kind": "person",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": false, "google": true }
+    },
+    {
+      "id": "casey-means",
+      "name": "Casey Means",
+      "kind": "person",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "id": "susan-wiles",
+      "name": "Susan Wiles",
+      "kind": "person",
+      "starting": true,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    },
+    {
+      "id": "white-house",
+      "name": "White House",
+      "kind": "gov",
+      "starting": false,
+      "inspector": { "propublica": false, "nonprofit": false, "award_search": false, "maps": true, "google": true }
+    }
+  ],
+  "edges": [
+    {
+      "from": "joe-rogan",
+      "to": "casey-means",
+      "kind": "partner",
+      "label": "interview",
+      "cite": "JRE conversation"
+    },
+    {
+      "from": "casey-means",
+      "to": "susan-wiles",
+      "kind": "partner",
+      "label": "named in conversation",
+      "cite": "JRE conversation"
+    },
+    {
+      "from": "susan-wiles",
+      "to": "white-house",
+      "kind": "partner",
+      "label": "chief of staff",
+      "cite": "public role"
+    }
+  ]
+}
