@@ -1,4 +1,5 @@
 import { colorString, getColorForId, getTextColorForId } from "./color.js";
+import { isPartnerKind } from "./schema.js";
 import { BADGE, USER_BODY, badgeCenter, linkPath, trapezoidPath } from "./shapes.js";
 
 let zoomBehavior = null;
@@ -142,8 +143,8 @@ export function bindSankey(svgEl, vm) {
     const drawn = vm.circularLinks
       ? graph.links
       : graph.links.filter((l) => !l.circular);
-    const grants = drawn.filter((l) => l.kind !== "partner");
-    const partners = drawn.filter((l) => l.kind === "partner");
+    const grants = drawn.filter((l) => !isPartnerKind(l.kind));
+    const partners = drawn.filter((l) => isPartnerKind(l.kind));
     const selectedEdge = vm.selectedEdgeId;
 
     main
@@ -371,7 +372,9 @@ function columnFallback(graph, width, height) {
     l.target = byId.get(l.target) || l.target;
     l.y0 = (l.source.y0 + l.source.y1) / 2;
     l.y1 = (l.target.y0 + l.target.y1) / 2;
-    l.width = l.kind === "partner" ? 2 : Math.min(24, Math.max(4, Math.log10((l.amount || 1) + 1) * 6));
+    l.width = isPartnerKind(l.kind)
+      ? 2
+      : Math.min(24, Math.max(4, Math.log10((l.amount || 1) + 1) * 6));
   });
   return graph;
 }

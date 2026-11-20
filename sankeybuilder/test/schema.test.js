@@ -93,6 +93,30 @@ describe("schema", () => {
     expect(grants[0].amount).toBe(250);
   });
 
+  it("loads money kinds that are not grant or partner", () => {
+    const { ok, doc, errors } = parseDocument({
+      title: "Contracts",
+      nodes: [
+        { name: "DoD", kind: "gov" },
+        { name: "Acme", kind: "org" },
+      ],
+      edges: [
+        { from: "dod", to: "acme", kind: "contract", amount: 10 },
+        { from: "dod", to: "acme", kind: "acquisition", amount: 20 },
+        { from: "dod", to: "acme", kind: "seed", amount: 3 },
+        { from: "dod", to: "acme", kind: "prime_contract", amount: 40 },
+        { from: "dod", to: "acme", kind: "dpa", amount: 50 },
+      ],
+    });
+    expect(ok).toBe(true);
+    expect(errors).toEqual([]);
+    expect(doc.edges.map((e) => e.kind).sort()).toEqual(
+      ["acquisition", "contract", "dpa", "prime_contract", "seed"].sort(),
+    );
+    expect(doc.edges.find((e) => e.kind === "contract").amount).toBe(10);
+    expect(doc.edges.find((e) => e.kind === "dpa").amount).toBe(50);
+  });
+
   it("does not treat a short id as an EIN", () => {
     const { doc } = parseDocument({
       nodes: [{ name: "Ghost", kind: "org", ein: "123" }],

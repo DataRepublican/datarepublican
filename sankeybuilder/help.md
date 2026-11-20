@@ -14,7 +14,7 @@ permalink: /sankeybuilder/help/
 ## What you put in
 
 - **Organizations, people, and government bodies.** An EIN is optional. Without one, the tool makes a slug from the name (`Open Society Foundations` → `open-society-foundations`) and colors the node from that id.
-- **Grants** are dollar flows. Thickness follows the amount. Hover a node or a flow for name, EIN, and dollars; click a flow to edit it.
+- **Grants** are dollar flows. Thickness follows the amount. Hover a node or a flow for name, EIN, and dollars; click a flow to edit it. Other money labels Grok uses (`contract`, `prime_contract`, `acquisition`, `seed`, `dpa`, and similar) load as dollar flows too; the kind stays on the edge so a contract does not become a grant in the file.
 - **Partners** are relationships that are not money (board overlap, “advises”, “national partner”). They draw **dashed** and thin on purpose. A dotted line is a partner, not a grant with an unknown dollar amount. Switch the kind to Grant in the editor or the **Table** view to attach dollars.
 - **Table** is a sortable spreadsheet of every organization and every flow, including nodes that are hidden on the diagram (starting set). Edit cells in place. **Add row** appends an empty organization or flow. **Show all** unhides the money nodes Grok left off the starting set.
 - **Government funds** (Gov $ in the table, or the inspector field) become a grant from an implied U.S. government node. The first amount creates that `us-gov` node if the graph does not already have one.
@@ -30,7 +30,7 @@ A person is a 32px disc on the flow bar — a photo URL if you have one, otherwi
 2. **A JSON file or a paste.** Save JSON / Load file, or **Paste JSON** for the blob Grok returns (markdown fences are stripped). **Save diagram** downloads the current Sankey as SVG.
 3. **A URL someone else can open.** A GitHub gist (raw) is the one that scales — **Load URL** pastes that. **Share URL** copies a `#d=` fragment for tiny graphs. News sites and X do not load as data, because the browser is not allowed to fetch them.
 
-Step-by-step for gists is on [Save and share](/sankeybuilder/share/). Pulling numbers out of a thread: paste the post URL and click **Extract from Post**. That opens Grok with a prompt that reads [the schema gist](https://gist.github.com/twinforces/706b11ec77740c11a1f258fc9d5030db) and then the post. Paste Grok’s JSON back with **Paste JSON**. The same prompt is on [Extract a post](/sankeybuilder/extract/).
+Step-by-step for gists is on [Save and share](/sankeybuilder/share/). Pulling numbers out of a thread: paste the post URL and click **Extract from Post**. That opens Grok with a prompt that reads [the schema gist](https://gist.github.com/twinforces/706b11ec77740c11a1f258fc9d5030db) and then the post. Grok follows its own research prompts (EINs, awards, 990s) before it replies; you do not paste those prompts back. Paste Grok’s JSON with **Paste JSON**. The same prompt is on [Extract a post](/sankeybuilder/extract/).
 
 ## What this is not
 

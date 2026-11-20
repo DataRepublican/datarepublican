@@ -59,6 +59,20 @@ describe("hover copy", () => {
     expect(tip).not.toMatch(/undefined/);
   });
 
+  it("names a contract on the hover", () => {
+    const e = new GraphEdge({
+      id: "a~b~contract",
+      from: "a",
+      to: "b",
+      kind: "contract",
+      amount: 99,
+    });
+    const tip = e.toolTipText("DoD", "Acme");
+    expect(tip).toMatch(/DoD → Acme/);
+    expect(tip).toMatch(/contract/);
+    expect(tip).toMatch(/\$99/);
+  });
+
   it("writes a partner without dollars", () => {
     const e = new GraphEdge({
       id: "j~a~partner",
