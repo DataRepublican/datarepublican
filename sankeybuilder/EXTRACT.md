@@ -13,7 +13,9 @@ On [Show Don't Tell](/sankeybuilder/) paste a post URL and click
 **Extract from Post**. That opens Grok with the prompt below plus the URL.
 Grok reads the schema from
 [this gist](https://gist.github.com/twinforces/706b11ec77740c11a1f258fc9d5030db)
-and replies with one JSON object. Paste that JSON with **Paste JSON**
+and researches the gaps itself (EINs, awards, 990s — it runs those
+follow-up prompts; you do not) before it replies with one JSON object.
+Paste that JSON with **Paste JSON**
 (fences are fine), or **Load file**. To hand someone a URL, follow
 [Save and share](/sankeybuilder/share/) and put that JSON in a gist.
 

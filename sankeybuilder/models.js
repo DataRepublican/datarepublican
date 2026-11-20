@@ -1,5 +1,5 @@
 import { colorKeyFor } from "./color.js";
-import { formatEin, US_GOV_ID } from "./schema.js";
+import { formatEin, isPartnerKind, US_GOV_ID } from "./schema.js";
 
 export const GRUMPY_TAKE =
   "https://gist.github.com/twinforces/534d9b662de4a010c1c4ebad934cd99a";
@@ -152,19 +152,20 @@ export class GraphEdge {
 
   /** Partner thickness is a constant so it cannot drown a grant. */
   sankeyValue() {
-    if (this.kind === "partner") return 1;
+    if (isPartnerKind(this.kind)) return 1;
     return Math.max(this.amount, 1);
   }
 
   toolTipText(fromName, toName) {
     const from = fromName || this.from;
     const to = toName || this.to;
-    if (this.kind === "partner") {
-      return `${from} · ${this.label || "partner"} · ${to}`;
+    if (isPartnerKind(this.kind)) {
+      return `${from} · ${this.label || this.kind || "partner"} · ${to}`;
     }
     const lines = [`${from} → ${to}`];
     const amt = dollars(this.amount);
     if (amt) lines.push(amt);
+    if (this.kind && this.kind !== "grant") lines.push(this.kind.replace(/_/g, " "));
     if (this.label && this.label !== amt) lines.push(this.label);
     if (this.years.length) lines.push(this.years.join(", "));
     if (this.cite) lines.push(this.cite);

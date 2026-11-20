@@ -1,5 +1,11 @@
 import { extractGrokHref } from "./models.js";
-import { formatEin } from "./schema.js";
+import {
+  edgeKindChoices,
+  edgeKindLabel,
+  formatEin,
+  isPartnerKind,
+  normalizeEdgeKind,
+} from "./schema.js";
 import { bindSankey } from "./sankeyView.js";
 import { bindTable } from "./tableView.js";
 
@@ -465,15 +471,26 @@ function parseYears(s) {
     .filter((y) => y > 1900 && y < 2100);
 }
 
+function edgeKindSelectHtml(kind) {
+  const current = normalizeEdgeKind(kind);
+  return edgeKindChoices(kind)
+    .map(
+      (o) =>
+        `<option value="${esc(o.value)}" ${o.value === current ? "selected" : ""}>${esc(o.label)}</option>`,
+    )
+    .join("");
+}
+
 function edgeForm(edge, vm) {
   const a = vm.doc.node(edge.from);
   const b = vm.doc.node(edge.to);
-  const partner = edge.kind === "partner";
+  const partner = isPartnerKind(edge.kind);
+  const kindName = edgeKindLabel(edge.kind);
   return `
     <button type="button" class="insp-close" data-hide-editor aria-label="Hide editor">×</button>
     <header class="insp-head">
-      <p class="insp-kind">${partner ? "Partner" : "Grant"}</p>
-      <h3>${partner ? "Not money" : esc(moneyInput(edge.amount) ? `$${Number(edge.amount).toLocaleString("en-US")}` : "Grant")}</h3>
+      <p class="insp-kind">${esc(kindName)}</p>
+      <h3>${partner ? "Not money" : esc(moneyInput(edge.amount) ? `$${Number(edge.amount).toLocaleString("en-US")}` : kindName)}</h3>
     </header>
     <div class="insp-body">
       <p class="insp-grant">
@@ -496,8 +513,7 @@ function edgeForm(edge, vm) {
         </label>
         <label>Kind
           <select name="kind">
-            <option value="grant" ${partner ? "" : "selected"}>Grant (dollars)</option>
-            <option value="partner" ${partner ? "selected" : ""}>Partner (not money)</option>
+            ${edgeKindSelectHtml(edge.kind)}
           </select>
         </label>
         <label>Amount ($) <input name="amount" inputmode="decimal" value="${esc(moneyInput(edge.amount))}"></label>

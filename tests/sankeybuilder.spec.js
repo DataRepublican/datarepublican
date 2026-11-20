@@ -67,6 +67,32 @@ test.describe("Show Don't Tell", () => {
     await expect(page.locator("#sb-svg g.sb-node")).toHaveCount(1);
   });
 
+  test("paste loads contract and dpa money kinds", async ({ page }) => {
+    await openBuilder(page);
+    await page.locator("#sb-paste-open").click();
+    await page.locator("#sb-paste-text").fill(
+      JSON.stringify({
+        version: 1,
+        title: "DoD to Acme",
+        nodes: [
+          { name: "DoD", kind: "gov", starting: true },
+          { name: "Acme", kind: "org", starting: true },
+        ],
+        edges: [
+          { from: "dod", to: "acme", kind: "contract", amount: 10 },
+          { from: "dod", to: "acme", kind: "dpa", amount: 50 },
+        ],
+      }),
+    );
+    await page.locator("#sb-paste-form button[type='submit']").click();
+    await expect(page.locator("#sb-status")).toContainText("DoD to Acme");
+    await expect(page.locator("#sb-error")).toBeHidden();
+    await expect(page.locator("#sb-svg path.sb-grant")).toHaveCount(2);
+    await page.locator("#sb-view-table").click();
+    await expect(page.locator('#sb-edges-table option[value="contract"][selected]')).toHaveCount(1);
+    await expect(page.locator('#sb-edges-table option[value="dpa"][selected]')).toHaveCount(1);
+  });
+
   test("disclaimer is a modal dialog", async ({ page }) => {
     await openBuilder(page);
     const dlg = page.locator("#sb-legal");
@@ -213,6 +239,8 @@ test.describe("Show Don't Tell", () => {
     expect(raw.status()).toBe(200);
     const body = await raw.text();
     expect(body).toMatch(/Never invent an EIN/);
+    expect(body).toMatch(/Do not ask the user to run follow-up prompts/);
+    expect(body).toMatch(/Recursive research/);
     await page.goto(HOST + "/sankeybuilder/extract/", { waitUntil: "load" });
     await expect(page.locator("#extract-prompt")).toContainText(
       "https://gist.github.com/twinforces/706b11ec77740c11a1f258fc9d5030db",

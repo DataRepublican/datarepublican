@@ -1,4 +1,4 @@
-import { formatEin } from "./schema.js";
+import { edgeKindChoices, formatEin, isPartnerKind, normalizeEdgeKind } from "./schema.js";
 import {
   createTable,
   getCoreRowModel,
@@ -146,11 +146,13 @@ export function bindTable(host, vm) {
       const id = trEdge.getAttribute("data-edge");
       const existing = vm.doc.edge(id);
       if (!existing) return;
-      let kind = trEdge.querySelector('[name="kind"]')?.value || existing.kind;
+      let kind = normalizeEdgeKind(
+        trEdge.querySelector('[name="kind"]')?.value || existing.kind,
+      );
       const amountRaw = trEdge.querySelector('[name="amount"]')?.value;
       let amount = Number(amountRaw) || 0;
-      if (amount > 0) kind = "grant";
-      if (kind === "partner") amount = 0;
+      if (amount > 0 && isPartnerKind(kind)) kind = "grant";
+      if (isPartnerKind(kind)) amount = 0;
       vm.upsertEdge({
         id,
         from: trEdge.querySelector('[name="from"]')?.value,
@@ -195,10 +197,14 @@ export function bindTable(host, vm) {
           <td><select name="from" aria-label="From">${nodeOptions(vm, e.from)}</select></td>
           <td><select name="to" aria-label="To">${nodeOptions(vm, e.to)}</select></td>
           <td><select name="kind" aria-label="Kind">
-            <option value="grant" ${e.kind === "grant" ? "selected" : ""}>grant</option>
-            <option value="partner" ${e.kind === "partner" ? "selected" : ""}>partner</option>
+            ${edgeKindChoices(e.kind)
+              .map(
+                (o) =>
+                  `<option value="${esc(o.value)}" ${o.value === normalizeEdgeKind(e.kind) ? "selected" : ""}>${esc(o.value)}</option>`,
+              )
+              .join("")}
           </select></td>
-          <td class="sb-num"><input name="amount" inputmode="decimal" value="${e.kind === "grant" && e.amount ? e.amount : ""}" placeholder="${e.kind === "partner" ? "—" : "0"}" aria-label="Amount"></td>
+          <td class="sb-num"><input name="amount" inputmode="decimal" value="${!isPartnerKind(e.kind) && e.amount ? e.amount : ""}" placeholder="${isPartnerKind(e.kind) ? "—" : "0"}" aria-label="Amount"></td>
           <td><input name="label" value="${esc(e.label)}" aria-label="Label"></td>
         </tr>`;
       })

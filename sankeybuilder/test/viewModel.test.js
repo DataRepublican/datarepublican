@@ -119,6 +119,23 @@ describe("SankeyBuilderViewModel", () => {
     expect(empty.doc.edges).toHaveLength(1);
   });
 
+  it("keeps contract kinds through upsert and JSON", () => {
+    const v = vm();
+    v.upsertNode({ name: "DoD", kind: "gov" });
+    v.upsertNode({ name: "Acme", kind: "org" });
+    v.upsertEdge({ from: "dod", to: "acme", kind: "contract", amount: 99 });
+    expect(v.doc.edges[0].kind).toBe("contract");
+    expect(v.doc.edges[0].amount).toBe(99);
+    expect(v.error).toBe("");
+    const json = v.toJSON();
+    expect(json.edges[0].kind).toBe("contract");
+    const again = vm();
+    again.loadJSON(json);
+    expect(again.error).toBe("");
+    expect(again.doc.edges[0].kind).toBe("contract");
+    expect(again.doc.edges[0].amount).toBe(99);
+  });
+
   it("CRUD for orgs and grants round-trips through JSON", () => {
     const v = vm();
     v.upsertNode({ name: "Alpha Fund", kind: "org", ein: "12-3456789" });

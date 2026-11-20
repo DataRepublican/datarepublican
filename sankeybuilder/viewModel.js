@@ -4,6 +4,8 @@ import {
   parseDocument,
   nodeIdFrom,
   normalizeEin,
+  normalizeEdgeKind,
+  isPartnerKind,
   slugify,
   US_GOV_ID,
 } from "./schema.js";
@@ -395,7 +397,7 @@ export class SankeyBuilderViewModel {
       this.notify();
       return null;
     }
-    const kind = partial.kind === "partner" ? "partner" : "grant";
+    const kind = normalizeEdgeKind(partial.kind || "grant");
     const existing = partial.id
       ? this.doc.edges.find((e) => e.id === partial.id)
       : null;
@@ -405,12 +407,11 @@ export class SankeyBuilderViewModel {
       from,
       to,
       kind,
-      amount:
-        kind === "grant"
-          ? partial.amount !== undefined
-            ? Number(partial.amount) || 0
-            : existing?.amount || 0
-          : 0,
+      amount: isPartnerKind(kind)
+        ? 0
+        : partial.amount !== undefined
+          ? Number(partial.amount) || 0
+          : existing?.amount || 0,
       years: Array.isArray(partial.years)
         ? partial.years
         : existing?.years || [],

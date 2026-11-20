@@ -9,7 +9,50 @@ export const SCHEMA_VERSION = 1;
 export const US_GOV_ID = "us-gov";
 
 const KINDS = new Set(["org", "person", "gov"]);
-const EDGE_KINDS = new Set(["grant", "partner"]);
+const PARTNER_KINDS = new Set([
+  "partner",
+  "affiliation",
+  "related",
+  "advises",
+  "board",
+  "role",
+  "member",
+  "ally",
+  "overlap",
+]);
+
+/** grant|partner plus money labels Grok invents (contract, seed, dpa, …). */
+export function normalizeEdgeKind(raw) {
+  const kind = String(raw || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 40);
+  return kind || "grant";
+}
+
+export function isPartnerKind(kind) {
+  return PARTNER_KINDS.has(normalizeEdgeKind(kind));
+}
+
+export function edgeKindLabel(kind) {
+  const k = normalizeEdgeKind(kind);
+  if (k === "partner") return "Partner";
+  if (k === "grant") return "Grant";
+  return k.replace(/_/g, " ");
+}
+
+export function edgeKindChoices(kind) {
+  const k = normalizeEdgeKind(kind);
+  const out = [
+    { value: "grant", label: "Grant (dollars)" },
+    { value: "partner", label: "Partner (not money)" },
+  ];
+  if (k !== "grant" && k !== "partner") {
+    out.splice(1, 0, { value: k, label: edgeKindLabel(k) });
+  }
+  return out;
+}
 
 export function slugify(name) {
   const s = String(name || "")
@@ -123,11 +166,7 @@ function cleanEdge(raw, ids, errors, index) {
     errors.push(`edges[${index}] is a self-loop`);
     return null;
   }
-  let kind = String(raw.kind || "grant").toLowerCase();
-  if (!EDGE_KINDS.has(kind)) {
-    errors.push(`edges[${index}] kind "${raw.kind}" is not grant|partner`);
-    kind = "grant";
-  }
+  const kind = normalizeEdgeKind(raw.kind || "grant");
   const amount = Number(raw.amount);
   const years = Array.isArray(raw.years)
     ? raw.years.map(Number).filter((y) => y > 1900 && y < 2100)
@@ -138,7 +177,7 @@ function cleanEdge(raw, ids, errors, index) {
     to,
     kind,
     amount:
-      kind === "grant" && Number.isFinite(amount) && amount > 0 ? amount : 0,
+      !isPartnerKind(kind) && Number.isFinite(amount) && amount > 0 ? amount : 0,
     years,
     label: String(raw.label || "").trim(),
     cite: String(raw.cite || "").trim(),
